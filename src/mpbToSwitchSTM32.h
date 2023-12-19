@@ -6,8 +6,8 @@
  * @date		: Created on: Nov 6, 2023
  */
 
-#ifndef SRC_MPBTOSWITCHSTM32_H_
-#define SRC_MPBTOSWITCHSTM32_H_
+#ifndef MPBTOSWITCHSTM32_H_
+#define MPBTOSWITCHSTM32_H_
 
 #include <stdint.h>
 #include <string.h>
@@ -249,4 +249,4 @@ public:
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 
-#endif /* SRC_MPBTOSWITCHSTM32_H_ */
+#endif /* MPBTOSWITCHSTM32_H_ */
