@@ -1,0 +1,1303 @@
+/*
+ * @file		: mpbToSwitchSTM32.cpp
+ * @brief	: Header file for
+ *
+ * @author	: Gabriel D. Goldman
+ * @date		: Created on: Nov 6, 2023
+ */
+
+#include "mpbToSwitchSTM32.h"
+
+DbncdMPBttn::DbncdMPBttn()
+:_mpbttnPort{NULL}, _mpbttnPin{0}, _pulledUp{true}, _typeNO{true}, _dbncTimeOrigSett{0}
+{
+}
+
+DbncdMPBttn::DbncdMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett)
+: _mpbttnPort{mpbttnPort}, _mpbttnPin{mpbttnPin}, _pulledUp{pulledUp}, _typeNO{typeNO}, _dbncTimeOrigSett{dbncTimeOrigSett}
+{
+    char mpbttnPinChar[3]{};
+    int tmpBitCount{0};
+    uint16_t tmpPinNum {_mpbttnPin};
+
+    tmpPinNum = tmpPinNum >> 1;
+    while(tmpPinNum > 0){
+   	 tmpPinNum = tmpPinNum >> 1;
+   	 ++tmpBitCount;
+    }
+    sprintf(mpbttnPinChar, "%02u", tmpBitCount);
+    strcpy(_mpbPollTmrName, "PollMpbPin");
+    if(mpbttnPort == GPIOA)
+    	strcat(_mpbPollTmrName, "A");
+    else if(mpbttnPort == GPIOB)
+    	strcat(_mpbPollTmrName, "B");
+    else if(mpbttnPort == GPIOC)
+    	strcat(_mpbPollTmrName, "C");
+    else if(mpbttnPort == GPIOD)
+    	strcat(_mpbPollTmrName, "D");
+    else if(mpbttnPort == GPIOE)
+    	strcat(_mpbPollTmrName, "E");
+#ifdef GPIOF
+    else if(mpbttnPort == GPIOF)	//Port not present in all STM32 MCUs/DevBoards
+    	strcat(_mpbPollTmrName, "F");
+#endif
+#ifdef GPIOG
+    else if(mpbttnPort == GPIOG)	//Port not present in all STM32 MCUs/DevBoards
+    	strcat(_mpbPollTmrName, "G");
+#endif
+#ifdef GPIOH
+    else if(mpbttnPort == GPIOH)	//Port not present in all STM32 MCUs/DevBoards
+    	strcat(_mpbPollTmrName, "H");
+#endif
+#ifdef GPIOI
+    else if(mpbttnPort == GPIOI)	//Port not present in all STM32 MCUs/DevBoards
+    	strcat(_mpbPollTmrName, "I");
+#endif
+    strcat(_mpbPollTmrName, mpbttnPinChar);
+    strcat(_mpbPollTmrName, "_tmr");
+
+    if(_dbncTimeOrigSett < _stdMinDbncTime) 	// Best practice would impose failing the constructor (throwing an exception or building a "zombie" object)
+        _dbncTimeOrigSett = _stdMinDbncTime;    //this tolerant approach taken for developers benefit, but object will be no faithful to the instantiation parameters
+    _dbncTimeTempSett = _dbncTimeOrigSett;
+
+    if(mpbttnPin > 0){
+    	if(mpbttnPort == GPIOA)
+			__HAL_RCC_GPIOA_CLK_ENABLE();	//Sets the bit in the GPIO enabled clocks register, by logic OR of the corresponding bit, no problem if already set, macro adds time to get the clk running
+		else if(mpbttnPort == GPIOB)
+			__HAL_RCC_GPIOB_CLK_ENABLE();
+		else if(mpbttnPort == GPIOC)
+			__HAL_RCC_GPIOC_CLK_ENABLE();
+		else if(mpbttnPort == GPIOD)
+			__HAL_RCC_GPIOD_CLK_ENABLE();
+		else if(mpbttnPort == GPIOE)
+			__HAL_RCC_GPIOE_CLK_ENABLE();
+#ifdef GPIOF
+		else if(mpbttnPort == GPIOF)
+			__HAL_RCC_GPIOF_CLK_ENABLE();	//Port not present in all STM32 MCUs/DevBoards
+#endif
+#ifdef GPIOG
+		else if(mpbttnPort == GPIOG)
+			__HAL_RCC_GPIOG_CLK_ENABLE();	//Port not present in all STM32 MCUs/DevBoards
+#endif
+#ifdef GPIOH
+		else if(mpbttnPort == GPIOH)
+			__HAL_RCC_GPIOH_CLK_ENABLE();	//Port not present in all STM32 MCUs/DevBoards
+#endif
+#ifdef GPIOI
+		else if(mpbttnPort == GPIOI)
+			__HAL_RCC_GPIOI_CLK_ENABLE();	//Port not present in all STM32 MCUs/DevBoards
+#endif
+
+		/*Configure GPIO pin : _mpbttnPin */
+      HAL_GPIO_WritePin(_mpbttnPort, _mpbttnPin, GPIO_PIN_RESET);
+
+      GPIO_InitTypeDef GPIO_InitStruct {0};
+
+      GPIO_InitStruct.Pin = _mpbttnPin;
+		GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+		GPIO_InitStruct.Pull = (_pulledUp == true)?GPIO_PULLUP:GPIO_PULLDOWN;
+		HAL_GPIO_Init(_mpbttnPort, &GPIO_InitStruct);
+    }
+}
+
+DbncdMPBttn::~DbncdMPBttn() {
+
+	// Stop the refreshing timer:
+	end();
+	// De-initialize the GPIOx peripheral registers to their default reset values
+	HAL_GPIO_DeInit(_mpbttnPort, _mpbttnPin);
+	// Disable the GPIOx_CLK:
+	//	__HAL_RCC_GPIOx_CLK_DISABLE ();
+	//(RCC->AHB1ENR &= ~(RCC_AHB1ENR_GPIOxEN))   //Beware, just disabling the bit corresponding to one pin
+
+}
+
+bool DbncdMPBttn::begin(const unsigned long int &pollDelayMs) {
+    bool result {false};
+    BaseType_t tmrModResult {pdFAIL};
+
+    if (pollDelayMs > 0){
+        if (!_mpbPollTmrHndl){
+            _mpbPollTmrHndl = xTimerCreate(
+                _mpbPollTmrName,  //Timer name
+                pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
+                pdTRUE,     //Auto-reload true
+                this,       //TimerID: data passed to the callback function to work
+                DbncdMPBttn::mpbPollCallback	  //Callback function
+				);
+            if (_mpbPollTmrHndl != NULL){
+               tmrModResult = xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
+            	if (tmrModResult == pdPASS)
+                  result = true;
+            }
+        }
+
+    }
+
+    return result;
+}
+
+void DbncdMPBttn::clrStatus(){
+	/*To Resume operations after a pause() without risking generating false "Valid presses" and "On" situations,
+	several attributes must be reseted to "Start" values*/
+	_isPressed = false;
+	_isOn = false;
+	_validPressPend = false;
+	_dbncTimerStrt = 0;
+
+	return;
+}
+
+const unsigned long int DbncdMPBttn::getCurDbncTime() const{
+
+    return _dbncTimeTempSett;
+}
+
+const bool DbncdMPBttn::getIsOn() const {
+
+    return _isOn;
+}
+
+const bool DbncdMPBttn::getIsPressed() const {
+
+    return _isPressed;
+}
+
+const bool DbncdMPBttn::getOutputsChange() const{
+
+    return _outputsChange;
+}
+
+const TaskHandle_t DbncdMPBttn::getTaskToNotify() const{
+
+    return _taskToNotifyHndl;
+}
+
+bool DbncdMPBttn::end(){
+    bool result {false};
+    BaseType_t tmrModResult {pdFAIL};
+
+    if (_mpbPollTmrHndl){
+   	 result = pause();
+       if (result){
+      	 tmrModResult = xTimerStop(_mpbPollTmrHndl, portMAX_DELAY);
+      	 if (tmrModResult == pdPASS){
+      		 tmrModResult = xTimerDelete(_mpbPollTmrHndl, portMAX_DELAY);
+      		 if (tmrModResult == pdPASS){
+      			 _mpbPollTmrHndl = NULL;
+      		 }
+      		 else{
+      			 result = false;
+      		 }
+      	 }
+			 else{
+				 result = false;
+			 }
+       }
+    }
+
+    return result;
+}
+
+bool DbncdMPBttn::init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett){
+    char mpbttnPinChar[3]{};
+    int tmpBitCount{0};
+    uint16_t tmpPinNum {_mpbttnPin};
+    bool result {false};
+
+    if (_mpbPollTmrName[0] == '\0'){
+        _mpbttnPin = mpbttnPin;
+        _pulledUp = pulledUp;
+        _typeNO = typeNO;
+        _dbncTimeOrigSett = dbncTimeOrigSett;
+
+        tmpPinNum = tmpPinNum >> 1;
+        while(tmpPinNum > 0){
+       	 tmpPinNum = tmpPinNum >> 1;
+       	 ++tmpBitCount;
+        }
+        sprintf(mpbttnPinChar, "%02u", tmpBitCount);
+        strcpy(_mpbPollTmrName, "PollMpbPin");
+        if(mpbttnPort == GPIOA)
+        	strcat(_mpbPollTmrName, "A");
+        else if(mpbttnPort == GPIOB)
+        	strcat(_mpbPollTmrName, "B");
+        else if(mpbttnPort == GPIOC)
+        	strcat(_mpbPollTmrName, "C");
+        else if(mpbttnPort == GPIOD)
+        	strcat(_mpbPollTmrName, "D");
+        else if(mpbttnPort == GPIOE)
+        	strcat(_mpbPollTmrName, "E");
+#ifdef GPIOF
+			else if(mpbttnPort == GPIOF)	//Port not present in all STM32 MCUs/DevBoards
+				strcat(_mpbPollTmrName, "F");
+#endif
+#ifdef GPIOG
+			else if(mpbttnPort == GPIOG)	//Port not present in all STM32 MCUs/DevBoards
+				strcat(_mpbPollTmrName, "G");
+#endif
+#ifdef GPIOH
+			else if(mpbttnPort == GPIOH)	//Port not present in all STM32 MCUs/DevBoards
+				strcat(_mpbPollTmrName, "H");
+#endif
+#ifdef GPIOI
+			else if(mpbttnPort == GPIOI)	//Port not present in all STM32 MCUs/DevBoards
+				strcat(_mpbPollTmrName, "I");
+#endif
+
+        if(_dbncTimeOrigSett < _stdMinDbncTime) 	// Best practice would impose failing the constructor (throwing an exeption or building a "zombie" object)
+            _dbncTimeOrigSett = _stdMinDbncTime;    //this tolerant approach taken for developers benefit, but object will be no faithful to the instantiation parameters
+        _dbncTimeTempSett = _dbncTimeOrigSett;
+
+        if(mpbttnPin > 0){
+        	if(mpbttnPort == GPIOA)
+    			__HAL_RCC_GPIOA_CLK_ENABLE();	//Sets the bit in the GPIO enabled clocks register, by logic OR of the corresponding bit, no problem if already set, macro adds time to get the clk running
+    		else if(mpbttnPort == GPIOB)
+    			__HAL_RCC_GPIOB_CLK_ENABLE();
+    		else if(mpbttnPort == GPIOC)
+    			__HAL_RCC_GPIOC_CLK_ENABLE();
+    		else if(mpbttnPort == GPIOD)
+    			__HAL_RCC_GPIOD_CLK_ENABLE();
+    		else if(mpbttnPort == GPIOE)
+    			__HAL_RCC_GPIOE_CLK_ENABLE();
+#ifdef GPIOF
+			else if(mpbttnPort == GPIOF)
+				__HAL_RCC_GPIOF_CLK_ENABLE();	//Port not present in all STM32 MCUs/DevBoards
+#endif
+#ifdef GPIOG
+			else if(mpbttnPort == GPIOG)
+				__HAL_RCC_GPIOG_CLK_ENABLE();	//Port not present in all STM32 MCUs/DevBoards
+#endif
+#ifdef GPIOH
+			else if(mpbttnPort == GPIOH)		//Port not present in all STM32 MCUs/DevBoards
+				__HAL_RCC_GPIOH_CLK_ENABLE();
+#endif
+#ifdef GPIOI
+			else if(mpbttnPort == GPIOI)		//Port not present in all STM32 MCUs/DevBoards
+				__HAL_RCC_GPIOI_CLK_ENABLE();
+#endif
+    		GPIO_InitTypeDef GPIO_InitStruct = {0};
+    		/*Configure GPIO pin : tstMPBttn_Pin */
+    		GPIO_InitStruct.Pin = _mpbttnPin;
+    		GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    		GPIO_InitStruct.Pull = (_pulledUp == true)?GPIO_PULLUP:GPIO_PULLDOWN;
+    		HAL_GPIO_Init(_mpbttnPort, &GPIO_InitStruct);
+			result = true;
+        }
+    }
+
+    return result;
+}
+
+void DbncdMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
+	DbncdMPBttn *mpbObj = (DbncdMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
+
+    mpbObj->updIsPressed();
+    mpbObj->updValidPressPend();
+    mpbObj->updIsOn();
+    if (mpbObj->getOutputsChange()){
+        if(mpbObj->getTaskToNotify() != NULL)
+            xTaskNotifyGive(mpbObj->getTaskToNotify());
+        mpbObj->setOutputsChange(false);
+    }
+
+    return;
+}
+
+bool DbncdMPBttn::pause(){
+    bool result {false};
+    BaseType_t tmrModResult {pdFAIL};
+
+    if (_mpbPollTmrHndl){
+   	 if (xTimerIsTimerActive(_mpbPollTmrHndl)){
+   		 tmrModResult = xTimerStop(_mpbPollTmrHndl, portMAX_DELAY);
+   		 if (tmrModResult == pdPASS)
+   			 result = true;
+   	 }
+    }
+
+    return result;
+}
+
+bool DbncdMPBttn::resetDbncTime(){
+
+    return setDbncTime(_dbncTimeOrigSett);
+}
+
+bool DbncdMPBttn::resume(){
+    bool result {false};
+    BaseType_t tmrModResult {pdFAIL};
+
+    if (_mpbPollTmrHndl){
+   	 if (xTimerIsTimerActive(_mpbPollTmrHndl) == pdFAIL){	// This enforces the timer to be stopped to let the timer be resumed, makes the method useless just to reset the timer counter
+   		 tmrModResult = xTimerReset( _mpbPollTmrHndl, portMAX_DELAY);
+			 if (tmrModResult == pdPASS)
+				 result = true;
+   	 }
+    }
+
+    return result;
+}
+
+bool DbncdMPBttn::setDbncTime(const unsigned long int &newDbncTime){
+    bool result {false};
+
+    if (newDbncTime >= _stdMinDbncTime){
+        _dbncTimeTempSett = newDbncTime;
+        result = true;
+    }
+
+    return result;
+}
+
+bool DbncdMPBttn::setOutputsChange(bool newOutputsChange){
+   if(_outputsChange != newOutputsChange)
+   	_outputsChange = newOutputsChange;
+
+   return _outputsChange;
+}
+
+bool DbncdMPBttn::setTaskToNotify(TaskHandle_t newHandle){
+    bool result {true};
+
+	 if(_taskToNotifyHndl != newHandle)
+		 _taskToNotifyHndl = newHandle;
+    if (newHandle == NULL)
+        result = false;
+
+    return result;
+}
+
+bool DbncdMPBttn::updIsOn(){
+    if (_validPressPend){
+        if(_isOn == false){
+            _isOn = true;
+            _outputsChange = true;
+        }
+    }
+    else{
+        if(_isOn == true){
+            _isOn = false;
+            _outputsChange = true;
+        }
+    }
+
+    return _isOn;
+}
+
+bool DbncdMPBttn::updIsPressed(){
+    /*To be 'pressed' the conditions are:
+    1) For NO == true
+        a)  _pulledUp == false ==> digitalRead == HIGH
+        b)  _pulledUp == true ==> digitalRead == LOW
+    2) For NO == false
+        a)  _pulledUp == false ==> digitalRead == LOW
+        b)  _pulledUp == true ==> digitalRead == HIGH
+    */
+    bool result {false};
+    bool tmpPinLvlSet {false};
+
+    if(HAL_GPIO_ReadPin(_mpbttnPort, _mpbttnPin) == GPIO_PIN_SET)
+   	 tmpPinLvlSet = true;
+
+    if (_typeNO == true){
+        //For NO MPBs
+        if (_pulledUp == false){
+            if (tmpPinLvlSet == true)
+                result = true;
+        }
+        else{
+            if (tmpPinLvlSet == false)
+                result = true;
+        }
+    }
+    else{
+        //For NC MPBs
+        if (_pulledUp == false){
+            if (tmpPinLvlSet == false)
+                result = true;
+        }
+        else{
+            if (tmpPinLvlSet == true)
+                result = true;
+        }
+    }
+    _isPressed = result;
+
+    return _isPressed;
+}
+
+bool DbncdMPBttn::updValidPressPend(){
+    bool result {false};
+
+    if(_isPressed){
+        if(_dbncTimerStrt == 0){    //It was not previously pressed
+            //Started to be pressed
+      	  _dbncTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;
+        }
+        else{
+            if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= _dbncTimeTempSett){
+                result = true;
+            }
+        }
+    }
+    else{
+        if(_dbncTimerStrt > 0)
+            _dbncTimerStrt = 0;
+    }
+    _validPressPend = result;
+
+    return _validPressPend;
+}
+
+//=========================================================================> Class methods delimiter
+
+DbncdDlydMPBttn::DbncdDlydMPBttn()
+:DbncdMPBttn()
+{
+}
+
+DbncdDlydMPBttn::DbncdDlydMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
+:DbncdMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett), _strtDelay{strtDelay}
+{
+}
+
+bool DbncdDlydMPBttn::begin(const unsigned long int &pollDelayMs) {
+    bool result {false};
+    BaseType_t tmrModResult {pdFAIL};
+
+    if (pollDelayMs > 0){
+        if (!_mpbPollTmrHndl){
+            _mpbPollTmrHndl = xTimerCreate(
+                _mpbPollTmrName,  //Timer name
+                pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
+                pdTRUE,     //Auto-reload true
+                this,       //TimerID: data passed to the callback function to work
+                DbncdDlydMPBttn::mpbPollCallback	  //Callback function
+				);
+            if (_mpbPollTmrHndl != NULL){
+               tmrModResult = xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
+            	if (tmrModResult == pdPASS)
+                  result = true;
+            }
+        }
+
+    }
+
+    return result;
+}
+
+unsigned long int DbncdDlydMPBttn::getStrtDelay(){
+
+    return _strtDelay;
+}
+
+bool DbncdDlydMPBttn::init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay){
+    bool result {false};
+
+    result = DbncdMPBttn::init(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett);
+    if (result)
+        result = setStrtDelay(strtDelay);
+
+    return result;
+}
+
+void DbncdDlydMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
+    DbncdDlydMPBttn* mpbObj = (DbncdDlydMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
+    mpbObj->updIsPressed();
+    mpbObj->updValidPressPend();
+    mpbObj->updIsOn();
+    if (mpbObj->getOutputsChange()){
+        if(mpbObj->getTaskToNotify() != NULL)
+            xTaskNotifyGive(mpbObj->getTaskToNotify());
+        mpbObj->setOutputsChange(false);
+    }
+
+    return;
+}
+
+bool DbncdDlydMPBttn::setStrtDelay(const unsigned long int &newStrtDelay){
+    if(_strtDelay != newStrtDelay)
+        _strtDelay = newStrtDelay;
+
+    return true;
+}
+
+bool DbncdDlydMPBttn::updIsPressed(){
+
+    return DbncdMPBttn::updIsPressed();
+}
+
+bool DbncdDlydMPBttn::updIsOn(){
+
+    return DbncdMPBttn::updIsOn();
+}
+
+bool DbncdDlydMPBttn::updValidPressPend(){
+    bool result {false};
+
+    if(_isPressed){
+        if(_dbncTimerStrt == 0){    //It was not previously pressed
+            //Started to be pressed
+            _dbncTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;
+        }
+        else{
+            if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= _dbncTimeTempSett + _strtDelay){
+                result = true;
+            }
+        }
+    }
+    else{
+        if(_dbncTimerStrt > 0)
+            _dbncTimerStrt = 0;
+    }
+    _validPressPend = result;
+
+    return _validPressPend;
+}
+
+//=========================================================================> Class methods delimiter
+
+LtchMPBttn::LtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
+:DbncdDlydMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
+{
+}
+
+bool LtchMPBttn::begin(const unsigned long int &pollDelayMs){
+   bool result {false};
+   BaseType_t tmrModResult {pdFAIL};
+
+   if (pollDelayMs > 0){
+   	if (!_mpbPollTmrHndl){
+   		_mpbPollTmrHndl = xTimerCreate(
+				_mpbPollTmrName,  //Timer name
+				pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
+				pdTRUE,     //Auto-reload true
+				this,       //TimerID: data passed to the callback function to work
+				LtchMPBttn::mpbPollCallback
+			);
+         if (_mpbPollTmrHndl != NULL){
+            tmrModResult = xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
+         	if (tmrModResult == pdPASS)
+               result = true;
+         }
+   	}
+	}
+
+	return result;
+}
+
+const bool LtchMPBttn::getUnlatchPend() const{
+
+    return _unlatchPending;
+}
+
+bool LtchMPBttn::setUnlatchPend(){
+    if(!_unlatchPending){
+        _unlatchPending = true;
+        _validPressPend = false;
+    }
+
+    return _unlatchPending;
+}
+
+bool LtchMPBttn::updIsOn(){
+	if(_validPressPend){
+		_validPressPend = false;
+		if (!_isOn){
+			_isOn = true;
+			_outputsChange = true;
+		}
+	}
+	else if(_unlatchPending){
+		_unlatchPending = false;
+		if (_isOn){
+			_isOn = false;
+			_outputsChange = true;
+		}
+	}
+
+    return _isOn;
+}
+
+bool LtchMPBttn::updIsPressed(){
+
+    return DbncdMPBttn::updIsPressed();
+}
+
+bool LtchMPBttn::updUnlatchPend(){
+    if(_validPressPend){
+        if (_isOn){
+            _unlatchPending = true;
+            _validPressPend = false;
+        }
+    }
+
+    return _unlatchPending;
+}
+
+bool LtchMPBttn::updValidPressPend(){
+    if(_isPressed){
+        if(!_releasePending){
+            if(_dbncTimerStrt == 0){    //It was not previously pressed
+                //Started to be pressed
+                _dbncTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;
+            }
+            else{
+                if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= (_dbncTimeTempSett + _strtDelay)){
+                    _validPressPend = true;
+                    _releasePending = true;
+                }
+            }
+        }
+    }
+    else{
+        if(_dbncTimerStrt > 0)
+            _dbncTimerStrt = 0;
+        if(_releasePending)
+            _releasePending = false;
+    }
+
+   return _validPressPend;
+}
+
+void LtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
+    LtchMPBttn* mpbObj = (LtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
+    mpbObj->updIsPressed();
+    mpbObj->updValidPressPend();
+    mpbObj->updUnlatchPend();
+    mpbObj->updIsOn();
+    if (mpbObj->getOutputsChange()){
+        if(mpbObj->getTaskToNotify() != NULL)
+            xTaskNotifyGive(mpbObj->getTaskToNotify());
+        mpbObj->setOutputsChange(false);
+    }
+
+    return;
+}
+
+//=========================================================================> Class methods delimiter
+
+TmLtchMPBttn::TmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const unsigned long int &srvcTime, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
+:LtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay), _srvcTime{srvcTime}
+{
+    if(_srvcTime < _minSrvcTime) //Best practice would impose failing the constructor (throwing an exception or building a "zombie" object)
+        _srvcTime = _minSrvcTime;    //this tolerant approach taken for developers benefit, but object will be no faithful to the instantiation parameters
+
+}
+
+bool TmLtchMPBttn::begin(const unsigned long int &pollDelayMs){
+   bool result {false};
+   BaseType_t tmrModResult {pdFAIL};
+
+   if (pollDelayMs > 0){
+		if (!_mpbPollTmrHndl){
+			_mpbPollTmrHndl = xTimerCreate(
+			_mpbPollTmrName,  //Timer name
+			pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
+			pdTRUE,     //Auto-reload true
+			this,       //TimerID: data passed to the callback function to work
+			TmLtchMPBttn::mpbPollCallback
+		);
+      if (_mpbPollTmrHndl != NULL){
+      	tmrModResult = xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
+      	if (tmrModResult == pdPASS)
+            result = true;
+      	}
+		}
+   }
+
+   return result;
+}
+
+const unsigned long int TmLtchMPBttn::getSrvcTime() const{
+
+	return _srvcTime;
+}
+
+bool TmLtchMPBttn::setSrvcTime(const unsigned long int &newSrvcTime){
+	bool result {false};
+
+   if (_srvcTime != newSrvcTime)
+		if (newSrvcTime > _minSrvcTime){  //The minimum activation time is _minActTime millisecs
+			_srvcTime = newSrvcTime;
+			result = true;
+		}
+
+   return result;
+}
+
+bool TmLtchMPBttn::setTmerRstbl(const bool &isRstbl){
+    if(_tmRstbl != isRstbl)
+        _tmRstbl = isRstbl;
+
+    return _tmRstbl;
+}
+
+bool TmLtchMPBttn::updIsOn() {
+    if(_validPressPend){
+        if (!_isOn){
+            _srvcTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;
+            _isOn = true;
+            _outputsChange = true;
+        }
+        else{
+            if (_tmRstbl){
+                _srvcTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;
+            }
+        }
+        _validPressPend = false;
+    }
+    else if(_unlatchPending){
+        if (_isOn){
+            _isOn = false;
+            _unlatchPending = false;
+            _outputsChange = true;
+        }
+    }
+
+    return _isOn;
+}
+
+bool TmLtchMPBttn::updIsPressed(){
+
+    return DbncdMPBttn::updIsPressed();
+}
+
+bool TmLtchMPBttn::updValidPressPend(){
+
+    return LtchMPBttn::updValidPressPend();
+}
+
+bool TmLtchMPBttn::updUnlatchPend(){
+    if(_isOn){
+        if (((xTaskGetTickCount() / portTICK_RATE_MS) - _srvcTimerStrt) >= _srvcTime){
+            _unlatchPending = true;
+            _validPressPend = false;
+        }
+    }
+
+    return _unlatchPending;
+}
+
+void TmLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
+    TmLtchMPBttn* mpbObj = (TmLtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
+    mpbObj->updIsPressed();
+    mpbObj->updValidPressPend();
+    mpbObj->updUnlatchPend();
+    mpbObj->updIsOn();
+    if (mpbObj->getOutputsChange()){
+        if(mpbObj->getTaskToNotify() != NULL)
+            xTaskNotifyGive(mpbObj->getTaskToNotify());
+        mpbObj->setOutputsChange(false);
+    }
+
+    return;
+}
+
+//=========================================================================> Class methods delimiter
+HntdTmLtchMPBttn::HntdTmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const unsigned long int &srvcTime, const unsigned int &wrnngPrctg, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
+:TmLtchMPBttn(mpbttnPort, mpbttnPin, srvcTime, pulledUp, typeNO, dbncTimeOrigSett, strtDelay), _wrnngPrctg{wrnngPrctg}
+{
+	_wrnngMs = (_srvcTime * _wrnngPrctg) / 100;
+}
+
+bool HntdTmLtchMPBttn::begin(const unsigned long int &pollDelayMs){
+   bool result {false};
+   BaseType_t tmrModResult {pdFAIL};
+
+   if (pollDelayMs > 0){
+		if (!_mpbPollTmrHndl){
+			_mpbPollTmrHndl = xTimerCreate(
+				_mpbPollTmrName,  //Timer name
+				pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
+				pdTRUE,     //Auto-reload true
+				this,       //TimerID: data passed to the callback function to work
+				HntdTmLtchMPBttn::mpbPollCallback
+			);
+			if (_mpbPollTmrHndl != NULL){
+				tmrModResult = xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
+				if (tmrModResult == pdPASS)
+					result = true;
+			}
+		}
+   }
+
+   return result;
+}
+
+const bool HntdTmLtchMPBttn::getPilotOn() const{
+
+    return _pilotOn;
+}
+
+const bool HntdTmLtchMPBttn::getWrnngOn() const{
+
+    return _wrnngOn;
+}
+
+bool HntdTmLtchMPBttn::setSrvcTime(const unsigned long int &newSrvcTime){
+    bool result {true};
+
+    if (newSrvcTime != _srvcTime){
+        result = TmLtchMPBttn::setSrvcTime(newSrvcTime);
+        if (result)
+            _wrnngMs = (_srvcTime * _wrnngPrctg) / 100;  //If the _srvcTime was changed, the _wrnngMs must be updated as it's a percentage of the first
+    }
+
+    return result;
+}
+
+bool HntdTmLtchMPBttn::setKeepPilot(const bool &newKeepPilot){
+    if(_keepPilot != newKeepPilot)
+        _keepPilot = newKeepPilot;
+
+    return _keepPilot;
+}
+
+bool HntdTmLtchMPBttn::updIsOn() {
+
+    return TmLtchMPBttn::updIsOn() ;
+}
+
+bool HntdTmLtchMPBttn::updIsPressed(){
+
+    return DbncdMPBttn::updIsPressed();
+}
+
+bool HntdTmLtchMPBttn::updPilotOn(){
+	if (_keepPilot){
+		if(!_isOn && !_pilotOn){
+			_pilotOn = true;
+			_outputsChange = true;
+		}
+		else if(_isOn && _pilotOn){
+			_pilotOn = false;
+			_outputsChange = true;
+		}
+	}
+	else{
+		if(_pilotOn){
+			_pilotOn = false;
+			_outputsChange = true;
+		}
+	}
+
+	return _pilotOn;
+}
+
+bool HntdTmLtchMPBttn::updUnlatchPend(){
+
+	return TmLtchMPBttn::updUnlatchPend();
+}
+
+bool HntdTmLtchMPBttn::updValidPressPend(){
+
+	return LtchMPBttn::updValidPressPend();
+}
+
+bool HntdTmLtchMPBttn::updWrnngOn(){
+	if(_wrnngPrctg > 0){
+		if (_isOn){
+			if (((xTaskGetTickCount() / portTICK_RATE_MS) - _srvcTimerStrt) >= (_srvcTime - _wrnngMs)){
+				if(_wrnngOn == false){
+					_wrnngOn = true;
+					_outputsChange = true;
+				}
+			}
+			else if(_wrnngOn == true){
+				_wrnngOn = false;
+				_outputsChange = true;
+			}
+		}
+		else if(_wrnngOn == true){
+			_wrnngOn = false;
+			_outputsChange = true;
+		}
+	}
+
+	return _wrnngOn;
+}
+
+void HntdTmLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
+	HntdTmLtchMPBttn* mpbObj = (HntdTmLtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
+	mpbObj->updIsPressed();
+	mpbObj->updValidPressPend();
+	mpbObj->updUnlatchPend();
+	mpbObj->updIsOn();
+	mpbObj->updWrnngOn();
+	mpbObj->updPilotOn();
+	if (mpbObj->getOutputsChange()){
+		if(mpbObj->getTaskToNotify() != NULL)
+			xTaskNotifyGive(mpbObj->getTaskToNotify());
+		mpbObj->setOutputsChange(false);
+	}
+
+	return;
+}
+
+//=========================================================================> Class methods delimiter
+
+XtrnUnltchMPBttn::XtrnUnltchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, GPIO_TypeDef* unltchPort, const uint16_t &unltchPin,
+        const bool &pulledUp,  const bool &typeNO,  const unsigned long int &dbncTimeOrigSett,  const unsigned long int &strtDelay,
+        const bool &upulledUp, const bool &utypeNO, const unsigned long int &udbncTimeOrigSett, const unsigned long int &ustrtDelay)
+:LtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
+{
+   _unLtchBttn = new DbncdDlydMPBttn(unltchPort, unltchPin, upulledUp, utypeNO, udbncTimeOrigSett, ustrtDelay);
+
+}
+
+XtrnUnltchMPBttn::XtrnUnltchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin,  DbncdDlydMPBttn* unLtchBttn,
+        const bool &pulledUp,  const bool &typeNO,  const unsigned long int &dbncTimeOrigSett,  const unsigned long int &strtDelay)
+:LtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay), _unLtchBttn{unLtchBttn}
+{
+
+}
+XtrnUnltchMPBttn::XtrnUnltchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin,
+        const bool &pulledUp,  const bool &typeNO,  const unsigned long int &dbncTimeOrigSett,  const unsigned long int &strtDelay)
+:LtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
+{
+
+}
+
+bool XtrnUnltchMPBttn::unlatch(){
+    if(_isOn){
+        _unlatchPending = false;
+        _validPressPend = false;
+        _isOn = false;
+        _outputsChange = true;
+    }
+
+   return _isOn;
+}
+
+bool XtrnUnltchMPBttn::begin(const unsigned long int &pollDelayMs){
+   bool result {false};
+   BaseType_t tmrModResult {pdFAIL};
+
+   if (pollDelayMs > 0){
+		if (!_mpbPollTmrHndl){
+			_mpbPollTmrHndl = xTimerCreate(
+				_mpbPollTmrName,  //Timer name
+				pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
+				pdTRUE,     //Auto-reload true
+				this,       //TimerID: data passed to the callback function to work
+				XtrnUnltchMPBttn::mpbPollCallback
+			);
+		}
+		if (_mpbPollTmrHndl != NULL){
+			tmrModResult = xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
+			if (tmrModResult == pdPASS)
+				result = _unLtchBttn->begin();
+		}
+   }
+
+   return result;
+}
+
+bool XtrnUnltchMPBttn::updIsOn(){
+   if (_unlatchPending){
+      if (_isOn){
+         _isOn = false;
+         _outputsChange = true;
+      }
+      _unlatchPending = false;
+      _validPressPend = false;
+   }
+   else if (_validPressPend){
+      if (!_isOn){
+         _isOn = true;
+         _outputsChange = true;
+      }
+      _validPressPend = false;
+      _unlatchPending = false;
+   }
+
+    return _isOn;
+}
+
+bool XtrnUnltchMPBttn::updUnlatchPend(){
+	bool result{false};
+
+	if(_isOn){
+		if (_unLtchBttn->getIsOn()){
+			setUnlatchPend();
+			result = true;
+		}
+	}
+
+	return result;
+}
+
+void XtrnUnltchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
+	XtrnUnltchMPBttn* mpbObj = (XtrnUnltchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
+	mpbObj->updIsPressed();
+	mpbObj->updValidPressPend();
+	mpbObj->updUnlatchPend();
+	mpbObj->updIsOn();
+	if (mpbObj->getOutputsChange()){
+		if(mpbObj->getTaskToNotify() != NULL)
+			xTaskNotifyGive(mpbObj->getTaskToNotify());
+		mpbObj->setOutputsChange(false);
+	}
+
+    return;
+}
+
+//=========================================================================> Class methods delimiter
+VdblMPBttn::VdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay, const bool &isOnDisabled)
+:DbncdDlydMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay), _isOnDisabled{isOnDisabled}
+{
+}
+
+VdblMPBttn::~VdblMPBttn(){
+}
+
+void VdblMPBttn::clrStatus(){
+    /*To Resume operation after a pause() without risking generating false "Valid presses" and "On" situations,
+    several attributes must be resetted to "Start" values
+    */
+    DbncdMPBttn::clrStatus();
+    setIsVoided(false);
+    _outputsChange = true;
+
+    return;
+}
+
+const bool VdblMPBttn::getIsEnabled() const{
+
+    return _isEnabled;
+}
+
+const bool VdblMPBttn::getIsOnDisabled() const{
+
+    return _isOnDisabled;
+}
+
+const bool VdblMPBttn::getIsVoided() const{
+
+    return _isVoided;
+}
+
+bool VdblMPBttn::setIsEnabled(const bool &newEnabledValue){
+    if(_isEnabled != newEnabledValue){
+        if (!newEnabledValue){  //Changed to !Enabled (i.e. Disabled)
+            pause();    //It's pausing the timer that keeps the inputs updated and calculates and updates the output flags... Flags must be updated for the disabled condition
+            clrStatus();
+            if(_isOnDisabled){  //Set the _isOn flag to expected value
+                if(_isOn == false)
+                    _isOn = true;
+            }
+            else{
+                if (_isOn == true)
+                    _isOn = false;
+            }
+            if(getTaskToNotify() != nullptr)
+                xTaskNotifyGive(getTaskToNotify());
+            setOutputsChange(false);
+        }
+        else{
+            clrStatus();
+            resume();   //It's resuming the timer that keeps the inputs updated and calculates and updates the output flags... before this some conditions of timers and flags had to be insured
+        }
+        _isEnabled = newEnabledValue;
+        _outputsChange = true;
+    }
+
+    return _isEnabled;
+}
+
+bool VdblMPBttn::setIsOnDisabled(const bool &newIsOnDisabled){
+    if(_isOnDisabled != newIsOnDisabled){
+        _isOnDisabled = newIsOnDisabled;
+        if(!_isEnabled){
+            if(_isOn != _isOnDisabled){
+                _isOn = _isOnDisabled;
+                _outputsChange = true;
+            }
+        }
+    }
+
+    return _isOnDisabled;
+}
+
+bool VdblMPBttn::setIsVoided(const bool &newVoidValue){
+    if(_isVoided != newVoidValue){
+        _isVoided = newVoidValue;
+        _outputsChange = true;
+    }
+
+    return _isVoided;
+}
+
+bool VdblMPBttn::enable(){
+
+    return setIsEnabled(true);
+}
+
+bool VdblMPBttn::disable(){
+
+    return setIsEnabled(false);
+}
+
+//=========================================================================> Class methods delimiter
+
+TmVdblMPBttn::TmVdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, unsigned long int voidTime, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay, const bool &isOnDisabled)
+:VdblMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay, isOnDisabled), _voidTime{voidTime}
+{
+}
+
+TmVdblMPBttn::~TmVdblMPBttn(){
+}
+
+bool TmVdblMPBttn::begin(const unsigned long int &pollDelayMs){
+    if (!_mpbPollTmrHndl){
+        _mpbPollTmrHndl = xTimerCreate(
+            _mpbPollTmrName,  //Timer name
+            pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
+            pdTRUE,     //Autoreload true
+            this,       //TimerID: data passed to the callback funtion to work
+            TmVdblMPBttn::mpbPollCallback);
+        assert (_mpbPollTmrHndl);
+    }
+    xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
+
+    return _mpbPollTmrHndl != nullptr;
+}
+
+void TmVdblMPBttn::clrStatus(){
+    /*To Resume operation after a pause() without risking generating false "Valid presses" and "On" situations,
+    several attributes must be resetted to "Start" values
+    */
+
+    VdblMPBttn::clrStatus();
+    _voidTmrStrt = 0;
+
+    _outputsChange = true;
+    return;
+}
+
+const unsigned long int TmVdblMPBttn::getVoidTime() const{
+
+    return _voidTime;
+}
+
+bool TmVdblMPBttn::setIsEnabled(const bool &newEnabledValue){
+    if(_isEnabled != newEnabledValue){
+        VdblMPBttn::setIsEnabled(newEnabledValue);
+
+        if (newEnabledValue){  //Changed to Enabled
+            clrStatus();
+            setIsVoided(true);  //For safety reasons if the mpb was disabled and re-enabled, it is set as voided, so if it was pressed when is was re-enabled there's no risk
+                                // of activating somethin unexpectedly. It'll have to be released and then pressed back to intentionally set it to ON.
+            resume();   //It's resuming the timer that keeps the inputs updated and calculates and updates the output flags... before this some conditions of timers and flags had to be insured
+        }
+        _isEnabled = newEnabledValue;
+        _outputsChange = true;
+    }
+
+    return _isEnabled;
+}
+
+bool TmVdblMPBttn::setIsVoided(const bool &newVoidValue){
+    if(newVoidValue){
+        _voidTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS) - (_voidTime + 1);
+    }
+    if(_isVoided != newVoidValue){
+        _outputsChange = true;
+        _isVoided = newVoidValue;
+    }
+
+    return _isVoided;
+}
+
+bool TmVdblMPBttn::setVoidTime(const unsigned long int &newVoidTime){
+    bool result{false};
+
+    if(newVoidTime > 0){
+        _voidTime = newVoidTime;
+        result = true;
+    }
+
+    return result;
+}
+
+bool TmVdblMPBttn::updIsOn() {
+    if (!_isVoided){
+        if (_validPressPend){
+            if(_isOn == false){
+                _isOn = true;
+                _outputsChange = true;
+            }
+        }
+        else{
+            if(_isOn == true){
+                _isOn = false;
+                _outputsChange = true;
+            }
+        }
+    }
+    else{
+        if (_isOn == true){
+            _isOn = false;
+            _outputsChange = true;
+        }
+    }
+
+    return _isOn;
+}
+
+bool TmVdblMPBttn::updIsPressed(){
+
+    return DbncdDlydMPBttn::updIsPressed();
+}
+
+bool TmVdblMPBttn::updIsVoided(){
+    //if it's pressed
+        //if the pressing timer is running
+            // if the pressing timer is greater than the debounceTime + strtDelay + voidTime
+                //Set isVoided to true
+                //Set isOn to false (the updateIsOn() will have to check _isVoided to prevent reverting back on)
+    bool result {false};
+
+    if(_isPressed){
+        if(_voidTmrStrt == 0){    //It was not previously pressed
+            //Started to be pressed
+            _voidTmrStrt = xTaskGetTickCount() / portTICK_RATE_MS;
+        }
+        else{
+            if (((xTaskGetTickCount() / portTICK_RATE_MS) - _voidTmrStrt) >= (_voidTime)){ // + _dbncTimeTempSett + _strtDelay
+                result = true;
+            }
+        }
+    }
+    else{
+        _voidTmrStrt = 0;
+    }
+    if(_isVoided != result)
+        _outputsChange = true;
+
+    _isVoided = result;
+
+    return _isVoided;
+}
+
+bool TmVdblMPBttn::updValidPressPend(){
+
+    return DbncdDlydMPBttn::updValidPressPend();
+}
+
+void TmVdblMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCb){
+    TmVdblMPBttn *mpbObj = (TmVdblMPBttn*)pvTimerGetTimerID(mpbTmrCb);
+    mpbObj->updIsPressed();
+    mpbObj->updValidPressPend();
+    mpbObj->updIsVoided();
+    mpbObj->updIsOn();
+    if (mpbObj->getOutputsChange()){
+        if(mpbObj->getTaskToNotify() != nullptr)
+            xTaskNotifyGive(mpbObj->getTaskToNotify());
+        mpbObj->setOutputsChange(false);
+    }
+
+    return;
+}
