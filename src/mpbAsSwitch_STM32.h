@@ -1,13 +1,13 @@
 /*
- * @file		: mpbToSwitchSTM32.h
+ * @file		: mpbAsSwitch_STM32.h
  * @brief	: Header file for
  *
  * @author	: Gabriel D. Goldman
  * @date		: Created on: Nov 6, 2023
  */
 
-#ifndef MPBTOSWITCHSTM32_H_
-#define MPBTOSWITCHSTM32_H_
+#ifndef MPBASSWITCH_STM32_H_
+#define MPBASSWITCH_STM32_H_
 
 #include <stdint.h>
 #include <string.h>
@@ -26,12 +26,13 @@
 #include "event_groups.h"
 //===========================>> Previous lines used to avoid CMSIS wrappers
 
-#define _HwMinDbncTime 20   //Documented minimum wait time for a MPB signal to stabilize
-#define _StdPollDelay 10
+#define _HwMinDbncTime 20  //Documented minimum wait time for a MPB signal to stabilize
+#define _StdPollDelay 10	//Reasonable time between polls for MPBs switches
+#define _MinSrvcTime 100		//Minimum time seteable as service time for Time Latched MPBs, avoid stability issues, keep use reasonable
+#define _InvalidPinNum 0xFFFF
 
 class DbncdMPBttn {
 	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
-
 protected:
 	GPIO_TypeDef* _mpbttnPort{};
 	uint16_t _mpbttnPin{};
@@ -50,7 +51,6 @@ protected:
 	volatile bool _outputsChange {false};
 	TaskHandle_t _taskToNotifyHndl {NULL};	// Std-FreeRTOS
 	const bool getIsPressed() const;
-
 public:
 	DbncdMPBttn();
 	DbncdMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
@@ -64,6 +64,7 @@ public:
 	bool resetDbncTime();
 	bool setDbncTime(const unsigned long int &newDbncTime);
 	bool setOutputsChange(bool newOutputChange);
+	bool setTaskToNotify(TaskHandle_t newHandle);
 
 	bool updIsOn();
 	bool updIsPressed();
@@ -73,18 +74,14 @@ public:
 	bool pause();
 	bool resume();
 	bool end();
-
-	bool setTaskToNotify(TaskHandle_t newHandle);
 };
 
 //==========================================================>>
 
 class DbncdDlydMPBttn: public DbncdMPBttn{
     static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
-
 protected:
     unsigned long int _strtDelay {0};
-
 public:
     DbncdDlydMPBttn();
     DbncdDlydMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
@@ -92,8 +89,6 @@ public:
     bool init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
     bool setStrtDelay(const unsigned long int &newStrtDelay);
 
-    bool updIsOn();
-    bool updIsPressed();
     bool updValidPressPend();
 
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
@@ -103,11 +98,10 @@ public:
 
 class LtchMPBttn: public DbncdDlydMPBttn{
     static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
-
 protected:
     bool _releasePending{false};
     bool _unlatchPending{false};
-
+    bool unlatch();
 public:
     LtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
     const bool getUnlatchPend() const;
@@ -115,7 +109,6 @@ public:
     bool updUnlatchPend();
 
     bool updIsOn();
-    bool updIsPressed();
     bool updValidPressPend();
 
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
@@ -125,22 +118,17 @@ public:
 
 class TmLtchMPBttn: public LtchMPBttn{
     static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
-
 protected:
     bool _tmRstbl {true};
-    const unsigned long int _minSrvcTime{100};
     unsigned long int _srvcTime {};
     unsigned long int _srvcTimerStrt{0};
-
 public:
     TmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const unsigned long int &srvcTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
     const unsigned long int getSrvcTime() const;
     bool setSrvcTime(const unsigned long int &newSrvcTime);
-    bool setTmerRstbl(const bool &isRstbl);
+    bool setTmerRstbl(const bool &newIsRstbl);
 
     bool updIsOn();
-    bool updIsPressed();
-    bool updValidPressPend();
     bool updUnlatchPend();
 
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
@@ -150,27 +138,21 @@ public:
 
 class HntdTmLtchMPBttn: public TmLtchMPBttn{
     static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
-
 protected:
     bool _wrnngOn {false};
     bool _keepPilot{false};
     bool _pilotOn{false};
     unsigned int _wrnngPrctg {0};
     unsigned long int _wrnngMs{0};
-
 public:
     HntdTmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const unsigned long int &actTime, const unsigned int &wrnngPrctg = 0, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
     const bool getPilotOn() const;
     const bool getWrnngOn() const;
     bool setSrvcTime(const unsigned long int &newActTime);
     bool setKeepPilot(const bool &newKeepPilot);
+    bool setWrnngPrctg (const unsigned int &newWrnngPrctg);
     bool updPilotOn();
     bool updWrnngOn();
-
-    bool updIsOn();
-    bool updIsPressed();
-    bool updValidPressPend();
-    bool updUnlatchPend();
 
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
@@ -179,23 +161,18 @@ public:
 
 class XtrnUnltchMPBttn: public LtchMPBttn{
     static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
-
 protected:
     bool _unltchPulledUp{};
     bool _unltchTypeNO{};
     DbncdDlydMPBttn* _unLtchBttn {nullptr};
-
 public:
-    XtrnUnltchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, GPIO_TypeDef* unltchPort, const uint16_t &unltchPin,
-        const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0,
-        const bool &upulledUp = true, const bool &utypeNO = true, const unsigned long int &udbncTimeOrigSett = 0, const unsigned long int &ustrtDelay = 0);
     XtrnUnltchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin,  DbncdDlydMPBttn* unLtchBttn,
         const bool &pulledUp = true,  const bool &typeNO = true,  const unsigned long int &dbncTimeOrigSett = 0,  const unsigned long int &strtDelay = 0);
     XtrnUnltchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin,
         const bool &pulledUp = true,  const bool &typeNO = true,  const unsigned long int &dbncTimeOrigSett = 0,  const unsigned long int &strtDelay = 0);
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
-    bool unlatch();
     bool updIsOn();
+    bool unlatch();
     bool updUnlatchPend();
 };
 
@@ -203,12 +180,10 @@ public:
 
 class VdblMPBttn: public DbncdDlydMPBttn{
     static void mpbPollCallback(TimerHandle_t mpbTmrCb);
-
 protected:
     bool _isEnabled{true};
     bool _isOnDisabled{false};
     bool _isVoided{false};
-
 public:
     VdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
     virtual ~VdblMPBttn();
@@ -228,11 +203,9 @@ public:
 
 class TmVdblMPBttn: public VdblMPBttn{
     static void mpbPollCallback(TimerHandle_t mpbTmrCb);
-
 protected:
     unsigned long int _voidTime;
     unsigned long int _voidTmrStrt{0};
-
 public:
     TmVdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, unsigned long int voidTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
     virtual ~TmVdblMPBttn();
@@ -249,4 +222,4 @@ public:
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 
-#endif /* MPBTOSWITCHSTM32_H_ */
+#endif /* MPBASSWITCH_STM32_H_ */
