@@ -548,7 +548,7 @@ bool LtchMPBttn::begin(const unsigned long int &pollDelayMs){
 				pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
 				pdTRUE,     //Auto-reload true
 				this,       //TimerID: data passed to the callback function to work
-				LtchMPBttn::mpbPollCallback
+				mpbPollCallback
 			);
          if (_mpbPollTmrHndl != NULL){
             tmrModResult = xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
@@ -680,7 +680,7 @@ bool TmLtchMPBttn::begin(const unsigned long int &pollDelayMs){
 				pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
 				pdTRUE,     //Auto-reload true
 				this,       //TimerID: data passed to the callback function to work
-				TmLtchMPBttn::mpbPollCallback
+				mpbPollCallback
 			);
 			if (_mpbPollTmrHndl != NULL){
 				tmrModResult = xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
@@ -788,7 +788,7 @@ bool HntdTmLtchMPBttn::begin(const unsigned long int &pollDelayMs){
 				pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
 				pdTRUE,     //Auto-reload true
 				this,       //TimerID: data passed to the callback function to work
-				HntdTmLtchMPBttn::mpbPollCallback
+				mpbPollCallback
 			);
 			if (_mpbPollTmrHndl != NULL){
 				tmrModResult = xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
@@ -943,7 +943,7 @@ bool XtrnUnltchMPBttn::begin(const unsigned long int &pollDelayMs){
 				pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
 				pdTRUE,     //Auto-reload true
 				this,       //TimerID: data passed to the callback function to work
-				XtrnUnltchMPBttn::mpbPollCallback
+				mpbPollCallback
 			);
 		}
 		if (_mpbPollTmrHndl != NULL){
@@ -1114,14 +1114,14 @@ bool VdblMPBttn::disable(){
 }
 
 //=========================================================================> Class methods delimiter
-//Hasta aquí llegó Gaby
 
 TmVdblMPBttn::TmVdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, unsigned long int voidTime, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay, const bool &isOnDisabled)
 :VdblMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay, isOnDisabled), _voidTime{voidTime}
 {
 }
 
-TmVdblMPBttn::~TmVdblMPBttn(){
+TmVdblMPBttn::~TmVdblMPBttn()
+{
 }
 
 bool TmVdblMPBttn::begin(const unsigned long int &pollDelayMs){
@@ -1134,7 +1134,7 @@ bool TmVdblMPBttn::begin(const unsigned long int &pollDelayMs){
 			pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
 			pdTRUE,     //Autoreload true
 			this,       //TimerID: data passed to the callback funtion to work
-			TmVdblMPBttn::mpbPollCallback
+			mpbPollCallback
 		);
 	}
    if (_mpbPollTmrHndl != NULL){
@@ -1164,27 +1164,26 @@ const unsigned long int TmVdblMPBttn::getVoidTime() const{
 }
 
 bool TmVdblMPBttn::setIsEnabled(const bool &newEnabledValue){
-    if(_isEnabled != newEnabledValue){
-        VdblMPBttn::setIsEnabled(newEnabledValue);
+	if(_isEnabled != newEnabledValue){
+		VdblMPBttn::setIsEnabled(newEnabledValue);
+		if (newEnabledValue){  //Changed to Enabled
+			clrStatus();
+			setIsVoided(true);  	//For safety reasons if the mpb was disabled and re-enabled, it is set as voided, so if it was pressed when is was re-enabled there's no risk
+									// of activating something unexpectedly. It'll have to be released and then pressed back to intentionally set it to ON.
+			resume();   //It's resuming the timer that keeps the inputs updated and calculates and updates the output flags... before this some conditions of timers and flags had to be insured
+		}
+		_isEnabled = newEnabledValue;
+		_outputsChange = true;
+	}
 
-        if (newEnabledValue){  //Changed to Enabled
-            clrStatus();
-            setIsVoided(true);  //For safety reasons if the mpb was disabled and re-enabled, it is set as voided, so if it was pressed when is was re-enabled there's no risk
-                                // of activating something unexpectedly. It'll have to be released and then pressed back to intentionally set it to ON.
-            resume();   //It's resuming the timer that keeps the inputs updated and calculates and updates the output flags... before this some conditions of timers and flags had to be insured
-        }
-        _isEnabled = newEnabledValue;
-        _outputsChange = true;
-    }
-
-    return _isEnabled;
+	return _isEnabled;
 }
 
 bool TmVdblMPBttn::setIsVoided(const bool &newVoidValue){
-    if(newVoidValue){
-        _voidTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS) - (_voidTime + 1);
-    }
     if(_isVoided != newVoidValue){
+       if(newVoidValue){
+           _voidTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS) - (_voidTime + 1);
+       }
         _outputsChange = true;
         _isVoided = newVoidValue;
     }
@@ -1195,7 +1194,7 @@ bool TmVdblMPBttn::setIsVoided(const bool &newVoidValue){
 bool TmVdblMPBttn::setVoidTime(const unsigned long int &newVoidTime){
     bool result{false};
 
-    if((newVoidTime != _voidTime) && (newVoidTime > 0)){
+    if((newVoidTime != _voidTime) && (newVoidTime > _MinSrvcTime)){
         _voidTime = newVoidTime;
         result = true;
     }
@@ -1204,28 +1203,28 @@ bool TmVdblMPBttn::setVoidTime(const unsigned long int &newVoidTime){
 }
 
 bool TmVdblMPBttn::updIsOn() {
-    if (!_isVoided){
-        if (_validPressPend){
-            if(_isOn == false){
-                _isOn = true;
-                _outputsChange = true;
-            }
-        }
-        else{
-            if(_isOn == true){
-                _isOn = false;
-                _outputsChange = true;
-            }
-        }
-    }
-    else{
-        if (_isOn == true){
-            _isOn = false;
-            _outputsChange = true;
-        }
-    }
+	if (!_isVoided){
+		if (_validPressPend){
+			if(_isOn == false){
+				_isOn = true;
+				_outputsChange = true;
+			}
+		}
+		else{
+			if(_isOn == true){
+				_isOn = false;
+				_outputsChange = true;
+			}
+		}
+	}
+	else{
+		if (_isOn == true){
+			_isOn = false;
+			_outputsChange = true;
+		}
+	}
 
-    return _isOn;
+	return _isOn;
 }
 
 bool TmVdblMPBttn::updIsPressed(){
@@ -1241,7 +1240,7 @@ bool TmVdblMPBttn::updIsVoided(){
                 //Set isOn to false (the updateIsOn() will have to check _isVoided to prevent reverting back on)
     bool result {false};
 
-    if(_isPressed){
+    if(_validPressPend){
         if(_voidTmrStrt == 0){    //It was not previously pressed
             //Started to be pressed
             _voidTmrStrt = xTaskGetTickCount() / portTICK_RATE_MS;
