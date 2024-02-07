@@ -58,8 +58,8 @@ protected:
 	volatile bool _validReleasePend{false};
 	unsigned long int _dbncRlsTimerStrt{0};
 	unsigned long int _dbncRlsTimeTempSett{0};
-	unsigned long int _dbncTimeTempSett{0};
 	unsigned long int _dbncTimerStrt{0};
+	unsigned long int _dbncTimeTempSett{0};
 	fdaDmpbStts _dmpbFdaState {stOffNotVPP};
 	const unsigned long int _stdMinDbncTime {_HwMinDbncTime};
 	TimerHandle_t _mpbPollTmrHndl {NULL};	// Std-FreeRTOS
@@ -116,21 +116,15 @@ class LtchMPBttn: public DbncdDlydMPBttn{
 	enum fdaLmpbStts {stOffNotVPP, stOffVPP,  stOnNVRP, stOnVRP, stOnNVPP, stOnVPP, stOffNVRP, stOffVRP};
 	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
 protected:
-    bool _validUnlatchPend{false};
-    bool _isLatched{false};	//Probably unneeded
-    bool unlatch();
+	bool _isLatched{false};
+	fdaLmpbStts _lmpbFdaState {stOffNotVPP};
+//	bool _validUnlatchPend{false};
 public:
 	LtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
-	const bool getUnlatchPend() const;
-	bool setUnlatchPend();
+	void clrStatus();
+	const bool getIsLatched() const;
+   bool unlatch();
 	void updFdaState();
-	bool updValidPressesStatus(unsigned long int totXtraDelays = 0);
-
-//	bool updIsOn();
-//	bool updValidPressPend();
-
-	void updFdaState();
-//	bool updValidPressesStatus(unsigned long int totXtraDelays = 0);
 
 	bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
@@ -250,10 +244,10 @@ class SldrLtchMPBttn: public LtchMPBttn{
 	enum fdaSldrStts {stOffNotVPP, stOffVPP,  stOnMPBRlsd, stOnSldrMod, stOnTurnOff};
 protected:
 	bool _autoChngDir{true};
-	uint16_t _curOtptVal{};
 	bool _curSldrDirUp{true};
 	bool _curValMax{false};
 	bool _curValMin{false};
+	uint16_t _otpCurtVal{};
 	unsigned long _otptSldrSpd{1};
 	uint16_t _otptSldrStpSize{0x01};
 	uint16_t _otptValMax{0xFFFF};
@@ -265,7 +259,7 @@ protected:
 public:
    SldrLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
    ~SldrLtchMPBttn();
-	uint16_t getCurOtptVal();
+	uint16_t getOtptCurVal();
    uint16_t getOtptValMax();
 	uint16_t getOtptValMin();
 	uint16_t getOtptSldrStpSize();
