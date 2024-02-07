@@ -13,10 +13,11 @@
 #include <string.h>
 #include <stdio.h>
 
-//===========================>> Next lines included for developing purposes, corresponding headers must be provided in the instantiating file
+//===========================>> Next lines included for developing purposes, corresponding headers must be provided for the production platform/s
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_gpio.h"
-//===========================>> Previous lines included for developing purposes, corresponding headers must be provided in the instantiating file
+//===========================>> Previous lines included for developing purposes, corresponding headers must be provided for the production platform/s
+
 //===========================>> Next lines used to avoid CMSIS wrappers
 #include "FreeRTOS.h"
 #include "task.h"
@@ -26,12 +27,23 @@
 #include "event_groups.h"
 //===========================>> Previous lines used to avoid CMSIS wrappers
 
-#define _HwMinDbncTime 20  //Documented minimum wait time for a MPB signal to stabilize
-#define _StdPollDelay 10	//Reasonable time between polls for MPBs switches
-#define _MinSrvcTime 100		//Minimum time seteable as service time for Time Latched MPBs, avoid stability issues, keep use reasonable
-#define _InvalidPinNum 0xFFFF
+#define _HwMinDbncTime 20  // Documented minimum wait time for a MPB signal to stabilize to consider it pressed or released (in milliseconds)
+#define _StdPollDelay 10	// Reasonable time between polls for MPBs switches (in milliseconds)
+#define _MinSrvcTime 100	// Minimum valid time value for service/active time for Time Latched MPBs to avoid stability issues relating to debouncing, releasing and other timed events
+#define _InvalidPinNum 0xFFFF	// Value to give as "yet to be defined", the "Valid pin number" range and characteristics are development platform and environment dependable
+
+struct gpioPinId{	// Type used to keep development as platform independent as possible,
+	GPIO_TypeDef* portId;
+	uint16_t pinNum;
+};
+
+//struct gpioPinId{	// Type used to keep development as platform independent as possible,
+//	uint8_t pinNum;
+//};
+
 
 class DbncdMPBttn {
+	enum fdaDmpbStts {stOffNotVPP, stOffVPP,  stOn, stOnVRP};
 	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
 protected:
 	GPIO_TypeDef* _mpbttnPort{};
@@ -40,11 +52,15 @@ protected:
 	bool _typeNO{};
 	unsigned long int _dbncTimeOrigSett{};
 
+	volatile bool _isOn{false};
 	volatile bool _isPressed{false};
 	volatile bool _validPressPend{false};
-	volatile bool _isOn{false};
+	volatile bool _validReleasePend{false};
+	unsigned long int _dbncRlsTimerStrt{0};
+	unsigned long int _dbncRlsTimeTempSett{0};
 	unsigned long int _dbncTimeTempSett{0};
 	unsigned long int _dbncTimerStrt{0};
+	fdaDmpbStts _dmpbFdaState {stOffNotVPP};
 	const unsigned long int _stdMinDbncTime {_HwMinDbncTime};
 	TimerHandle_t _mpbPollTmrHndl {NULL};	// Std-FreeRTOS
 	char _mpbPollTmrName [18] {'\0'};
@@ -66,9 +82,9 @@ public:
 	bool setOutputsChange(bool newOutputChange);
 	bool setTaskToNotify(TaskHandle_t newHandle);
 
-	bool updIsOn();
 	bool updIsPressed();
-	bool updValidPressPend();
+	void updFdaState();
+	bool updValidPressesStatus(unsigned long int totXtraDelays = 0);
 
 	bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 	bool pause();
@@ -89,7 +105,7 @@ public:
     bool init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
     bool setStrtDelay(const unsigned long int &newStrtDelay);
 
-    bool updValidPressPend();
+    bool updValidPressesStatus(unsigned long int totXtraDelays = 0);
 
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
@@ -97,21 +113,26 @@ public:
 //==========================================================>>
 
 class LtchMPBttn: public DbncdDlydMPBttn{
-    static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
+	enum fdaLmpbStts {stOffNotVPP, stOffVPP,  stOnNVRP, stOnVRP, stOnNVPP, stOnVPP, stOffNVRP, stOffVRP};
+	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
 protected:
-    bool _releasePending{false};
-    bool _unlatchPending{false};
+    bool _validUnlatchPend{false};
+    bool _isLatched{false};	//Probably unneeded
     bool unlatch();
 public:
-    LtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
-    const bool getUnlatchPend() const;
-    bool setUnlatchPend();
-    bool updUnlatchPend();
+	LtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+	const bool getUnlatchPend() const;
+	bool setUnlatchPend();
+	void updFdaState();
+	bool updValidPressesStatus(unsigned long int totXtraDelays = 0);
 
-    bool updIsOn();
-    bool updValidPressPend();
+//	bool updIsOn();
+//	bool updValidPressPend();
 
-    bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
+	void updFdaState();
+//	bool updValidPressesStatus(unsigned long int totXtraDelays = 0);
+
+	bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 
 //==========================================================>>
@@ -220,6 +241,47 @@ public:
     bool updValidPressPend();
 
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
+};
+
+//==========================================================>>
+
+class SldrLtchMPBttn: public LtchMPBttn{
+	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
+	enum fdaSldrStts {stOffNotVPP, stOffVPP,  stOnMPBRlsd, stOnSldrMod, stOnTurnOff};
+protected:
+	bool _autoChngDir{true};
+	uint16_t _curOtptVal{};
+	bool _curSldrDirUp{true};
+	bool _curValMax{false};
+	bool _curValMin{false};
+	unsigned long _otptSldrSpd{1};
+	uint16_t _otptSldrStpSize{0x01};
+	uint16_t _otptValMax{0xFFFF};
+	uint16_t _otptValMin{0x00};
+	unsigned long _sldrActvDly {1500};
+	fdaSldrStts _sliderFdaState {stOffNotVPP};
+	unsigned long _sldrTmrStrt {0};
+	bool _validSlidePend{false};
+public:
+   SldrLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
+   ~SldrLtchMPBttn();
+	uint16_t getCurOtptVal();
+   uint16_t getOtptValMax();
+	uint16_t getOtptValMin();
+	uint16_t getOtptSldrStpSize();
+	unsigned long getSldrActvDly();
+	unsigned long getOtptSldrSpd();
+	bool getSldrDirUp();
+	bool setOtptValMax(const uint16_t &newVal);
+	bool setOtptValMin(const uint16_t &newVal);
+	bool setOtptSldrStpSize(const uint16_t &newVal);
+	bool setOtptSldrSpd(const uint16_t &newVal);
+	bool setSldrActvDly(const unsigned long &newVal);
+	bool setSldrDirUp(const bool &newVal);
+	void updFdaState();
+	bool updValidPressPend();
+
+   bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 
 #endif /* MPBASSWITCH_STM32_H_ */

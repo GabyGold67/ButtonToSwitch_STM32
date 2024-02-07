@@ -1,0 +1,6 @@
+_ Add a debouncing mechanism for the mpb release, as it is done to convert a _isPressed to a _validPressPending
+	_ if (!_isPressed)
+		start (releaseDebounce)
+		Confirm is still not pressed after releaseDebounce
+			Set _validReleasePending 
+			
