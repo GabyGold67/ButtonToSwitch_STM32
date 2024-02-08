@@ -327,7 +327,7 @@ void tstDefTaskExec(void *pvParameters)
 {
 	bool tmpBttnPrssd{false};
 	//--------------
-	DbncdDlydMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 0, 300);
+	DbncdMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 50);
 	//--------------
 
 	tstBttn.begin(20);

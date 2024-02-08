@@ -450,7 +450,7 @@ bool DbncdMPBttn::updIsPressed(){
     return _isPressed;
 }
 
-bool DbncdMPBttn::updValidPressesStatus(unsigned long int totXtraDelays){
+bool DbncdMPBttn::updValidPressesStatus(){
 	if(_isPressed){
 		if(_dbncRlsTimerStrt != 0)
 			_dbncRlsTimerStrt = 0;
@@ -458,7 +458,7 @@ bool DbncdMPBttn::updValidPressesStatus(unsigned long int totXtraDelays){
 			_dbncTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be pressed
 		}
 		else{
-			if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= (_dbncTimeTempSett + totXtraDelays)){
+			if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= (_dbncTimeTempSett)){
 				_validPressPend = true;
 				_validReleasePend = false;
 			}
@@ -552,15 +552,42 @@ void DbncdDlydMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 }
 
 bool DbncdDlydMPBttn::setStrtDelay(const unsigned long int &newStrtDelay){
-    if(_strtDelay != newStrtDelay)
+    if(_strtDelay != newStrtDelay){
         _strtDelay = newStrtDelay;
+    }
 
     return true;
 }
 
-bool DbncdDlydMPBttn::updValidPressesStatus(unsigned long int totXtraDelays){
+bool DbncdDlydMPBttn::updValidPressesStatus(){
+	if(_isPressed){
+		if(_dbncRlsTimerStrt != 0)
+			_dbncRlsTimerStrt = 0;
+		if(_dbncTimerStrt == 0){    //This is the first detection of the press event
+			_dbncTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be pressed
+		}
+		else{
+			if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= (_dbncTimeTempSett + _strtDelay)){
+				_validPressPend = true;
+				_validReleasePend = false;
+			}
+		}
+	}
+	else{
+		if(_dbncTimerStrt != 0)
+			_dbncTimerStrt = 0;
+		if(_dbncRlsTimerStrt == 0){    //This is the first detection of the release event
+			_dbncRlsTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be UNpressed
+		}
+		else{
+			if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncRlsTimerStrt) >= (_dbncRlsTimeTempSett)){
+				_validPressPend = false;
+				_validReleasePend = true;
+			}
+		}
+	}
 
-	return DbncdMPBttn::updValidPressesStatus(_strtDelay);
+	return (_validPressPend||_validReleasePend);
 }
 
 //=========================================================================> Class methods delimiter
@@ -653,6 +680,7 @@ void LtchMPBttn::updFdaState(){
 
 		case stOnVRP:
 			//In: >>---------------------------------->>
+			_validReleasePend = false;
 			if(!_isLatched)
 				_isLatched = true;
 			//Do: >>---------------------------------->>
@@ -704,6 +732,18 @@ void LtchMPBttn::updFdaState(){
 	return;
 }
 
+void LtchMPBttn::updValidUnlatchStatus(){
+
+	if(_isLatched){
+		if(_validReleasePend){
+			_validReleasePend = false;
+			_validUnlatchPend = true;
+		}
+	}
+}
+
+
+
 void LtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
     LtchMPBttn* mpbObj = (LtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
 
@@ -711,6 +751,7 @@ void LtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
   	mpbObj->updIsPressed();
   	// Flags/Triggers calculation & update
 	mpbObj->updValidPressesStatus();
+	mpbObj->updValidUnlatchStatus();
 	// State machine state update
 	mpbObj->updFdaState();
 
@@ -734,7 +775,7 @@ TmLtchMPBttn::TmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, 
 }
 
 bool TmLtchMPBttn::begin(const unsigned long int &pollDelayMs){
-   bool result {false};
+	bool result {false};
    BaseType_t tmrModResult {pdFAIL};
 
    if (pollDelayMs > 0){
@@ -782,31 +823,6 @@ bool TmLtchMPBttn::setTmerRstbl(const bool &newIsRstbl){
     return _tmRstbl;
 }
 
-//bool TmLtchMPBttn::updIsOn() {
-//	if(_validPressPend){
-//		if (!_isOn){
-//			_srvcTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;
-//			_isOn = true;
-//			_outputsChange = true;
-//		}
-//		else{
-//			if (_tmRstbl){
-//				_srvcTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;
-//			}
-//		}
-//		_validPressPend = false;
-//	}
-//	else if(_unlatchPending){
-//		if (_isOn){
-//			_isOn = false;
-//			_unlatchPending = false;
-//			_outputsChange = true;
-//		}
-//	}
-//
-//	return _isOn;
-//}
-
 bool TmLtchMPBttn::updUnlatchPend(){
 	if(_isOn){
 		if (((xTaskGetTickCount() / portTICK_RATE_MS) - _srvcTimerStrt) >= _srvcTime){
@@ -824,7 +840,7 @@ void TmLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
     mpbObj->updIsPressed();
 //    mpbObj->updValidPressPend();
     mpbObj->updUnlatchPend();
-    mpbObj->updIsOn();
+//    mpbObj->updIsOn();
 
     if (mpbObj->getOutputsChange()){
         if(mpbObj->getTaskToNotify() != NULL)
@@ -959,7 +975,7 @@ void HntdTmLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	mpbObj->updIsPressed();
 //	mpbObj->updValidPressPend();
 	mpbObj->updUnlatchPend();
-	mpbObj->updIsOn();
+//	mpbObj->updIsOn();
 	mpbObj->updWrnngOn();
 	mpbObj->updPilotOn();
 	if (mpbObj->getOutputsChange()){

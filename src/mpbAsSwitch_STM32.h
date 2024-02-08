@@ -82,9 +82,11 @@ public:
 	bool setOutputsChange(bool newOutputChange);
 	bool setTaskToNotify(TaskHandle_t newHandle);
 
+	//bool updIsOn();	===>> Deprecated in favor of 'updFdaState'
 	bool updIsPressed();
 	void updFdaState();
-	bool updValidPressesStatus(unsigned long int totXtraDelays = 0);
+	//bool updValidPressPend();	===>> Deprecated in favor of 'updValidPressesStatus'
+	bool updValidPressesStatus();
 
 	bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 	bool pause();
@@ -105,7 +107,7 @@ public:
     bool init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
     bool setStrtDelay(const unsigned long int &newStrtDelay);
 
-    bool updValidPressesStatus(unsigned long int totXtraDelays = 0);
+    bool updValidPressesStatus();
 
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
@@ -118,13 +120,14 @@ class LtchMPBttn: public DbncdDlydMPBttn{
 protected:
 	bool _isLatched{false};
 	fdaLmpbStts _lmpbFdaState {stOffNotVPP};
-//	bool _validUnlatchPend{false};
+	bool _validUnlatchPend{false};
 public:
 	LtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	void clrStatus();
 	const bool getIsLatched() const;
    bool unlatch();
 	void updFdaState();
+	void updValidUnlatchStatus();
 
 	bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
@@ -143,7 +146,6 @@ public:
     bool setSrvcTime(const unsigned long int &newSrvcTime);
     bool setTmerRstbl(const bool &newIsRstbl);
 
-    bool updIsOn();
     bool updUnlatchPend();
 
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
