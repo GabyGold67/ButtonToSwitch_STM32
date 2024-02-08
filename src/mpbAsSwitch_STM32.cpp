@@ -633,12 +633,25 @@ const bool LtchMPBttn::getIsLatched() const{
 	return _isLatched;
 }
 
+const bool LtchMPBttn::getUnlatchPend() const{
+
+	return _validUnlatchPend;
+}
+
+bool LtchMPBttn::setUnlatchPend(const bool &newVal){
+	if(_validUnlatchPend != newVal)
+		_validUnlatchPend = newVal;
+
+	return _validUnlatchPend;
+}
+
 bool LtchMPBttn::unlatch(){
 	if(_isLatched){
 		_dbncTimerStrt = 0;
 		_dbncRlsTimerStrt = 0;
 		_validPressPend = false;
 		_validReleasePend = false;
+		_validUnlatchPend = false;
 		_isOn = false;
 		_outputsChange = true;
 		_isLatched = false;
@@ -684,35 +697,35 @@ void LtchMPBttn::updFdaState(){
 			if(!_isLatched)
 				_isLatched = true;
 			//Do: >>---------------------------------->>
-			_lmpbFdaState = stOnNVPP;
+			_lmpbFdaState = stLtchNVUP;
 			//Out: >>---------------------------------->>
 			break;
 
-		case stOnNVPP:	//From this state on different unlatch sources might make sense
+		case stLtchNVUP:	//From this state on different unlatch sources might make sense
 			//In: >>---------------------------------->>
 			//Do: >>---------------------------------->>
-			if(_validPressPend){
-				_lmpbFdaState = stOnVPP;
+			if(_validUnlatchPend){
+				_lmpbFdaState = stLtchdVUP;
 			}
 			//Out: >>---------------------------------->>
 			break;
 
-		case stOnVPP:
+		case stLtchdVUP:
 			//In: >>---------------------------------->>
 			//Do: >>---------------------------------->>
-			_lmpbFdaState = stOffNVRP;
+			_lmpbFdaState = stOffVUP;
 			//Out: >>---------------------------------->>
 			break;
 
-		case stOffNVRP:
+		case stOffVUP:
 			//In: >>---------------------------------->>
 			//Do: >>---------------------------------->>
-			if(_validReleasePend)
-				_lmpbFdaState = stOffVRP;
+			if(!_validUnlatchPend)
+				_lmpbFdaState = stOffNVUP;
 			//Out: >>---------------------------------->>
 			break;
 
-		case stOffVRP:
+		case stOffNVUP:
 			//In: >>---------------------------------->>
 			if(_isOn){
 				_isOn = false;
@@ -733,16 +746,15 @@ void LtchMPBttn::updFdaState(){
 }
 
 void LtchMPBttn::updValidUnlatchStatus(){
-
 	if(_isLatched){
-		if(_validReleasePend){
-			_validReleasePend = false;
+		if(_validPressPend){
 			_validUnlatchPend = true;
+		}
+		if(_validReleasePend){
+			_validUnlatchPend = false;
 		}
 	}
 }
-
-
 
 void LtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
     LtchMPBttn* mpbObj = (LtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);

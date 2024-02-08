@@ -115,7 +115,7 @@ public:
 //==========================================================>>
 
 class LtchMPBttn: public DbncdDlydMPBttn{
-	enum fdaLmpbStts {stOffNotVPP, stOffVPP,  stOnNVRP, stOnVRP, stOnNVPP, stOnVPP, stOffNVRP, stOffVRP};
+	enum fdaLmpbStts {stOffNotVPP, stOffVPP,  stOnNVRP, stOnVRP, stLtchNVUP, stLtchdVUP, stOffVUP, stOffNVUP};
 	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
 protected:
 	bool _isLatched{false};
@@ -125,6 +125,8 @@ public:
 	LtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	void clrStatus();
 	const bool getIsLatched() const;
+	const bool getUnlatchPend() const;
+	bool setUnlatchPend(const bool &newVal);
    bool unlatch();
 	void updFdaState();
 	void updValidUnlatchStatus();
