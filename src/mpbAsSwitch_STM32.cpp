@@ -745,17 +745,6 @@ void LtchMPBttn::updFdaState(){
 	return;
 }
 
-void LtchMPBttn::updValidUnlatchStatus(){
-	if(_isLatched){
-		if(_validPressPend){
-			_validUnlatchPend = true;
-		}
-		if(_validReleasePend){
-			_validUnlatchPend = false;
-		}
-	}
-}
-
 void LtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
     LtchMPBttn* mpbObj = (LtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
 
@@ -774,6 +763,25 @@ void LtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	}
 
 	return;
+}
+
+//=========================================================================> Class methods delimiter
+TgglLtchMPBttn::TgglLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
+:LtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
+{
+}
+
+void TgglLtchMPBttn::updValidUnlatchStatus(){
+	if(_isLatched){
+		if(_validPressPend){
+			_validUnlatchPend = true;
+			_validPressPend = false;
+		}
+		if(_validReleasePend){
+			_validUnlatchPend = false;
+			_validReleasePend = false;
+		}
+	}
 }
 
 //=========================================================================> Class methods delimiter

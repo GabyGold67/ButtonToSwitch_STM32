@@ -32,7 +32,7 @@
 #define _MinSrvcTime 100	// Minimum valid time value for service/active time for Time Latched MPBs to avoid stability issues relating to debouncing, releasing and other timed events
 #define _InvalidPinNum 0xFFFF	// Value to give as "yet to be defined", the "Valid pin number" range and characteristics are development platform and environment dependable
 
-struct gpioPinId{	// Type used to keep development as platform independent as possible,
+struct gpioPinId_t{	// Type used to keep development as platform independent as possible,
 	GPIO_TypeDef* portId;
 	uint16_t pinNum;
 };
@@ -81,11 +81,8 @@ public:
 	bool setDbncTime(const unsigned long int &newDbncTime);
 	bool setOutputsChange(bool newOutputChange);
 	bool setTaskToNotify(TaskHandle_t newHandle);
-
-	//bool updIsOn();	===>> Deprecated in favor of 'updFdaState'
 	bool updIsPressed();
 	void updFdaState();
-	//bool updValidPressPend();	===>> Deprecated in favor of 'updValidPressesStatus'
 	bool updValidPressesStatus();
 
 	bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
@@ -129,9 +126,32 @@ public:
 	bool setUnlatchPend(const bool &newVal);
    bool unlatch();
 	void updFdaState();
-	void updValidUnlatchStatus();
+	virtual void updValidUnlatchStatus() = 0;
+//	void updValidUnlatchStatus();
 
 	bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
+};
+
+//==========================================================>>
+
+class TgglLtchMPBttn: public LtchMPBttn{
+//	enum fdaLmpbStts {stOffNotVPP, stOffVPP,  stOnNVRP, stOnVRP, stLtchNVUP, stLtchdVUP, stOffVUP, stOffNVUP};
+//	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
+//protected:
+//	bool _isLatched{false};
+//	fdaLmpbStts _lmpbFdaState {stOffNotVPP};
+//	bool _validUnlatchPend{false};
+public:
+	TgglLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+//	void clrStatus();
+//	const bool getIsLatched() const;
+//	const bool getUnlatchPend() const;
+//	bool setUnlatchPend(const bool &newVal);
+//   bool unlatch();
+//	void updFdaState();
+	virtual void updValidUnlatchStatus();
+
+//	bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 
 //==========================================================>>
