@@ -1,7 +1,7 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : main.cpp
+  * @file           : DbncdDlydMPBttn.cpp
   * @brief          : Main program body
   ******************************************************************************
   * @attention
@@ -14,15 +14,17 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
+//===========================>> Next lines used to avoid CMSIS wrappers
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
 #include "queue.h"
 #include "semphr.h"
 #include "event_groups.h"
+//===========================>> Previous lines used to avoid CMSIS wrappers
 
 #include "../../mpbAsSwitch_STM32/src/mpbAsSwitch_STM32.h"
-//===========================>> Previous lines used to avoid CMSIS wrappers
 
 /* USER CODE END Includes */
 
@@ -51,13 +53,12 @@ UART_HandleTypeDef huart2;
 //  .stack_size = 128 * 4,
 //  .priority = (osPriority_t) osPriorityNormal,
 //};
+
 /* USER CODE BEGIN PV */
 
 TaskHandle_t tstDefTaskHandle {NULL};
 //TaskHandle_t tstAuxTaskHandle {NULL};
 BaseType_t xReturned;
-
-bool tmpBttnEnabled{false};
 
 /* USER CODE END PV */
 
@@ -67,7 +68,7 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 //void StartDefaultTask(void *argument);
 void tstDefTaskExec(void *pvParameters);
-void tstAuxTaskExec(void *pvParameters);
+//void tstAuxTaskExec(void *pvParameters);
 
 /* USER CODE BEGIN PFP */
 
@@ -325,15 +326,15 @@ static void MX_GPIO_Init(void)
 void tstDefTaskExec(void *pvParameters)
 {
 	bool tmpBttnPrssd{false};
-
-	LtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 0, 250);
+	//--------------
+	DbncdDlydMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 0, 300);
+	//--------------
 
 	tstBttn.begin(20);
 
 	for(;;)
 	{
 	  tmpBttnPrssd = tstBttn.getIsOn();
-
 	  if(tmpBttnPrssd){
 		  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_SET);
 	  }
@@ -342,7 +343,6 @@ void tstDefTaskExec(void *pvParameters)
 	  }
 	}
 }
-
 
 //void tstAuxTaskExec(void *pvParameters)
 //{

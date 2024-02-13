@@ -1,7 +1,7 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : AssortedMpbttn.cpp
+  * @file           : TmLtchdMPBttn.cpp
   * @brief          : Main program body
   ******************************************************************************
   * @attention
@@ -68,7 +68,7 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 //void StartDefaultTask(void *argument);
 void tstDefTaskExec(void *pvParameters);
-void tstAuxTaskExec(void *pvParameters);
+//void tstAuxTaskExec(void *pvParameters);
 
 /* USER CODE BEGIN PFP */
 
@@ -145,13 +145,13 @@ int main(void)
 		  configTIMER_TASK_PRIORITY,	//Set to the same priority level as the software timers
 		  &tstDefTaskHandle);
 
-  xReturned = xTaskCreate(
-		  tstAuxTaskExec, //taskFunction
-		  "TstAuxiliaryTask", //Task function legible name
-		  256, // Stack depth in words
-		  NULL,	//Parameters to pass as arguments to the taskFunction
-		  configTIMER_TASK_PRIORITY,	//Set to the same priority level as the software timers
-		  &tstAuxTaskHandle);
+//  xReturned = xTaskCreate(
+//		  tstAuxTaskExec, //taskFunction
+//		  "TstAuxiliaryTask", //Task function legible name
+//		  256, // Stack depth in words
+//		  NULL,	//Parameters to pass as arguments to the taskFunction
+//		  configTIMER_TASK_PRIORITY,	//Set to the same priority level as the software timers
+//		  &tstAuxTaskHandle);
 
   /* USER CODE END RTOS_THREADS */
 
@@ -326,118 +326,40 @@ static void MX_GPIO_Init(void)
 void tstDefTaskExec(void *pvParameters)
 {
 	bool tmpBttnPrssd{false};
-	//-------------- HntdTmLtchMPBttn test
-//		bool tmpWrnngOn{false};
-//		bool tmpPltOn{false};
-	//-------------- HntdTmLtchMPBttn test
 
-	//-------------- SldrLtchMPBttn Test 01
-	uint16_t tmpSliderValue{0};
-	bool limitReachFlag{false};
-
-
-//	DbncdMPBttn tstBttn(GPIOB, 0b001, true, true, 50);
-//	DbncdMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 50);
-	//--------------
-//	DbncdDlydMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 0, 500);
-	//--------------
-//	LtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 0, 250);
-	//--------------
-//	TmLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, 3000, true, true, 0, 500);
-//	tstBttn.setTmerRstbl(false);
-	//-------------- HntdTmLtchMPBttn test
-//	HntdTmLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, 4000, 33,true, true, 0, 250);
-//	tstBttn.setKeepPilot(true);
-	//-------------- XtrnUnltchMPBttn Test 01
-//	DbncdDlydMPBttn unLtchTstBttnObj(GPIOB, 0b001, true, true, 0, 200);
-//	DbncdDlydMPBttn* unLtchTstBttnPtr {&unLtchTstBttnObj};
-//	XtrnUnltchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, unLtchTstBttnPtr, true, true, 0, 50);
-	//-------------- XtrnUnltchMPBttn Test 02
-//	DbncdDlydMPBttn unLtchTstBttnObj(GPIOB, 0b001, true, true, 0, 200);
-//	XtrnUnltchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 0, 50);
-//	unLtchTstBttnObj.begin(20);
-	//-------------- TmVdblMPBttn Test 01
-//	TmVdblMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, 3000,true, true, 50, 150);
-//	tstBttn.setIsOnDisabled(true);
-	//-------------- SldrLtchMPBttn Test 01
-	SldrLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 50, 150);
-	tstBttn.setSldrActvDly(3000);
-	tstBttn.setSldrDirUp(false);
-
+	TmLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, 3000, true, true, 0, 500);
+	tstBttn.setTmerRstbl(false);
 
 	tstBttn.begin(20);
 
 	for(;;)
 	{
-	  tmpBttnPrssd = tstBttn.getIsOn();
+		tmpBttnPrssd = tstBttn.getIsOn();
 
-	  //-------------- HntdTmLtchMPBttn test
-//	  	  tmpWrnngOn = tstBttn.getWrnngOn();
-//		  tmpPltOn = tstBttn.getPilotOn();
-		//-------------- HntdTmLtchMPBttn test
-
-	  //-------------- TmVdblMPBttn test01
-//	  if(tmpBttnEnabled != tstBttn.getIsEnabled())
-//		  tstBttn.setIsEnabled(tmpBttnEnabled);
-	  //-------------- TmVdblMPBttn test
-
-		//-------------- SldrLtchMPBttn Test 01
-	  if(tmpSliderValue!= tstBttn.getCurOtptVal()){
-		  tmpSliderValue = tstBttn.getCurOtptVal();
-		  if((tmpSliderValue ==  tstBttn.getOtptValMin()) || (tmpSliderValue == tstBttn.getOtptValMax()))
-			  limitReachFlag = true;
-		  else
-			  limitReachFlag = false;
-	  }
-
-	  if(tmpBttnPrssd){
-		  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_SET);
-	  }
-	  else{
-		  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_RESET);
-	  }
-
-
-	  //-------------- HntdTmLtchMPBttn test
-//		  if(tmpWrnngOn){
-//			  HAL_GPIO_WritePin(GPIOC, 0b001, GPIO_PIN_SET);
-//		  }
-//		  else{
-//			  HAL_GPIO_WritePin(GPIOC, 0b001, GPIO_PIN_RESET);
-//		  }
-//
-//		  if(tmpPltOn){
-//			  HAL_GPIO_WritePin(GPIOC, 0b010, GPIO_PIN_SET);
-//		  }
-//		  else{
-//			  HAL_GPIO_WritePin(GPIOC, 0b010, GPIO_PIN_RESET);
-//		  }
-	  //-------------- HntdTmLtchMPBttn test
-
-		//-------------- XtrnUnltchMPBttn Test 02
-//	  if(unLtchTstBttnObj.getIsOn())
-//		  tstBttn.unlatch();
-	  //-------------- XtrnUnltchMPBttn Test 02
-
+		if(tmpBttnPrssd){
+			HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_SET);
+		}
+		else{
+			HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_RESET);
+		}
 	}
 }
 
-
-void tstAuxTaskExec(void *pvParameters)
-{
+//void tstAuxTaskExec(void *pvParameters)
+//{
 //	bool tmpBttnEnabled{false};
 //	bool swapResult{false};
 //	long unsigned swapTime{12000};
 //	long unsigned lastSwap{xTaskGetTickCount() / portTICK_RATE_MS};
 
-	for(;;)
-	{
+//	for(;;)
+//	{
 //		if(((xTaskGetTickCount() / portTICK_RATE_MS) - lastSwap) > swapTime){
 //			lastSwap = (xTaskGetTickCount()/portTICK_RATE_MS);
 //			tmpBttnEnabled = !tmpBttnEnabled;
 //		}
-	}
-}
+//	}
+//}
 
 	/* USER CODE END 4 */
 

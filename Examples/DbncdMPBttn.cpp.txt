@@ -1,7 +1,7 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : DbncdMPBttn_main.cpp
+  * @file           : DbncdMPBttn.cpp
   * @brief          : Main program body
   ******************************************************************************
   * @attention
