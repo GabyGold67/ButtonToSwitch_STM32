@@ -118,8 +118,8 @@ protected:
 	enum fdaLmpbStts {stOffNotVPP, stOffVPP,  stOnNVRP, stOnVRP, stLtchNVUP, stLtchdVUP, stOffVUP, stOffNVURP, stOffVURP};
 	bool _isLatched{false};
 	fdaLmpbStts _mpbFdaState {stOffNotVPP};
-	bool _validUnlatchPend{false};
 	bool _prssRlsCcl{false};
+	bool _validUnlatchPend{false};
 public:
 	LtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	void clrStatus();
@@ -150,7 +150,6 @@ public:
 //==========================================================>>
 
 class TmLtchMPBttn: public LtchMPBttn{
-//	enum fdaTLmpbStts {stOffNotVPP, stOffVPP,  stOnNVRP, stOnVRP, stLtchNVUP, stLtchdVUP, stOffVUP, stOffNVUP};
     static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
 protected:
     fdaLmpbStts _mpbFdaState {stOffNotVPP};
@@ -162,6 +161,7 @@ public:
     const unsigned long int getSrvcTime() const;
     bool setSrvcTime(const unsigned long int &newSrvcTime);
     bool setTmerRstbl(const bool &newIsRstbl);
+    bool updValidPressesStatus();
 
     void updFdaState();
     virtual void updValidUnlatchStatus();
@@ -197,18 +197,16 @@ public:
 class XtrnUnltchMPBttn: public LtchMPBttn{
     static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
 protected:
-    bool _unltchPulledUp{};
-    bool _unltchTypeNO{};
     DbncdDlydMPBttn* _unLtchBttn {nullptr};
 public:
     XtrnUnltchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin,  DbncdDlydMPBttn* unLtchBttn,
         const bool &pulledUp = true,  const bool &typeNO = true,  const unsigned long int &dbncTimeOrigSett = 0,  const unsigned long int &strtDelay = 0);
     XtrnUnltchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin,
         const bool &pulledUp = true,  const bool &typeNO = true,  const unsigned long int &dbncTimeOrigSett = 0,  const unsigned long int &strtDelay = 0);
+
+    virtual void updValidUnlatchStatus();
+
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
-    bool updIsOn();
-    bool unlatch();
-    bool updUnlatchPend();
 };
 
 //==========================================================>>
@@ -273,7 +271,7 @@ protected:
 	uint16_t _otptValMax{0xFFFF};
 	uint16_t _otptValMin{0x00};
 	unsigned long _sldrActvDly {1500};
-	fdaSldrStts _sliderFdaState {stOffNotVPP};
+	fdaSldrStts _sldrFdaState {stOffNotVPP};
 	unsigned long _sldrTmrStrt {0};
 	bool _validSlidePend{false};
 public:

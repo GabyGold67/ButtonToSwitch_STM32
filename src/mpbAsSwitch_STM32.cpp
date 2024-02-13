@@ -665,9 +665,7 @@ bool LtchMPBttn::setUnlatchPend(const bool &newVal){
 
 bool LtchMPBttn::unlatch(){
 	if(_isLatched){
-		_validUnlatchPend = false;
-		_isLatched = false;
-		//xxxFdaState= ----> Value will depend on the subclass of LtchMPBttn
+		_validUnlatchPend = true;
 	}
 
 	return _isLatched;
@@ -863,9 +861,6 @@ void TgglLtchMPBttn::updValidUnlatchStatus(){
 			_validUnlatchPend = true;
 			_validPressPend = false;
 		}
-//		if(_validReleasePend){
-//			_validUnlatchPend = false;
-//		}
 	}
 }
 
@@ -1047,6 +1042,41 @@ void TmLtchMPBttn::updFdaState(){
 	return;
 }
 
+bool TmLtchMPBttn::updValidPressesStatus(){
+	if(_isPressed){
+		if(!_validPressPend){
+			if(_dbncRlsTimerStrt != 0)
+				_dbncRlsTimerStrt = 0;
+			if(_dbncTimerStrt == 0){    //This is the first detection of the press event
+				_dbncTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be pressed
+			}
+			else{
+				if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= (_dbncTimeTempSett + _strtDelay)){
+					_validPressPend = true;
+					_validReleasePend = false;
+					_prssRlsCcl = true;
+				}
+			}
+		}
+	}
+	else{
+		if(!_validReleasePend && _prssRlsCcl){
+			if(_dbncTimerStrt != 0)
+				_dbncTimerStrt = 0;
+			if(_dbncRlsTimerStrt == 0){    //This is the first detection of the release event
+				_dbncRlsTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be UNpressed
+			}
+			else{
+				if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncRlsTimerStrt) >= (_dbncRlsTimeTempSett)){
+					_validReleasePend = true;
+					_prssRlsCcl = false;
+				}
+			}
+		}
+	}
+
+	return (_validPressPend||_validReleasePend);
+}
 void TmLtchMPBttn::updValidUnlatchStatus(){
 	if(_isLatched){
 		if(_validPressPend){
@@ -1125,22 +1155,22 @@ const bool HntdTmLtchMPBttn::getWrnngOn() const{
 }
 
 bool HntdTmLtchMPBttn::setSrvcTime(const unsigned long int &newSrvcTime){
-    bool result {true};
+	bool result {true};
 
-    if (newSrvcTime != _srvcTime){
-        result = TmLtchMPBttn::setSrvcTime(newSrvcTime);
-        if (result)
-            _wrnngMs = (_srvcTime * _wrnngPrctg) / 100;  //If the _srvcTime was changed, the _wrnngMs must be updated as it's a percentage of the first
-    }
+	if (newSrvcTime != _srvcTime){
+		result = TmLtchMPBttn::setSrvcTime(newSrvcTime);
+		if (result)
+			_wrnngMs = (_srvcTime * _wrnngPrctg) / 100;  //If the _srvcTime was changed, the _wrnngMs must be updated as it's a percentage of the first
+	}
 
-    return result;
+	return result;
 }
 
 bool HntdTmLtchMPBttn::setKeepPilot(const bool &newKeepPilot){
-    if(_keepPilot != newKeepPilot)
-        _keepPilot = newKeepPilot;
+	if(_keepPilot != newKeepPilot)
+		_keepPilot = newKeepPilot;
 
-    return _keepPilot;
+	return _keepPilot;
 }
 
 bool HntdTmLtchMPBttn::setWrnngPrctg (const unsigned int &newWrnngPrctg){
@@ -1203,12 +1233,19 @@ bool HntdTmLtchMPBttn::updWrnngOn(){
 
 void HntdTmLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	HntdTmLtchMPBttn* mpbObj = (HntdTmLtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
+
+	// Input/Output signals update
 	mpbObj->updIsPressed();
-//	mpbObj->updValidPressPend();
-//	mpbObj->updUnlatchPend();
-//	mpbObj->updIsOn();
-	mpbObj->updWrnngOn();
+
+	// Flags/Triggers calculation & update
+ 	mpbObj->updValidPressesStatus();
+ 	mpbObj->updValidUnlatchStatus();
+ 	// State machine state update
+ 	mpbObj->updFdaState();
+
+ 	mpbObj->updWrnngOn();
 	mpbObj->updPilotOn();
+
 	if (mpbObj->getOutputsChange()){
 		if(mpbObj->getTaskToNotify() != NULL)
 			xTaskNotifyGive(mpbObj->getTaskToNotify());
@@ -1230,19 +1267,6 @@ XtrnUnltchMPBttn::XtrnUnltchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpb
         const bool &pulledUp,  const bool &typeNO,  const unsigned long int &dbncTimeOrigSett,  const unsigned long int &strtDelay)
 :LtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
 {
-}
-
-bool XtrnUnltchMPBttn::unlatch(){
-	if(_isOn){
-		_dbncTimerStrt = 0;
-		_isPressed = false;  //Not needed as the debounce timer was resetted
-//		_unlatchPending = false;
-		_validPressPend = false;
-		_isOn = false;
-		_outputsChange = true;
-	}
-
-   return _isOn;
 }
 
 bool XtrnUnltchMPBttn::begin(const unsigned long int &pollDelayMs){
@@ -1273,46 +1297,30 @@ bool XtrnUnltchMPBttn::begin(const unsigned long int &pollDelayMs){
    return result;
 }
 
-bool XtrnUnltchMPBttn::updIsOn(){
-//   if (_unlatchPending){
-//      if (_isOn){
-//         _isOn = false;
-//         _outputsChange = true;
-//      }
-//      _unlatchPending = false;
-//      _validPressPend = false;
-//   }
-//   else if (_validPressPend){
-//      if (!_isOn){
-//         _isOn = true;
-//         _outputsChange = true;
-//      }
-//      _validPressPend = false;
-//      _unlatchPending = false;
-//   }
+void XtrnUnltchMPBttn::updValidUnlatchStatus(){
 
-    return _isOn;
-}
-
-bool XtrnUnltchMPBttn::updUnlatchPend(){
-	bool result{false};
-
-	if(_isOn){
-		if (_unLtchBttn->getIsOn()){
-//			setUnlatchPend();
-			result = true;
+	if(_unLtchBttn != nullptr){
+		if(_isLatched){
+			if (_unLtchBttn->getIsOn()){
+				_validUnlatchPend = true;
+			}
 		}
 	}
-
-	return result;
+	return;
 }
 
 void XtrnUnltchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	XtrnUnltchMPBttn* mpbObj = (XtrnUnltchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
+
+	// Input/Output signals update
 	mpbObj->updIsPressed();
-//	mpbObj->updValidPressPend();
-	mpbObj->updUnlatchPend();
-	mpbObj->updIsOn();
+
+	// Flags/Triggers calculation & update
+ 	mpbObj->updValidPressesStatus();
+ 	mpbObj->updValidUnlatchStatus();
+ 	// State machine state update
+ 	mpbObj->updFdaState();
+
 	if (mpbObj->getOutputsChange()){
 		if(mpbObj->getTaskToNotify() != NULL)
 			xTaskNotifyGive(mpbObj->getTaskToNotify());
@@ -1751,31 +1759,37 @@ bool SldrLtchMPBttn::setSldrDirUp(const bool &newVal){
 }
 
 void SldrLtchMPBttn::updFdaState(){
-	switch(_sliderFdaState){
+	switch(_sldrFdaState){
 		case stOffNotVPP:
+			//In: >>---------------------------------->>
+			//Do: >>---------------------------------->>
 			if(_validPressPend || _validSlidePend){
-				_sliderFdaState = stOffVPP;	//Start pressing timer
+				_sldrFdaState = stOffVPP;	//Start pressing timer
 			}
+			//Out: >>---------------------------------->>
 			break;
 
 		case stOffVPP:
-			if((_validPressPend || _validSlidePend) && !_isOn){
+			//In: >>---------------------------------->>
+			//Do: >>---------------------------------->>
+//			if((_validPressPend || _validSlidePend) && !_isOn){
+			if(!_isOn){
 				_isOn = true;
 				_outputsChange = true;
 			}
 			if(_validSlidePend){
 				_sldrTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
-				_sliderFdaState = stOnSldrMod;
+				_sldrFdaState = stOnSldrMod;
 			}
 			else if(_validPressPend && _validReleasePend){
 				_validPressPend = false;
 				_validReleasePend = false;
-				_sliderFdaState = stOnMPBRlsd;
+				_sldrFdaState = stOnMPBRlsd;
 			}
 			else if(_validReleasePend){
 				//Released before ending the debouncing & delaying period, restart
 				_validReleasePend = false;
-				_sliderFdaState = stOffNotVPP;
+				_sldrFdaState = stOffNotVPP;
 			}
 			break;
 
@@ -1800,21 +1814,13 @@ void SldrLtchMPBttn::updFdaState(){
 				uint16_t _otpStpsChng{0};
 				unsigned long _sldrTmrNxtStrt{0};
 				unsigned long _sldrTmrRemains{0};
-				//---
-				//In:
-				//---
+				//In: >>---------------------------------->>
+				//Do: >>---------------------------------->>
 				_sldrTmrNxtStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
 				_otpStpsChng = (_sldrTmrNxtStrt - _sldrTmrStrt) /_otptSldrSpd;
 				_sldrTmrRemains = ((_sldrTmrNxtStrt - _sldrTmrStrt) % _otptSldrSpd) * _otptSldrSpd;
 				_sldrTmrNxtStrt -= _sldrTmrRemains;
 				_sldrTmrStrt = _sldrTmrNxtStrt;	//This ends the time management section of the state, calculating the time
-
-				//---
-				//Do:
-				//---
-				//---
-				//Out:
-				//---
 
 				if(_curSldrDirUp){
 					// The slider is moving up
@@ -1869,26 +1875,26 @@ void SldrLtchMPBttn::updFdaState(){
 				// MPB released, close Slider mode, move on to next state
 				_sldrTmrStrt = 0;
 				_validSlidePend = false;
-				_sliderFdaState = stOnMPBRlsd;
+				_sldrFdaState = stOnMPBRlsd;
 			}
 			break;
 
 		case stOnMPBRlsd:
 			if(_validSlidePend){
 				_sldrTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
-				_sliderFdaState = stOnSldrMod;
+				_sldrFdaState = stOnSldrMod;
 			}
 			else if(_validPressPend && _validReleasePend){
 				_validPressPend = false;
 				_validReleasePend = false;
-				_sliderFdaState = stOnTurnOff;
+				_sldrFdaState = stOnTurnOff;
 			}
 			break;
 
 		case stOnTurnOff:
 			_isOn = false;
 			_outputsChange = true;
-			_sliderFdaState = stOffNotVPP;
+			_sldrFdaState = stOffNotVPP;
 			break;
 
 	default:
