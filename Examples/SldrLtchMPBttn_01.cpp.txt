@@ -1,7 +1,7 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : main.cpp
+  * @file           : SldrLtchMPBttn.cpp
   * @brief          : Main program body
   ******************************************************************************
   * @attention
@@ -328,24 +328,21 @@ void tstDefTaskExec(void *pvParameters)
 {
 	bool tmpBttnIsOn;
 
-	//-------------- SldrLtchMPBttn Test 01
 	uint16_t tmpSliderValue{0};
 	bool limitReachFlag{false};
 
 	SldrLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 50, 150);
 	tstBttn.setSldrActvDly(3000);
 	tstBttn.setSldrDirUp(false);
-	//-------------- SldrLtchMPBttn Test 01
 
-	tstBttn.begin(20);
+	tstBttn.begin(5);
 
 	for(;;)
 	{
 	  tmpBttnIsOn = tstBttn.getIsOn();
 
-		//-------------- SldrLtchMPBttn Test 01
-	  if(tmpSliderValue!= tstBttn.getCurOtptVal()){
-		  tmpSliderValue = tstBttn.getCurOtptVal();
+	  if(tmpSliderValue!= tstBttn.getOtptCurVal()){
+		  tmpSliderValue = tstBttn.getOtptCurVal();
 		  if((tmpSliderValue ==  tstBttn.getOtptValMin()) || (tmpSliderValue == tstBttn.getOtptValMax()))
 			  limitReachFlag = true;
 		  else
