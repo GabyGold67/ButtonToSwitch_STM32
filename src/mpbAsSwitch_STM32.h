@@ -65,8 +65,11 @@ protected:
 	TimerHandle_t _mpbPollTmrHndl {NULL};	// Std-FreeRTOS
 	char _mpbPollTmrName [18] {'\0'};
 	volatile bool _outputsChange {false};
+	bool _sttChng {true};
 	TaskHandle_t _taskToNotifyHndl {NULL};	// Std-FreeRTOS
+	void clrSttChng();
 	const bool getIsPressed() const;
+	void setSttChng();
 public:
 	DbncdMPBttn();
 	DbncdMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
@@ -211,6 +214,49 @@ public:
 
 //==========================================================>>
 
+class SldrLtchMPBttn: public LtchMPBttn{
+	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
+protected:
+	enum fdaSldrStts {stOffNotVPP, stOffVPP,  stOnMPBRlsd, stOnSldrMod, stOnTurnOff};
+	bool _autoChngDir{true};
+	bool _curSldrDirUp{true};
+	uint16_t _otptCurVal{};
+	unsigned long _otptSldrSpd{1};
+	uint16_t _otptSldrStpSize{0x01};
+	uint16_t _otptValMax{0xFFFF};
+	uint16_t _otptValMin{0x00};
+	unsigned long _sldrActvDly {1500};
+	fdaSldrStts _sldrFdaState {stOffNotVPP};
+	unsigned long _sldrTmrStrt {0};
+	bool _validSlidePend{false};
+public:
+   SldrLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
+   ~SldrLtchMPBttn();
+	uint16_t getOtptCurVal();
+   bool getOtptCurValIsMax();
+   bool getOtptCurValIsMin();
+	uint16_t getOtptValMax();
+	uint16_t getOtptValMin();
+	uint16_t getOtptSldrStpSize();
+	unsigned long getSldrActvDly();
+	unsigned long getOtptSldrSpd();
+	bool getSldrDirUp();
+	bool setOtptCurVal(const uint16_t &newVal);
+	bool setOtptValMax(const uint16_t &newVal);
+	bool setOtptValMin(const uint16_t &newVal);
+	bool setOtptSldrStpSize(const uint16_t &newVal);
+	bool setOtptSldrSpd(const uint16_t &newVal);
+	bool setSldrActvDly(const unsigned long &newVal);
+	bool setSldrDirUp(const bool &newVal);
+	void updFdaState();
+	bool updValidPressPend();
+   virtual void updValidUnlatchStatus();
+
+   bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
+};
+
+//==========================================================>>
+
 class VdblMPBttn: public DbncdDlydMPBttn{
     static void mpbPollCallback(TimerHandle_t mpbTmrCb);
 protected:
@@ -253,47 +299,6 @@ public:
     bool updValidPressPend();
 
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
-};
-
-//==========================================================>>
-
-class SldrLtchMPBttn: public LtchMPBttn{
-	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
-	enum fdaSldrStts {stOffNotVPP, stOffVPP,  stOnMPBRlsd, stOnSldrMod, stOnTurnOff};
-protected:
-	bool _autoChngDir{true};
-	bool _curSldrDirUp{true};
-	bool _curValMax{false};
-	bool _curValMin{false};
-	uint16_t _otpCurtVal{};
-	unsigned long _otptSldrSpd{1};
-	uint16_t _otptSldrStpSize{0x01};
-	uint16_t _otptValMax{0xFFFF};
-	uint16_t _otptValMin{0x00};
-	unsigned long _sldrActvDly {1500};
-	fdaSldrStts _sldrFdaState {stOffNotVPP};
-	unsigned long _sldrTmrStrt {0};
-	bool _validSlidePend{false};
-public:
-   SldrLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
-   ~SldrLtchMPBttn();
-	uint16_t getOtptCurVal();
-   uint16_t getOtptValMax();
-	uint16_t getOtptValMin();
-	uint16_t getOtptSldrStpSize();
-	unsigned long getSldrActvDly();
-	unsigned long getOtptSldrSpd();
-	bool getSldrDirUp();
-	bool setOtptValMax(const uint16_t &newVal);
-	bool setOtptValMin(const uint16_t &newVal);
-	bool setOtptSldrStpSize(const uint16_t &newVal);
-	bool setOtptSldrSpd(const uint16_t &newVal);
-	bool setSldrActvDly(const unsigned long &newVal);
-	bool setSldrDirUp(const bool &newVal);
-	void updFdaState();
-	bool updValidPressPend();
-
-   bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 
 #endif /* MPBASSWITCH_STM32_H_ */

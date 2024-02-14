@@ -152,6 +152,12 @@ void DbncdMPBttn::clrStatus(){
 	return;
 }
 
+void DbncdMPBttn::clrSttChng(){
+	_sttChng = false;
+
+	return;
+}
+
 bool DbncdMPBttn::end(){
 	bool result {false};
    BaseType_t tmrModResult {pdFAIL};
@@ -354,6 +360,12 @@ bool DbncdMPBttn::setOutputsChange(bool newOutputsChange){
    	_outputsChange = newOutputsChange;
 
    return _outputsChange;
+}
+
+void DbncdMPBttn::setSttChng(){
+	_sttChng = true;
+
+	return;
 }
 
 bool DbncdMPBttn::setTaskToNotify(TaskHandle_t newHandle){
@@ -1332,6 +1344,424 @@ void XtrnUnltchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 
 //=========================================================================> Class methods delimiter
 
+SldrLtchMPBttn::SldrLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long &dbncTimeOrigSett, const unsigned long int &strtDelay, const uint16_t initVal)
+:LtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay), _otptCurVal{initVal}
+{
+	if(_otptCurVal < _otptValMin || _otptCurVal > _otptValMax)
+		_otptCurVal = _otptValMin;	// Original development setup makes this outside limits situation impossible, as the limits are set to the full range of the data type used
+}
+
+SldrLtchMPBttn::~SldrLtchMPBttn()
+{
+}
+
+bool SldrLtchMPBttn::begin(const unsigned long int &pollDelayMs) {
+    bool result {false};
+    BaseType_t tmrModResult {pdFAIL};
+
+    if (pollDelayMs > 0){
+        if (!_mpbPollTmrHndl){
+            _mpbPollTmrHndl = xTimerCreate(
+                _mpbPollTmrName,  //Timer name
+                pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
+                pdTRUE,     //Auto-reload true
+                this,       //TimerID: data passed to the callback function to work
+                mpbPollCallback	  //Callback function
+				);
+            if (_mpbPollTmrHndl != NULL){
+               tmrModResult = xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
+            	if (tmrModResult == pdPASS)
+                  result = true;
+            }
+        }
+    }
+
+    return result;
+}
+
+uint16_t SldrLtchMPBttn::getOtptCurVal(){
+
+	return _otptCurVal;
+}
+
+bool SldrLtchMPBttn::getOtptCurValIsMax(){
+
+	return (_otptCurVal == _otptValMax);
+}
+
+bool SldrLtchMPBttn::getOtptCurValIsMin(){
+
+	return (_otptCurVal == _otptValMin);
+}
+
+unsigned long SldrLtchMPBttn::getOtptSldrSpd(){
+
+	return _otptSldrSpd;
+}
+
+uint16_t SldrLtchMPBttn::getOtptSldrStpSize(){
+
+	return _otptSldrStpSize;
+}
+
+uint16_t SldrLtchMPBttn::getOtptValMax(){
+
+	return _otptValMax;
+}
+
+uint16_t SldrLtchMPBttn::getOtptValMin(){
+
+	return _otptValMin;
+}
+
+unsigned long SldrLtchMPBttn::getSldrActvDly(){
+
+	return _sldrActvDly;
+}
+
+bool SldrLtchMPBttn::getSldrDirUp(){
+
+	return _curSldrDirUp;
+}
+
+bool SldrLtchMPBttn::setOtptCurVal(const uint16_t &newVal){
+	bool result{false};
+
+	if(_otptCurVal != newVal){
+		if(newVal >= _otptValMin && newVal <= _otptValMax){
+			_otptCurVal = newVal;
+			result = true;
+		}
+	}
+
+	return result;
+}
+
+bool SldrLtchMPBttn::setOtptSldrSpd(const uint16_t &newVal){
+	bool result{false};
+
+	if(newVal != _otptSldrSpd){
+		if(newVal > 0){	//The "Change Value Speed" must be a positive number representing the time in milliseconds between "Output Values" change the size of a "Value Step Quantity" while the MPB is being kept pressed
+			_otptSldrSpd = newVal;
+			result = true;
+		}
+	}
+
+	return result;
+}
+
+bool SldrLtchMPBttn::setOtptSldrStpSize(const uint16_t &newVal){
+	bool result{false};
+
+	if(newVal != _otptSldrStpSize){
+		if(newVal <= (_otptValMax - _otptValMin)){	//If newVal == (_otptValMax - _otptValMin) the slider will work as kind of an On/Off switch
+			_otptSldrStpSize = newVal;
+			result = true;
+		}
+	}
+
+	return result;
+}
+
+bool SldrLtchMPBttn::setOtptValMax(const uint16_t &newVal){
+	bool result{false};
+
+	if(newVal != _otptValMax){
+		if(newVal > _otptValMin){
+			_otptValMax = newVal;
+			if(_otptCurVal > _otptValMax){
+				_otptCurVal = _otptValMax;
+				_outputsChange = true;
+			}
+			result = true;
+		}
+	}
+
+	return result;
+}
+
+bool SldrLtchMPBttn::setOtptValMin(const uint16_t &newVal){
+	bool result{false};
+
+	if(newVal != _otptValMin){
+		if(newVal < _otptValMax){
+			_otptValMin = newVal;
+			if(_otptCurVal < _otptValMin){
+				_otptCurVal = _otptValMin;
+				_outputsChange = true;
+			}
+			result = true;
+		}
+	}
+
+	return result;
+}
+
+bool SldrLtchMPBttn::setSldrActvDly(const unsigned long &newVal){
+	bool result{false};
+
+	if(newVal != _sldrActvDly){
+		_sldrActvDly = newVal;
+		result = true;
+	}
+
+	return result;
+}
+
+bool SldrLtchMPBttn::setSldrDirUp(const bool &newVal){
+	bool result{false};
+
+	if(newVal != _curSldrDirUp){
+		_curSldrDirUp = newVal;
+		result = true;
+	}
+
+	return result;
+}
+
+void SldrLtchMPBttn::updFdaState(){
+	switch(_sldrFdaState){
+		case stOffNotVPP:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			if(_validPressPend || _validSlidePend){
+				_sldrFdaState = stOffVPP;	//Start pressing timer
+				setSttChng();
+			}
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stOffVPP:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			if(!_isOn){
+				_isOn = true;
+				_outputsChange = true;
+			}
+			if(_validSlidePend){
+				_sldrTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
+				_sldrFdaState = stOnSldrMod;
+				setSttChng();
+			}
+			else if(_validPressPend && _validReleasePend){
+				_validPressPend = false;
+				_validReleasePend = false;
+				_sldrFdaState = stOnMPBRlsd;
+				setSttChng();
+			}
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stOnSldrMod:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			if(!_validReleasePend){
+				// Operating in Slider mode, change the associated value according to the time elapsed since last update
+				//and the step size for every time unit elapsed
+				uint16_t _otpStpsChng{0};
+				unsigned long _sldrTmrNxtStrt{0};
+				unsigned long _sldrTmrRemains{0};
+				//In: >>---------------------------------->>
+				//Do: >>---------------------------------->>
+				_sldrTmrNxtStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
+				_otpStpsChng = (_sldrTmrNxtStrt - _sldrTmrStrt) /_otptSldrSpd;
+				_sldrTmrRemains = ((_sldrTmrNxtStrt - _sldrTmrStrt) % _otptSldrSpd) * _otptSldrSpd;
+				_sldrTmrNxtStrt -= _sldrTmrRemains;
+				_sldrTmrStrt = _sldrTmrNxtStrt;	//This ends the time management section of the state, calculating the time
+
+				if(_curSldrDirUp){
+					// The slider is moving up
+					if(_otptCurVal != _otptValMax){
+						if((_otptValMax - _otptCurVal) >= (_otpStpsChng * _otptSldrStpSize)){
+							//The value change is in range
+							_otptCurVal += (_otpStpsChng * _otptSldrStpSize);
+						}
+						else{
+							//The value change goes out of range
+							_otptCurVal = _otptValMax;
+						}
+						_outputsChange = true;
+					}
+					if(_outputsChange){
+						if(_otptCurVal == _otptValMax){
+							if(_autoChngDir == true){
+								_curSldrDirUp = false;
+							}
+						}
+					}
+				}
+				else{
+					// The slider is moving down
+					if(_otptCurVal != _otptValMin){
+						if((_otptCurVal - _otptValMin) >= (_otpStpsChng * _otptSldrStpSize)){
+							//The value change is in range
+							_otptCurVal -= (_otpStpsChng * _otptSldrStpSize);
+						}
+						else{
+							//The value change goes out of range
+							_otptCurVal = _otptValMin;
+						}
+						_outputsChange = true;
+					}
+					if(_outputsChange){
+						if(_otptCurVal == _otptValMin){
+							if(_autoChngDir == true){
+								_curSldrDirUp = true;
+							}
+						}
+					}
+				}
+			}
+			else{
+				// MPB released, close Slider mode, move on to next state
+				_sldrTmrStrt = 0;
+				_validSlidePend = false;
+				_sldrFdaState = stOnMPBRlsd;
+				setSttChng();
+			}
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stOnMPBRlsd:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			if(_validSlidePend){
+				_sldrTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
+				_sldrFdaState = stOnSldrMod;
+				setSttChng();
+			}
+			else if(_validPressPend && _validReleasePend){
+				_validPressPend = false;
+				_validReleasePend = false;
+				_sldrFdaState = stOnTurnOff;
+				setSttChng();
+			}
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stOnTurnOff:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			_isOn = false;
+			_outputsChange = true;
+			_sldrFdaState = stOffNotVPP;
+			setSttChng();
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+	default:
+		break;
+	}
+
+	return;
+}
+
+bool SldrLtchMPBttn::updValidPressPend(){
+	if(_isPressed){
+		if(_dbncRlsTimerStrt != 0)
+			_dbncRlsTimerStrt = 0;
+		if(_dbncTimerStrt == 0){    //It was not previously pressed
+			_dbncTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be pressed
+		}
+		else{
+			if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= ((_dbncTimeTempSett + _strtDelay) + _sldrActvDly)){
+				_validSlidePend = true;
+				_validPressPend = false;
+				_validReleasePend = false;	//Needed for the singular case of _sldrActvDly = 0
+			}
+			if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= (_dbncTimeTempSett + _strtDelay)){
+				if(!_validSlidePend){
+					_validPressPend = true;
+					_validReleasePend = false;
+					_prssRlsCcl = true;
+
+				}
+			}
+		}
+	}
+	else{
+		if(!_validReleasePend && _prssRlsCcl){
+			if(_dbncTimerStrt != 0)
+				_dbncTimerStrt = 0;
+			if(_dbncRlsTimerStrt == 0){    //It was not previously pressed
+				_dbncRlsTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be UNpressed
+			}
+			else{
+				if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncRlsTimerStrt) >= (_dbncRlsTimeTempSett)){
+					_validReleasePend = true;
+					_prssRlsCcl = false;
+				}
+			}
+		}
+	}
+
+	return true;
+}
+
+void SldrLtchMPBttn::updValidUnlatchStatus(){	//Placeholder for future development
+	if(true){
+		_validUnlatchPend = true;
+	}
+
+	return;
+}
+
+void SldrLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
+	SldrLtchMPBttn* mpbObj = (SldrLtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
+
+ 	// Input/Output signals update
+	mpbObj->updIsPressed();
+	// Flags/Triggers calculation & update
+ 	mpbObj->updValidPressPend();
+ 	// State machine state update
+	mpbObj->updFdaState();
+
+	if (mpbObj->getOutputsChange()){
+	  if(mpbObj->getTaskToNotify() != NULL)
+			xTaskNotifyGive(mpbObj->getTaskToNotify());
+	  mpbObj->setOutputsChange(false);
+	}
+
+	return;
+}
+
+//=========================================================================> Class methods delimiter
+
 VdblMPBttn::VdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay, const bool &isOnDisabled)
 :DbncdDlydMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay), _isOnDisabled{isOnDisabled}
 {
@@ -1605,357 +2035,3 @@ void TmVdblMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCb){
 }
 
 //=========================================================================> Class methods delimiter
-
-SldrLtchMPBttn::SldrLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long &dbncTimeOrigSett, const unsigned long int &strtDelay, const uint16_t initVal)
-:LtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay), _otpCurtVal{initVal}
-{
-	if(_otpCurtVal < _otptValMin || _otpCurtVal > _otptValMax)
-		_otpCurtVal = _otptValMin;	// Original development setup makes this outside limits situation impossible, as the limits are set to the full range of the data type used
-}
-
-SldrLtchMPBttn::~SldrLtchMPBttn()
-{
-}
-
-bool SldrLtchMPBttn::begin(const unsigned long int &pollDelayMs) {
-    bool result {false};
-    BaseType_t tmrModResult {pdFAIL};
-
-    if (pollDelayMs > 0){
-        if (!_mpbPollTmrHndl){
-            _mpbPollTmrHndl = xTimerCreate(
-                _mpbPollTmrName,  //Timer name
-                pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
-                pdTRUE,     //Auto-reload true
-                this,       //TimerID: data passed to the callback function to work
-                mpbPollCallback	  //Callback function
-				);
-            if (_mpbPollTmrHndl != NULL){
-               tmrModResult = xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
-            	if (tmrModResult == pdPASS)
-                  result = true;
-            }
-        }
-    }
-
-    return result;
-}
-
-uint16_t SldrLtchMPBttn::getOtptCurVal(){
-
-	return _otpCurtVal;
-}
-
-unsigned long SldrLtchMPBttn::getOtptSldrSpd(){
-
-	return _otptSldrSpd;
-}
-
-uint16_t SldrLtchMPBttn::getOtptSldrStpSize(){
-
-	return _otptSldrStpSize;
-}
-
-uint16_t SldrLtchMPBttn::getOtptValMax(){
-
-	return _otptValMax;
-}
-
-uint16_t SldrLtchMPBttn::getOtptValMin(){
-
-	return _otptValMin;
-}
-
-unsigned long SldrLtchMPBttn::getSldrActvDly(){
-
-	return _sldrActvDly;
-}
-
-bool SldrLtchMPBttn::getSldrDirUp(){
-
-	return _curSldrDirUp;
-}
-
-bool SldrLtchMPBttn::setOtptSldrSpd(const uint16_t &newVal){
-	bool result{false};
-
-	if(newVal != _otptSldrSpd){
-		if(newVal > 0){	//The "Change Value Speed" must be a positive number representing the time in milliseconds between "Output Values" change the size of a "Value Step Quantity" while the MPB is being kept pressed
-			_otptSldrSpd = newVal;
-			result = true;
-		}
-	}
-
-	return result;
-}
-
-bool SldrLtchMPBttn::setOtptSldrStpSize(const uint16_t &newVal){
-	bool result{false};
-
-	if(newVal != _otptSldrStpSize){
-		if(newVal <= (_otptValMax - _otptValMin)){	//If newVal == (_otptValMax - _otptValMin) the slider will work as kind of an On/Off switch
-			_otptSldrStpSize = newVal;
-			result = true;
-		}
-	}
-
-	return result;
-}
-
-bool SldrLtchMPBttn::setOtptValMax(const uint16_t &newVal){
-	bool result{false};
-
-	if(newVal != _otptValMax){
-		if(newVal > _otptValMin){
-			_otptValMax = newVal;
-			if(_otpCurtVal > _otptValMax){
-				_otpCurtVal = _otptValMax;
-				_outputsChange = true;
-			}
-			result = true;
-		}
-	}
-
-	return result;
-}
-
-bool SldrLtchMPBttn::setOtptValMin(const uint16_t &newVal){
-	bool result{false};
-
-	if(newVal != _otptValMin){
-		if(newVal < _otptValMax){
-			_otptValMin = newVal;
-			if(_otpCurtVal < _otptValMin){
-				_otpCurtVal = _otptValMin;
-				_outputsChange = true;
-			}
-			result = true;
-		}
-	}
-
-	return result;
-}
-
-bool SldrLtchMPBttn::setSldrActvDly(const unsigned long &newVal){
-	bool result{false};
-
-	if(newVal != _sldrActvDly){
-		_sldrActvDly = newVal;
-		result = true;
-	}
-
-	return result;
-}
-
-bool SldrLtchMPBttn::setSldrDirUp(const bool &newVal){
-	bool result{false};
-
-	if(newVal != _curSldrDirUp){
-		_curSldrDirUp = newVal;
-		result = true;
-	}
-
-	return result;
-}
-
-void SldrLtchMPBttn::updFdaState(){
-	switch(_sldrFdaState){
-		case stOffNotVPP:
-			//In: >>---------------------------------->>
-			//Do: >>---------------------------------->>
-			if(_validPressPend || _validSlidePend){
-				_sldrFdaState = stOffVPP;	//Start pressing timer
-			}
-			//Out: >>---------------------------------->>
-			break;
-
-		case stOffVPP:
-			//In: >>---------------------------------->>
-			//Do: >>---------------------------------->>
-//			if((_validPressPend || _validSlidePend) && !_isOn){
-			if(!_isOn){
-				_isOn = true;
-				_outputsChange = true;
-			}
-			if(_validSlidePend){
-				_sldrTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
-				_sldrFdaState = stOnSldrMod;
-			}
-			else if(_validPressPend && _validReleasePend){
-				_validPressPend = false;
-				_validReleasePend = false;
-				_sldrFdaState = stOnMPBRlsd;
-			}
-			else if(_validReleasePend){
-				//Released before ending the debouncing & delaying period, restart
-				_validReleasePend = false;
-				_sldrFdaState = stOffNotVPP;
-			}
-			break;
-
-		case stOnSldrMod:
-			/*
-			MPB still pressed: _validReleasePend = false
-				Calculate STEPS elapsed since last check using the sliderTimer/_otptSldrSpd
-			For Each step check the addition/substraction of _otptSldrStpSize is still in the range
-			If the resulting value falls out of range
-				set the value to the range limit (discard excess)
-				set the corresponding flag
-				If _autoChngDir == true change direction _curSldrDirUp value
-
-		Verify if the mpb was released: _validReleasePending = False
-			if it was released ensure correct values for flag:
-			ValidSlidePending = False
-			Move to the stOnMPBRlsd state
-*/
-			if(!_validReleasePend){
-				// Operating in Slider mode, change the associated value according to the time elapsed since last update
-				//and the step size for every time unit elapsed
-				uint16_t _otpStpsChng{0};
-				unsigned long _sldrTmrNxtStrt{0};
-				unsigned long _sldrTmrRemains{0};
-				//In: >>---------------------------------->>
-				//Do: >>---------------------------------->>
-				_sldrTmrNxtStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
-				_otpStpsChng = (_sldrTmrNxtStrt - _sldrTmrStrt) /_otptSldrSpd;
-				_sldrTmrRemains = ((_sldrTmrNxtStrt - _sldrTmrStrt) % _otptSldrSpd) * _otptSldrSpd;
-				_sldrTmrNxtStrt -= _sldrTmrRemains;
-				_sldrTmrStrt = _sldrTmrNxtStrt;	//This ends the time management section of the state, calculating the time
-
-				if(_curSldrDirUp){
-					// The slider is moving up
-					if(_otpCurtVal != _otptValMax){
-						if((_otptValMax - _otpCurtVal) >= (_otpStpsChng * _otptSldrStpSize)){
-							//The value change is in range
-							_otpCurtVal += (_otpStpsChng * _otptSldrStpSize);
-						}
-						else{
-							//The value change goes out of range
-							_otpCurtVal = _otptValMax;
-						}
-						_outputsChange = true;
-					}
-					if(_outputsChange){
-						if(_otpCurtVal == _otptValMax){
-							_curValMax = true;
-							if(_autoChngDir == true){
-								_curSldrDirUp = false;
-							}
-						}
-						else
-							_curValMax = false;
-					}
-				}
-				else{
-					// The slider is moving down
-					if(_otpCurtVal != _otptValMin){
-						if((_otpCurtVal - _otptValMin) >= (_otpStpsChng * _otptSldrStpSize)){
-							//The value change is in range
-							_otpCurtVal -= (_otpStpsChng * _otptSldrStpSize);
-						}
-						else{
-							//The value change goes out of range
-							_otpCurtVal = _otptValMin;
-						}
-						_outputsChange = true;
-					}
-					if(_outputsChange){
-						if(_otpCurtVal == _otptValMin){
-							_curValMin = true;
-							if(_autoChngDir == true){
-								_curSldrDirUp = true;
-							}
-						}
-						else
-							_curValMin = false;
-					}
-				}
-			}
-			else{
-				// MPB released, close Slider mode, move on to next state
-				_sldrTmrStrt = 0;
-				_validSlidePend = false;
-				_sldrFdaState = stOnMPBRlsd;
-			}
-			break;
-
-		case stOnMPBRlsd:
-			if(_validSlidePend){
-				_sldrTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
-				_sldrFdaState = stOnSldrMod;
-			}
-			else if(_validPressPend && _validReleasePend){
-				_validPressPend = false;
-				_validReleasePend = false;
-				_sldrFdaState = stOnTurnOff;
-			}
-			break;
-
-		case stOnTurnOff:
-			_isOn = false;
-			_outputsChange = true;
-			_sldrFdaState = stOffNotVPP;
-			break;
-
-	default:
-		break;
-	}
-
-	return;
-}
-
-bool SldrLtchMPBttn::updValidPressPend(){
-	if(_isPressed){
-		if(_dbncRlsTimerStrt != 0)
-			_dbncRlsTimerStrt = 0;
-		if(_dbncTimerStrt == 0){    //It was not previously pressed
-			_dbncTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be pressed
-		}
-		else{
-			if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= ((_dbncTimeTempSett + _strtDelay) + _sldrActvDly)){
-				_validSlidePend = true;
-				_validPressPend = false;
-				_validReleasePend = false;
-			}
-			if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= (_dbncTimeTempSett + _strtDelay)){
-				if(!_validSlidePend){
-					_validPressPend = true;
-					_validReleasePend = false;
-				}
-			}
-		}
-	}
-	else{
-		if(_dbncTimerStrt != 0)
-			_dbncTimerStrt = 0;
-		if(_dbncRlsTimerStrt == 0){    //It was not previously pressed
-			_dbncRlsTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be UNpressed
-		}
-		else{
-			if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncRlsTimerStrt) >= (_dbncRlsTimeTempSett)){
-				_validReleasePend = true;
-			}
-		}
-	}
-
-	return true;
-}
-
-void SldrLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
-	SldrLtchMPBttn* mpbObj = (SldrLtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
-
- 	// Input/Output signals update
-	mpbObj->updIsPressed();
-	// Flags/Triggers calculation & update
- 	mpbObj->updValidPressPend();
- 	// State machine state update
-	mpbObj->updFdaState();
-
-	if (mpbObj->getOutputsChange()){
-	  if(mpbObj->getTaskToNotify() != NULL)
-			xTaskNotifyGive(mpbObj->getTaskToNotify());
-	  mpbObj->setOutputsChange(false);
-	}
-
-	return;
-}
