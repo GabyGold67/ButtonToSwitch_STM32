@@ -1,7 +1,7 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : SldrLtchMPBttn.cpp
+  * @file           : SldrLtchMPBttn_02.cpp
   * @brief          : Main program body
   ******************************************************************************
   * @attention
@@ -333,7 +333,8 @@ void tstDefTaskExec(void *pvParameters)
 
 	SldrLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 50, 150);
 	tstBttn.setSldrActvDly(2000);
-	tstBttn.setSldrDirUp(false);
+	tstBttn.setSldrDirDn();
+	tstBttn.setSwpDirOnPrss(true);
 	tstBttn.setOtptValMax(10000);
 	tstBttn.setOtptSldrStpSize(1);
 	tstBttn.setOtptCurVal(5000);

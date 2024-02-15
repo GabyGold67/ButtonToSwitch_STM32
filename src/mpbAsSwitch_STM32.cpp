@@ -1508,15 +1508,56 @@ bool SldrLtchMPBttn::setSldrActvDly(const unsigned long &newVal){
 	return result;
 }
 
-bool SldrLtchMPBttn::setSldrDirUp(const bool &newVal){
+bool SldrLtchMPBttn::_setSldrDir(const bool &newVal){
 	bool result{false};
 
 	if(newVal != _curSldrDirUp){
-		_curSldrDirUp = newVal;
-		result = true;
+		if(newVal){	//Try to set new direction Up
+			if(_otptCurVal != _otptValMax){
+				_curSldrDirUp = true;
+				result = true;
+			}
+		}
+		else{		//Try to set new direction down
+			if(_otptCurVal != _otptValMin){
+				_curSldrDirUp = false;
+				result = true;
+			}
+		}
 	}
 
 	return result;
+}
+
+bool SldrLtchMPBttn::setSldrDirDn(){
+
+	return _setSldrDir(false);
+}
+
+bool SldrLtchMPBttn::setSldrDirUp(){
+
+	return _setSldrDir(true);
+}
+
+bool SldrLtchMPBttn::setSwpDirOnEnd(const bool &newVal){
+
+	if(_autoSwpDirOnEnd != newVal)
+		_autoSwpDirOnEnd = newVal;
+
+	return _autoSwpDirOnEnd;
+}
+
+bool SldrLtchMPBttn::setSwpDirOnPrss(const bool &newVal){
+
+	if(_autoSwpDirOnPrss != newVal)
+		_autoSwpDirOnPrss = newVal;
+
+	return _autoSwpDirOnEnd;
+}
+
+bool SldrLtchMPBttn::swapSldrDir(){
+
+	return _setSldrDir(!_curSldrDirUp);
 }
 
 void SldrLtchMPBttn::updFdaState(){
@@ -1551,7 +1592,7 @@ void SldrLtchMPBttn::updFdaState(){
 			}
 			if(_validSlidePend){
 				_sldrTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
-				_sldrFdaState = stOnSldrMod;
+				_sldrFdaState = stOnStrtSldrMod;
 				setSttChng();
 			}
 			else if(_validPressPend && _validReleasePend){
@@ -1566,10 +1607,11 @@ void SldrLtchMPBttn::updFdaState(){
 			}
 			break;
 
-		case stOnSldrMod:
+		case stOnStrtSldrMod:
 			//In: >>---------------------------------->>
 			if(_sttChng){
-				// Placeholder
+				if(_autoSwpDirOnPrss)
+					swapSldrDir();
 				clrSttChng();
 			}
 			//Do: >>---------------------------------->>
@@ -1579,13 +1621,13 @@ void SldrLtchMPBttn::updFdaState(){
 				uint16_t _otpStpsChng{0};
 				unsigned long _sldrTmrNxtStrt{0};
 				unsigned long _sldrTmrRemains{0};
-				//In: >>---------------------------------->>
-				//Do: >>---------------------------------->>
+
 				_sldrTmrNxtStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
 				_otpStpsChng = (_sldrTmrNxtStrt - _sldrTmrStrt) /_otptSldrSpd;
 				_sldrTmrRemains = ((_sldrTmrNxtStrt - _sldrTmrStrt) % _otptSldrSpd) * _otptSldrSpd;
 				_sldrTmrNxtStrt -= _sldrTmrRemains;
 				_sldrTmrStrt = _sldrTmrNxtStrt;	//This ends the time management section of the state, calculating the time
+
 
 				if(_curSldrDirUp){
 					// The slider is moving up
@@ -1602,7 +1644,7 @@ void SldrLtchMPBttn::updFdaState(){
 					}
 					if(_outputsChange){
 						if(_otptCurVal == _otptValMax){
-							if(_autoChngDir == true){
+							if(_autoSwpDirOnEnd == true){
 								_curSldrDirUp = false;
 							}
 						}
@@ -1623,7 +1665,7 @@ void SldrLtchMPBttn::updFdaState(){
 					}
 					if(_outputsChange){
 						if(_otptCurVal == _otptValMin){
-							if(_autoChngDir == true){
+							if(_autoSwpDirOnEnd == true){
 								_curSldrDirUp = true;
 							}
 						}
@@ -1632,9 +1674,7 @@ void SldrLtchMPBttn::updFdaState(){
 			}
 			else{
 				// MPB released, close Slider mode, move on to next state
-				_sldrTmrStrt = 0;
-				_validSlidePend = false;
-				_sldrFdaState = stOnMPBRlsd;
+				_sldrFdaState = stOnEndSldrMod;
 				setSttChng();
 			}
 			//Out: >>---------------------------------->>
@@ -1643,6 +1683,37 @@ void SldrLtchMPBttn::updFdaState(){
 			}
 			break;
 
+		case stOnSldrMod:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stOnEndSldrMod:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			_sldrTmrStrt = 0;
+			_validSlidePend = false;
+			_sldrFdaState = stOnMPBRlsd;
+			setSttChng();
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+
+			break;
 		case stOnMPBRlsd:
 			//In: >>---------------------------------->>
 			if(_sttChng){
@@ -1652,7 +1723,7 @@ void SldrLtchMPBttn::updFdaState(){
 			//Do: >>---------------------------------->>
 			if(_validSlidePend){
 				_sldrTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
-				_sldrFdaState = stOnSldrMod;
+				_sldrFdaState = stOnStrtSldrMod;
 				setSttChng();
 			}
 			else if(_validPressPend && _validReleasePend){

@@ -362,7 +362,7 @@ void tstDefTaskExec(void *pvParameters)
 	//-------------- SldrLtchMPBttn Test 01
 	SldrLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 50, 150);
 	tstBttn.setSldrActvDly(3000);
-	tstBttn.setSldrDirUp(false);
+	tstBttn.setSldrDirUp();
 
 
 	tstBttn.begin(20);
@@ -382,8 +382,8 @@ void tstDefTaskExec(void *pvParameters)
 	  //-------------- TmVdblMPBttn test
 
 		//-------------- SldrLtchMPBttn Test 01
-	  if(tmpSliderValue!= tstBttn.getCurOtptVal()){
-		  tmpSliderValue = tstBttn.getCurOtptVal();
+	  if(tmpSliderValue!= tstBttn.getOtptCurVal()){
+		  tmpSliderValue = tstBttn.getOtptCurVal();
 		  if((tmpSliderValue ==  tstBttn.getOtptValMin()) || (tmpSliderValue == tstBttn.getOtptValMax()))
 			  limitReachFlag = true;
 		  else

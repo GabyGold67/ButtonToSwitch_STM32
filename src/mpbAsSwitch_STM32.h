@@ -217,18 +217,20 @@ public:
 class SldrLtchMPBttn: public LtchMPBttn{
 	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
 protected:
-	enum fdaSldrStts {stOffNotVPP, stOffVPP,  stOnMPBRlsd, stOnSldrMod, stOnTurnOff};
-	bool _autoChngDir{true};
+	enum fdaSldrStts {stOffNotVPP, stOffVPP,  stOnMPBRlsd, stOnStrtSldrMod, stOnSldrMod, stOnEndSldrMod, stOnTurnOff};
+	bool _autoSwpDirOnEnd{true};	// Changes slider direction when reaches _otptValMax or _otptValMin
+	bool _autoSwpDirOnPrss{false};// Changes slider direction each time it enters slider mode
 	bool _curSldrDirUp{true};
 	uint16_t _otptCurVal{};
 	unsigned long _otptSldrSpd{1};
 	uint16_t _otptSldrStpSize{0x01};
 	uint16_t _otptValMax{0xFFFF};
 	uint16_t _otptValMin{0x00};
-	unsigned long _sldrActvDly {1500};
+	unsigned long _sldrActvDly {2000};
 	fdaSldrStts _sldrFdaState {stOffNotVPP};
 	unsigned long _sldrTmrStrt {0};
 	bool _validSlidePend{false};
+	bool _setSldrDir(const bool &newVal);
 public:
    SldrLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
    ~SldrLtchMPBttn();
@@ -237,9 +239,9 @@ public:
    bool getOtptCurValIsMin();
 	uint16_t getOtptValMax();
 	uint16_t getOtptValMin();
+	unsigned long getOtptSldrSpd();
 	uint16_t getOtptSldrStpSize();
 	unsigned long getSldrActvDly();
-	unsigned long getOtptSldrSpd();
 	bool getSldrDirUp();
 	bool setOtptCurVal(const uint16_t &newVal);
 	bool setOtptValMax(const uint16_t &newVal);
@@ -247,7 +249,11 @@ public:
 	bool setOtptSldrStpSize(const uint16_t &newVal);
 	bool setOtptSldrSpd(const uint16_t &newVal);
 	bool setSldrActvDly(const unsigned long &newVal);
-	bool setSldrDirUp(const bool &newVal);
+	bool setSldrDirDn();
+	bool setSldrDirUp();
+	bool setSwpDirOnEnd(const bool &newVal);
+	bool setSwpDirOnPrss(const bool &newVal);
+	bool swapSldrDir();
 	void updFdaState();
 	bool updValidPressPend();
    virtual void updValidUnlatchStatus();
