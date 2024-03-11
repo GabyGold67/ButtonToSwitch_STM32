@@ -1344,8 +1344,20 @@ void XtrnUnltchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 
 //=========================================================================> Class methods delimiter
 
+DblActnLtchMPBttn::DblActnLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
+:LtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
+{
+
+}
+
+DblActnLtchMPBttn::~DblActnLtchMPBttn()
+{
+}
+
+//=========================================================================> Class methods delimiter
+
 SldrLtchMPBttn::SldrLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long &dbncTimeOrigSett, const unsigned long int &strtDelay, const uint16_t initVal)
-:LtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay), _otptCurVal{initVal}
+:DblActnLtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay), _otptCurVal{initVal}
 {
 	if(_otptCurVal < _otptValMin || _otptCurVal > _otptValMax)
 		_otptCurVal = _otptValMin;	// Original development setup makes this outside limits situation impossible, as the limits are set to the full range of the data type used
@@ -1831,6 +1843,19 @@ void SldrLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	return;
 }
 
+//=========================================================================> Class methods delimiter
+/*
+DDlydLtchMPBttn::DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
+{
+}
+
+DDlydLtchMPBttn::~DDlydLtchMPBttn(){}
+
+bool DDlydLtchMPBttn::getIsOn2(){
+
+	return _isOn2;
+}
+*/
 //=========================================================================> Class methods delimiter
 
 VdblMPBttn::VdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay, const bool &isOnDisabled)
