@@ -119,21 +119,17 @@ public:
 
 class LtchMPBttn: public DbncdDlydMPBttn{
 	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
-	friend constexpr int genNxtEnumVal(const int &curVal, const int &increment);
-
 protected:
-	enum fdaLmpbStts {stOffNotVPP, stOffVPP, stOnNVRP, stOnVRP, stLtchNVUP, stLtchdVUP, stOffVUP, stOffNVURP, stOffVURP}; //Replaced by a sparced list of generated integers
-/*	enum fdaLmpbStts{
-		stOffNotVPP = 0,
-		stOffVPP = genNxtEnumVal(stOffNotVPP, 100),
-		stOnNVRP = genNxtEnumVal(stOffVPP,100),
-		stOnVRP = genNxtEnumVal(stOnNVRP,100),
-		stLtchNVUP = genNxtEnumVal(stOnVRP,100),
-		stLtchdVUP = genNxtEnumVal(stLtchNVUP,100),
-		stOffVUP = genNxtEnumVal(stLtchdVUP,100),
-		stOffNVURP = genNxtEnumVal(stOffVUP,100),
-		stOffVURP = genNxtEnumVal(stOffNVURP,100)
-	};*/
+	enum fdaLmpbStts {stOffNotVPP,
+		stOffVPP,
+		stOnNVRP,
+		stOnVRP,
+		stLtchNVUP,
+		stLtchdVUP,
+		stOffVUP,
+		stOffNVURP,
+		stOffVURP
+	};
 	bool _isLatched{false};
 	fdaLmpbStts _mpbFdaState {stOffNotVPP};
 	bool _prssRlsCcl{false};
@@ -238,11 +234,12 @@ protected:
 		stOffNotVPP = 0,
 		stOffVPP = genNxtEnumVal(stOffNotVPP, 100),
 		stOnMPBRlsd = genNxtEnumVal(stOffVPP,100),
-		stOnStrtScndMod = genNxtEnumVal(stOnMPBRlsd,100),
-		stOnScndMod = genNxtEnumVal(stOnStrtScndMod,100),
-		stOnEndScndMod = genNxtEnumVal(stOnScndMod,100),
+		stOnStrtScndMod = genNxtEnumVal(stOnMPBRlsd,100),	//replaced by stOnStrtSldrMod
+		stOnScndMod = genNxtEnumVal(stOnStrtScndMod,100),	//replaces stOnSldrMod
+		stOnEndScndMod = genNxtEnumVal(stOnScndMod,100),	//replaces stOnEndSldrMod
 		stOnTurnOff = genNxtEnumVal(stOnEndScndMod,100)
 	};
+	fdaDALmpbStts _dalFdaState {stOffNotVPP};
 public:
 	DblActnLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	~DblActnLtchMPBttn();
@@ -254,7 +251,6 @@ class SldrLtchMPBttn: public DblActnLtchMPBttn{
 	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
 
 protected:
-	enum fdaSldrStts {stOffNotVPP, stOffVPP,  stOnMPBRlsd, stOnStrtSldrMod, stOnSldrMod, stOnEndSldrMod, stOnTurnOff};
 	bool _autoSwpDirOnEnd{true};	// Changes slider direction when reaches _otptValMax or _otptValMin
 	bool _autoSwpDirOnPrss{false};// Changes slider direction each time it enters slider mode
 	bool _curSldrDirUp{true};
@@ -264,7 +260,6 @@ protected:
 	uint16_t _otptValMax{0xFFFF};
 	uint16_t _otptValMin{0x00};
 	unsigned long _sldrActvDly {2000};
-	fdaSldrStts _sldrFdaState {stOffNotVPP};
 	unsigned long _sldrTmrStrt {0};
 	bool _validSlidePend{false};
 	bool _setSldrDir(const bool &newVal);
@@ -300,16 +295,17 @@ public:
 
 //==========================================================>>
 
-/*class DDlydLtchMPBttn: public DblActnLtchMPBttn{
+class DDlydLtchMPBttn: public DblActnLtchMPBttn{
    static void mpbPollCallback(TimerHandle_t mpbTmrCb);
 
 protected:
    bool _isOn2{false};
+	void updFdaState();
 public:
    DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
    ~DDlydLtchMPBttn();
    bool getIsOn2();
-};*/
+};
 
 //==========================================================>>
 

@@ -383,15 +383,27 @@ void DbncdMPBttn::updFdaState(){
 	switch(_mpbFdaState){
 		case stOffNotVPP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			if(_validPressPend){
 				_mpbFdaState = stOffVPP;
+				setSttChng();	//Set flag to execute exiting OUT code
 			}
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stOffVPP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			if(!_isOn){
 				_isOn = true;
@@ -399,19 +411,36 @@ void DbncdMPBttn::updFdaState(){
 			}
 			_validPressPend = false;
 			_mpbFdaState = stOn;
+			setSttChng();
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stOn:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
-			if(_validReleasePend)
+			if(_validReleasePend){
 				_mpbFdaState = stOnVRP;
+				setSttChng();
+			}
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stOnVRP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			if(_isOn){
 				_isOn = false;
@@ -419,7 +448,12 @@ void DbncdMPBttn::updFdaState(){
 			}
 			_validReleasePend = false;
 			_mpbFdaState = stOffNotVPP;
+			setSttChng();
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
+
 			break;
 
 	default:
@@ -687,17 +721,29 @@ void LtchMPBttn::updFdaState(){
 	switch(_mpbFdaState){
 		case stOffNotVPP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			if(_validPressPend){
 				_isLatched = false;
 				_validUnlatchPend = false;
 				_mpbFdaState = stOffVPP;
+				setSttChng();
 			}
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stOffVPP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			if(!_isOn){
 				_isOn = true;
@@ -705,62 +751,119 @@ void LtchMPBttn::updFdaState(){
 			}
 			_validPressPend = false;
 			_mpbFdaState = stOnNVRP;
+			setSttChng();
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stOnNVRP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
-			if(_validReleasePend)
+			if(_validReleasePend){
 				_mpbFdaState = stOnVRP;
+				setSttChng();
+			}
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stOnVRP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			_validReleasePend = false;
 			if(!_isLatched)
 				_isLatched = true;
 			_mpbFdaState = stLtchNVUP;
+			setSttChng();
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stLtchNVUP:	//From this state on different unlatch sources might make sense
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			if(_validUnlatchPend){
 				_mpbFdaState = stLtchdVUP;
+				setSttChng();
 			}
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stLtchdVUP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			_mpbFdaState = stOffVUP;
+			setSttChng();
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stOffVUP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			_validUnlatchPend = false;	// This is a placeholder for updValidUnlatchStatus() implemented in each subclass
 			_mpbFdaState = stOffNVURP;
+			setSttChng();
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stOffNVURP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			if(_validReleasePend){
 				_mpbFdaState = stOffVURP;
+				setSttChng();
 			}
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stOffVURP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			_validReleasePend = false;
 			if(_isOn){
@@ -770,7 +873,11 @@ void LtchMPBttn::updFdaState(){
 			if(_isLatched)
 				_isLatched = false;
 			_mpbFdaState = stOffNotVPP;
+			setSttChng();
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 	default:
@@ -958,18 +1065,30 @@ void TmLtchMPBttn::updFdaState(){
 	switch(_mpbFdaState){
 		case stOffNotVPP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			if(_validPressPend){
 				_isLatched = false;
 				_validUnlatchPend = false;
 				_srvcTimerStrt = 0;
 				_mpbFdaState = stOffVPP;
+				setSttChng();
 			}
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stOffVPP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			if(!_isOn){
 				_isOn = true;
@@ -979,62 +1098,119 @@ void TmLtchMPBttn::updFdaState(){
 			_isLatched = true;
 			_srvcTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;
 			_mpbFdaState = stOnNVRP;
+			setSttChng();
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stOnNVRP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
-			if(_validReleasePend)
+			if(_validReleasePend){
 				_mpbFdaState = stOnVRP;
+				setSttChng();
+			}
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stOnVRP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			_validReleasePend = false;
 			_mpbFdaState = stLtchNVUP;
+			setSttChng();
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stLtchNVUP:	//From this state on different unlatch sources might make sense
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			if(_validUnlatchPend){
 				_mpbFdaState = stLtchdVUP;
+				setSttChng();
 			}
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stLtchdVUP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			if(_isOn){
 				_isOn = false;
 				_outputsChange = true;
 			}
 			_mpbFdaState = stOffVUP;
+			setSttChng();
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stOffVUP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			_validUnlatchPend = false;
 			_mpbFdaState = stOffNVURP;
+			setSttChng();
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stOffNVURP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			_mpbFdaState = stOffVURP;
+			setSttChng();
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 		case stOffVURP:
 			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}
 			//Do: >>---------------------------------->>
 			_dbncTimerStrt = 0;
 			_validPressPend = false;
@@ -1044,7 +1220,11 @@ void TmLtchMPBttn::updFdaState(){
 			_validUnlatchPend = false;//At this point is NOT the expected FALSE!!
 			_srvcTimerStrt = 0;		//At this point is NOT the expected 0!!
 			_mpbFdaState = stOffNotVPP;
+			setSttChng();
 			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Execute this code only ONCE, when exiting this state
+			}
 			break;
 
 	default:
@@ -1573,7 +1753,7 @@ bool SldrLtchMPBttn::swapSldrDir(){
 }
 
 void SldrLtchMPBttn::updFdaState(){
-	switch(_sldrFdaState){
+	switch(_dalFdaState){
 		case stOffNotVPP:
 			//In: >>---------------------------------->>
 			if(_sttChng){
@@ -1582,7 +1762,7 @@ void SldrLtchMPBttn::updFdaState(){
 			}
 			//Do: >>---------------------------------->>
 			if(_validPressPend || _validSlidePend){
-				_sldrFdaState = stOffVPP;	//Start pressing timer
+				_dalFdaState = stOffVPP;	//Start pressing timer
 				setSttChng();
 			}
 			//Out: >>---------------------------------->>
@@ -1604,13 +1784,13 @@ void SldrLtchMPBttn::updFdaState(){
 			}
 			if(_validSlidePend){
 				_sldrTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
-				_sldrFdaState = stOnStrtSldrMod;
+				_dalFdaState = stOnStrtScndMod;
 				setSttChng();
 			}
 			else if(_validPressPend && _validReleasePend){
 				_validPressPend = false;
 				_validReleasePend = false;
-				_sldrFdaState = stOnMPBRlsd;
+				_dalFdaState = stOnMPBRlsd;
 				setSttChng();
 			}
 			//Out: >>---------------------------------->>
@@ -1619,11 +1799,26 @@ void SldrLtchMPBttn::updFdaState(){
 			}
 			break;
 
-		case stOnStrtSldrMod:
+		case stOnStrtScndMod:
 			//In: >>---------------------------------->>
 			if(_sttChng){
 				if(_autoSwpDirOnPrss)
 					swapSldrDir();
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			_dalFdaState = stOnScndMod;
+			setSttChng();
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stOnScndMod:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
 				clrSttChng();
 			}
 			//Do: >>---------------------------------->>
@@ -1686,22 +1881,9 @@ void SldrLtchMPBttn::updFdaState(){
 			}
 			else{
 				// MPB released, close Slider mode, move on to next state
-				_sldrFdaState = stOnEndSldrMod;
+				_dalFdaState = stOnEndScndMod;
 				setSttChng();
 			}
-			//Out: >>---------------------------------->>
-			if(_sttChng){
-				// Placeholder
-			}
-			break;
-
-		case stOnSldrMod:
-			//In: >>---------------------------------->>
-			if(_sttChng){
-				// Placeholder
-				clrSttChng();
-			}
-			//Do: >>---------------------------------->>
 
 			//Out: >>---------------------------------->>
 			if(_sttChng){
@@ -1709,7 +1891,7 @@ void SldrLtchMPBttn::updFdaState(){
 			}
 			break;
 
-		case stOnEndSldrMod:
+		case stOnEndScndMod:
 			//In: >>---------------------------------->>
 			if(_sttChng){
 				// Placeholder
@@ -1718,7 +1900,7 @@ void SldrLtchMPBttn::updFdaState(){
 			//Do: >>---------------------------------->>
 			_sldrTmrStrt = 0;
 			_validSlidePend = false;
-			_sldrFdaState = stOnMPBRlsd;
+			_dalFdaState = stOnMPBRlsd;
 			setSttChng();
 			//Out: >>---------------------------------->>
 			if(_sttChng){
@@ -1735,13 +1917,13 @@ void SldrLtchMPBttn::updFdaState(){
 			//Do: >>---------------------------------->>
 			if(_validSlidePend){
 				_sldrTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
-				_sldrFdaState = stOnStrtSldrMod;
+				_dalFdaState = stOnStrtScndMod;
 				setSttChng();
 			}
 			else if(_validPressPend && _validReleasePend){
 				_validPressPend = false;
 				_validReleasePend = false;
-				_sldrFdaState = stOnTurnOff;
+				_dalFdaState = stOnTurnOff;
 				setSttChng();
 			}
 			//Out: >>---------------------------------->>
@@ -1759,7 +1941,7 @@ void SldrLtchMPBttn::updFdaState(){
 			//Do: >>---------------------------------->>
 			_isOn = false;
 			_outputsChange = true;
-			_sldrFdaState = stOffNotVPP;
+			_dalFdaState = stOffNotVPP;
 			setSttChng();
 			//Out: >>---------------------------------->>
 			if(_sttChng){
@@ -1844,18 +2026,27 @@ void SldrLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 }
 
 //=========================================================================> Class methods delimiter
-/*
+
 DDlydLtchMPBttn::DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
+:DblActnLtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
+
 {
 }
 
-DDlydLtchMPBttn::~DDlydLtchMPBttn(){}
+DDlydLtchMPBttn::~DDlydLtchMPBttn()
+{
+}
 
 bool DDlydLtchMPBttn::getIsOn2(){
 
 	return _isOn2;
 }
-*/
+
+void DDlydLtchMPBttn::updFdaState(){
+
+	return;
+}
+
 //=========================================================================> Class methods delimiter
 
 VdblMPBttn::VdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay, const bool &isOnDisabled)
