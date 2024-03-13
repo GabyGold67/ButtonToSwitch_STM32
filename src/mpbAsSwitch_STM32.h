@@ -239,10 +239,19 @@ protected:
 		stOnEndScndMod = genNxtEnumVal(stOnScndMod,100),	//replaces stOnEndSldrMod
 		stOnTurnOff = genNxtEnumVal(stOnEndScndMod,100)
 	};
-	fdaDALmpbStts _dalFdaState {stOffNotVPP};
+	fdaDALmpbStts _mpbFdaState {stOffNotVPP};
+	unsigned long _scndModActvDly {2000};		//===============------------>> Moved Up from SldrLtchMPBttn
+	unsigned long _scndModTmrStrt {0};
+	bool _validScndModPend{false};			//===============------------>> Move Up from SldrLtchMPBttn
+
 public:
 	DblActnLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	~DblActnLtchMPBttn();
+	unsigned long getScndModActvDly();			//===============------------>> Move Up in Hierarchy
+	bool setScndModActvDly(const unsigned long &newVal);			//===============------------>> Move Up in Hierarchy
+	bool updValidPressPend();
+
+   bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 
 //==========================================================>>
@@ -259,10 +268,11 @@ protected:
 	uint16_t _otptSldrStpSize{0x01};
 	uint16_t _otptValMax{0xFFFF};
 	uint16_t _otptValMin{0x00};
-	unsigned long _sldrActvDly {2000};
 	unsigned long _sldrTmrStrt {0};
-	bool _validSlidePend{false};
 	bool _setSldrDir(const bool &newVal);
+	void updFdaState();
+   virtual void updValidUnlatchStatus();
+   void scndModActn();
 public:
    SldrLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
    ~SldrLtchMPBttn();
@@ -273,22 +283,17 @@ public:
 	uint16_t getOtptValMin();
 	unsigned long getOtptSldrSpd();
 	uint16_t getOtptSldrStpSize();
-	unsigned long getSldrActvDly();
 	bool getSldrDirUp();
 	bool setOtptCurVal(const uint16_t &newVal);
 	bool setOtptValMax(const uint16_t &newVal);
 	bool setOtptValMin(const uint16_t &newVal);
 	bool setOtptSldrStpSize(const uint16_t &newVal);
 	bool setOtptSldrSpd(const uint16_t &newVal);
-	bool setSldrActvDly(const unsigned long &newVal);
 	bool setSldrDirDn();
 	bool setSldrDirUp();
 	bool setSwpDirOnEnd(const bool &newVal);
 	bool setSwpDirOnPrss(const bool &newVal);
 	bool swapSldrDir();
-	void updFdaState();
-	bool updValidPressPend();
-   virtual void updValidUnlatchStatus();
 
    bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
@@ -305,6 +310,8 @@ public:
    DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
    ~DDlydLtchMPBttn();
    bool getIsOn2();
+
+   bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 
 //==========================================================>>
