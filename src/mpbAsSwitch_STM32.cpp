@@ -1641,8 +1641,6 @@ void DblActnLtchMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){
 				scndModStrtSttng();
-//				if(_autoSwpDirOnPrss)
-//					swapSldrDir();
 				clrSttChng();
 			}
 			//Do: >>---------------------------------->>
@@ -1663,7 +1661,6 @@ void DblActnLtchMPBttn::updFdaState(){
 			//Do: >>---------------------------------->>
 			if(!_validReleasePend){
 				//Operating in Second Mode
-				//In this case Slider Mode
 				scndModActn();
 			}
 			else{
@@ -2122,7 +2119,21 @@ bool DDlydLtchMPBttn::getIsOn2(){
 	return _isOn2;
 }
 
-void DDlydLtchMPBttn::updFdaState(){
+void DDlydLtchMPBttn::scndModActn(){
+
+	return;
+}
+
+void DDlydLtchMPBttn::scndModEndSttng(){
+	_isOn2 = false;
+	_outputsChange = true;
+
+	return;
+}
+
+void DDlydLtchMPBttn::scndModStrtSttng(){
+	_isOn2 = true;
+	_outputsChange = true;
 
 	return;
 }

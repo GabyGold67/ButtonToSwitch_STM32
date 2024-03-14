@@ -172,8 +172,8 @@ protected:
     unsigned long int _srvcTime {};
     unsigned long int _srvcTimerStrt{0};
 
-    bool updValidPressesStatus();
     void updFdaState();
+    bool updValidPressesStatus();
     virtual void updValidUnlatchStatus();
 public:
     TmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const unsigned long int &srvcTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
@@ -188,20 +188,22 @@ public:
 
 class HntdTmLtchMPBttn: public TmLtchMPBttn{
     static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
+
 protected:
     bool _wrnngOn {false};
     bool _keepPilot{false};
     bool _pilotOn{false};
     unsigned int _wrnngPrctg {0};
     unsigned long int _wrnngMs{0};
+
     bool updPilotOn();
     bool updWrnngOn();
 public:
     HntdTmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const unsigned long int &actTime, const unsigned int &wrnngPrctg = 0, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
     const bool getPilotOn() const;
     const bool getWrnngOn() const;
-    bool setSrvcTime(const unsigned long int &newActTime);
     bool setKeepPilot(const bool &newKeepPilot);
+    bool setSrvcTime(const unsigned long int &newActTime);
     bool setWrnngPrctg (const unsigned int &newWrnngPrctg);
 
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
@@ -248,13 +250,13 @@ protected:
    virtual void scndModEndSttng();
    virtual void scndModStrtSttng();
 	void updFdaState();
+	bool updValidPressPend();
 
 public:
 	DblActnLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	~DblActnLtchMPBttn();
 	unsigned long getScndModActvDly();
 	bool setScndModActvDly(const unsigned long &newVal);
-	bool updValidPressPend();
 
    bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
@@ -312,7 +314,10 @@ class DDlydLtchMPBttn: public DblActnLtchMPBttn{
 
 protected:
    bool _isOn2{false};
-	void updFdaState();
+
+   virtual void scndModActn();
+   virtual void scndModEndSttng();
+   virtual void scndModStrtSttng();
 public:
    DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
    ~DDlydLtchMPBttn();
@@ -330,6 +335,7 @@ protected:
     bool _isEnabled{true};
     bool _isOnDisabled{false};
     bool _isVoided{false};
+    virtual bool updIsVoided() = 0;
 public:
     VdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
     virtual ~VdblMPBttn();
@@ -342,7 +348,6 @@ public:
     bool setIsEnabled(const bool &newEnabledValue);
     bool setIsOnDisabled(const bool &newIsOnDisabled);
     bool setIsVoided(const bool &newVoidValue);
-    virtual bool updIsVoided() = 0;
 };
 
 //==========================================================>>
@@ -352,6 +357,10 @@ class TmVdblMPBttn: public VdblMPBttn{
 protected:
     unsigned long int _voidTime;
     unsigned long int _voidTmrStrt{0};
+    bool updIsOn();
+    bool updIsPressed();
+    virtual bool updIsVoided();
+    bool updValidPressPend();
 public:
     TmVdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, unsigned long int voidTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
     virtual ~TmVdblMPBttn();
@@ -360,10 +369,6 @@ public:
     bool setIsEnabled(const bool &newEnabledValue);
     bool setIsVoided(const bool &newVoidValue);
     bool setVoidTime(const unsigned long int &newVoidTime);
-    bool updIsOn();
-    bool updIsPressed();
-    virtual bool updIsVoided();
-    bool updValidPressPend();
 
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
