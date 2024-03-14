@@ -1269,6 +1269,7 @@ bool TmLtchMPBttn::updValidPressesStatus(){
 
 	return (_validPressPend||_validReleasePend);
 }
+
 void TmLtchMPBttn::updValidUnlatchStatus(){
 	if(_isLatched){
 		if(_validPressPend){
@@ -1562,6 +1563,21 @@ unsigned long DblActnLtchMPBttn::getScndModActvDly(){
 	return _scndModActvDly;
 }
 
+void DblActnLtchMPBttn::scndModActn(){
+
+	return;
+}
+
+void DblActnLtchMPBttn::scndModEndSttng(){
+
+	return;
+}
+
+void DblActnLtchMPBttn::scndModStrtSttng(){
+
+	return;
+}
+
 bool DblActnLtchMPBttn::setScndModActvDly(const unsigned long &newVal){
 	bool result{false};
 
@@ -1571,6 +1587,161 @@ bool DblActnLtchMPBttn::setScndModActvDly(const unsigned long &newVal){
 	}
 
 	return result;
+}
+
+void DblActnLtchMPBttn::updFdaState(){
+	switch(_mpbFdaState){
+		case stOffNotVPP:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			if(_validPressPend || _validScndModPend){
+				_mpbFdaState = stOffVPP;	//Start pressing timer
+				setSttChng();
+			}
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stOffVPP:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			if(!_isOn){
+				_isOn = true;
+				_outputsChange = true;
+			}
+			if(_validScndModPend){
+//				_sldrTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
+				_scndModTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
+				_mpbFdaState = stOnStrtScndMod;
+				setSttChng();
+			}
+			else if(_validPressPend && _validReleasePend){
+				_validPressPend = false;
+				_validReleasePend = false;
+				_mpbFdaState = stOnMPBRlsd;
+				setSttChng();
+			}
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stOnStrtScndMod:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				scndModStrtSttng();
+//				if(_autoSwpDirOnPrss)
+//					swapSldrDir();
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			_mpbFdaState = stOnScndMod;
+			setSttChng();
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stOnScndMod:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			if(!_validReleasePend){
+				//Operating in Second Mode
+				//In this case Slider Mode
+				scndModActn();
+			}
+			else{
+				// MPB released, close Slider mode, move on to next state
+				_mpbFdaState = stOnEndScndMod;
+				setSttChng();
+			}
+
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stOnEndScndMod:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			_scndModTmrStrt = 0;
+			_validScndModPend = false;
+			_mpbFdaState = stOnMPBRlsd;
+			setSttChng();
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				scndModEndSttng();
+			}
+
+			break;
+		case stOnMPBRlsd:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			if(_validScndModPend){
+				_scndModTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
+				_mpbFdaState = stOnStrtScndMod;
+				setSttChng();
+			}
+			else if(_validPressPend && _validReleasePend){
+				_validPressPend = false;
+				_validReleasePend = false;
+				_mpbFdaState = stOnTurnOff;
+				setSttChng();
+			}
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stOnTurnOff:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			_isOn = false;
+			_outputsChange = true;
+			_mpbFdaState = stOffNotVPP;
+			setSttChng();
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+	default:
+		break;
+	}
+
+	return;
 }
 
 bool DblActnLtchMPBttn::updValidPressPend(){
@@ -1711,6 +1882,78 @@ bool SldrLtchMPBttn::getSldrDirUp(){
 	return _curSldrDirUp;
 }
 
+void SldrLtchMPBttn::scndModActn(){
+	// Operating in Slider mode, change the associated value according to the time elapsed since last update
+	//and the step size for every time unit elapsed
+	uint16_t _otpStpsChng{0};
+	unsigned long _sldrTmrNxtStrt{0};
+	unsigned long _sldrTmrRemains{0};
+
+	_sldrTmrNxtStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
+	_otpStpsChng = (_sldrTmrNxtStrt - _scndModTmrStrt) /_otptSldrSpd;
+	_sldrTmrRemains = ((_sldrTmrNxtStrt - _scndModTmrStrt) % _otptSldrSpd) * _otptSldrSpd;
+	_sldrTmrNxtStrt -= _sldrTmrRemains;
+	_scndModTmrStrt = _sldrTmrNxtStrt;	//This ends the time management section of the state, calculating the time
+
+
+	if(_curSldrDirUp){
+		// The slider is moving up
+		if(_otptCurVal != _otptValMax){
+			if((_otptValMax - _otptCurVal) >= (_otpStpsChng * _otptSldrStpSize)){
+				//The value change is in range
+				_otptCurVal += (_otpStpsChng * _otptSldrStpSize);
+			}
+			else{
+				//The value change goes out of range
+				_otptCurVal = _otptValMax;
+			}
+			_outputsChange = true;
+		}
+		if(_outputsChange){
+			if(_otptCurVal == _otptValMax){
+				if(_autoSwpDirOnEnd == true){
+					_curSldrDirUp = false;
+				}
+			}
+		}
+	}
+	else{
+		// The slider is moving down
+		if(_otptCurVal != _otptValMin){
+			if((_otptCurVal - _otptValMin) >= (_otpStpsChng * _otptSldrStpSize)){
+				//The value change is in range
+				_otptCurVal -= (_otpStpsChng * _otptSldrStpSize);
+			}
+			else{
+				//The value change goes out of range
+				_otptCurVal = _otptValMin;
+			}
+			_outputsChange = true;
+		}
+		if(_outputsChange){
+			if(_otptCurVal == _otptValMin){
+				if(_autoSwpDirOnEnd == true){
+					_curSldrDirUp = true;
+				}
+			}
+		}
+	}
+
+	return;
+}
+
+void SldrLtchMPBttn::scndModEndSttng(){
+
+	return;
+}
+
+void SldrLtchMPBttn::scndModStrtSttng(){
+	if(_autoSwpDirOnPrss)
+		swapSldrDir();
+
+	return;
+}
+
 bool SldrLtchMPBttn::setOtptCurVal(const uint16_t &newVal){
 	bool result{false};
 
@@ -1834,219 +2077,6 @@ bool SldrLtchMPBttn::setSwpDirOnPrss(const bool &newVal){
 bool SldrLtchMPBttn::swapSldrDir(){
 
 	return _setSldrDir(!_curSldrDirUp);
-}
-
-void SldrLtchMPBttn::updFdaState(){
-	switch(_mpbFdaState){
-		case stOffNotVPP:
-			//In: >>---------------------------------->>
-			if(_sttChng){
-				// Placeholder
-				clrSttChng();
-			}
-			//Do: >>---------------------------------->>
-			if(_validPressPend || _validScndModPend){
-				_mpbFdaState = stOffVPP;	//Start pressing timer
-				setSttChng();
-			}
-			//Out: >>---------------------------------->>
-			if(_sttChng){
-				// Placeholder
-			}
-			break;
-
-		case stOffVPP:
-			//In: >>---------------------------------->>
-			if(_sttChng){
-				// Placeholder
-				clrSttChng();
-			}
-			//Do: >>---------------------------------->>
-			if(!_isOn){
-				_isOn = true;
-				_outputsChange = true;
-			}
-			if(_validScndModPend){
-//				_sldrTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
-				_scndModTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
-				_mpbFdaState = stOnStrtScndMod;
-				setSttChng();
-			}
-			else if(_validPressPend && _validReleasePend){
-				_validPressPend = false;
-				_validReleasePend = false;
-				_mpbFdaState = stOnMPBRlsd;
-				setSttChng();
-			}
-			//Out: >>---------------------------------->>
-			if(_sttChng){
-				// Placeholder
-			}
-			break;
-
-		case stOnStrtScndMod:
-			//In: >>---------------------------------->>
-			if(_sttChng){
-				if(_autoSwpDirOnPrss)
-					swapSldrDir();
-				clrSttChng();
-			}
-			//Do: >>---------------------------------->>
-			_mpbFdaState = stOnScndMod;
-			setSttChng();
-			//Out: >>---------------------------------->>
-			if(_sttChng){
-				// Placeholder
-			}
-			break;
-
-		case stOnScndMod:
-			//In: >>---------------------------------->>
-			if(_sttChng){
-				// Placeholder
-				clrSttChng();
-			}
-			//Do: >>---------------------------------->>
-			if(!_validReleasePend){
-				//Operating in Second Mode
-				//In this case Slider Mode
-				scndModActn();
-			}
-			else{
-				// MPB released, close Slider mode, move on to next state
-				_mpbFdaState = stOnEndScndMod;
-				setSttChng();
-			}
-
-			//Out: >>---------------------------------->>
-			if(_sttChng){
-				// Placeholder
-			}
-			break;
-
-		case stOnEndScndMod:
-			//In: >>---------------------------------->>
-			if(_sttChng){
-				// Placeholder
-				clrSttChng();
-			}
-			//Do: >>---------------------------------->>
-			_scndModTmrStrt = 0;
-			_validScndModPend = false;
-			_mpbFdaState = stOnMPBRlsd;
-			setSttChng();
-			//Out: >>---------------------------------->>
-			if(_sttChng){
-				// Placeholder
-			}
-
-			break;
-		case stOnMPBRlsd:
-			//In: >>---------------------------------->>
-			if(_sttChng){
-				// Placeholder
-				clrSttChng();
-			}
-			//Do: >>---------------------------------->>
-			if(_validScndModPend){
-				_scndModTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
-				_mpbFdaState = stOnStrtScndMod;
-				setSttChng();
-			}
-			else if(_validPressPend && _validReleasePend){
-				_validPressPend = false;
-				_validReleasePend = false;
-				_mpbFdaState = stOnTurnOff;
-				setSttChng();
-			}
-			//Out: >>---------------------------------->>
-			if(_sttChng){
-				// Placeholder
-			}
-			break;
-
-		case stOnTurnOff:
-			//In: >>---------------------------------->>
-			if(_sttChng){
-				// Placeholder
-				clrSttChng();
-			}
-			//Do: >>---------------------------------->>
-			_isOn = false;
-			_outputsChange = true;
-			_mpbFdaState = stOffNotVPP;
-			setSttChng();
-			//Out: >>---------------------------------->>
-			if(_sttChng){
-				// Placeholder
-			}
-			break;
-
-	default:
-		break;
-	}
-
-	return;
-}
-
-void SldrLtchMPBttn::scndModActn(){
-	// Operating in Slider mode, change the associated value according to the time elapsed since last update
-	//and the step size for every time unit elapsed
-	uint16_t _otpStpsChng{0};
-	unsigned long _sldrTmrNxtStrt{0};
-	unsigned long _sldrTmrRemains{0};
-
-	_sldrTmrNxtStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
-	_otpStpsChng = (_sldrTmrNxtStrt - _scndModTmrStrt) /_otptSldrSpd;
-	_sldrTmrRemains = ((_sldrTmrNxtStrt - _scndModTmrStrt) % _otptSldrSpd) * _otptSldrSpd;
-	_sldrTmrNxtStrt -= _sldrTmrRemains;
-	_scndModTmrStrt = _sldrTmrNxtStrt;	//This ends the time management section of the state, calculating the time
-
-
-	if(_curSldrDirUp){
-		// The slider is moving up
-		if(_otptCurVal != _otptValMax){
-			if((_otptValMax - _otptCurVal) >= (_otpStpsChng * _otptSldrStpSize)){
-				//The value change is in range
-				_otptCurVal += (_otpStpsChng * _otptSldrStpSize);
-			}
-			else{
-				//The value change goes out of range
-				_otptCurVal = _otptValMax;
-			}
-			_outputsChange = true;
-		}
-		if(_outputsChange){
-			if(_otptCurVal == _otptValMax){
-				if(_autoSwpDirOnEnd == true){
-					_curSldrDirUp = false;
-				}
-			}
-		}
-	}
-	else{
-		// The slider is moving down
-		if(_otptCurVal != _otptValMin){
-			if((_otptCurVal - _otptValMin) >= (_otpStpsChng * _otptSldrStpSize)){
-				//The value change is in range
-				_otptCurVal -= (_otpStpsChng * _otptSldrStpSize);
-			}
-			else{
-				//The value change goes out of range
-				_otptCurVal = _otptValMin;
-			}
-			_outputsChange = true;
-		}
-		if(_outputsChange){
-			if(_otptCurVal == _otptValMin){
-				if(_autoSwpDirOnEnd == true){
-					_curSldrDirUp = true;
-				}
-			}
-		}
-	}
-
-	return;
 }
 
 void SldrLtchMPBttn::updValidUnlatchStatus(){	//Placeholder for future development

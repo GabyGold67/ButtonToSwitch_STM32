@@ -240,15 +240,20 @@ protected:
 		stOnTurnOff = genNxtEnumVal(stOnEndScndMod,100)
 	};
 	fdaDALmpbStts _mpbFdaState {stOffNotVPP};
-	unsigned long _scndModActvDly {2000};		//===============------------>> Moved Up from SldrLtchMPBttn
+	unsigned long _scndModActvDly {2000};
 	unsigned long _scndModTmrStrt {0};
-	bool _validScndModPend{false};			//===============------------>> Move Up from SldrLtchMPBttn
+	bool _validScndModPend{false};
+
+   virtual void scndModActn();
+   virtual void scndModEndSttng();
+   virtual void scndModStrtSttng();
+	void updFdaState();
 
 public:
 	DblActnLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	~DblActnLtchMPBttn();
-	unsigned long getScndModActvDly();			//===============------------>> Move Up in Hierarchy
-	bool setScndModActvDly(const unsigned long &newVal);			//===============------------>> Move Up in Hierarchy
+	unsigned long getScndModActvDly();
+	bool setScndModActvDly(const unsigned long &newVal);
 	bool updValidPressPend();
 
    bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
@@ -269,10 +274,12 @@ protected:
 	uint16_t _otptValMax{0xFFFF};
 	uint16_t _otptValMin{0x00};
 	unsigned long _sldrTmrStrt {0};
+
+   virtual void scndModActn();
+   virtual void scndModEndSttng();
+   virtual void scndModStrtSttng();
 	bool _setSldrDir(const bool &newVal);
-	void updFdaState();
    virtual void updValidUnlatchStatus();
-   void scndModActn();
 public:
    SldrLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
    ~SldrLtchMPBttn();
