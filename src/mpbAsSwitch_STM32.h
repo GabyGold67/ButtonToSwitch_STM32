@@ -236,9 +236,9 @@ protected:
 		stOffNotVPP = 0,
 		stOffVPP = genNxtEnumVal(stOffNotVPP, 100),
 		stOnMPBRlsd = genNxtEnumVal(stOffVPP,100),
-		stOnStrtScndMod = genNxtEnumVal(stOnMPBRlsd,100),	//replaced by stOnStrtSldrMod
-		stOnScndMod = genNxtEnumVal(stOnStrtScndMod,100),	//replaces stOnSldrMod
-		stOnEndScndMod = genNxtEnumVal(stOnScndMod,100),	//replaces stOnEndSldrMod
+		stOnStrtScndMod = genNxtEnumVal(stOnMPBRlsd,100),
+		stOnScndMod = genNxtEnumVal(stOnStrtScndMod,100),
+		stOnEndScndMod = genNxtEnumVal(stOnScndMod,100),
 		stOnTurnOff = genNxtEnumVal(stOnEndScndMod,100)
 	};
 	fdaDALmpbStts _mpbFdaState {stOffNotVPP};
@@ -250,7 +250,7 @@ protected:
    virtual void scndModEndSttng();
    virtual void scndModStrtSttng();
 	void updFdaState();
-	bool updValidPressPend();
+	bool updValidPressesStatus();
 
 public:
 	DblActnLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
@@ -318,12 +318,12 @@ protected:
    virtual void scndModActn();
    virtual void scndModEndSttng();
    virtual void scndModStrtSttng();
+   virtual void updValidUnlatchStatus();
 public:
    DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
    ~DDlydLtchMPBttn();
    bool getIsOn2();
 
-   bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 
 //==========================================================>>
@@ -332,9 +332,28 @@ class VdblMPBttn: public DbncdDlydMPBttn{
     static void mpbPollCallback(TimerHandle_t mpbTmrCb);
 
 protected:
+ 	enum fdaVmpbStts{
+ 		stOffNotVPP,
+ 		stOffVPP,
+ 		stOnNVRP,
+		//--------
+		stOnVddNVRP,
+		stOffVddNVRP,
+		stOffVddVRP,
+		stOffUnVdd,
+		//--------
+ 		stOnVRP,
+		stOnTurnOff,
+		stOff,
+		//--------
+		stDisabled
+ 	};
+ 	fdaVmpbStts _mpbFdaState {stOffNotVPP};
+
     bool _isEnabled{true};
     bool _isOnDisabled{false};
     bool _isVoided{false};
+    void updFdaState();
     virtual bool updIsVoided() = 0;
 public:
     VdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
@@ -360,7 +379,7 @@ protected:
     bool updIsOn();
     bool updIsPressed();
     virtual bool updIsVoided();
-    bool updValidPressPend();
+    bool updValidPressesStatus();
 public:
     TmVdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, unsigned long int voidTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
     virtual ~TmVdblMPBttn();

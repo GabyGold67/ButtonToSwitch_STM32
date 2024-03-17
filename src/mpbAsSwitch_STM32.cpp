@@ -1741,7 +1741,7 @@ void DblActnLtchMPBttn::updFdaState(){
 	return;
 }
 
-bool DblActnLtchMPBttn::updValidPressPend(){
+bool DblActnLtchMPBttn::updValidPressesStatus(){
 	if(_isPressed){
 		if(_dbncRlsTimerStrt != 0)
 			_dbncRlsTimerStrt = 0;
@@ -1789,7 +1789,7 @@ void DblActnLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
  	// Input/Output signals update
 	mpbObj->updIsPressed();
 	// Flags/Triggers calculation & update
- 	mpbObj->updValidPressPend();
+ 	mpbObj->updValidPressesStatus();
  	// State machine state update
 	mpbObj->updFdaState();
 
@@ -2090,7 +2090,7 @@ void SldrLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
  	// Input/Output signals update
 	mpbObj->updIsPressed();
 	// Flags/Triggers calculation & update
- 	mpbObj->updValidPressPend();
+ 	mpbObj->updValidPressesStatus();
  	// State machine state update
 	mpbObj->updFdaState();
 
@@ -2134,6 +2134,14 @@ void DDlydLtchMPBttn::scndModEndSttng(){
 void DDlydLtchMPBttn::scndModStrtSttng(){
 	_isOn2 = true;
 	_outputsChange = true;
+
+	return;
+}
+
+void DDlydLtchMPBttn::updValidUnlatchStatus(){	//Placeholder for future development
+	if(true){
+		_validUnlatchPend = true;
+	}
 
 	return;
 }
@@ -2241,6 +2249,210 @@ bool VdblMPBttn::disable(){
 
     return setIsEnabled(false);
 }
+
+void VdblMPBttn::updFdaState(){
+	switch(_mpbFdaState){
+		case stOffNotVPP:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			if(_validPressPend){
+				_mpbFdaState = stOffVPP;	//Start pressing timer
+				setSttChng();
+			}
+			if(!_isEnabled){
+				_mpbFdaState = stDisabled;	//The MPB has been disabled
+				setSttChng();
+			}
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stOffVPP:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			if(!_isOn){
+				_isOn = true;
+				_outputsChange = true;
+			}
+			_validPressPend = false;
+			_validReleasePend = false;
+			_mpbFdaState = stOnNVRP;
+			setSttChng();
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stOnNVRP:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+//				scndModStrtSttng();
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			if(_isVoided){
+				_mpbFdaState = stOnVddNVRP;
+				setSttChng();
+			}
+			if(_validReleasePend){
+				_mpbFdaState = stOnVRP;
+				setSttChng();
+			}
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stOnVddNVRP:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+//				scndModStrtSttng();
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			_mpbFdaState = stOffVddNVRP;
+			setSttChng();
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stOffVddNVRP:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			if(!_validReleasePend){
+				//Operating in Second Mode
+//				scndModActn();
+			}
+			else{
+				// MPB released, close Slider mode, move on to next state
+				_mpbFdaState = stOffVddVRP;
+				setSttChng();
+			}
+
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stOffVddVRP:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+//			_scndModTmrStrt = 0;
+//			_validScndModPend = false;
+			_mpbFdaState = stOffUnVdd;
+			setSttChng();
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+//				scndModEndSttng();
+			}
+
+			break;
+		case stOnVRP:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			if(false){
+//			if(_validScndModPend){
+//				_scndModTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
+//				_mpbFdaState = stOnStrtScndMod;
+//				setSttChng();
+			}
+			else if(_validPressPend && _validReleasePend){
+				_validPressPend = false;
+				_validReleasePend = false;
+				_mpbFdaState = stOnTurnOff;
+				setSttChng();
+			}
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stOnTurnOff:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			_isOn = false;
+			_outputsChange = true;
+			_mpbFdaState = stOff;
+			setSttChng();
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stOff:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			_mpbFdaState = stOffNotVPP;
+			setSttChng();
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+		case stDisabled:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+				clrSttChng();
+			}
+			//Do: >>---------------------------------->>
+			if(_isEnabled){
+				_mpbFdaState = stOffNotVPP;
+				setSttChng();
+			}
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				// Placeholder
+			}
+			break;
+
+	default:
+		break;
+	}
+
+	return;
+}
+
+
 
 //=========================================================================> Class methods delimiter
 
@@ -2391,25 +2603,31 @@ bool TmVdblMPBttn::updIsVoided(){
     return _isVoided;
 }
 
-bool TmVdblMPBttn::updValidPressPend(){
+bool TmVdblMPBttn::updValidPressesStatus(){
 
 //    return DbncdDlydMPBttn::updValidPressPend();
 	return true;
 }
 
-void TmVdblMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCb){
-    TmVdblMPBttn *mpbObj = (TmVdblMPBttn*)pvTimerGetTimerID(mpbTmrCb);
-    mpbObj->updIsPressed();
-    mpbObj->updValidPressPend();
-    mpbObj->updIsVoided();
-    mpbObj->updIsOn();
-    if (mpbObj->getOutputsChange()){
-        if(mpbObj->getTaskToNotify() != nullptr)
-            xTaskNotifyGive(mpbObj->getTaskToNotify());
-        mpbObj->setOutputsChange(false);
-    }
+void TmVdblMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
+    TmVdblMPBttn *mpbObj = (TmVdblMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
 
-    return;
+    // Input/Output signals update
+  	mpbObj->updIsPressed();
+  	// Flags/Triggers calculation & update
+	mpbObj->updValidPressesStatus();
+	mpbObj->updIsVoided();
+
+  	// State machine state update
+ 	mpbObj->updFdaState();
+
+ 	if (mpbObj->getOutputsChange()){
+ 	  if(mpbObj->getTaskToNotify() != NULL)
+ 			xTaskNotifyGive(mpbObj->getTaskToNotify());
+ 	  mpbObj->setOutputsChange(false);
+ 	}
+
+ 	return;
 }
 
 //=========================================================================> Class methods delimiter
