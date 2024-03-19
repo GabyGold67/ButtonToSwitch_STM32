@@ -37,58 +37,63 @@ struct gpioPinId_t{	// Type used to keep development as platform independent as 
 	uint16_t pinNum;
 };
 
-//struct gpioPinId{	// Type used to keep development as platform independent as possible,
-//	uint8_t pinNum;
-//};
-
 constexpr int genNxtEnumVal(const int &curVal, const int &increment){return (curVal + increment);}
 
 class DbncdMPBttn {
 	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
 protected:
 	enum fdaDmpbStts {stOffNotVPP, stOffVPP,  stOn, stOnVRP};
+	const unsigned long int _stdMinDbncTime {_HwMinDbncTime};
+
 	GPIO_TypeDef* _mpbttnPort{};
 	uint16_t _mpbttnPin{};
 	bool _pulledUp{};
 	bool _typeNO{};
 	unsigned long int _dbncTimeOrigSett{};
 
-	volatile bool _isOn{false};
-	volatile bool _isPressed{false};
-	volatile bool _validPressPend{false};
-	volatile bool _validReleasePend{false};
 	unsigned long int _dbncRlsTimerStrt{0};
 	unsigned long int _dbncRlsTimeTempSett{0};
 	unsigned long int _dbncTimerStrt{0};
 	unsigned long int _dbncTimeTempSett{0};
+   bool _isEnabled{true};
+	volatile bool _isOn{false};
+   bool _isOnDisabled{false};
+	volatile bool _isPressed{false};
 	fdaDmpbStts _mpbFdaState {stOffNotVPP};
-	const unsigned long int _stdMinDbncTime {_HwMinDbncTime};
 	TimerHandle_t _mpbPollTmrHndl {NULL};	// Std-FreeRTOS
 	char _mpbPollTmrName [18] {'\0'};
 	volatile bool _outputsChange {false};
 	bool _sttChng {true};
 	TaskHandle_t _taskToNotifyHndl {NULL};	// Std-FreeRTOS
+	volatile bool _validPressPend{false};
+	volatile bool _validReleasePend{false};
 
 	void clrSttChng();
 	const bool getIsPressed() const;
 	void setSttChng();
 	void updFdaState();
 	bool updIsPressed();
-	bool updValidPressesStatus();
+	virtual bool updValidPressesStatus();
 public:
 	DbncdMPBttn();
 	DbncdMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
 	virtual ~DbncdMPBttn();
 	void clrStatus();
+   bool disable();
+   bool enable();
 	const unsigned long int getCurDbncTime() const;
+   const bool getIsEnabled() const;
 	const bool getIsOn () const;
+   const bool getIsOnDisabled() const;
 	const bool getOutputsChange() const;
 	const TaskHandle_t getTaskToNotify() const;
 	bool init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
 	bool resetDbncTime();
 	bool resetFda();
 	bool setDbncTime(const unsigned long int &newDbncTime);
-	bool setOutputsChange(bool newOutputChange);
+   bool setIsEnabled(const bool &newEnabledValue);
+   bool setIsOnDisabled(const bool &newIsOnDisabled);
+   bool setOutputsChange(bool newOutputChange);
 	bool setTaskToNotify(TaskHandle_t newHandle);
 
 	bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
@@ -100,11 +105,11 @@ public:
 //==========================================================>>
 
 class DbncdDlydMPBttn: public DbncdMPBttn{
-    static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
+//    static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
 protected:
     unsigned long int _strtDelay {0};
 
-    bool updValidPressesStatus();
+    virtual bool updValidPressesStatus();
 public:
     DbncdDlydMPBttn();
     DbncdDlydMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
@@ -112,7 +117,7 @@ public:
     bool init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
     bool setStrtDelay(const unsigned long int &newStrtDelay);
 
-    bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
+// 	bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 
 //==========================================================>>
@@ -154,7 +159,7 @@ public:
 class TgglLtchMPBttn: public LtchMPBttn{
 	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
 protected:
-	bool updValidPressesStatus();
+	virtual bool updValidPressesStatus();
 	virtual void updValidUnlatchStatus();
 public:
 	TgglLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
@@ -350,22 +355,26 @@ protected:
  	};
  	fdaVmpbStts _mpbFdaState {stOffNotVPP};
 
-    bool _isEnabled{true};
-    bool _isOnDisabled{false};
+//    bool _isEnabled{true};
+//    bool _isOnDisabled{false};
     bool _isVoided{false};
+    bool _validVoidPend{false};
+    bool _validUnvoidPend{false};
+
     void updFdaState();
     virtual bool updIsVoided() = 0;
 public:
     VdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
     virtual ~VdblMPBttn();
     void clrStatus();
-    bool enable();
-    bool disable();
-    const bool getIsEnabled() const;
-    const bool getIsOnDisabled() const;
+//    bool enable();
+//    bool disable();
+//    const bool getIsEnabled() const;
+//    const bool getIsOnDisabled() const;
     const bool getIsVoided() const;
-    bool setIsEnabled(const bool &newEnabledValue);
-    bool setIsOnDisabled(const bool &newIsOnDisabled);
+//    bool setIsEnabled(const bool &newEnabledValue);
+    bool setIsNotVoided(const bool &newVoidValue);
+//    bool setIsOnDisabled(const bool &newIsOnDisabled);
     bool setIsVoided(const bool &newVoidValue);
 };
 
@@ -376,7 +385,6 @@ class TmVdblMPBttn: public VdblMPBttn{
 protected:
     unsigned long int _voidTime;
     unsigned long int _voidTmrStrt{0};
-    bool updIsOn();
     bool updIsPressed();
     virtual bool updIsVoided();
     bool updValidPressesStatus();
