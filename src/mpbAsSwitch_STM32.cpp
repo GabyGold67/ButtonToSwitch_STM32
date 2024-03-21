@@ -19,14 +19,9 @@ DbncdMPBttn::DbncdMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, co
 
 	if(_mpbttnPin != _InvalidPinNum){
 		char mpbttnPinChar[3]{};
-		int tmpBitCount{0};
 		uint16_t tmpPinNum {_mpbttnPin};
+		uint8_t tmpBitCount{singleBitPosition(tmpPinNum)};
 
-		tmpPinNum = tmpPinNum >> 1;
-		while(tmpPinNum > 0){
-			tmpPinNum = tmpPinNum >> 1;
-			++tmpBitCount;
-		}
 		sprintf(mpbttnPinChar, "%02u", tmpBitCount);
 		strcpy(_mpbPollTmrName, "PollMpbPin");
 		if(mpbttnPort == GPIOA){
@@ -227,23 +222,19 @@ const TaskHandle_t DbncdMPBttn::getTaskToNotify() const{
 
 bool DbncdMPBttn::init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett){
     char mpbttnPinChar[3]{};
-    int tmpBitCount{0};
     uint16_t tmpPinNum {_mpbttnPin};
+    uint8_t tmpBitCount{0};
     bool result {false};
 
     if (_mpbPollTmrName[0] == '\0'){
-        _mpbttnPin = mpbttnPin;
-        _pulledUp = pulledUp;
-        _typeNO = typeNO;
-        _dbncTimeOrigSett = dbncTimeOrigSett;
+		_mpbttnPin = mpbttnPin;
+		_pulledUp = pulledUp;
+		_typeNO = typeNO;
+		_dbncTimeOrigSett = dbncTimeOrigSett;
 
-        tmpPinNum = tmpPinNum >> 1;
-        while(tmpPinNum > 0){
-       	 tmpPinNum = tmpPinNum >> 1;
-       	 ++tmpBitCount;
-        }
-        sprintf(mpbttnPinChar, "%02u", tmpBitCount);
-        strcpy(_mpbPollTmrName, "PollMpbPin");
+		tmpBitCount = singleBitPosition(tmpPinNum);
+		sprintf(mpbttnPinChar, "%02u", tmpBitCount);
+		strcpy(_mpbPollTmrName, "PollMpbPin");
   		if(mpbttnPort == GPIOA){
   			strcat(_mpbPollTmrName, "A");
   			__HAL_RCC_GPIOA_CLK_ENABLE();	//Sets the bit in the GPIO enabled clocks register, by logic OR of the corresponding bit, no problem if already set, macro adds time to get the clk running
@@ -570,31 +561,31 @@ bool DbncdMPBttn::updIsPressed(){
 
 bool DbncdMPBttn::updValidPressesStatus(){
 	if(_isPressed){
+		if(_dbncRlsTimerStrt != 0)
+			_dbncRlsTimerStrt = 0;
 		if(!_isOn){
-			if(_dbncRlsTimerStrt != 0)
-				_dbncRlsTimerStrt = 0;
 			if(_dbncTimerStrt == 0){    //This is the first detection of the press event
 				_dbncTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be pressed
 			}
 			else{
 				if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= (_dbncTimeTempSett)){
 					_validPressPend = true;
-					_validReleasePend = false;	//Having a _validPressPend cleans the _validReleasePend flag, even if a release wasn't treated
+					_validReleasePend = false;
 				}
 			}
 		}
 	}
 	else{
+		if(_dbncTimerStrt != 0)
+			_dbncTimerStrt = 0;
 		if(_isOn){
-			if(_dbncTimerStrt != 0)
-				_dbncTimerStrt = 0;
 			if(_dbncRlsTimerStrt == 0){    //This is the first detection of the release event
 				_dbncRlsTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be UNpressed
 			}
 			else{
 				if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncRlsTimerStrt) >= (_dbncRlsTimeTempSett)){
 //					_validPressPend = false;
-					_validReleasePend = true;	//Having a _validReleasePend does not clean a pending _validPressPend, it must be treated dependant of other factors
+					_validReleasePend = true;
 				}
 			}
 		}
@@ -640,9 +631,9 @@ bool DbncdDlydMPBttn::setStrtDelay(const unsigned long int &newStrtDelay){
 
 bool DbncdDlydMPBttn::updValidPressesStatus(){
 	if(_isPressed){
+		if(_dbncRlsTimerStrt != 0)
+			_dbncRlsTimerStrt = 0;
 		if(!_isOn){
-			if(_dbncRlsTimerStrt != 0)
-				_dbncRlsTimerStrt = 0;
 			if(_dbncTimerStrt == 0){    //This is the first detection of the press event
 				_dbncTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be pressed
 			}
@@ -655,9 +646,9 @@ bool DbncdDlydMPBttn::updValidPressesStatus(){
 		}
 	}
 	else{
+		if(_dbncTimerStrt != 0)
+			_dbncTimerStrt = 0;
 		if(_isOn){
-			if(_dbncTimerStrt != 0)
-				_dbncTimerStrt = 0;
 			if(_dbncRlsTimerStrt == 0){    //This is the first detection of the release event
 				_dbncRlsTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be UNpressed
 			}
@@ -933,35 +924,11 @@ TgglLtchMPBttn::TgglLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnP
 {
 }
 
-bool TgglLtchMPBttn::begin(const unsigned long int &pollDelayMs){
-   bool result {false};
-   BaseType_t tmrModResult {pdFAIL};
-
-   if (pollDelayMs > 0){
-   	if (!_mpbPollTmrHndl){
-   		_mpbPollTmrHndl = xTimerCreate(
-				_mpbPollTmrName,  //Timer name
-				pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
-				pdTRUE,     //Auto-reload true
-				this,       //TimerID: data passed to the callback function to work
-				mpbPollCallback
-			);
-         if (_mpbPollTmrHndl != NULL){
-            tmrModResult = xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
-         	if (tmrModResult == pdPASS)
-               result = true;
-         }
-   	}
-	}
-
-	return result;
-}
-
 bool TgglLtchMPBttn::updValidPressesStatus(){
 	if(_isPressed){
+		if(_dbncRlsTimerStrt != 0)
+			_dbncRlsTimerStrt = 0;
 		if(!_validPressPend){
-			if(_dbncRlsTimerStrt != 0)
-				_dbncRlsTimerStrt = 0;
 			if(_dbncTimerStrt == 0){    //This is the first detection of the press event
 				_dbncTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be pressed
 			}
@@ -975,9 +942,9 @@ bool TgglLtchMPBttn::updValidPressesStatus(){
 		}
 	}
 	else{
+		if(_dbncTimerStrt != 0)
+			_dbncTimerStrt = 0;
 		if(!_validReleasePend && _prssRlsCcl){
-			if(_dbncTimerStrt != 0)
-				_dbncTimerStrt = 0;
 			if(_dbncRlsTimerStrt == 0){    //This is the first detection of the release event
 				_dbncRlsTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be UNpressed
 			}
@@ -1003,26 +970,6 @@ void TgglLtchMPBttn::updValidUnlatchStatus(){
 	}
 }
 
-void TgglLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
-    TgglLtchMPBttn* mpbObj = (TgglLtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
-
-  	// Input/Output signals update
-  	mpbObj->updIsPressed();
-  	// Flags/Triggers calculation & update
-	mpbObj->updValidPressesStatus();
-	mpbObj->updValidUnlatchStatus();
-	// State machine state update
-	mpbObj->updFdaState();
-
-	if (mpbObj->getOutputsChange()){
-		if(mpbObj->getTaskToNotify() != NULL)
-			xTaskNotifyGive(mpbObj->getTaskToNotify());
-		mpbObj->setOutputsChange(false);
-	}
-
-	return;
-}
-
 //=========================================================================> Class methods delimiter
 
 TmLtchMPBttn::TmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const unsigned long int &srvcTime, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
@@ -1030,30 +977,6 @@ TmLtchMPBttn::TmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, 
 {
 	if(_srvcTime < _MinSrvcTime) //Best practice would impose failing the constructor (throwing an exception or building a "zombie" object)
 		_srvcTime = _MinSrvcTime;    //this tolerant approach taken for developers benefit, but object will be no faithful to the instantiation parameters
-}
-
-bool TmLtchMPBttn::begin(const unsigned long int &pollDelayMs){
-	bool result {false};
-   BaseType_t tmrModResult {pdFAIL};
-
-   if (pollDelayMs > 0){
-		if (!_mpbPollTmrHndl){
-			_mpbPollTmrHndl = xTimerCreate(
-				_mpbPollTmrName,  //Timer name
-				pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
-				pdTRUE,     //Auto-reload true
-				this,       //TimerID: data passed to the callback function to work
-				mpbPollCallback
-			);
-			if (_mpbPollTmrHndl != NULL){
-				tmrModResult = xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
-				if (tmrModResult == pdPASS)
-					result = true;
-			}
-		}
-   }
-
-   return result;
 }
 
 const unsigned long int TmLtchMPBttn::getSrvcTime() const{
@@ -1093,7 +1016,7 @@ void TmLtchMPBttn::updFdaState(){
 			if(_validPressPend){
 				_isLatched = false;
 				_validUnlatchPend = false;
-				_srvcTimerStrt = 0;
+				_srvcTimerStrt = 0;		//Specific to TmLtchMPBttn. Get it out!!
 				_mpbFdaState = stOffVPP;
 				setSttChng();
 			}
@@ -1115,8 +1038,8 @@ void TmLtchMPBttn::updFdaState(){
 				_outputsChange = true;
 			}
 			_validPressPend = false;
-			_isLatched = true;
-			_srvcTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;
+			_isLatched = true;			//Specific to TmLtchMPBttn. Get it out!!
+			_srvcTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Specific to TmLtchMPBttn. Get it out!!
 			_mpbFdaState = stOnNVRP;
 			setSttChng();
 			//Out: >>---------------------------------->>
@@ -1150,6 +1073,8 @@ void TmLtchMPBttn::updFdaState(){
 			}
 			//Do: >>---------------------------------->>
 			_validReleasePend = false;
+//			if(!_isLatched)	//From the LtchMPBttn...
+//				_isLatched = true;
 			_mpbFdaState = stLtchNVUP;
 			setSttChng();
 			//Out: >>---------------------------------->>
@@ -1303,26 +1228,6 @@ void TmLtchMPBttn::updValidUnlatchStatus(){
 	}
 
 	return;
-}
-
-void TmLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
-    TmLtchMPBttn* mpbObj = (TmLtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
-
-	// Input/Output signals update
-	mpbObj->updIsPressed();
-	// Flags/Triggers calculation & update
- 	mpbObj->updValidPressesStatus();
- 	mpbObj->updValidUnlatchStatus();
- 	// State machine state update
- 	mpbObj->updFdaState();
-
-    if (mpbObj->getOutputsChange()){
-        if(mpbObj->getTaskToNotify() != NULL)
-            xTaskNotifyGive(mpbObj->getTaskToNotify());
-        mpbObj->setOutputsChange(false);
-    }
-
-    return;
 }
 
 //=========================================================================> Class methods delimiter
@@ -1520,27 +1425,6 @@ void XtrnUnltchMPBttn::updValidUnlatchStatus(){
 		}
 	}
 	return;
-}
-
-void XtrnUnltchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
-	XtrnUnltchMPBttn* mpbObj = (XtrnUnltchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
-
-	// Input/Output signals update
-	mpbObj->updIsPressed();
-
-	// Flags/Triggers calculation & update
- 	mpbObj->updValidPressesStatus();
- 	mpbObj->updValidUnlatchStatus();
- 	// State machine state update
- 	mpbObj->updFdaState();
-
-	if (mpbObj->getOutputsChange()){
-		if(mpbObj->getTaskToNotify() != NULL)
-			xTaskNotifyGive(mpbObj->getTaskToNotify());
-		mpbObj->setOutputsChange(false);
-	}
-
-    return;
 }
 
 //=========================================================================> Class methods delimiter
@@ -2630,3 +2514,19 @@ void TmVdblMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 }
 
 //=========================================================================> Class methods delimiter
+
+uint8_t singleBitPosition(uint16_t mask){
+	uint8_t result{0xFF};
+
+	if((mask & (mask - 1)) == 0){
+		result = 0;
+		mask = mask >> 1;
+		while (mask > 0){
+			mask = mask >> 1;
+			++result;
+		}
+	}
+
+	return result;
+}
+
