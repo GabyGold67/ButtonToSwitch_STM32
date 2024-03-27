@@ -14,31 +14,38 @@
 #include <stdio.h>
 
 //===========================>> Next lines included for developing purposes, corresponding headers must be provided for the production platform/s
+#ifndef __STM32F4xx_HAL_H
 #include "stm32f4xx_hal.h"
+#endif
+
+#ifndef __STM32F4xx_HAL_GPIO_H
 #include "stm32f4xx_hal_gpio.h"
+#endif
 //===========================>> Previous lines included for developing purposes, corresponding headers must be provided for the production platform/s
 
-//===========================>> Next lines used to avoid CMSIS wrappers
+//===========================>> BEGIN libraries used to avoid CMSIS wrappers
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
 #include "queue.h"
 #include "semphr.h"
 #include "event_groups.h"
-//===========================>> Previous lines used to avoid CMSIS wrappers
+//===========================>> END libraries used to avoid CMSIS wrappers
 
 #define _HwMinDbncTime 20  // Documented minimum wait time for a MPB signal to stabilize to consider it pressed or released (in milliseconds)
 #define _StdPollDelay 10	// Reasonable time between polls for MPBs switches (in milliseconds)
 #define _MinSrvcTime 100	// Minimum valid time value for service/active time for Time Latched MPBs to avoid stability issues relating to debouncing, releasing and other timed events
 #define _InvalidPinNum 0xFFFF	// Value to give as "yet to be defined", the "Valid pin number" range and characteristics are development platform and environment dependable
 
-struct gpioPinId_t{	// Type used to keep development as platform independent as possible,
+struct gpioPinId_t{	// Type used to keep GPIO pin identification as a single parameter, as platform independent as possible
 	GPIO_TypeDef* portId;
 	uint16_t pinNum;
 };
 
-//===========================>> General use functions prototypes
+//===========================>> BEGIN General use function prototypes
+
 uint8_t singleBitPosition(uint16_t mask);
+
 //===========================>> END General use function prototypes
 
 constexpr int genNxtEnumVal(const int &curVal, const int &increment){return (curVal + increment);}
@@ -46,7 +53,7 @@ constexpr int genNxtEnumVal(const int &curVal, const int &increment){return (cur
 class DbncdMPBttn {
 	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
 protected:
-	enum fdaDmpbStts {stOffNotVPP, stOffVPP,  stOn, stOnVRP};
+	enum fdaDmpbStts {stOffNotVPP, stOffVPP, stOn, stOnVRP};
 	const unsigned long int _stdMinDbncTime {_HwMinDbncTime};
 
 	GPIO_TypeDef* _mpbttnPort{};
@@ -81,8 +88,9 @@ protected:
 public:
 	DbncdMPBttn();
 	DbncdMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
+	DbncdMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
 	virtual ~DbncdMPBttn();
-	void clrStatus();
+	void clrStatus(bool clrIsOn = true);
    bool disable();
    bool enable();
 	const unsigned long int getCurDbncTime() const;
@@ -92,6 +100,7 @@ public:
 	const bool getOutputsChange() const;
 	const TaskHandle_t getTaskToNotify() const;
 	bool init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
+	bool init(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
 	bool resetDbncTime();
 	bool resetFda();
 	bool setDbncTime(const unsigned long int &newDbncTime);
@@ -117,8 +126,10 @@ protected:
 public:
     DbncdDlydMPBttn();
     DbncdDlydMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+    DbncdDlydMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
     unsigned long int getStrtDelay();
     bool init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+    bool init(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
     bool setStrtDelay(const unsigned long int &newStrtDelay);
 };
 
@@ -146,7 +157,8 @@ protected:
 	virtual void updValidUnlatchStatus() = 0;
 public:
 	LtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
-	void clrStatus();
+	LtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+	void clrStatus(bool clrIsOn = true);
 	const bool getIsLatched() const;
 	const bool getUnlatchPend() const;
 	bool resetFda();
@@ -159,12 +171,16 @@ public:
 //==========================================================>>
 
 class TgglLtchMPBttn: public LtchMPBttn{
+//	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
 
 protected:
+//	virtual void updFdaState();
 	virtual bool updValidPressesStatus();
 	virtual void updValidUnlatchStatus();
 public:
 	TgglLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+	TgglLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+//	bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 
 //==========================================================>>
@@ -311,7 +327,7 @@ public:
 //==========================================================>>
 
 class DDlydLtchMPBttn: public DblActnLtchMPBttn{
-   static void mpbPollCallback(TimerHandle_t mpbTmrCb);
+//   static void mpbPollCallback(TimerHandle_t mpbTmrCb);
 
 protected:
    bool _isOn2{false};

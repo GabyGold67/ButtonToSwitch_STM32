@@ -1,7 +1,7 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : SldrLtchMPBttn.cpp
+  * @file           : SldrLtchMPBttn_01.cpp
   * @brief          : Main program body
   ******************************************************************************
   * @attention
