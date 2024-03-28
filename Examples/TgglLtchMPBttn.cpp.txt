@@ -114,21 +114,6 @@ int main(void)
   /* Init scheduler */
 //  osKernelInitialize();
 
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
-
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
-
-  /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
-
-  /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
-  /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
   /* creation of defaultTask */
@@ -154,9 +139,6 @@ int main(void)
 
   /* USER CODE END RTOS_THREADS */
 
-  /* USER CODE BEGIN RTOS_EVENTS */
-  /* add events, ... */
-  /* USER CODE END RTOS_EVENTS */
 
   /* Start scheduler */
 //  osKernelStart();
@@ -227,14 +209,6 @@ void SystemClock_Config(void)
   */
 static void MX_USART2_UART_Init(void)
 {
-
-  /* USER CODE BEGIN USART2_Init 0 */
-
-  /* USER CODE END USART2_Init 0 */
-
-  /* USER CODE BEGIN USART2_Init 1 */
-
-  /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
   huart2.Init.BaudRate = 115200;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
@@ -322,6 +296,8 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+//=====================================>> Example main code
+
 void tstDefTaskExec(void *pvParameters)
 {
 	bool tmpBttnPrssd{false};
@@ -329,17 +305,15 @@ void tstDefTaskExec(void *pvParameters)
 	TgglLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 0, 250);
 
 	tstBttn.begin(20);
+	tstBttn.setTrnOffASAP(false);
 
-	for(;;)
-	{
+	for(;;){
 	  tmpBttnPrssd = tstBttn.getIsOn();
 
-	  if(tmpBttnPrssd){
+	  if(tmpBttnPrssd)
 		  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_SET);
-	  }
-	  else{
+	  else
 		  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_RESET);
-	  }
 	}
 }
 
