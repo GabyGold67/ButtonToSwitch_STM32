@@ -725,6 +725,19 @@ const bool LtchMPBttn::getUnlatchPend() const{
 	return _validUnlatchPend;
 }
 
+bool LtchMPBttn::getTrnOffASAP(){
+
+	return _trnOffASAP;
+}
+
+bool LtchMPBttn::setTrnOffASAP(const bool &newVal){
+	if(_trnOffASAP != newVal){
+		_trnOffASAP = newVal;
+	}
+
+	return _trnOffASAP;
+}
+
 bool LtchMPBttn::setUnlatchPend(const bool &newVal){
 	if(_validUnlatchPend != newVal)
 		_validUnlatchPend = newVal;
@@ -753,7 +766,9 @@ void LtchMPBttn::updFdaState(){
 				setSttChng();
 			}
 			//Out: >>---------------------------------->>
-			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
+			if(_sttChng){
+				stOffNotVPP_Out();
+			}	// Execute this code only ONCE, when exiting this state
 			break;
 
 		case stOffVPP:
@@ -768,7 +783,9 @@ void LtchMPBttn::updFdaState(){
 			_mpbFdaState = stOnNVRP;
 			setSttChng();
 			//Out: >>---------------------------------->>
-			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
+			if(_sttChng){
+				stOffVPP_Out();	//At this point of development this function starts the latch timer here... to be considered if the MPB release must be the starting point Gaby
+			}	// Execute this code only ONCE, when exiting this state
 			break;
 
 		case stOnNVRP:
@@ -839,7 +856,7 @@ void LtchMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
-			if(_validReleasePend){
+			if(_validUnlatchRlsPend){
 				_mpbFdaState = stOffVURP;
 				setSttChng();
 			}
@@ -851,7 +868,7 @@ void LtchMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
-			_validReleasePend = false;
+			_validUnlatchRlsPend = false;
 			if(_isOn){
 				_isOn = false;
 				_outputsChange = true;
@@ -861,7 +878,9 @@ void LtchMPBttn::updFdaState(){
 			_mpbFdaState = stOffNotVPP;
 			setSttChng();
 			//Out: >>---------------------------------->>
-			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
+			if(_sttChng){
+				stOffVURP_out();
+			}	// Execute this code only ONCE, when exiting this state
 			break;
 
 	default:
@@ -903,25 +922,15 @@ TgglLtchMPBttn::TgglLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp,
 {
 }
 
-bool TgglLtchMPBttn::getTrnOffASAP(){
-
-	return _trnOffASAP;
-}
-
-bool TgglLtchMPBttn::setTrnOffASAP(const bool &newVal){
-
-	if(_trnOffASAP != newVal){
-		_trnOffASAP = newVal;
-	}
-
-	return _trnOffASAP;
-}
-
 void TgglLtchMPBttn::updValidUnlatchStatus(){
 	if(_isLatched){
 		if(_validPressPend){
 			_validUnlatchPend = true;
 			_validPressPend = false;
+		}
+		if(_validReleasePend){
+			_validUnlatchRlsPend = true;
+			_validReleasePend = false;
 		}
 	}
 }
@@ -960,13 +969,23 @@ bool TmLtchMPBttn::setTmerRstbl(const bool &newIsRstbl){
     return _tmRstbl;
 }
 
-bool TmLtchMPBttn::setTrnOffASAP(const bool &newVal){
+void TmLtchMPBttn::stOffNotVPP_Out(){
+	_srvcTimerStrt = 0;
 
-	if(_trnOffASAP != newVal){
-		_trnOffASAP = newVal;
-	}
+	return;
+}
 
-	return _trnOffASAP;
+void TmLtchMPBttn::stOffVPP_Out(){
+//	_isLatched = true;
+	_srvcTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Specific to TmLtchMPBttn. Get it out!!
+
+	return;
+}
+
+void TmLtchMPBttn::stOffVURP_out(){
+	_srvcTimerStrt = 0;
+
+	return;
 }
 
 /*void TmLtchMPBttn::updFdaState(){
@@ -978,14 +997,13 @@ bool TmLtchMPBttn::setTrnOffASAP(const bool &newVal){
 			if(_validPressPend){
 				_isLatched = false;
 				_validUnlatchPend = false;
-				_srvcTimerStrt = 0;		//Specific to TmLtchMPBttn. Get it out!!
 				_mpbFdaState = stOffVPP;
 				setSttChng();
 			}
 			//Out: >>---------------------------------->>
 			if(_sttChng){
-				// Execute this code only ONCE, when exiting this state
-			}
+				_srvcTimerStrt = 0;		//Specific to TmLtchMPBttn. Get it out!!
+			}	// Execute this code only ONCE, when exiting this state
 			break;
 
 		case stOffVPP:
@@ -1002,9 +1020,7 @@ bool TmLtchMPBttn::setTrnOffASAP(const bool &newVal){
 			_mpbFdaState = stOnNVRP;
 			setSttChng();
 			//Out: >>---------------------------------->>
-			if(_sttChng){
-				// Execute this code only ONCE, when exiting this state
-			}
+			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
 
 		case stOnNVRP:
@@ -1016,9 +1032,7 @@ bool TmLtchMPBttn::setTrnOffASAP(const bool &newVal){
 				setSttChng();
 			}
 			//Out: >>---------------------------------->>
-			if(_sttChng){
-				// Execute this code only ONCE, when exiting this state
-			}
+			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
 
 		case stOnVRP:
@@ -1031,9 +1045,7 @@ bool TmLtchMPBttn::setTrnOffASAP(const bool &newVal){
 			_mpbFdaState = stLtchNVUP;
 			setSttChng();
 			//Out: >>---------------------------------->>
-			if(_sttChng){
-				// Execute this code only ONCE, when exiting this state
-			}
+			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
 
 		case stLtchNVUP:	//From this state on different unlatch sources might make sense
@@ -1045,9 +1057,7 @@ bool TmLtchMPBttn::setTrnOffASAP(const bool &newVal){
 				setSttChng();
 			}
 			//Out: >>---------------------------------->>
-			if(_sttChng){
-				// Execute this code only ONCE, when exiting this state
-			}
+			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
 
 		case stLtchdVUP:
@@ -1061,9 +1071,7 @@ bool TmLtchMPBttn::setTrnOffASAP(const bool &newVal){
 			_mpbFdaState = stOffVUP;
 			setSttChng();
 			//Out: >>---------------------------------->>
-			if(_sttChng){
-				// Execute this code only ONCE, when exiting this state
-			}
+			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
 
 		case stOffVUP:
@@ -1074,9 +1082,7 @@ bool TmLtchMPBttn::setTrnOffASAP(const bool &newVal){
 			_mpbFdaState = stOffNVURP;
 			setSttChng();
 			//Out: >>---------------------------------->>
-			if(_sttChng){
-				// Execute this code only ONCE, when exiting this state
-			}
+			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
 
 		case stOffNVURP:
@@ -1086,28 +1092,23 @@ bool TmLtchMPBttn::setTrnOffASAP(const bool &newVal){
 			_mpbFdaState = stOffVURP;
 			setSttChng();
 			//Out: >>---------------------------------->>
-			if(_sttChng){
-				// Execute this code only ONCE, when exiting this state
-			}
+			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
 
 		case stOffVURP:
 			//In: >>---------------------------------->>
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
-			_dbncTimerStrt = 0;
 			_validPressPend = false;
-			_dbncRlsTimerStrt = 0;	//At this point is NOT the expected 0!!
 			_validReleasePend = false;	//At this point is NOT the expected FALSE!!
 			_isLatched = false;			//At this point is NOT the expected FALSE!!
 			_validUnlatchPend = false;//At this point is NOT the expected FALSE!!
+
 			_srvcTimerStrt = 0;		//At this point is NOT the expected 0!!
 			_mpbFdaState = stOffNotVPP;
 			setSttChng();
 			//Out: >>---------------------------------->>
-			if(_sttChng){
-				// Execute this code only ONCE, when exiting this state
-			}
+			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
 
 	default:

@@ -1,4 +1,3 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file           : TmLtchdMPBttn.cpp
@@ -8,13 +7,14 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
+
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 //#include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+//===========================>> BEGIN lines used to avoid CMSIS wrappers
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
@@ -23,8 +23,7 @@
 #include "event_groups.h"
 
 #include "../../mpbAsSwitch_STM32/src/mpbAsSwitch_STM32.h"
-//===========================>> Previous lines used to avoid CMSIS wrappers
-
+//===========================>> END lines used to avoid CMSIS wrappers
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -114,22 +113,6 @@ int main(void)
 
   /* Init scheduler */
 //  osKernelInitialize();
-
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
-
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
-
-  /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
-
-  /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
-  /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
   /* creation of defaultTask */
@@ -328,9 +311,10 @@ void tstDefTaskExec(void *pvParameters)
 	bool tmpBttnPrssd{false};
 
 	TmLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, 3000, true, true, 0, 500);
-	tstBttn.setTmerRstbl(false);
+	tstBttn.setTmerRstbl(true);
 
 	tstBttn.begin(20);
+	tstBttn.setTrnOffASAP(false);
 
 	for(;;)
 	{

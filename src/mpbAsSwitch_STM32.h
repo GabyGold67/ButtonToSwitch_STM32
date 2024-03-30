@@ -152,17 +152,25 @@ protected:
 	bool _prssRlsCcl{false};
 	bool _trnOffASAP{true};
 	bool _validUnlatchPend{false};
+	bool _validUnlatchRlsPend{false};
 
 	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
 	virtual void updFdaState();
 	virtual void updValidUnlatchStatus() = 0;
+
+	virtual void stOffNotVPP_Out(){};
+	virtual void stOffVPP_Out(){};
+	virtual void stOffVURP_out(){};
+
 public:
 	LtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	LtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	void clrStatus(bool clrIsOn = true);
 	const bool getIsLatched() const;
+	bool getTrnOffASAP();
 	const bool getUnlatchPend() const;
 	bool resetFda();
+	bool setTrnOffASAP(const bool &newVal);
 	bool setUnlatchPend(const bool &newVal);
    bool unlatch();
 
@@ -174,14 +182,14 @@ public:
 class TgglLtchMPBttn: public LtchMPBttn{
 protected:
 	virtual void updValidUnlatchStatus();
+
 public:
 	TgglLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	TgglLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
-	bool getTrnOffASAP();
-	bool setTrnOffASAP(const bool &newVal);
 };
 
 //==========================================================>>
+
 //Gaby must start here!!
 class TmLtchMPBttn: public LtchMPBttn{
 protected:
@@ -192,12 +200,14 @@ protected:
 //    virtual void updFdaState();	//When commented Out the class behaves as TgglLtchMPBttn
 //    virtual bool updValidPressesStatus();
     virtual void updValidUnlatchStatus();	//Gives Non consistent Results
+    virtual void stOffVPP_Out();
+    virtual void stOffNotVPP_Out();
+ 	virtual void stOffVURP_out();
 public:
     TmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const unsigned long int &srvcTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
     const unsigned long int getSrvcTime() const;
     bool setSrvcTime(const unsigned long int &newSrvcTime);
     bool setTmerRstbl(const bool &newIsRstbl);
-    bool setTrnOffASAP(const bool &newVal);
 
 };
 
@@ -262,9 +272,9 @@ protected:
 	unsigned long _scndModTmrStrt {0};
 	bool _validScndModPend{false};
 
-   virtual void scndModActn();
-   virtual void scndModEndSttng();
-   virtual void scndModStrtSttng();
+   virtual void scndModActn();	//Must be refactored to stOnScndMod_do()
+   virtual void scndModEndSttng();	//Must be refactored to stOnEndScndMod_out()
+   virtual void scndModStrtSttng();	//Must be refactored to stOnVddNVRP_in()
 	void updFdaState();
 	bool updValidPressesStatus();
 

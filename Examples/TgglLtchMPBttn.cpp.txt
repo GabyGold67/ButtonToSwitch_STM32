@@ -305,7 +305,7 @@ void tstDefTaskExec(void *pvParameters)
 	TgglLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 0, 250);
 
 	tstBttn.begin(20);
-	tstBttn.setTrnOffASAP(false);
+	tstBttn.setTrnOffASAP(true);
 
 	for(;;){
 	  tmpBttnPrssd = tstBttn.getIsOn();
