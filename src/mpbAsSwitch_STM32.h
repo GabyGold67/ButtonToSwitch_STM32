@@ -190,15 +190,12 @@ public:
 
 //==========================================================>>
 
-//Gaby must start here!!
 class TmLtchMPBttn: public LtchMPBttn{
 protected:
     bool _tmRstbl {true};
     unsigned long int _srvcTime {};
     unsigned long int _srvcTimerStrt{0};
 
-//    virtual void updFdaState();	//When commented Out the class behaves as TgglLtchMPBttn
-//    virtual bool updValidPressesStatus();
     virtual void updValidUnlatchStatus();	//Gives Non consistent Results
     virtual void stOffVPP_Out();
     virtual void stOffNotVPP_Out();
@@ -214,26 +211,26 @@ public:
 //==========================================================>>
 
 class HntdTmLtchMPBttn: public TmLtchMPBttn{
-    static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
 
 protected:
-    bool _wrnngOn {false};
-    bool _keepPilot{false};
-    bool _pilotOn{false};
-    unsigned int _wrnngPrctg {0};
-    unsigned long int _wrnngMs{0};
+	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
+	bool _wrnngOn {false};
+	bool _keepPilot{false};
+	bool _pilotOn{false};
+	unsigned int _wrnngPrctg {0};
+	unsigned long int _wrnngMs{0};
 
-    bool updPilotOn();
-    bool updWrnngOn();
+	bool updPilotOn();
+	bool updWrnngOn();
 public:
-    HntdTmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const unsigned long int &actTime, const unsigned int &wrnngPrctg = 0, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
-    const bool getPilotOn() const;
-    const bool getWrnngOn() const;
-    bool setKeepPilot(const bool &newKeepPilot);
-    bool setSrvcTime(const unsigned long int &newActTime);
-    bool setWrnngPrctg (const unsigned int &newWrnngPrctg);
+	HntdTmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const unsigned long int &actTime, const unsigned int &wrnngPrctg = 0, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+	const bool getPilotOn() const;
+	const bool getWrnngOn() const;
+	bool setKeepPilot(const bool &newKeepPilot);
+	bool setSrvcTime(const unsigned long int &newActTime);
+	bool setWrnngPrctg (const unsigned int &newWrnngPrctg);
 
-    bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
+	bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 
 //==========================================================>>
@@ -252,6 +249,8 @@ public:
 };
 
 //==========================================================>>
+
+//Gaby must start here!!
 
 class DblActnLtchMPBttn: public LtchMPBttn{
 	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
@@ -272,9 +271,9 @@ protected:
 	unsigned long _scndModTmrStrt {0};
 	bool _validScndModPend{false};
 
-   virtual void scndModActn();	//Must be refactored to stOnScndMod_do()
-   virtual void scndModEndSttng();	//Must be refactored to stOnEndScndMod_out()
-   virtual void scndModStrtSttng();	//Must be refactored to stOnVddNVRP_in()
+   virtual void stOnScndMod_do(){};
+   virtual void stOnEndScndMod_out(){};
+   virtual void stOnVddNVRP_in(){};
 	void updFdaState();
 	bool updValidPressesStatus();
 
@@ -303,9 +302,9 @@ protected:
 	uint16_t _otptValMin{0x00};
 	unsigned long _sldrTmrStrt {0};
 
-   virtual void scndModActn();
-   virtual void scndModEndSttng();
-   virtual void scndModStrtSttng();
+   virtual void stOnScndMod_do();
+//   virtual void stOnEndScndMod_out();
+   virtual void stOnVddNVRP_in();
 	bool _setSldrDir(const bool &newVal);
    virtual void updValidUnlatchStatus();
 public:
@@ -341,9 +340,9 @@ class DDlydLtchMPBttn: public DblActnLtchMPBttn{
 protected:
    bool _isOn2{false};
 
-   virtual void scndModActn();
-   virtual void scndModEndSttng();
-   virtual void scndModStrtSttng();
+   virtual void stOnScndMod_do();
+   virtual void stOnEndScndMod_out();
+   virtual void stOnVddNVRP_in();
    virtual void updValidUnlatchStatus();
 public:
    DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);

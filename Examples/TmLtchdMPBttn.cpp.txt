@@ -310,11 +310,11 @@ void tstDefTaskExec(void *pvParameters)
 {
 	bool tmpBttnPrssd{false};
 
-	TmLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, 3000, true, true, 0, 500);
+	TmLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, 3000, true, true, 0, 200);
 	tstBttn.setTmerRstbl(true);
 
 	tstBttn.begin(20);
-	tstBttn.setTrnOffASAP(false);
+	tstBttn.setTrnOffASAP(true);
 
 	for(;;)
 	{
