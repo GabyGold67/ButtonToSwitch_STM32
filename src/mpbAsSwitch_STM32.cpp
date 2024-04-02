@@ -886,7 +886,7 @@ void LtchMPBttn::updFdaState(){
 			setSttChng();
 			//Out: >>---------------------------------->>
 			if(_sttChng){
-				stOffVURP_out();
+				stOffVURP_Out();
 			}	// Execute this code only ONCE, when exiting this state
 			break;
 
@@ -989,7 +989,7 @@ void TmLtchMPBttn::stOffVPP_Out(){
 	return;
 }
 
-void TmLtchMPBttn::stOffVURP_out(){
+void TmLtchMPBttn::stOffVURP_Out(){
 	_srvcTimerStrt = 0;
 
 	return;
@@ -1260,6 +1260,16 @@ bool DblActnLtchMPBttn::setScndModActvDly(const unsigned long &newVal){
 	return result;
 }
 
+void DblActnLtchMPBttn::stOnStrtScndMod_in(){
+
+	return;
+}
+
+void DblActnLtchMPBttn::stOnEndScndMod_out(){
+
+	return;
+}
+
 void DblActnLtchMPBttn::updFdaState(){
 	switch(_mpbFdaState){
 		case stOffNotVPP:
@@ -1300,7 +1310,9 @@ void DblActnLtchMPBttn::updFdaState(){
 
 		case stOnStrtScndMod:
 			//In: >>---------------------------------->>
-			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
+			if(_sttChng){
+				stOnStrtScndMod_in();
+				clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			_mpbFdaState = stOnScndMod;
 			setSttChng();
@@ -1382,6 +1394,24 @@ bool DblActnLtchMPBttn::updValidPressesStatus(){
 	if(_isPressed){
 		if(_dbncRlsTimerStrt != 0)
 			_dbncRlsTimerStrt = 0;
+//		if(_dbncTimerStrt == 0){    //It was not previously pressed
+//			_dbncTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be pressed
+//		}
+//		else{
+//			if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= ((_dbncTimeTempSett + _strtDelay) + _scndModActvDly)){
+//				_validScndModPend = true;
+//				_validPressPend = false;
+//				_validReleasePend = false;	//Needed for the singular case of _scndModActvDly = 0
+//			}
+//			if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= (_dbncTimeTempSett + _strtDelay)){
+//				if(!_validScndModPend){
+//					_validPressPend = true;
+//					_validReleasePend = false;
+//					_prssRlsCcl = true;
+//
+//				}
+//			}
+//		}
 		if(_dbncTimerStrt == 0){    //It was not previously pressed
 			_dbncTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be pressed
 		}
@@ -1389,22 +1419,19 @@ bool DblActnLtchMPBttn::updValidPressesStatus(){
 			if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= ((_dbncTimeTempSett + _strtDelay) + _scndModActvDly)){
 				_validScndModPend = true;
 				_validPressPend = false;
-				_validReleasePend = false;	//Needed for the singular case of _sldrActvDly = 0
+			} else if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= (_dbncTimeTempSett + _strtDelay)){
+				_validPressPend = true;
 			}
-			if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= (_dbncTimeTempSett + _strtDelay)){
-				if(!_validScndModPend){
-					_validPressPend = true;
-					_validReleasePend = false;
-					_prssRlsCcl = true;
-
-				}
+			if(_validPressPend || _validScndModPend){
+				_validReleasePend = false;
+				_prssRlsCcl = true;
 			}
 		}
 	}
 	else{
+		if(_dbncTimerStrt != 0)
+			_dbncTimerStrt = 0;
 		if(!_validReleasePend && _prssRlsCcl){
-			if(_dbncTimerStrt != 0)
-				_dbncTimerStrt = 0;
 			if(_dbncRlsTimerStrt == 0){    //It was not previously pressed
 				_dbncRlsTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be UNpressed
 			}
@@ -1417,7 +1444,7 @@ bool DblActnLtchMPBttn::updValidPressesStatus(){
 		}
 	}
 
-	return true;
+	return (_validPressPend || _validScndModPend);
 }
 
 void DblActnLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
@@ -1434,6 +1461,49 @@ void DblActnLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	  if(mpbObj->getTaskToNotify() != NULL)
 			xTaskNotifyGive(mpbObj->getTaskToNotify());
 	  mpbObj->setOutputsChange(false);
+	}
+
+	return;
+}
+
+//=========================================================================> Class methods delimiter
+
+DDlydLtchMPBttn::DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
+:DblActnLtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
+{
+}
+
+DDlydLtchMPBttn::~DDlydLtchMPBttn()
+{
+}
+
+bool DDlydLtchMPBttn::getIsOn2(){
+
+	return _isOn2;
+}
+
+void DDlydLtchMPBttn::stOnStrtScndMod_in(){
+	_isOn2 = true;
+	_outputsChange = true;
+
+	return;
+}
+
+void DDlydLtchMPBttn::stOnScndMod_do(){
+
+	return;
+}
+
+void DDlydLtchMPBttn::stOnEndScndMod_out(){
+	_isOn2 = false;
+	_outputsChange = true;
+
+	return;
+}
+
+void DDlydLtchMPBttn::updValidUnlatchStatus(){	//Placeholder for future development Gaby
+	if(true){
+		_validUnlatchPend = true;
 	}
 
 	return;
@@ -1576,12 +1646,7 @@ void SldrLtchMPBttn::stOnScndMod_do(){
 	return;
 }
 
-//void SldrLtchMPBttn::stOnEndScndMod_out(){
-//
-//	return;
-//}
-
-void SldrLtchMPBttn::stOnVddNVRP_in(){
+void SldrLtchMPBttn::stOnStrtScndMod_in(){
 	if(_autoSwpDirOnPrss)
 		swapSldrDir();
 
@@ -1716,72 +1781,30 @@ bool SldrLtchMPBttn::swapSldrDir(){
 void SldrLtchMPBttn::updValidUnlatchStatus(){	//Placeholder for future development Gaby
 	if(true){
 		_validUnlatchPend = true;
+//		_validUnlatchRlsPend = true;
 	}
 
 	return;
 }
 
-void SldrLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
-	SldrLtchMPBttn* mpbObj = (SldrLtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
-
- 	// Input/Output signals update
-	mpbObj->updIsPressed();
-	// Flags/Triggers calculation & update
- 	mpbObj->updValidPressesStatus();
- 	// State machine state update
-	mpbObj->updFdaState();
-
-	if (mpbObj->getOutputsChange()){
-	  if(mpbObj->getTaskToNotify() != NULL)
-			xTaskNotifyGive(mpbObj->getTaskToNotify());
-	  mpbObj->setOutputsChange(false);
-	}
-
-	return;
-}
-
-//=========================================================================> Class methods delimiter
-
-DDlydLtchMPBttn::DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
-:DblActnLtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
-{
-}
-
-DDlydLtchMPBttn::~DDlydLtchMPBttn()
-{
-}
-
-bool DDlydLtchMPBttn::getIsOn2(){
-
-	return _isOn2;
-}
-
-void DDlydLtchMPBttn::stOnScndMod_do(){
-
-	return;
-}
-
-void DDlydLtchMPBttn::stOnEndScndMod_out(){
-	_isOn2 = false;
-	_outputsChange = true;
-
-	return;
-}
-
-void DDlydLtchMPBttn::stOnVddNVRP_in(){
-	_isOn2 = true;
-	_outputsChange = true;
-
-	return;
-}
-
-void DDlydLtchMPBttn::updValidUnlatchStatus(){	//Placeholder for future development Gaby
-	if(true){
-		_validUnlatchPend = true;
-	}
-
-	return;
-}
+//void SldrLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
+//	SldrLtchMPBttn* mpbObj = (SldrLtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
+//
+// 	// Input/Output signals update
+//	mpbObj->updIsPressed();
+//	// Flags/Triggers calculation & update
+// 	mpbObj->updValidPressesStatus();
+// 	// State machine state update
+//	mpbObj->updFdaState();
+//
+//	if (mpbObj->getOutputsChange()){
+//	  if(mpbObj->getTaskToNotify() != NULL)
+//			xTaskNotifyGive(mpbObj->getTaskToNotify());
+//	  mpbObj->setOutputsChange(false);
+//	}
+//
+//	return;
+//}
 
 //=========================================================================> Class methods delimiter
 

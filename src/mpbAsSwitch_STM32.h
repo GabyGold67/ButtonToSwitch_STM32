@@ -52,8 +52,11 @@ constexpr int genNxtEnumVal(const int &curVal, const int &increment){return (cur
 
 class DbncdMPBttn {
 protected:
-	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
-	enum fdaDmpbStts {stOffNotVPP, stOffVPP, stOn, stOnVRP};
+	enum fdaDmpbStts {stOffNotVPP,
+							stOffVPP,
+							stOn,
+							stOnVRP
+	};
 	const unsigned long int _stdMinDbncTime {_HwMinDbncTime};
 
 	GPIO_TypeDef* _mpbttnPort{};
@@ -71,17 +74,18 @@ protected:
    bool _isOnDisabled{false};
 	volatile bool _isPressed{false};
 	fdaDmpbStts _mpbFdaState {stOffNotVPP};
-	TimerHandle_t _mpbPollTmrHndl {NULL};	// Std-FreeRTOS
+	TimerHandle_t _mpbPollTmrHndl {NULL};
 	char _mpbPollTmrName [18] {'\0'};
-	bool _prssRlsCcl{false};
 	volatile bool _outputsChange {false};
+	bool _prssRlsCcl{false};
 	bool _sttChng {true};
-	TaskHandle_t _taskToNotifyHndl {NULL};	// Std-FreeRTOS
+	TaskHandle_t _taskToNotifyHndl {NULL};
 	volatile bool _validPressPend{false};
 	volatile bool _validReleasePend{false};
 
 	void clrSttChng();
 	const bool getIsPressed() const;
+	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
 	void setSttChng();
 	virtual void updFdaState();
 	bool updIsPressed();
@@ -149,7 +153,6 @@ protected:
 	};
 	bool _isLatched{false};
 	fdaLmpbStts _mpbFdaState {stOffNotVPP};
-	bool _prssRlsCcl{false};
 	bool _trnOffASAP{true};
 	bool _validUnlatchPend{false};
 	bool _validUnlatchRlsPend{false};
@@ -160,7 +163,7 @@ protected:
 
 	virtual void stOffNotVPP_Out(){};
 	virtual void stOffVPP_Out(){};
-	virtual void stOffVURP_out(){};
+	virtual void stOffVURP_Out(){};
 
 public:
 	LtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
@@ -196,10 +199,10 @@ protected:
     unsigned long int _srvcTime {};
     unsigned long int _srvcTimerStrt{0};
 
-    virtual void updValidUnlatchStatus();	//Gives Non consistent Results
+    virtual void updValidUnlatchStatus();
     virtual void stOffVPP_Out();
     virtual void stOffNotVPP_Out();
- 	virtual void stOffVURP_out();
+    virtual void stOffVURP_Out();
 public:
     TmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const unsigned long int &srvcTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
     const unsigned long int getSrvcTime() const;
@@ -213,13 +216,13 @@ public:
 class HntdTmLtchMPBttn: public TmLtchMPBttn{
 
 protected:
-	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
-	bool _wrnngOn {false};
 	bool _keepPilot{false};
 	bool _pilotOn{false};
+	bool _wrnngOn {false};
 	unsigned int _wrnngPrctg {0};
 	unsigned long int _wrnngMs{0};
 
+	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
 	bool updPilotOn();
 	bool updWrnngOn();
 public:
@@ -250,13 +253,11 @@ public:
 
 //==========================================================>>
 
-//Gaby must start here!!
-
 class DblActnLtchMPBttn: public LtchMPBttn{
-	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
 	friend constexpr int genNxtEnumVal(const int &curVal, const int &increment);
 
 protected:
+	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
 	enum fdaDALmpbStts{
 		stOffNotVPP = 0,
 		stOffVPP = genNxtEnumVal(stOffNotVPP, 100),
@@ -271,11 +272,11 @@ protected:
 	unsigned long _scndModTmrStrt {0};
 	bool _validScndModPend{false};
 
-   virtual void stOnScndMod_do(){};
-   virtual void stOnEndScndMod_out(){};
-   virtual void stOnVddNVRP_in(){};
-	void updFdaState();
-	bool updValidPressesStatus();
+   virtual void stOnStrtScndMod_in();
+   virtual void stOnScndMod_do() = 0;
+   virtual void stOnEndScndMod_out();
+	virtual void updFdaState();
+	virtual bool updValidPressesStatus();
 
 public:
 	DblActnLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
@@ -288,10 +289,29 @@ public:
 
 //==========================================================>>
 
-class SldrLtchMPBttn: public DblActnLtchMPBttn{
-	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
+class DDlydLtchMPBttn: public DblActnLtchMPBttn{
+//   static void mpbPollCallback(TimerHandle_t mpbTmrCb);
 
 protected:
+   bool _isOn2{false};
+
+   virtual void stOnStrtScndMod_in();
+   virtual void stOnScndMod_do();
+   virtual void stOnEndScndMod_out();
+   virtual void updValidUnlatchStatus();
+public:
+   DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+   ~DDlydLtchMPBttn();
+   bool getIsOn2();
+
+};
+
+//==========================================================>>
+
+class SldrLtchMPBttn: public DblActnLtchMPBttn{
+
+protected:
+//	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
 	bool _autoSwpDirOnEnd{true};	// Changes slider direction when reaches _otptValMax or _otptValMin
 	bool _autoSwpDirOnPrss{false};// Changes slider direction each time it enters slider mode
 	bool _curSldrDirUp{true};
@@ -302,9 +322,8 @@ protected:
 	uint16_t _otptValMin{0x00};
 	unsigned long _sldrTmrStrt {0};
 
+   void stOnStrtScndMod_in();
    virtual void stOnScndMod_do();
-//   virtual void stOnEndScndMod_out();
-   virtual void stOnVddNVRP_in();
 	bool _setSldrDir(const bool &newVal);
    virtual void updValidUnlatchStatus();
 public:
@@ -334,24 +353,7 @@ public:
 
 //==========================================================>>
 
-class DDlydLtchMPBttn: public DblActnLtchMPBttn{
-//   static void mpbPollCallback(TimerHandle_t mpbTmrCb);
-
-protected:
-   bool _isOn2{false};
-
-   virtual void stOnScndMod_do();
-   virtual void stOnEndScndMod_out();
-   virtual void stOnVddNVRP_in();
-   virtual void updValidUnlatchStatus();
-public:
-   DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
-   ~DDlydLtchMPBttn();
-   bool getIsOn2();
-
-};
-
-//==========================================================>>
+//Gaby must start here!!
 
 class VdblMPBttn: public DbncdDlydMPBttn{
     static void mpbPollCallback(TimerHandle_t mpbTmrCb);
@@ -381,7 +383,7 @@ protected:
     bool _validVoidPend{false};
     bool _validUnvoidPend{false};
 
-    void updFdaState();
+    virtual void updFdaState();
     virtual bool updIsVoided() = 0;
 public:
     VdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
@@ -407,7 +409,7 @@ protected:
     unsigned long int _voidTmrStrt{0};
     bool updIsPressed();
     virtual bool updIsVoided();
-    bool updValidPressesStatus();
+    virtual bool updValidPressesStatus();
 public:
     TmVdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, unsigned long int voidTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
     virtual ~TmVdblMPBttn();

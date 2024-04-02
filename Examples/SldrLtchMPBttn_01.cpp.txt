@@ -331,8 +331,8 @@ void tstDefTaskExec(void *pvParameters)
 	bool limitReachFlag{false};
 
 	SldrLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 50, 150);
-	tstBttn.setSldrActvDly(3000);
-	tstBttn.setSldrDirUp(false);
+	tstBttn.setScndModActvDly(3000);
+	tstBttn.setSldrDirDn();
 
 	tstBttn.begin(5);
 
