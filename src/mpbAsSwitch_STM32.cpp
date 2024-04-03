@@ -1260,12 +1260,12 @@ bool DblActnLtchMPBttn::setScndModActvDly(const unsigned long &newVal){
 	return result;
 }
 
-void DblActnLtchMPBttn::stOnStrtScndMod_in(){
+void DblActnLtchMPBttn::stOnStrtScndMod_In(){
 
 	return;
 }
 
-void DblActnLtchMPBttn::stOnEndScndMod_out(){
+void DblActnLtchMPBttn::stOnEndScndMod_Out(){
 
 	return;
 }
@@ -1311,7 +1311,7 @@ void DblActnLtchMPBttn::updFdaState(){
 		case stOnStrtScndMod:
 			//In: >>---------------------------------->>
 			if(_sttChng){
-				stOnStrtScndMod_in();
+				stOnStrtScndMod_In();
 				clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			_mpbFdaState = stOnScndMod;
@@ -1326,7 +1326,7 @@ void DblActnLtchMPBttn::updFdaState(){
 			//Do: >>---------------------------------->>
 			if(!_validReleasePend){
 				//Operating in Second Mode
-				stOnScndMod_do();
+				stOnScndMod_Do();
 			}
 			else{
 				// MPB released, close Slider mode, move on to next state
@@ -1348,7 +1348,7 @@ void DblActnLtchMPBttn::updFdaState(){
 			setSttChng();
 			//Out: >>---------------------------------->>
 			if(_sttChng){
-				stOnEndScndMod_out();
+				stOnEndScndMod_Out();
 			}
 			break;
 
@@ -1482,19 +1482,19 @@ bool DDlydLtchMPBttn::getIsOn2(){
 	return _isOn2;
 }
 
-void DDlydLtchMPBttn::stOnStrtScndMod_in(){
+void DDlydLtchMPBttn::stOnStrtScndMod_In(){
 	_isOn2 = true;
 	_outputsChange = true;
 
 	return;
 }
 
-void DDlydLtchMPBttn::stOnScndMod_do(){
+void DDlydLtchMPBttn::stOnScndMod_Do(){
 
 	return;
 }
 
-void DDlydLtchMPBttn::stOnEndScndMod_out(){
+void DDlydLtchMPBttn::stOnEndScndMod_Out(){
 	_isOn2 = false;
 	_outputsChange = true;
 
@@ -1520,30 +1520,6 @@ SldrLtchMPBttn::SldrLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnP
 
 SldrLtchMPBttn::~SldrLtchMPBttn()
 {
-}
-
-bool SldrLtchMPBttn::begin(const unsigned long int &pollDelayMs) {
-    bool result {false};
-    BaseType_t tmrModResult {pdFAIL};
-
-    if (pollDelayMs > 0){
-        if (!_mpbPollTmrHndl){
-            _mpbPollTmrHndl = xTimerCreate(
-                _mpbPollTmrName,  //Timer name
-                pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
-                pdTRUE,     //Auto-reload true
-                this,       //TimerID: data passed to the callback function to work
-                mpbPollCallback	  //Callback function
-				);
-            if (_mpbPollTmrHndl != NULL){
-               tmrModResult = xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
-            	if (tmrModResult == pdPASS)
-                  result = true;
-            }
-        }
-    }
-
-    return result;
 }
 
 uint16_t SldrLtchMPBttn::getOtptCurVal(){
@@ -1586,7 +1562,7 @@ bool SldrLtchMPBttn::getSldrDirUp(){
 	return _curSldrDirUp;
 }
 
-void SldrLtchMPBttn::stOnScndMod_do(){
+void SldrLtchMPBttn::stOnScndMod_Do(){
 	// Operating in Slider mode, change the associated value according to the time elapsed since last update
 	//and the step size for every time unit elapsed
 	uint16_t _otpStpsChng{0};
@@ -1646,7 +1622,7 @@ void SldrLtchMPBttn::stOnScndMod_do(){
 	return;
 }
 
-void SldrLtchMPBttn::stOnStrtScndMod_in(){
+void SldrLtchMPBttn::stOnStrtScndMod_In(){
 	if(_autoSwpDirOnPrss)
 		swapSldrDir();
 
@@ -1786,25 +1762,6 @@ void SldrLtchMPBttn::updValidUnlatchStatus(){	//Placeholder for future developme
 
 	return;
 }
-
-//void SldrLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
-//	SldrLtchMPBttn* mpbObj = (SldrLtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
-//
-// 	// Input/Output signals update
-//	mpbObj->updIsPressed();
-//	// Flags/Triggers calculation & update
-// 	mpbObj->updValidPressesStatus();
-// 	// State machine state update
-//	mpbObj->updFdaState();
-//
-//	if (mpbObj->getOutputsChange()){
-//	  if(mpbObj->getTaskToNotify() != NULL)
-//			xTaskNotifyGive(mpbObj->getTaskToNotify());
-//	  mpbObj->setOutputsChange(false);
-//	}
-//
-//	return;
-//}
 
 //=========================================================================> Class methods delimiter
 

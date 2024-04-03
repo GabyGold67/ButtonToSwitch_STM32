@@ -208,7 +208,6 @@ public:
     const unsigned long int getSrvcTime() const;
     bool setSrvcTime(const unsigned long int &newSrvcTime);
     bool setTmerRstbl(const bool &newIsRstbl);
-
 };
 
 //==========================================================>>
@@ -272,9 +271,9 @@ protected:
 	unsigned long _scndModTmrStrt {0};
 	bool _validScndModPend{false};
 
-   virtual void stOnStrtScndMod_in();
-   virtual void stOnScndMod_do() = 0;
-   virtual void stOnEndScndMod_out();
+   virtual void stOnStrtScndMod_In();
+   virtual void stOnScndMod_Do() = 0;
+   virtual void stOnEndScndMod_Out();
 	virtual void updFdaState();
 	virtual bool updValidPressesStatus();
 
@@ -290,20 +289,17 @@ public:
 //==========================================================>>
 
 class DDlydLtchMPBttn: public DblActnLtchMPBttn{
-//   static void mpbPollCallback(TimerHandle_t mpbTmrCb);
-
 protected:
    bool _isOn2{false};
 
-   virtual void stOnStrtScndMod_in();
-   virtual void stOnScndMod_do();
-   virtual void stOnEndScndMod_out();
+   virtual void stOnStrtScndMod_In();
+   virtual void stOnScndMod_Do();
+   virtual void stOnEndScndMod_Out();
    virtual void updValidUnlatchStatus();
 public:
    DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
    ~DDlydLtchMPBttn();
    bool getIsOn2();
-
 };
 
 //==========================================================>>
@@ -311,7 +307,6 @@ public:
 class SldrLtchMPBttn: public DblActnLtchMPBttn{
 
 protected:
-//	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
 	bool _autoSwpDirOnEnd{true};	// Changes slider direction when reaches _otptValMax or _otptValMin
 	bool _autoSwpDirOnPrss{false};// Changes slider direction each time it enters slider mode
 	bool _curSldrDirUp{true};
@@ -322,8 +317,8 @@ protected:
 	uint16_t _otptValMin{0x00};
 	unsigned long _sldrTmrStrt {0};
 
-   void stOnStrtScndMod_in();
-   virtual void stOnScndMod_do();
+   void stOnStrtScndMod_In();
+   virtual void stOnScndMod_Do();
 	bool _setSldrDir(const bool &newVal);
    virtual void updValidUnlatchStatus();
 public:
@@ -347,8 +342,6 @@ public:
 	bool setSwpDirOnEnd(const bool &newVal);
 	bool setSwpDirOnPrss(const bool &newVal);
 	bool swapSldrDir();
-
-   bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 
 //==========================================================>>
