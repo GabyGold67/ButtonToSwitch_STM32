@@ -349,10 +349,9 @@ public:
 //Gaby must start here!!
 
 class VdblMPBttn: public DbncdDlydMPBttn{
-    static void mpbPollCallback(TimerHandle_t mpbTmrCb);
 
 protected:
- 	enum fdaVmpbStts{
+	enum fdaVmpbStts{
  		stOffNotVPP,
  		stOffVPP,
  		stOnNVRP,
@@ -370,36 +369,32 @@ protected:
  	};
  	fdaVmpbStts _mpbFdaState {stOffNotVPP};
 
-//    bool _isEnabled{true};
-//    bool _isOnDisabled{false};
     bool _isVoided{false};
     bool _validVoidPend{false};
-    bool _validUnvoidPend{false};
+    bool _validVoidRlsPend{false};
 
+    static void mpbPollCallback(TimerHandle_t mpbTmrCb);
+    bool setVoided(const bool &newVoidValue);
     virtual void updFdaState();
     virtual bool updIsVoided() = 0;
 public:
     VdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
     virtual ~VdblMPBttn();
     void clrStatus();
-//    bool enable();
-//    bool disable();
-//    const bool getIsEnabled() const;
-//    const bool getIsOnDisabled() const;
     const bool getIsVoided() const;
-//    bool setIsEnabled(const bool &newEnabledValue);
-    bool setIsNotVoided(const bool &newVoidValue);
-//    bool setIsOnDisabled(const bool &newIsOnDisabled);
-    bool setIsVoided(const bool &newVoidValue);
+    bool setIsNotVoided();
+    bool setIsVoided();
 };
 
 //==========================================================>>
 
 class TmVdblMPBttn: public VdblMPBttn{
-    static void mpbPollCallback(TimerHandle_t mpbTmrCb);
 protected:
+//   static void mpbPollCallback(TimerHandle_t mpbTmrCb);
     unsigned long int _voidTime;
     unsigned long int _voidTmrStrt{0};
+
+    bool setVoided(const bool &newVoidValue);
     bool updIsPressed();
     virtual bool updIsVoided();
     virtual bool updValidPressesStatus();
@@ -409,10 +404,11 @@ public:
     void clrStatus();
     const unsigned long int getVoidTime() const;
     bool setIsEnabled(const bool &newEnabledValue);
-    bool setIsVoided(const bool &newVoidValue);
+    bool setIsNotVoided();
+    bool setIsVoided();
     bool setVoidTime(const unsigned long int &newVoidTime);
 
-    bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
+//    bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 
 #endif /* MPBASSWITCH_STM32_H_ */
