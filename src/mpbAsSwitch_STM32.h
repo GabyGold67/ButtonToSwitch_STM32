@@ -356,9 +356,9 @@ protected:
  		stOffVPP,
  		stOnNVRP,
 		//--------
-		stOnVddNVRP,
-		stOffVddNVRP,
-		stOffVddVRP,
+		stOnVddNVUP,
+		stOffVddNVUP,
+		stOffVddVUP,
 		stOffUnVdd,
 		//--------
  		stOnVRP,
@@ -370,17 +370,21 @@ protected:
  	fdaVmpbStts _mpbFdaState {stOffNotVPP};
 
     bool _isVoided{false};
-    bool _validVoidPend{false};
-    bool _validVoidRlsPend{false};
+    bool _validUnvoidPend{false};
 
     static void mpbPollCallback(TimerHandle_t mpbTmrCb);
+    bool setIsEnabled(const bool &newEnabledValue);
     bool setVoided(const bool &newVoidValue);
+    virtual void stDisabled_In();
+    virtual void stDisabled_Out();
+    virtual void stOffVPP_Do(){};	// This provides a setting point for the voiding mechanism to be started
+    virtual void stOffVddNVUP_Do(){};	//This provides a setting point for calculating the _validUnvoidPend
     virtual void updFdaState();
-    virtual bool updIsVoided() = 0;
+    virtual bool updVoidStatus() = 0;
 public:
     VdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
     virtual ~VdblMPBttn();
-    void clrStatus();
+    void clrStatus(bool clrIsOn = true);
     const bool getIsVoided() const;
     bool setIsNotVoided();
     bool setIsVoided();
@@ -395,9 +399,10 @@ protected:
     unsigned long int _voidTmrStrt{0};
 
     bool setVoided(const bool &newVoidValue);
+    virtual void stOffVddNVUP_Do();	//This provides a setting point for calculating the _validUnvoidPend
+    virtual void stOffVPP_Do();	// This provides a setting point for the voiding mechanism to be started
     bool updIsPressed();
-    virtual bool updIsVoided();
-    virtual bool updValidPressesStatus();
+    virtual bool updVoidStatus();
 public:
     TmVdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, unsigned long int voidTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
     virtual ~TmVdblMPBttn();
@@ -408,7 +413,7 @@ public:
     bool setIsVoided();
     bool setVoidTime(const unsigned long int &newVoidTime);
 
-//    bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
+    bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 
 #endif /* MPBASSWITCH_STM32_H_ */

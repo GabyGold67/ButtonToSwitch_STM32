@@ -1775,20 +1775,27 @@ VdblMPBttn::~VdblMPBttn()
 {
 }
 
-void VdblMPBttn::clrStatus(){
+void VdblMPBttn::clrStatus(bool clrIsOn){
     /*
-    To Resume operation after a pause() without risking generating false "Valid presses" and "On" situations,
+	To Resume operation after a pause() without risking generating false "Valid presses" and "On" situations,
     several attributes must be reseted to "Start" values
     */
-    DbncdMPBttn::clrStatus();	//This method might set the _outputsChange flag if the _isOn flag was set, as it will be changed to false.
-    setIsNotVoided();
+	DbncdMPBttn::clrStatus(clrIsOn);	//This method might set the _outputsChange flag if the _isOn flag was set, as it will be changed to false if the parameter clrIsOn == true.
+	setIsNotVoided();
 
-    return;
+	return;
 }
 
 const bool VdblMPBttn::getIsVoided() const{
 
     return _isVoided;
+}
+
+bool VdblMPBttn::setIsEnabled(const bool &newEnabledValue){
+	if(_isEnabled != newEnabledValue)
+		_isEnabled = newEnabledValue;
+
+	return _isEnabled;
 }
 
 bool VdblMPBttn::setIsNotVoided(){
@@ -1808,6 +1815,27 @@ bool VdblMPBttn::setVoided(const bool &newVoidValue){
 	}
 
 	return _isVoided;
+}
+
+void VdblMPBttn::stDisabled_In(){
+	pause();    //It's pausing the timer that keeps the inputs updated and calculates and updates the output flags... Flags must be updated for the disabled condition
+	clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
+	if(_isOnDisabled){  //Set the _isOn flag to expected value
+		if(!_isOn){
+			_isOn = true;
+			_outputsChange = true;
+		}
+	}
+	//This implementation doesn't have an else as the only check point for _isDisabled is while in the stOffNotVPP state, so the _isOn is always false,
+
+	return;
+}
+
+void VdblMPBttn::stDisabled_Out(){
+	clrStatus();	//Clears all flags and timers, _isOn value will be reset
+	resume();   //It's resuming the timer that keeps the inputs updated and calculates and updates the output flags... before this some conditions of timers and flags had to be insured
+
+	return;
 }
 
 void VdblMPBttn::updFdaState(){
@@ -1840,6 +1868,7 @@ void VdblMPBttn::updFdaState(){
 				_outputsChange = true;
 			}
 			_validPressPend = false;
+			stOffVPP_Do();	// This provides a setting point for the voiding mechanism to be started
 			_mpbFdaState = stOnNVRP;
 			setSttChng();
 			//Out: >>---------------------------------->>
@@ -1851,7 +1880,7 @@ void VdblMPBttn::updFdaState(){
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			if(_isVoided){
-				_mpbFdaState = stOnVddNVRP;
+				_mpbFdaState = stOnVddNVUP;
 				setSttChng();
 			}
 			if(_validReleasePend){
@@ -1862,48 +1891,41 @@ void VdblMPBttn::updFdaState(){
 			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
 
-		case stOnVddNVRP:
+		case stOnVddNVUP:
 			//In: >>---------------------------------->>
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
-			_mpbFdaState = stOffVddNVRP;
+			_isOn = false;
+			_outputsChange = true;
+			_mpbFdaState = stOffVddNVUP;
 			setSttChng();
 			//Out: >>---------------------------------->>
 			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
 
-		case stOffVddNVRP:
+		case stOffVddNVUP:
 			//In: >>---------------------------------->>
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
-			if(!_validReleasePend){
-				//Operating in Second Mode
-//				scndModActn();
-			}
-			else{
-				// MPB released, close Slider mode, move on to next state
-				_mpbFdaState = stOffVddVRP;
+			stOffVddNVUP_Do();
+			if(_validUnvoidPend){
+				_mpbFdaState = stOffVddVUP;
 				setSttChng();
 			}
-
 			//Out: >>---------------------------------->>
 			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
 
-		case stOffVddVRP:
+		case stOffVddVUP:
 			//In: >>---------------------------------->>
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
-//			_scndModTmrStrt = 0;
-//			_validScndModPend = false;
+			_isVoided = false;
+			_validUnvoidPend = false;
 			_mpbFdaState = stOffUnVdd;
 			setSttChng();
 			//Out: >>---------------------------------->>
-			if(_sttChng){
-				// Placeholder
-//				stOnEndScndMod_out();
-			}
-
+			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
 
 		case stOffUnVdd:
@@ -1920,18 +1942,9 @@ void VdblMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
-			if(false){
-//			if(_validScndModPend){
-//				_scndModTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
-//				_mpbFdaState = stOnStrtScndMod;
-//				setSttChng();
-			}
-			else if(_validPressPend && _validReleasePend){
-				_validPressPend = false;
-				_validReleasePend = false;
-				_mpbFdaState = stOnTurnOff;
-				setSttChng();
-			}
+			_validReleasePend = false;
+			_mpbFdaState = stOnTurnOff;
+			setSttChng();
 			//Out: >>---------------------------------->>
 			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
@@ -1960,14 +1973,21 @@ void VdblMPBttn::updFdaState(){
 
 		case stDisabled:
 			//In: >>---------------------------------->>
-			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
+			if(_sttChng){
+				stDisabled_In();
+				clrSttChng();
+			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			if(_isEnabled){
-				_mpbFdaState = stOffNotVPP;
-				setSttChng();
+				if(!updIsPressed()){	//The stDisabled status will be kept until the MPB is released for security reasons
+					_mpbFdaState = stOffNotVPP;
+					setSttChng();
+				}
 			}
 			//Out: >>---------------------------------->>
-			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
+			if(_sttChng){
+				stDisabled_Out();
+			}	// Execute this code only ONCE, when exiting this state
 			break;
 
 	default:
@@ -1985,7 +2005,7 @@ void VdblMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 
 	// Flags/Triggers calculation & update
  	mpbObj->updValidPressesStatus();
- 	mpbObj->updIsVoided();
+ 	mpbObj->updVoidStatus();
 
  	// State machine state update
 	mpbObj->updFdaState();
@@ -2010,27 +2030,27 @@ TmVdblMPBttn::~TmVdblMPBttn()
 {
 }
 
-//bool TmVdblMPBttn::begin(const unsigned long int &pollDelayMs){
-//   bool result {false};
-//   BaseType_t tmrModResult {pdFAIL};
-//
-//   if (!_mpbPollTmrHndl){
-//		_mpbPollTmrHndl = xTimerCreate(
-//			_mpbPollTmrName,  //Timer name
-//			pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
-//			pdTRUE,     //Autoreload true
-//			this,       //TimerID: data passed to the callback funtion to work
-//			mpbPollCallback
-//		);
-//	}
-//   if (_mpbPollTmrHndl != NULL){
-//   	tmrModResult = xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
-//		if (tmrModResult == pdPASS)
-//			result = true;
-//	}
-//
-//return result;
-//}
+bool TmVdblMPBttn::begin(const unsigned long int &pollDelayMs){
+   bool result {false};
+   BaseType_t tmrModResult {pdFAIL};
+
+   if (!_mpbPollTmrHndl){
+		_mpbPollTmrHndl = xTimerCreate(
+			_mpbPollTmrName,  //Timer name
+			pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
+			pdTRUE,     //Autoreload true
+			this,       //TimerID: data passed to the callback funtion to work
+			mpbPollCallback
+		);
+	}
+   if (_mpbPollTmrHndl != NULL){
+   	tmrModResult = xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
+		if (tmrModResult == pdPASS)
+			result = true;
+	}
+
+return result;
+}
 
 void TmVdblMPBttn::clrStatus(){
     /*
@@ -2093,62 +2113,30 @@ bool TmVdblMPBttn::updIsPressed(){
     return DbncdDlydMPBttn::updIsPressed();
 }
 
-bool TmVdblMPBttn::updIsVoided(){
-    //if it's pressed
-        //if the pressing timer is running
-            // if the pressing timer is greater than the debounceTime + strtDelay + voidTime
-                //Set isVoided to true
-                //Set isOn to false (the updateIsOn() will have to check _isVoided to prevent reverting back on)
-    bool result {false};
+void TmVdblMPBttn::stOffVPP_Do(){	// This provides a setting point for the voiding mechanism to be started
+   _voidTmrStrt = xTaskGetTickCount() / portTICK_RATE_MS;
 
-    if(_validPressPend){
-        if(_voidTmrStrt == 0){    //It was not previously pressed
-            //Started to be pressed
-            _voidTmrStrt = xTaskGetTickCount() / portTICK_RATE_MS;
-        }
-        else{
-            if (((xTaskGetTickCount() / portTICK_RATE_MS) - _voidTmrStrt) >= (_voidTime)){ // + _dbncTimeTempSett + _strtDelay
-                result = true;
-            }
-        }
-    }
-    else{
-        _voidTmrStrt = 0;
-    }
-    if(_isVoided != result)
-        _outputsChange = true;
-
-    _isVoided = result;
-
-    return _isVoided;
+	return;
 }
 
-bool TmVdblMPBttn::updValidPressesStatus(){
-
-//    return DbncdDlydMPBttn::updValidPressPend();
-	return true;
+void TmVdblMPBttn::stOffVddNVUP_Do(){
+	if(_validReleasePend){
+		_validReleasePend = false;
+		_validUnvoidPend = true;
+	}
+	return;
 }
 
-//void TmVdblMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
-//    TmVdblMPBttn *mpbObj = (TmVdblMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
-//
-//    // Input/Output signals update
-//  	mpbObj->updIsPressed();
-//  	// Flags/Triggers calculation & update
-//	mpbObj->updValidPressesStatus();
-//	mpbObj->updIsVoided();
-//
-//  	// State machine state update
-// 	mpbObj->updFdaState();
-//
-// 	if (mpbObj->getOutputsChange()){
-// 	  if(mpbObj->getTaskToNotify() != NULL)
-// 			xTaskNotifyGive(mpbObj->getTaskToNotify());
-// 	  mpbObj->setOutputsChange(false);
-// 	}
-//
-// 	return;
-//}
+bool TmVdblMPBttn::updVoidStatus(){
+   bool result {false};
+
+   if (((xTaskGetTickCount() / portTICK_RATE_MS) - _voidTmrStrt) >= (_voidTime)){ // + _dbncTimeTempSett + _strtDelay
+       result = true;
+   }
+   _isVoided = result;
+
+	return _isVoided;
+}
 
 //=========================================================================> Class methods delimiter
 
