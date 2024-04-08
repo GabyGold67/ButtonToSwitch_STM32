@@ -374,6 +374,7 @@ protected:
     bool setVoided(const bool &newVoidValue);
     virtual void stDisabled_In();
     virtual void stDisabled_Out();
+    virtual void stOffNotVPP_In(){};
     virtual void stOffVPP_Do(){};	// This provides a setting point for the voiding mechanism to be started
     virtual void stOffVddNVUP_Do(){};	//This provides a setting point for calculating the _validUnvoidPend
     virtual void updFdaState();
@@ -394,7 +395,8 @@ protected:
     unsigned long int _voidTime;
     unsigned long int _voidTmrStrt{0};
 
-    bool setVoided(const bool &newVoidValue);
+//    bool setVoided(const bool &newVoidValue);
+    virtual void stOffNotVPP_In();
     virtual void stOffVddNVUP_Do();	//This provides a setting point for calculating the _validUnvoidPend
     virtual void stOffVPP_Do();	// This provides a setting point for the voiding mechanism to be started
     bool updIsPressed();
@@ -405,8 +407,8 @@ public:
     void clrStatus();
     const unsigned long int getVoidTime() const;
     bool setIsEnabled(const bool &newEnabledValue);
-    bool setIsNotVoided();
-    bool setIsVoided();
+//    bool setIsNotVoided();
+//    bool setIsVoided();
     bool setVoidTime(const unsigned long int &newVoidTime);
 
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);

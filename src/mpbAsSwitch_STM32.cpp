@@ -1855,6 +1855,7 @@ void VdblMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){
 				_isVoided = false;
+				stOffNotVPP_In();
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
@@ -2074,17 +2075,17 @@ bool TmVdblMPBttn::setIsEnabled(const bool &newEnabledValue){
 	return _isEnabled;
 }
 
-bool TmVdblMPBttn::setVoided(const bool &newVoidValue){
-    if(_isVoided != newVoidValue){
-       if(newVoidValue){
-           _voidTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS) - (_voidTime + 1);
-       }
-        _outputsChange = true;
-        _isVoided = newVoidValue;
-    }
-
-    return _isVoided;
-}
+//bool TmVdblMPBttn::setVoided(const bool &newVoidValue){
+//    if(_isVoided != newVoidValue){
+//       if(newVoidValue){
+//           _voidTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS) - (_voidTime + 1);
+//       }
+//        _outputsChange = true;
+//        _isVoided = newVoidValue;
+//    }
+//
+//    return _isVoided;
+//}
 
 bool TmVdblMPBttn::setVoidTime(const unsigned long int &newVoidTime){
     bool result{false};
@@ -2097,9 +2098,10 @@ bool TmVdblMPBttn::setVoidTime(const unsigned long int &newVoidTime){
     return result;
 }
 
-bool TmVdblMPBttn::updIsPressed(){
+void TmVdblMPBttn::stOffNotVPP_In(){
+	_voidTmrStrt = 0;
 
-    return DbncdDlydMPBttn::updIsPressed();
+	return;
 }
 
 void TmVdblMPBttn::stOffVPP_Do(){	// This provides a setting point for the voiding mechanism to be started
@@ -2116,12 +2118,19 @@ void TmVdblMPBttn::stOffVddNVUP_Do(){
 	return;
 }
 
+bool TmVdblMPBttn::updIsPressed(){
+
+    return DbncdDlydMPBttn::updIsPressed();
+}
+
 bool TmVdblMPBttn::updVoidStatus(){
    bool result {false};
 
-   if (((xTaskGetTickCount() / portTICK_RATE_MS) - _voidTmrStrt) >= (_voidTime)){ // + _dbncTimeTempSett + _strtDelay
-       result = true;
-   }
+   if(_voidTmrStrt != 0){
+		if (((xTaskGetTickCount() / portTICK_RATE_MS) - _voidTmrStrt) >= (_voidTime)){ // + _dbncTimeTempSett + _strtDelay
+			 result = true;
+		}
+	}
    _isVoided = result;
 
 	return _isVoided;
