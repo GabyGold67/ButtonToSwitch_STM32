@@ -983,13 +983,12 @@ void TmLtchMPBttn::stOffNotVPP_Out(){
 }
 
 void TmLtchMPBttn::stOffVPP_Out(){
-//	_isLatched = true;
-	_srvcTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Specific to TmLtchMPBttn. Get it out!!
+	_srvcTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;
 
 	return;
 }
 
-void TmLtchMPBttn::stOffVURP_Out(){
+void TmLtchMPBttn::stOffVURP_Out(){	//Check for redundant code, not needed, test!! Gaby
 	_srvcTimerStrt = 0;
 
 	return;
@@ -1077,6 +1076,13 @@ void HntdTmLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	return;
 }
 
+bool HntdTmLtchMPBttn::setKeepPilot(const bool &newKeepPilot){
+	if(_keepPilot != newKeepPilot)
+		_keepPilot = newKeepPilot;
+
+	return _keepPilot;
+}
+
 bool HntdTmLtchMPBttn::setSrvcTime(const unsigned long int &newSrvcTime){
 	bool result {true};
 
@@ -1087,13 +1093,6 @@ bool HntdTmLtchMPBttn::setSrvcTime(const unsigned long int &newSrvcTime){
 	}
 
 	return result;
-}
-
-bool HntdTmLtchMPBttn::setKeepPilot(const bool &newKeepPilot){
-	if(_keepPilot != newKeepPilot)
-		_keepPilot = newKeepPilot;
-
-	return _keepPilot;
 }
 
 bool HntdTmLtchMPBttn::setWrnngPrctg (const unsigned int &newWrnngPrctg){
@@ -1447,6 +1446,15 @@ bool DblActnLtchMPBttn::updValidPressesStatus(){
 	return (_validPressPend || _validScndModPend);
 }
 
+void DblActnLtchMPBttn::updValidUnlatchStatus(){	//Placeholder for future development Gaby
+//	if(true){
+		_validUnlatchPend = true;
+//		_validUnlatchRlsPend = true;
+//	}
+
+	return;
+}
+
 void DblActnLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	DblActnLtchMPBttn* mpbObj = (DblActnLtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
 
@@ -1497,14 +1505,6 @@ void DDlydLtchMPBttn::stOnScndMod_Do(){
 void DDlydLtchMPBttn::stOnEndScndMod_Out(){
 	_isOn2 = false;
 	_outputsChange = true;
-
-	return;
-}
-
-void DDlydLtchMPBttn::updValidUnlatchStatus(){	//Placeholder for future development Gaby
-	if(true){
-		_validUnlatchPend = true;
-	}
 
 	return;
 }
@@ -1754,15 +1754,6 @@ bool SldrLtchMPBttn::swapSldrDir(){
 	return _setSldrDir(!_curSldrDirUp);
 }
 
-void SldrLtchMPBttn::updValidUnlatchStatus(){	//Placeholder for future development Gaby
-	if(true){
-		_validUnlatchPend = true;
-//		_validUnlatchRlsPend = true;
-	}
-
-	return;
-}
-
 //=========================================================================> Class methods delimiter
 
 VdblMPBttn::VdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay, const bool &isOnDisabled)
@@ -1789,6 +1780,26 @@ void VdblMPBttn::clrStatus(bool clrIsOn){
 const bool VdblMPBttn::getIsVoided() const{
 
     return _isVoided;
+}
+
+void VdblMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
+	VdblMPBttn* mpbObj = (VdblMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
+
+ 	// Input/Output signals update
+	mpbObj->updIsPressed();
+	// Flags/Triggers calculation & update
+ 	mpbObj->updValidPressesStatus();
+ 	mpbObj->updVoidStatus();
+ 	// State machine state update
+	mpbObj->updFdaState();
+
+	if (mpbObj->getOutputsChange()){
+	  if(mpbObj->getTaskToNotify() != NULL)
+			xTaskNotifyGive(mpbObj->getTaskToNotify());
+	  mpbObj->setOutputsChange(false);
+	}
+
+	return;
 }
 
 bool VdblMPBttn::setIsEnabled(const bool &newEnabledValue){
@@ -1992,28 +2003,6 @@ void VdblMPBttn::updFdaState(){
 
 	default:
 		break;
-	}
-
-	return;
-}
-
-void VdblMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
-	VdblMPBttn* mpbObj = (VdblMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
-
- 	// Input/Output signals update
-	mpbObj->updIsPressed();
-
-	// Flags/Triggers calculation & update
- 	mpbObj->updValidPressesStatus();
- 	mpbObj->updVoidStatus();
-
- 	// State machine state update
-	mpbObj->updFdaState();
-
-	if (mpbObj->getOutputsChange()){
-	  if(mpbObj->getTaskToNotify() != NULL)
-			xTaskNotifyGive(mpbObj->getTaskToNotify());
-	  mpbObj->setOutputsChange(false);
 	}
 
 	return;

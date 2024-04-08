@@ -164,7 +164,6 @@ protected:
 	virtual void stOffNotVPP_Out(){};
 	virtual void stOffVPP_Out(){};
 	virtual void stOffVURP_Out(){};
-
 public:
 	LtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	LtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
@@ -185,7 +184,6 @@ public:
 class TgglLtchMPBttn: public LtchMPBttn{
 protected:
 	virtual void updValidUnlatchStatus();
-
 public:
 	TgglLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	TgglLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
@@ -217,9 +215,9 @@ class HntdTmLtchMPBttn: public TmLtchMPBttn{
 protected:
 	bool _keepPilot{false};
 	bool _pilotOn{false};
+	unsigned long int _wrnngMs{0};
 	bool _wrnngOn {false};
 	unsigned int _wrnngPrctg {0};
-	unsigned long int _wrnngMs{0};
 
 	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
 	bool updPilotOn();
@@ -238,6 +236,7 @@ public:
 //==========================================================>>
 
 class XtrnUnltchMPBttn: public LtchMPBttn{
+
 protected:
     DbncdDlydMPBttn* _unLtchBttn {nullptr};
     virtual void updValidUnlatchStatus();
@@ -247,7 +246,7 @@ public:
     XtrnUnltchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin,
         const bool &pulledUp = true,  const bool &typeNO = true,  const unsigned long int &dbncTimeOrigSett = 0,  const unsigned long int &strtDelay = 0);
 
-    bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
+    bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);	// Duplicate code? Refers to the LtchMPBttn::mpbPollCallback?? Check Gaby
 };
 
 //==========================================================>>
@@ -256,7 +255,6 @@ class DblActnLtchMPBttn: public LtchMPBttn{
 	friend constexpr int genNxtEnumVal(const int &curVal, const int &increment);
 
 protected:
-	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
 	enum fdaDALmpbStts{
 		stOffNotVPP = 0,
 		stOffVPP = genNxtEnumVal(stOffNotVPP, 100),
@@ -271,11 +269,13 @@ protected:
 	unsigned long _scndModTmrStrt {0};
 	bool _validScndModPend{false};
 
+	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
    virtual void stOnStrtScndMod_In();
    virtual void stOnScndMod_Do() = 0;
    virtual void stOnEndScndMod_Out();
 	virtual void updFdaState();
 	virtual bool updValidPressesStatus();
+   virtual void updValidUnlatchStatus();
 
 public:
 	DblActnLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
@@ -295,7 +295,6 @@ protected:
    virtual void stOnStrtScndMod_In();
    virtual void stOnScndMod_Do();
    virtual void stOnEndScndMod_Out();
-   virtual void updValidUnlatchStatus();
 public:
    DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
    ~DDlydLtchMPBttn();
@@ -320,7 +319,6 @@ protected:
    void stOnStrtScndMod_In();
    virtual void stOnScndMod_Do();
 	bool _setSldrDir(const bool &newVal);
-   virtual void updValidUnlatchStatus();
 public:
    SldrLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
    ~SldrLtchMPBttn();
@@ -349,7 +347,6 @@ public:
 //Gaby must start here!!
 
 class VdblMPBttn: public DbncdDlydMPBttn{
-
 protected:
 	enum fdaVmpbStts{
  		stOffNotVPP,
@@ -394,7 +391,6 @@ public:
 
 class TmVdblMPBttn: public VdblMPBttn{
 protected:
-//   static void mpbPollCallback(TimerHandle_t mpbTmrCb);
     unsigned long int _voidTime;
     unsigned long int _voidTmrStrt{0};
 
