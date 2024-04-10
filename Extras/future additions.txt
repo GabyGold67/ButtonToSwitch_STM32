@@ -1,5 +1,0 @@
-Bugs report
-_ SldrLtchMPBttn
-	_ _scndModActvDly fails when value is too low (0, 1...)
-	
-			

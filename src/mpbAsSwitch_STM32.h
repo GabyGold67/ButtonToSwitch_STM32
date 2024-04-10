@@ -55,7 +55,8 @@ protected:
 	enum fdaDmpbStts {stOffNotVPP,
 							stOffVPP,
 							stOn,
-							stOnVRP
+							stOnVRP,
+							stDisabled
 	};
 	const unsigned long int _stdMinDbncTime {_HwMinDbncTime};
 
@@ -80,12 +81,15 @@ protected:
 	bool _prssRlsCcl{false};
 	bool _sttChng {true};
 	TaskHandle_t _taskToNotifyHndl {NULL};
+	bool _validDisablePend{false};
+	bool _validEnablePend{false};
 	volatile bool _validPressPend{false};
 	volatile bool _validReleasePend{false};
 
 	void clrSttChng();
 	const bool getIsPressed() const;
 	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
+   bool setIsEnabled(const bool &newEnabledValue);
 	void setSttChng();
 	virtual void updFdaState();
 	bool updIsPressed();
@@ -109,7 +113,6 @@ public:
 	bool resetDbncTime();
 	bool resetFda();
 	bool setDbncTime(const unsigned long int &newDbncTime);
-   bool setIsEnabled(const bool &newEnabledValue);
    bool setIsOnDisabled(const bool &newIsOnDisabled);
    bool setOutputsChange(bool newOutputChange);
 	bool setTaskToNotify(TaskHandle_t newHandle);
@@ -149,7 +152,8 @@ protected:
 		stLtchdVUP,
 		stOffVUP,
 		stOffNVURP,
-		stOffVURP
+		stOffVURP,
+		stDisabled
 	};
 	bool _isLatched{false};
 	fdaLmpbStts _mpbFdaState {stOffNotVPP};
@@ -203,6 +207,7 @@ protected:
     virtual void stOffVURP_Out();
 public:
     TmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const unsigned long int &srvcTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+    void clrStatus(bool clrIsOn = true);
     const unsigned long int getSrvcTime() const;
     bool setSrvcTime(const unsigned long int &newSrvcTime);
     bool setTmerRstbl(const bool &newIsRstbl);
@@ -370,7 +375,6 @@ protected:
     bool _validUnvoidPend{false};
 
     static void mpbPollCallback(TimerHandle_t mpbTmrCb);
-    bool setIsEnabled(const bool &newEnabledValue);
     bool setVoided(const bool &newVoidValue);
     virtual void stDisabled_In();
     virtual void stDisabled_Out();
@@ -395,7 +399,6 @@ protected:
     unsigned long int _voidTime;
     unsigned long int _voidTmrStrt{0};
 
-//    bool setVoided(const bool &newVoidValue);
     virtual void stOffNotVPP_In();
     virtual void stOffVddNVUP_Do();	//This provides a setting point for calculating the _validUnvoidPend
     virtual void stOffVPP_Do();	// This provides a setting point for the voiding mechanism to be started
@@ -406,9 +409,6 @@ public:
     virtual ~TmVdblMPBttn();
     void clrStatus();
     const unsigned long int getVoidTime() const;
-    bool setIsEnabled(const bool &newEnabledValue);
-//    bool setIsNotVoided();
-//    bool setIsVoided();
     bool setVoidTime(const unsigned long int &newVoidTime);
 
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);

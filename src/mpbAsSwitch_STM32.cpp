@@ -145,8 +145,8 @@ void DbncdMPBttn::clrStatus(bool clrIsOn){
 	_validReleasePend = false;
 	_dbncTimerStrt = 0;
 	_dbncRlsTimerStrt = 0;
-	if(_isOn){
-		if(clrIsOn){
+	if(clrIsOn){
+		if(_isOn){
 			_isOn = false;
 			_outputsChange = true;
 		}
@@ -317,10 +317,11 @@ void DbncdMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 
 		// Flags/Triggers calculation & update
 		mpbObj->updValidPressesStatus();
-
-		// State machine status update
-		mpbObj->updFdaState();
 	}
+
+	// State machine status update
+	mpbObj->updFdaState();
+
 	if (mpbObj->getOutputsChange()){	//Output changes might happen as part of the Disable/Enable process or setting/clearing some flags even if the MPB is disabled...
 		if(mpbObj->getTaskToNotify() != NULL)
 			xTaskNotifyGive(mpbObj->getTaskToNotify());
@@ -390,24 +391,19 @@ bool DbncdMPBttn::setDbncTime(const unsigned long int &newDbncTime){
 
 bool DbncdMPBttn::setIsEnabled(const bool &newEnabledValue){
 	if(_isEnabled != newEnabledValue){
-		if (!newEnabledValue){  //Changed to !Enabled (i.e. Disabled)
-			pause();    //It's pausing the timer that keeps the inputs updated and calculates and updates the output flags... Flags must be updated for the disabled condition
-			clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
-			if(_isOnDisabled){  //Set the _isOn flag to expected value
-				if(!_isOn){
-					_isOn = true;
-					_outputsChange = true;
-				}
-			}
+		if (newEnabledValue){  //Change to Enabled = true
+			_validEnablePend = true;
+			if(_validDisablePend)
+				_validDisablePend = false;
 		}
-		else{
-			clrStatus();
-			resume();   //It's resuming the timer that keeps the inputs updated and calculates and updates the output flags... before this some conditions of timers and flags had to be insured
+		else{	//Change to Enabled = false  (i.e. Disabled)
+			_validDisablePend = true;
+			if(_validEnablePend)
+				_validEnablePend = false;
 		}
-		_isEnabled = newEnabledValue;
 	}
 
-	return _isEnabled;
+	return _validEnablePend;
 }
 
 bool DbncdMPBttn::setIsOnDisabled(const bool &newIsOnDisabled){
@@ -458,6 +454,10 @@ void DbncdMPBttn::updFdaState(){
 				_mpbFdaState = stOffVPP;
 				setSttChng();	//Set flag to execute exiting OUT code
 			}
+			if(_validDisablePend){
+				_mpbFdaState = stDisabled;
+				setSttChng();	//Set flag to execute exiting OUT code
+			}
 			//Out: >>---------------------------------->>
 			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
@@ -485,6 +485,10 @@ void DbncdMPBttn::updFdaState(){
 				_mpbFdaState = stOnVRP;
 				setSttChng();
 			}
+			if(_validDisablePend){
+				_mpbFdaState = stDisabled;
+				setSttChng();	//Set flag to execute exiting OUT code
+			}
 			//Out: >>---------------------------------->>
 			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
@@ -504,6 +508,30 @@ void DbncdMPBttn::updFdaState(){
 			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 
 			break;
+
+		case stDisabled:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				_validDisablePend = false;
+				if(_isOn != _isOnDisabled){
+					_isOn = _isOnDisabled;
+					_outputsChange = true;
+				}
+				clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
+				_isEnabled = false;
+				clrSttChng();
+			}	// Execute this code only ONCE, when entering this state
+			//Do: >>---------------------------------->>
+			if(_validEnablePend){
+				_isEnabled = true;
+				_validEnablePend = false;
+				_mpbFdaState = stOffNotVPP;
+				setSttChng();
+			}
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				clrStatus(true);
+			}	// Execute this code only ONCE, when exiting this state
 
 	default:
 		break;
@@ -710,6 +738,7 @@ bool LtchMPBttn::begin(const unsigned long int &pollDelayMs){
 void LtchMPBttn::clrStatus(bool clrIsOn){
 	_isLatched = false;
 	_validUnlatchPend = false;
+	_validUnlatchRlsPend = false;
 	DbncdMPBttn::clrStatus(clrIsOn);
 
 	return;
@@ -758,14 +787,17 @@ void LtchMPBttn::updFdaState(){
 	switch(_mpbFdaState){
 		case stOffNotVPP:
 			//In: >>---------------------------------->>
-			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
+			if(_sttChng){
+				clrStatus(true);	//Check for right polymorphism Gaby.//
+				clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			if(_validPressPend){
-				_isLatched = false;
-				_validUnlatchPend = false;
-				_validUnlatchRlsPend = false;
 				_mpbFdaState = stOffVPP;
 				setSttChng();
+			}
+			if(_validDisablePend){
+				_mpbFdaState = stDisabled;
+				setSttChng();	//Set flag to execute exiting OUT code
 			}
 			//Out: >>---------------------------------->>
 			if(_sttChng){
@@ -798,6 +830,11 @@ void LtchMPBttn::updFdaState(){
 				_mpbFdaState = stOnVRP;
 				setSttChng();
 			}
+			if(_validDisablePend){
+				_mpbFdaState = stDisabled;
+				setSttChng();	//Set flag to execute exiting OUT code
+			}
+
 			//Out: >>---------------------------------->>
 			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
@@ -890,6 +927,31 @@ void LtchMPBttn::updFdaState(){
 			}	// Execute this code only ONCE, when exiting this state
 			break;
 
+		case stDisabled:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				_validDisablePend = false;
+				if(_isOn != _isOnDisabled){
+					_isOn = _isOnDisabled;
+					_outputsChange = true;
+				}
+				clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
+				_isEnabled = false;
+				clrSttChng();
+			}	// Execute this code only ONCE, when entering this state
+			//Do: >>---------------------------------->>
+			if(_validEnablePend){
+				_isEnabled = true;
+				_validEnablePend = false;
+				_mpbFdaState = stOffNotVPP;
+				setSttChng();
+			}
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				clrStatus(true);
+			}	// Execute this code only ONCE, when exiting this state
+			break;
+
 	default:
 		break;
 	}
@@ -949,6 +1011,13 @@ TmLtchMPBttn::TmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, 
 {
 	if(_srvcTime < _MinSrvcTime) //Best practice would impose failing the constructor (throwing an exception or building a "zombie" object)
 		_srvcTime = _MinSrvcTime;    //this tolerant approach taken for developers benefit, but object will be no faithful to the instantiation parameters
+}
+
+void TmLtchMPBttn::clrStatus(bool clrIsOn){	//Check this is the one called from de updFda() Gaby
+	_srvcTimerStrt = 0;
+	LtchMPBttn::clrStatus(clrIsOn);
+
+	return;
 }
 
 const unsigned long int TmLtchMPBttn::getSrvcTime() const{
@@ -1785,11 +1854,13 @@ const bool VdblMPBttn::getIsVoided() const{
 void VdblMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	VdblMPBttn* mpbObj = (VdblMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
 
- 	// Input/Output signals update
-	mpbObj->updIsPressed();
-	// Flags/Triggers calculation & update
- 	mpbObj->updValidPressesStatus();
- 	mpbObj->updVoidStatus();
+	if(mpbObj->getIsEnabled()){
+		// Input/Output signals update
+		mpbObj->updIsPressed();
+		// Flags/Triggers calculation & update
+		mpbObj->updValidPressesStatus();
+		mpbObj->updVoidStatus();
+	}
  	// State machine state update
 	mpbObj->updFdaState();
 
@@ -1800,13 +1871,6 @@ void VdblMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	}
 
 	return;
-}
-
-bool VdblMPBttn::setIsEnabled(const bool &newEnabledValue){
-	if(_isEnabled != newEnabledValue)
-		_isEnabled = newEnabledValue;
-
-	return _isEnabled;
 }
 
 bool VdblMPBttn::setIsNotVoided(){
@@ -1843,8 +1907,7 @@ void VdblMPBttn::stDisabled_In(){
 }
 
 void VdblMPBttn::stDisabled_Out(){
-	clrStatus();	//Clears all flags and timers, _isOn value will be reset
-	resume();   //It's resuming the timer that keeps the inputs updated and calculates and updates the output flags... before this some conditions of timers and flags had to be insured
+	clrStatus(true);	//Clears all flags and timers, _isOn value will be reset
 
 	return;
 }
@@ -1863,7 +1926,7 @@ void VdblMPBttn::updFdaState(){
 				_mpbFdaState = stOffVPP;
 				setSttChng();
 			}
-			if(!_isEnabled){
+			if(_validDisablePend){
 				_mpbFdaState = stDisabled;	//The MPB has been disabled
 				setSttChng();
 			}
@@ -1986,12 +2049,20 @@ void VdblMPBttn::updFdaState(){
 		case stDisabled:
 			//In: >>---------------------------------->>
 			if(_sttChng){
-				stDisabled_In();
+				_validDisablePend = false;
+				if(_isOn != _isOnDisabled){
+					_isOn = _isOnDisabled;
+					_outputsChange = true;
+				}
+				clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
+				_isEnabled = false;
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
-			if(_isEnabled){
+			if(_validEnablePend){
 				if(!updIsPressed()){	//The stDisabled status will be kept until the MPB is released for security reasons
+					_isEnabled = true;
+					_validEnablePend = false;
 					_mpbFdaState = stOffNotVPP;
 					setSttChng();
 				}
@@ -2058,34 +2129,6 @@ const unsigned long int TmVdblMPBttn::getVoidTime() const{
 
     return _voidTime;
 }
-
-bool TmVdblMPBttn::setIsEnabled(const bool &newEnabledValue){
-	if(_isEnabled != newEnabledValue){
-		VdblMPBttn::setIsEnabled(newEnabledValue);
-		if (newEnabledValue){  //Changed to Enabled
-			clrStatus();
-			setIsVoided();  	//For safety reasons if the mpb was disabled and re-enabled, it is set as voided, so if it was pressed when is was re-enabled there's no risk
-									// of activating something unexpectedly. It'll have to be released and then pressed back to intentionally set it to ON.
-			resume();   //It's resuming the timer that keeps the inputs updated and calculates and updates the output flags... before this some conditions of timers and flags had to be insured
-		}
-		_isEnabled = newEnabledValue;
-		_outputsChange = true;
-	}
-
-	return _isEnabled;
-}
-
-//bool TmVdblMPBttn::setVoided(const bool &newVoidValue){
-//    if(_isVoided != newVoidValue){
-//       if(newVoidValue){
-//           _voidTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS) - (_voidTime + 1);
-//       }
-//        _outputsChange = true;
-//        _isVoided = newVoidValue;
-//    }
-//
-//    return _isVoided;
-//}
 
 bool TmVdblMPBttn::setVoidTime(const unsigned long int &newVoidTime){
     bool result{false};

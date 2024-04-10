@@ -1,14 +1,17 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : DbncdMPBttn.cpp
-  * @brief          : Main program body
+  * @file           : TmVdblMPBttn_02.cpp
+  * @brief          : A simple test of the implementation of a TmVdblMPBttn object
+  * This example includes:
+  * _ Implementation of an object
+  * _ The use of a timer that periodically enables/disables the object through the
+  * provided methods
   ******************************************************************************
   * @attention
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
+
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
@@ -25,23 +28,10 @@
 //===========================>> Previous lines used to avoid CMSIS wrappers
 
 #include "../../mpbAsSwitch_STM32/src/mpbAsSwitch_STM32.h"
+#include "../../SevenSegDisplays_STM32/src/sevenSegDisplays.h"
 
 /* USER CODE END Includes */
 
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart2;
@@ -53,12 +43,13 @@ UART_HandleTypeDef huart2;
 //  .stack_size = 128 * 4,
 //  .priority = (osPriority_t) osPriorityNormal,
 //};
-
 /* USER CODE BEGIN PV */
 
 TaskHandle_t tstDefTaskHandle {NULL};
 //TaskHandle_t tstAuxTaskHandle {NULL};
 BaseType_t xReturned;
+
+bool tmpBttnEnabled{false};
 
 /* USER CODE END PV */
 
@@ -66,11 +57,12 @@ BaseType_t xReturned;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
-//void StartDefaultTask(void *argument);
+
 void tstDefTaskExec(void *pvParameters);
 //void tstAuxTaskExec(void *pvParameters);
 
 /* USER CODE BEGIN PFP */
+void swpEnableCb(TimerHandle_t  pvParam);
 
 /* USER CODE END PFP */
 
@@ -145,6 +137,7 @@ int main(void)
   /* USER CODE END RTOS_EVENTS */
 
   /* Start scheduler */
+//  osKernelStart();
   vTaskStartScheduler();
 
   /* We should never get here as control is now taken by the scheduler */
@@ -309,40 +302,73 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void tstDefTaskExec(void *pvParameters)
 {
-	bool tmpBttnPrssd{false};
-	//--------------
-	DbncdMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 50);
-	//--------------
+	TimerHandle_t enableSwpTmrHndl{NULL};
+	BaseType_t tmrModRslt{pdFAIL};
 
-	tstBttn.begin(20);
+	bool tmpBttnIsOn{false};
+	bool tmpBttnIsVoided;
+	bool tmpBttnIsEnabled{true};
+
+	TmVdblMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, 3000,true, true, 50, 150);
+
+	tmpBttnIsEnabled = tstBttn.getIsEnabled();
+
+	TmVdblMPBttn* tstBttnPtr {&tstBttn};
+	tstBttn.setIsOnDisabled(true);
+
+	tmpBttnIsEnabled = tstBttn.getIsEnabled();
+
+	enableSwpTmrHndl = xTimerCreate(
+			"EnableSwapTimer",
+			10000,
+			pdTRUE,
+			tstBttnPtr,
+			swpEnableCb
+	);
+
+
+	tstBttn.begin(5);
+
+	tmpBttnIsEnabled = tstBttn.getIsEnabled();
+
+	if (enableSwpTmrHndl != NULL){
+      tmrModRslt = xTimerStart(enableSwpTmrHndl, portMAX_DELAY);
+   }
 
 	for(;;)
 	{
-	  tmpBttnPrssd = tstBttn.getIsOn();
-	  if(tmpBttnPrssd){
+	  tmpBttnIsOn = tstBttn.getIsOn();
+	  tmpBttnIsVoided = tstBttn.getIsVoided();
+
+	  if(tmpBttnIsOn){
 		  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_SET);
 	  }
 	  else{
 		  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_RESET);
 	  }
+
+	  if(tmpBttnIsVoided){
+		  HAL_GPIO_WritePin(GPIOC, 0b010, GPIO_PIN_SET);
+	  }
+	  else{
+		  HAL_GPIO_WritePin(GPIOC, 0b010, GPIO_PIN_RESET);
+	  }
 	}
+
+
 }
 
-//void tstAuxTaskExec(void *pvParameters)
-//{
-//	bool tmpBttnEnabled{false};
-//	bool swapResult{false};
-//	long unsigned swapTime{12000};
-//	long unsigned lastSwap{xTaskGetTickCount() / portTICK_RATE_MS};
+void swpEnableCb(TimerHandle_t  pvParam){
+	TmVdblMPBttn* bttnArg = (TmVdblMPBttn*) pvTimerGetTimerID(pvParam);
 
-//	for(;;)
-//	{
-//		if(((xTaskGetTickCount() / portTICK_RATE_MS) - lastSwap) > swapTime){
-//			lastSwap = (xTaskGetTickCount()/portTICK_RATE_MS);
-//			tmpBttnEnabled = !tmpBttnEnabled;
-//		}
-//	}
-//}
+	bool curEnable = bttnArg->getIsEnabled();
+	if(curEnable)
+		bttnArg->disable();
+	else
+		bttnArg->enable();
+
+  return;
+}
 
 	/* USER CODE END 4 */
 
@@ -361,6 +387,7 @@ void tstDefTaskExec(void *pvParameters)
   * @param  htim : TIM handle
   * @retval None
   */
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
@@ -370,7 +397,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
-
   /* USER CODE END Callback 1 */
 }
 
