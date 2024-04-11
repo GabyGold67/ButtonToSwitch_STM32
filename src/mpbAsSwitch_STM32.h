@@ -1,6 +1,6 @@
 /*
  * @file		: mpbAsSwitch_STM32.h
- * @brief	: Header file for
+ * @brief	: Header file for mpbAsSwitch_STM32 library classes
  *
  * @author	: Gabriel D. Goldman
  * @date		: Created on: Nov 6, 2023
@@ -14,12 +14,16 @@
 #include <stdio.h>
 
 //===========================>> Next lines included for developing purposes, corresponding headers must be provided for the production platform/s
-#ifndef __STM32F4xx_HAL_H
-#include "stm32f4xx_hal.h"
-#endif
+#define MCU_SPEC 1
 
-#ifndef __STM32F4xx_HAL_GPIO_H
-#include "stm32f4xx_hal_gpio.h"
+#ifdef MCU_SPEC
+	#ifndef __STM32F4xx_HAL_H
+		#include "stm32f4xx_hal.h"
+	#endif
+
+	#ifndef __STM32F4xx_HAL_GPIO_H
+		#include "stm32f4xx_hal_gpio.h"
+	#endif
 #endif
 //===========================>> Previous lines included for developing purposes, corresponding headers must be provided for the production platform/s
 
@@ -44,7 +48,7 @@ struct gpioPinId_t{	// Type used to keep GPIO pin identification as a single par
 
 //===========================>> BEGIN General use function prototypes
 
-uint8_t singleBitPosition(uint16_t mask);
+uint8_t singleBitPosNum(uint16_t mask);
 
 //===========================>> END General use function prototypes
 
@@ -207,6 +211,7 @@ protected:
     virtual void stOffVURP_Out();
 public:
     TmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const unsigned long int &srvcTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+    TmLtchMPBttn(gpioPinId_t mpbttnPinStrct, const unsigned long int &srvcTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
     void clrStatus(bool clrIsOn = true);
     const unsigned long int getSrvcTime() const;
     bool setSrvcTime(const unsigned long int &newSrvcTime);
@@ -229,6 +234,7 @@ protected:
 	bool updWrnngOn();
 public:
 	HntdTmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const unsigned long int &actTime, const unsigned int &wrnngPrctg = 0, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+	HntdTmLtchMPBttn(gpioPinId_t mpbttnPinStrct, const unsigned long int &actTime, const unsigned int &wrnngPrctg = 0, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	const bool getPilotOn() const;
 	const bool getWrnngOn() const;
 	bool setKeepPilot(const bool &newKeepPilot);
@@ -248,7 +254,11 @@ protected:
 public:
     XtrnUnltchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin,  DbncdDlydMPBttn* unLtchBttn,
         const bool &pulledUp = true,  const bool &typeNO = true,  const unsigned long int &dbncTimeOrigSett = 0,  const unsigned long int &strtDelay = 0);
+    XtrnUnltchMPBttn(gpioPinId_t mpbttnPinStrct,  DbncdDlydMPBttn* unLtchBttn,
+        const bool &pulledUp = true,  const bool &typeNO = true,  const unsigned long int &dbncTimeOrigSett = 0,  const unsigned long int &strtDelay = 0);
     XtrnUnltchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin,
+        const bool &pulledUp = true,  const bool &typeNO = true,  const unsigned long int &dbncTimeOrigSett = 0,  const unsigned long int &strtDelay = 0);
+    XtrnUnltchMPBttn(gpioPinId_t mpbttnPinStrct,
         const bool &pulledUp = true,  const bool &typeNO = true,  const unsigned long int &dbncTimeOrigSett = 0,  const unsigned long int &strtDelay = 0);
 
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);	// Duplicate code? Refers to the LtchMPBttn::mpbPollCallback?? Check Gaby
@@ -284,6 +294,7 @@ protected:
 
 public:
 	DblActnLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+	DblActnLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	~DblActnLtchMPBttn();
 	unsigned long getScndModActvDly();
 	bool setScndModActvDly(const unsigned long &newVal);
@@ -302,6 +313,7 @@ protected:
    virtual void stOnEndScndMod_Out();
 public:
    DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+   DDlydLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
    ~DDlydLtchMPBttn();
    bool getIsOn2();
 };
@@ -326,6 +338,7 @@ protected:
 	bool _setSldrDir(const bool &newVal);
 public:
    SldrLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
+   SldrLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
    ~SldrLtchMPBttn();
 	uint16_t getOtptCurVal();
    bool getOtptCurValIsMax();
@@ -348,8 +361,6 @@ public:
 };
 
 //==========================================================>>
-
-//Gaby must start here!!
 
 class VdblMPBttn: public DbncdDlydMPBttn{
 protected:
@@ -385,6 +396,7 @@ protected:
     virtual bool updVoidStatus() = 0;
 public:
     VdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
+    VdblMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
     virtual ~VdblMPBttn();
     void clrStatus(bool clrIsOn = true);
     const bool getIsVoided() const;
@@ -406,6 +418,7 @@ protected:
     virtual bool updVoidStatus();
 public:
     TmVdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, unsigned long int voidTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
+    TmVdblMPBttn(gpioPinId_t mpbttnPinStrct, unsigned long int voidTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
     virtual ~TmVdblMPBttn();
     void clrStatus();
     const unsigned long int getVoidTime() const;

@@ -1,6 +1,6 @@
 /*
  * @file		: mpbAsSwitch_STM32.cpp
- * @brief	: Header file for
+ * @brief	: Source file for mpbAsSwitch_STM32 library classes methods
  *
  * @author	: Gabriel D. Goldman
  * @date		: Created on: Nov 6, 2023
@@ -19,9 +19,9 @@ DbncdMPBttn::DbncdMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, co
 	if(_mpbttnPin != _InvalidPinNum){
 		char mpbttnPinChar[3]{};
 		uint16_t tmpPinNum {_mpbttnPin};
-		uint8_t tmpBitCount{singleBitPosition(tmpPinNum)};
+		uint8_t tmpBitCount{singleBitPosNum(tmpPinNum)};
 
-		sprintf(mpbttnPinChar, "%02u", tmpBitCount);
+		snprintf(mpbttnPinChar, sizeof mpbttnPinChar, "%02u", tmpBitCount);
 		strcpy(_mpbPollTmrName, "PollMpbPin");
 		if(mpbttnPort == GPIOA){
 			strcat(_mpbPollTmrName, "A");
@@ -238,8 +238,8 @@ bool DbncdMPBttn::init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, cons
 		_typeNO = typeNO;
 		_dbncTimeOrigSett = dbncTimeOrigSett;
 
-		tmpBitCount = singleBitPosition(tmpPinNum);
-		sprintf(mpbttnPinChar, "%02u", tmpBitCount);
+		tmpBitCount = singleBitPosNum(tmpPinNum);
+		snprintf(mpbttnPinChar, sizeof mpbttnPinChar, "%02u", tmpBitCount);
 		strcpy(_mpbPollTmrName, "PollMpbPin");
   		if(mpbttnPort == GPIOA){
   			strcat(_mpbPollTmrName, "A");
@@ -631,7 +631,7 @@ DbncdDlydMPBttn::DbncdDlydMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbtt
 }
 
 DbncdDlydMPBttn::DbncdDlydMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
-:DbncdMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett), _strtDelay{strtDelay}
+:DbncdDlydMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
 {
 }
 
@@ -707,7 +707,7 @@ LtchMPBttn::LtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, cons
 }
 
 LtchMPBttn::LtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
-:DbncdDlydMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
+:LtchMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
 {
 }
 
@@ -987,7 +987,7 @@ TgglLtchMPBttn::TgglLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnP
 }
 
 TgglLtchMPBttn::TgglLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
-:LtchMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
+:TgglLtchMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
 {
 }
 
@@ -1011,6 +1011,11 @@ TmLtchMPBttn::TmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, 
 {
 	if(_srvcTime < _MinSrvcTime) //Best practice would impose failing the constructor (throwing an exception or building a "zombie" object)
 		_srvcTime = _MinSrvcTime;    //this tolerant approach taken for developers benefit, but object will be no faithful to the instantiation parameters
+}
+
+TmLtchMPBttn::TmLtchMPBttn(gpioPinId_t mpbttnPinStrct, const unsigned long int &srvcTime, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
+:TmLtchMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay, srvcTime)
+{
 }
 
 void TmLtchMPBttn::clrStatus(bool clrIsOn){	//Check this is the one called from de updFda() Gaby
@@ -1085,6 +1090,11 @@ HntdTmLtchMPBttn::HntdTmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpb
 :TmLtchMPBttn(mpbttnPort, mpbttnPin, srvcTime, pulledUp, typeNO, dbncTimeOrigSett, strtDelay), _wrnngPrctg{wrnngPrctg <= 100?wrnngPrctg:100}
 {
 	_wrnngMs = (_srvcTime * _wrnngPrctg) / 100;
+}
+
+HntdTmLtchMPBttn::HntdTmLtchMPBttn(gpioPinId_t mpbttnPinStrct, const unsigned long int &srvcTime, const unsigned int &wrnngPrctg, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
+:HntdTmLtchMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, srvcTime, pulledUp, typeNO, dbncTimeOrigSett, strtDelay, wrnngPrctg)
+{
 }
 
 bool HntdTmLtchMPBttn::begin(const unsigned long int &pollDelayMs){
@@ -1224,9 +1234,15 @@ bool HntdTmLtchMPBttn::updWrnngOn(){
 
 //=========================================================================> Class methods delimiter
 
-XtrnUnltchMPBttn::XtrnUnltchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin,  DbncdDlydMPBttn* unLtchBttn,
+XtrnUnltchMPBttn::XtrnUnltchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, DbncdDlydMPBttn* unLtchBttn,
         const bool &pulledUp,  const bool &typeNO,  const unsigned long int &dbncTimeOrigSett,  const unsigned long int &strtDelay)
 :LtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay), _unLtchBttn{unLtchBttn}
+{
+}
+
+XtrnUnltchMPBttn::XtrnUnltchMPBttn(gpioPinId_t mpbttnPinStrct, DbncdDlydMPBttn* unLtchBttn,
+        const bool &pulledUp,  const bool &typeNO,  const unsigned long int &dbncTimeOrigSett,  const unsigned long int &strtDelay)
+:XtrnUnltchMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, unLtchBttn, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
 {
 }
 
@@ -1235,6 +1251,13 @@ XtrnUnltchMPBttn::XtrnUnltchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpb
 :LtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
 {
 }
+
+XtrnUnltchMPBttn::XtrnUnltchMPBttn(gpioPinId_t mpbttnPinStrct,
+        const bool &pulledUp,  const bool &typeNO,  const unsigned long int &dbncTimeOrigSett,  const unsigned long int &strtDelay)
+:XtrnUnltchMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
+{
+}
+
 
 bool XtrnUnltchMPBttn::begin(const unsigned long int &pollDelayMs){
    bool result {false};
@@ -1281,6 +1304,11 @@ void XtrnUnltchMPBttn::updValidUnlatchStatus(){
 
 DblActnLtchMPBttn::DblActnLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
 :LtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
+{
+}
+
+DblActnLtchMPBttn::DblActnLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
+:DblActnLtchMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
 {
 }
 
@@ -1550,6 +1578,11 @@ DDlydLtchMPBttn::DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbtt
 {
 }
 
+DDlydLtchMPBttn::DDlydLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
+:DDlydLtchMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
+{
+}
+
 DDlydLtchMPBttn::~DDlydLtchMPBttn()
 {
 }
@@ -1585,6 +1618,11 @@ SldrLtchMPBttn::SldrLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnP
 {
 	if(_otptCurVal < _otptValMin || _otptCurVal > _otptValMax)
 		_otptCurVal = _otptValMin;	// Original development setup makes this outside limits situation impossible, as the limits are set to the full range of the data type used
+}
+
+SldrLtchMPBttn::SldrLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const bool &typeNO, const unsigned long &dbncTimeOrigSett, const unsigned long int &strtDelay, const uint16_t initVal)
+:SldrLtchMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay, initVal)
+{
 }
 
 SldrLtchMPBttn::~SldrLtchMPBttn()
@@ -1829,6 +1867,11 @@ VdblMPBttn::VdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, cons
 :DbncdDlydMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
 {
 	_isOnDisabled = isOnDisabled;
+}
+
+VdblMPBttn::VdblMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay, const bool &isOnDisabled)
+:VdblMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
+{
 }
 
 VdblMPBttn::~VdblMPBttn()
@@ -2087,6 +2130,11 @@ TmVdblMPBttn::TmVdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, 
 {
 }
 
+TmVdblMPBttn::TmVdblMPBttn(gpioPinId_t mpbttnPinStrct, unsigned long int voidTime, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay, const bool &isOnDisabled)
+:TmVdblMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay, isOnDisabled, voidTime)
+{
+}
+
 TmVdblMPBttn::~TmVdblMPBttn()
 {
 }
@@ -2181,7 +2229,7 @@ bool TmVdblMPBttn::updVoidStatus(){
 
 //=========================================================================> Class methods delimiter
 
-uint8_t singleBitPosition(uint16_t mask){
+uint8_t singleBitPosNum(uint16_t mask){
 	uint8_t result{0xFF};
 
 	if((mask & (mask - 1)) == 0){

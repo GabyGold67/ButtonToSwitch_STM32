@@ -2,7 +2,10 @@
 /**
   ******************************************************************************
   * @file           : DbncdDlydMPBttn_02.cpp
-  * @brief          : Main program body
+  * @brief          : Main program body for a DbncdDlydMPBttn class use example
+  * This example instantiates a DbncdDlydMPBttn class object to be frequently checked
+  * in the tstDefTaskExec task.
+  *
   ******************************************************************************
   * @attention
   *
