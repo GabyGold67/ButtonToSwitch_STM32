@@ -10,7 +10,7 @@
 #define MPBASSWITCH_STM32_H_
 
 #include <stdint.h>
-#include <string.h>
+#include <string>
 #include <stdio.h>
 
 //===========================>> Next lines included for developing purposes, corresponding headers must be provided for the production platform/s
@@ -80,7 +80,8 @@ protected:
 	volatile bool _isPressed{false};
 	fdaDmpbStts _mpbFdaState {stOffNotVPP};
 	TimerHandle_t _mpbPollTmrHndl {NULL};
-	char _mpbPollTmrName [18] {'\0'};
+//	char _mpbPollTmrName [18] {'\0'};
+	std::string _mpbPollTmrName {""};
 	volatile bool _outputsChange {false};
 	bool _prssRlsCcl{false};
 	bool _sttChng {true};

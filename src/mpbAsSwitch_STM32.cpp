@@ -1,4 +1,4 @@
-/*
+/**
  * @file		: mpbAsSwitch_STM32.cpp
  * @brief	: Source file for mpbAsSwitch_STM32 library classes methods
  *
@@ -17,60 +17,64 @@ DbncdMPBttn::DbncdMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, co
 : _mpbttnPort{mpbttnPort}, _mpbttnPin{mpbttnPin}, _pulledUp{pulledUp}, _typeNO{typeNO}, _dbncTimeOrigSett{dbncTimeOrigSett}
 {
 	if(_mpbttnPin != _InvalidPinNum){
-		char mpbttnPinChar[3]{};
-		uint16_t tmpPinNum {_mpbttnPin};
-		uint8_t tmpBitCount{singleBitPosNum(tmpPinNum)};
 
-		snprintf(mpbttnPinChar, sizeof mpbttnPinChar, "%02u", tmpBitCount);
-		strcpy(_mpbPollTmrName, "PollMpbPin");
+//      std::string _mpbPollTmrName{ "PollMpbPin" };
+      _mpbPollTmrName = "PollMpbPin";
+      std::string mpbPinNumStr{ "00" + std::to_string(singleBitPosNum(_mpbttnPin)) };
+
 		if(mpbttnPort == GPIOA){
-			strcat(_mpbPollTmrName, "A");
+			_mpbPollTmrName += "A";
 			__HAL_RCC_GPIOA_CLK_ENABLE();	//Sets the bit in the GPIO enabled clocks register, by logic OR of the corresponding bit, no problem if already set, macro adds time to get the clk running
 		}
 		else if(mpbttnPort == GPIOB){
-			strcat(_mpbPollTmrName, "B");
+			_mpbPollTmrName += "B";
 			__HAL_RCC_GPIOB_CLK_ENABLE();
 		}
 		else if(mpbttnPort == GPIOC){
-			strcat(_mpbPollTmrName, "C");
+			_mpbPollTmrName += "C";
 			__HAL_RCC_GPIOC_CLK_ENABLE();
 		}
 		else if(mpbttnPort == GPIOD){
-			strcat(_mpbPollTmrName, "D");
+			_mpbPollTmrName += "D";
 			__HAL_RCC_GPIOD_CLK_ENABLE();
 		}
 #ifdef GPIOE
 		else if(mpbttnPort == GPIOE){
-			strcat(_mpbPollTmrName, "E");
+			_mpbPollTmrName += "E";
 			__HAL_RCC_GPIOE_CLK_ENABLE();
 		}
 #endif
 #ifdef GPIOF
 		else if(mpbttnPort == GPIOF){	//Port not present in all STM32 MCUs/DevBoards
-			strcat(_mpbPollTmrName, "F");
+			_mpbPollTmrName += "F";
 			__HAL_RCC_GPIOF_CLK_ENABLE();
 		}
 #endif
 #ifdef GPIOG
 		else if(mpbttnPort == GPIOG){	//Port not present in all STM32 MCUs/DevBoards
-			strcat(_mpbPollTmrName, "G");
+			_mpbPollTmrName += "G";
 			__HAL_RCC_GPIOG_CLK_ENABLE();
 		}
 #endif
 #ifdef GPIOH
 		else if(mpbttnPort == GPIOH){	//Port not present in all STM32 MCUs/DevBoards
-			strcat(_mpbPollTmrName, "H");
+			_mpbPollTmrName += "H";
+
 			__HAL_RCC_GPIOH_CLK_ENABLE();
 		}
 #endif
 #ifdef GPIOI
 		else if(mpbttnPort == GPIOI){	//Port not present in all STM32 MCUs/DevBoards
-			strcat(_mpbPollTmrName, "I");
+			_mpbPollTmrName += "I";
 			__HAL_RCC_GPIOI_CLK_ENABLE();
 }
 #endif
-		strcat(_mpbPollTmrName, mpbttnPinChar);
-		strcat(_mpbPollTmrName, "_tmr");
+
+		mpbPinNumStr = mpbPinNumStr.substr(mpbPinNumStr.length() - 2, 2);
+
+		_mpbPollTmrName = _mpbPollTmrName + mpbPinNumStr + "_tmr";
+
+//		_mpbPollTmrName = _mpbPollTmrName.c_str();
 
 		if(_dbncTimeOrigSett < _stdMinDbncTime) 	// Best practice would impose failing the constructor (throwing an exception or building a "zombie" object)
 			_dbncTimeOrigSett = _stdMinDbncTime;	//this tolerant approach taken for developers benefit, but object will be no faithful to the instantiation parameters
@@ -78,7 +82,7 @@ DbncdMPBttn::DbncdMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, co
 		_dbncRlsTimeTempSett = _stdMinDbncTime;	//The Release debouncing time parameter is kept to the minimum empirical value
 
 		/*Configure GPIO pin : _mpbttnPin */
-      HAL_GPIO_WritePin(_mpbttnPort, _mpbttnPin, GPIO_PIN_RESET);
+ 	//      HAL_GPIO_WritePin(_mpbttnPort, _mpbttnPin, GPIO_PIN_RESET);
 
       GPIO_InitTypeDef GPIO_InitStruct {0};
 
@@ -118,7 +122,7 @@ bool DbncdMPBttn::begin(const unsigned long int &pollDelayMs) {
     if (pollDelayMs > 0){
         if (!_mpbPollTmrHndl){
             _mpbPollTmrHndl = xTimerCreate(
-                _mpbPollTmrName,  //Timer name
+            		_mpbPollTmrName.c_str(),  //Timer name
                 pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks by conversion from milliseconds
                 pdTRUE,     //Auto-reload true
                 this,       //TimerID: data passed to the callback function to work
@@ -227,64 +231,72 @@ const TaskHandle_t DbncdMPBttn::getTaskToNotify() const{
 }
 
 bool DbncdMPBttn::init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett){
-    char mpbttnPinChar[3]{};
-    uint16_t tmpPinNum {_mpbttnPin};
-    uint8_t tmpBitCount{0};
+//    char mpbttnPinChar[3]{};
+//    uint16_t tmpPinNum {_mpbttnPin};
+//    uint8_t tmpBitCount{0};
     bool result {false};
 
-    if (_mpbPollTmrName[0] == '\0'){
+//    if (_mpbPollTmrName[0] == '\0'){
+    if (_mpbPollTmrName == ""){
 		_mpbttnPin = mpbttnPin;
 		_pulledUp = pulledUp;
 		_typeNO = typeNO;
 		_dbncTimeOrigSett = dbncTimeOrigSett;
 
-		tmpBitCount = singleBitPosNum(tmpPinNum);
-		snprintf(mpbttnPinChar, sizeof mpbttnPinChar, "%02u", tmpBitCount);
-		strcpy(_mpbPollTmrName, "PollMpbPin");
+      std::string mpbPollTmrName{ "PollMpbPin" };
+      std::string mpbPinNumStr{ "00" + std::to_string(singleBitPosNum(_mpbttnPin)) };
+
+
   		if(mpbttnPort == GPIOA){
-  			strcat(_mpbPollTmrName, "A");
+			mpbPollTmrName += "A";
   			__HAL_RCC_GPIOA_CLK_ENABLE();	//Sets the bit in the GPIO enabled clocks register, by logic OR of the corresponding bit, no problem if already set, macro adds time to get the clk running
   		}
   		else if(mpbttnPort == GPIOB){
-  			strcat(_mpbPollTmrName, "B");
+			mpbPollTmrName += "B";
   			__HAL_RCC_GPIOB_CLK_ENABLE();
   		}
   		else if(mpbttnPort == GPIOC){
-  			strcat(_mpbPollTmrName, "C");
+  			mpbPollTmrName += "C";
   			__HAL_RCC_GPIOC_CLK_ENABLE();
   		}
   		else if(mpbttnPort == GPIOD){
-  			strcat(_mpbPollTmrName, "D");
+  			mpbPollTmrName += "D";
   			__HAL_RCC_GPIOD_CLK_ENABLE();
   		}
   		else if(mpbttnPort == GPIOE){
-  			strcat(_mpbPollTmrName, "E");
+  			mpbPollTmrName += "E";
   			__HAL_RCC_GPIOE_CLK_ENABLE();
   		}
   #ifdef GPIOF
   		else if(mpbttnPort == GPIOF){	//Port not present in all STM32 MCUs/DevBoards
-  			strcat(_mpbPollTmrName, "F");
+  			mpbPollTmrName += "F";
   			__HAL_RCC_GPIOF_CLK_ENABLE();
   		}
   #endif
   #ifdef GPIOG
   		else if(mpbttnPort == GPIOG){	//Port not present in all STM32 MCUs/DevBoards
-  			strcat(_mpbPollTmrName, "G");
+  			mpbPollTmrName += "G";
   			__HAL_RCC_GPIOG_CLK_ENABLE();
   		}
   #endif
   #ifdef GPIOH
   		else if(mpbttnPort == GPIOH){	//Port not present in all STM32 MCUs/DevBoards
-  			strcat(_mpbPollTmrName, "H");
+  			mpbPollTmrName += "H";
   			__HAL_RCC_GPIOH_CLK_ENABLE();
   		}
   #endif
   #ifdef GPIOI
   		else if(mpbttnPort == GPIOI){	//Port not present in all STM32 MCUs/DevBoards
-  			strcat(_mpbPollTmrName, "I");
+  			mpbPollTmrName += "I";
   			__HAL_RCC_GPIOI_CLK_ENABLE();
   }
   #endif
+
+		mpbPinNumStr = mpbPinNumStr.substr(mpbPinNumStr.length() - 2, 2);
+
+		_mpbPollTmrName = _mpbPollTmrName + mpbPinNumStr + "_tmr";
+
+//		_mpbPollTmrName = mpbPollTmrName.c_str();
 
         if(_dbncTimeOrigSett < _stdMinDbncTime) 	// Best practice would impose failing the constructor (throwing an exeption or building a "zombie" object)
             _dbncTimeOrigSett = _stdMinDbncTime;    //this tolerant approach taken for developers benefit, but object will be no faithful to the instantiation parameters
@@ -506,7 +518,6 @@ void DbncdMPBttn::updFdaState(){
 			setSttChng();
 			//Out: >>---------------------------------->>
 			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
-
 			break;
 
 		case stDisabled:
@@ -532,6 +543,7 @@ void DbncdMPBttn::updFdaState(){
 			if(_sttChng){
 				clrStatus(true);
 			}	// Execute this code only ONCE, when exiting this state
+			break;
 
 	default:
 		break;
@@ -718,7 +730,7 @@ bool LtchMPBttn::begin(const unsigned long int &pollDelayMs){
    if (pollDelayMs > 0){
    	if (!_mpbPollTmrHndl){
    		_mpbPollTmrHndl = xTimerCreate(
-				_mpbPollTmrName,  //Timer name
+   				_mpbPollTmrName.c_str(),  //Timer name
 				pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
 				pdTRUE,     //Auto-reload true
 				this,       //TimerID: data passed to the callback function to work
@@ -1104,7 +1116,7 @@ bool HntdTmLtchMPBttn::begin(const unsigned long int &pollDelayMs){
    if (pollDelayMs > 0){
 		if (!_mpbPollTmrHndl){
 			_mpbPollTmrHndl = xTimerCreate(
-				_mpbPollTmrName,  //Timer name
+					_mpbPollTmrName.c_str(),  //Timer name
 				pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
 				pdTRUE,     //Auto-reload true
 				this,       //TimerID: data passed to the callback function to work
@@ -1266,7 +1278,7 @@ bool XtrnUnltchMPBttn::begin(const unsigned long int &pollDelayMs){
    if (pollDelayMs > 0){
 		if (!_mpbPollTmrHndl){
 			_mpbPollTmrHndl = xTimerCreate(
-				_mpbPollTmrName,  //Timer name
+					_mpbPollTmrName.c_str(),  //Timer name
 				pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
 				pdTRUE,     //Auto-reload true
 				this,       //TimerID: data passed to the callback function to work
@@ -1323,7 +1335,7 @@ bool DblActnLtchMPBttn::begin(const unsigned long int &pollDelayMs) {
     if (pollDelayMs > 0){
         if (!_mpbPollTmrHndl){
             _mpbPollTmrHndl = xTimerCreate(
-                _mpbPollTmrName,  //Timer name
+            		_mpbPollTmrName.c_str(),  //Timer name
                 pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
                 pdTRUE,     //Auto-reload true
                 this,       //TimerID: data passed to the callback function to work
@@ -2145,7 +2157,7 @@ bool TmVdblMPBttn::begin(const unsigned long int &pollDelayMs){
 
    if (!_mpbPollTmrHndl){
 		_mpbPollTmrHndl = xTimerCreate(
-			_mpbPollTmrName,  //Timer name
+				_mpbPollTmrName.c_str(),  //Timer name
 			pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
 			pdTRUE,     //Autoreload true
 			this,       //TimerID: data passed to the callback funtion to work
