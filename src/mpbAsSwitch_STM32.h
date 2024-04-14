@@ -173,6 +173,8 @@ protected:
 	virtual void stOffNotVPP_Out(){};
 	virtual void stOffVPP_Out(){};
 	virtual void stOffVURP_Out(){};
+   virtual void stDisabled_In(){};
+   virtual void stDisabled_Out(){};
 public:
 	LtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	LtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);

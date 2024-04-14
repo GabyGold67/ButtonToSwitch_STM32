@@ -1,21 +1,18 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : 02_DbncdDlydMPBttn_b.cpp
+  * @file           : 07_XtrnUnltchMPBttn_1a.cpp
   * @brief          : Main program body
   ******************************************************************************
   * @attention
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
-//===========================>> Next lines used to avoid CMSIS wrappers
+//===========================>> Following lines used to avoid CMSIS wrappers
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
@@ -26,13 +23,21 @@
 
 /* USER CODE END Includes */
 
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+
+/* USER CODE END PD */
+
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
 
 TaskHandle_t tstDefTaskHandle {NULL};
+//TaskHandle_t tstAuxTaskHandle {NULL};
 BaseType_t xReturned;
+
+bool tmpBttnEnabled{false};
 
 /* USER CODE END PV */
 
@@ -40,12 +45,10 @@ BaseType_t xReturned;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
-//void StartDefaultTask(void *argument);
 void tstDefTaskExec(void *pvParameters);
-//void tstAuxTaskExec(void *pvParameters);
+void tstAuxTaskExec(void *pvParameters);
 
 /* USER CODE BEGIN PFP */
-void swpEnableCb(TimerHandle_t  pvParam);
 
 /* USER CODE END PFP */
 
@@ -93,7 +96,6 @@ int main(void)
 
   /* Create the thread(s) */
   /* creation of defaultTask */
-//  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -112,6 +114,7 @@ int main(void)
   /* USER CODE END RTOS_EVENTS */
 
   /* Start scheduler */
+//  osKernelStart();
   vTaskStartScheduler();
 
   /* We should never get here as control is now taken by the scheduler */
@@ -231,46 +234,36 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(tstMpbOnBoard_GPIO_Port, &GPIO_InitStruct);
 
-    /*Configure GPIO pin : tstLedOnBoard_Pin */
+  /*Configure GPIO pin : tstLedOnBoard_Pin */
   GPIO_InitStruct.Pin = tstLedOnBoard_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(tstLedOnBoard_GPIO_Port, &GPIO_InitStruct);
 
-  /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /*Configure GPIO pin : tstMPBttn_Pin */
+  GPIO_InitStruct.Pin = tstMPBttn_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(tstMPBttn_GPIO_Port, &GPIO_InitStruct);
 
-    /* USER CODE END MX_GPIO_Init_2 */
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+
+
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
 void tstDefTaskExec(void *pvParameters)
 {
-	TimerHandle_t enableSwpTmrHndl{NULL};
-	BaseType_t tmrModRslt{pdFAIL};
-
 	bool tmpBttnWasOn{false};
 	bool tmpBttnIsOn{false};
 
-	DbncdDlydMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 0, 600);
-	DbncdDlydMPBttn* tstBttnPtr {&tstBttn};
-
-	tstBttn.setIsOnDisabled(true);
-
-	enableSwpTmrHndl = xTimerCreate(
-			"EnableSwapTimer",
-			10000,
-			pdTRUE,
-			tstBttnPtr,
-			swpEnableCb
-	);
-
+	DbncdDlydMPBttn unLtchTstBttnObj(GPIOB, 0b001, true, true, 0, 200);
+	DbncdDlydMPBttn* unLtchTstBttnPtr {&unLtchTstBttnObj};
+	XtrnUnltchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, unLtchTstBttnPtr, true, true, 0, 50);
 
 	tstBttn.begin(20);
-
-	if (enableSwpTmrHndl != NULL){
-      tmrModRslt = xTimerStart(enableSwpTmrHndl, portMAX_DELAY);
-   }
 
 	for(;;)
 	{
@@ -285,20 +278,15 @@ void tstDefTaskExec(void *pvParameters)
 	}
 }
 
-void swpEnableCb(TimerHandle_t  pvParam){
-	DbncdDlydMPBttn* bttnArg = (DbncdDlydMPBttn*) pvTimerGetTimerID(pvParam);
-
-	bool curEnable = bttnArg->getIsEnabled();
-
-	if(curEnable)
-		bttnArg->disable();
-	else
-		bttnArg->enable();
-
-  return;
-}
 
 /* USER CODE END 4 */
+
+/* USER CODE BEGIN Header_StartDefaultTask */
+/**
+  * @brief  Function implementing the defaultTask thread.
+  * @param  argument: Not used
+  * @retval None
+  */
 
 /**
   * @brief  Period elapsed callback in non blocking mode

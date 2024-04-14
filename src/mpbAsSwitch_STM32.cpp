@@ -801,14 +801,15 @@ void LtchMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){
 				clrStatus(true);	//Check for right polymorphism Gaby.//
-				clrSttChng();}	// Execute this code only ONCE, when entering this state
+				clrSttChng();
+			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			if(_validPressPend){
 				_mpbFdaState = stOffVPP;
 				setSttChng();
 			}
 			if(_validDisablePend){
-				_mpbFdaState = stDisabled;
+				_mpbFdaState = stDisabled;	// For this stDisabled entry, the only flags that might be affected are _ validPressPend and (unlikely) _validReleasePend
 				setSttChng();	//Set flag to execute exiting OUT code
 			}
 			//Out: >>---------------------------------->>
@@ -871,6 +872,10 @@ void LtchMPBttn::updFdaState(){
 			if(_validUnlatchPend){
 				_mpbFdaState = stLtchdVUP;
 				setSttChng();
+			}
+			if(_validDisablePend){
+				_mpbFdaState = stDisabled;
+				setSttChng();	//Set flag to execute exiting OUT code
 			}
 			//Out: >>---------------------------------->>
 			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
@@ -949,11 +954,15 @@ void LtchMPBttn::updFdaState(){
 				}
 				clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
 				_isEnabled = false;
+				_outputsChange = true;
+				stDisabled_In();
+
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			if(_validEnablePend){
 				_isEnabled = true;
+				_outputsChange = true;
 				_validEnablePend = false;
 				_mpbFdaState = stOffNotVPP;
 				setSttChng();
@@ -961,6 +970,7 @@ void LtchMPBttn::updFdaState(){
 			//Out: >>---------------------------------->>
 			if(_sttChng){
 				clrStatus(true);
+				stDisabled_Out();
 			}	// Execute this code only ONCE, when exiting this state
 			break;
 
