@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file           : HntdTmLtchMPBttn.cpp
+  * @file           : 10_HntdTmLtchMPBttn_a.cpp
   * @brief          : Main program body
   ******************************************************************************
   * @attention
@@ -16,57 +16,32 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
-#include "queue.h"
-#include "semphr.h"
 #include "event_groups.h"
 //===========================>> Previous lines used to avoid CMSIS wrappers
 
 #include "../../mpbAsSwitch_STM32/src/mpbAsSwitch_STM32.h"
-
 /* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
 /* USER CODE END PD */
 
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart2;
 
-/* Definitions for defaultTask */
-//osThreadId_t defaultTaskHandle;
-//const osThreadAttr_t defaultTask_attributes = {
-//  .name = "defaultTask",
-//  .stack_size = 128 * 4,
-//  .priority = (osPriority_t) osPriorityNormal,
-//};
 /* USER CODE BEGIN PV */
-
 TaskHandle_t tstDefTaskHandle {NULL};
-//TaskHandle_t tstAuxTaskHandle {NULL};
 BaseType_t xReturned;
 
 bool tmpBttnEnabled{false};
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
-//void StartDefaultTask(void *argument);
 void tstDefTaskExec(void *pvParameters);
-void tstAuxTaskExec(void *pvParameters);
 
 /* USER CODE BEGIN PFP */
 
@@ -83,9 +58,6 @@ void tstAuxTaskExec(void *pvParameters);
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -110,25 +82,6 @@ int main(void)
 
   /* USER CODE END 2 */
 
-  /* Init scheduler */
-//  osKernelInitialize();
-
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
-
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
-
-  /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
-
-  /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
-  /* USER CODE END RTOS_QUEUES */
-
   /* Create the thread(s) */
   /* creation of defaultTask */
 //  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
@@ -143,22 +96,9 @@ int main(void)
 		  configTIMER_TASK_PRIORITY,	//Set to the same priority level as the software timers
 		  &tstDefTaskHandle);
 
-//  xReturned = xTaskCreate(
-//		  tstAuxTaskExec, //taskFunction
-//		  "TstAuxiliaryTask", //Task function legible name
-//		  256, // Stack depth in words
-//		  NULL,	//Parameters to pass as arguments to the taskFunction
-//		  configTIMER_TASK_PRIORITY,	//Set to the same priority level as the software timers
-//		  &tstAuxTaskHandle);
-
   /* USER CODE END RTOS_THREADS */
 
-  /* USER CODE BEGIN RTOS_EVENTS */
-  /* add events, ... */
-  /* USER CODE END RTOS_EVENTS */
-
   /* Start scheduler */
-//  osKernelStart();
   vTaskStartScheduler();
 
   /* We should never get here as control is now taken by the scheduler */
@@ -227,13 +167,6 @@ void SystemClock_Config(void)
 static void MX_USART2_UART_Init(void)
 {
 
-  /* USER CODE BEGIN USART2_Init 0 */
-
-  /* USER CODE END USART2_Init 0 */
-
-  /* USER CODE BEGIN USART2_Init 1 */
-
-  /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
   huart2.Init.BaudRate = 115200;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
@@ -323,9 +256,15 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void tstDefTaskExec(void *pvParameters)
 {
-	bool tmpBttnPrssd{false};
-	bool tmpWrnngOn{false};
-	bool tmpPltOn{false};
+	bool tmpBttnWasOn{false};
+	bool tmpBttnIsOn{false};
+
+//	bool tmpWrnngOn{false};
+	bool tmpWrnngWasOn{false};
+	bool tmpWrnngIsOn{false};
+//	bool tmpPltOn{false};
+	bool tmpPltWasOn{false};
+	bool tmpPltIsOn{false};
 
 	HntdTmLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, 4000, 33,true, true, 0, 250);
 	tstBttn.setKeepPilot(true);
@@ -335,51 +274,41 @@ void tstDefTaskExec(void *pvParameters)
 
 	for(;;)
 	{
-	  tmpBttnPrssd = tstBttn.getIsOn();
+		tmpBttnWasOn = tmpBttnIsOn;
+		tmpBttnIsOn = tstBttn.getIsOn();
 
-	  tmpWrnngOn = tstBttn.getWrnngOn();
-	  tmpPltOn = tstBttn.getPilotOn();
+//	  tmpWrnngOn = tstBttn.getWrnngOn();
+		tmpWrnngWasOn = tmpWrnngIsOn;
+		tmpWrnngIsOn = tstBttn.getWrnngOn();
 
-	  if(tmpBttnPrssd){
-		  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_SET);
-	  }
-	  else{
-		  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_RESET);
-	  }
+//		tmpPltOn = tstBttn.getPilotOn();
+		tmpPltWasOn = tmpPltIsOn;
+		tmpPltIsOn = tstBttn.getPilotOn();
 
-		  if(tmpWrnngOn){
-			  HAL_GPIO_WritePin(GPIOC, 0b001, GPIO_PIN_SET);
-		  }
-		  else{
-			  HAL_GPIO_WritePin(GPIOC, 0b001, GPIO_PIN_RESET);
-		  }
+		if(tmpBttnWasOn != tmpBttnIsOn){
+			if(tmpBttnIsOn)
+				HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_SET);
+			else
+				HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_RESET);
+		}
 
-		  if(tmpPltOn){
-			  HAL_GPIO_WritePin(GPIOC, 0b010, GPIO_PIN_SET);
-		  }
-		  else{
-			  HAL_GPIO_WritePin(GPIOC, 0b010, GPIO_PIN_RESET);
-		  }
+		if (tmpWrnngWasOn != tmpWrnngIsOn){
+			if(tmpWrnngIsOn)
+				HAL_GPIO_WritePin(GPIOC, 0b001, GPIO_PIN_SET);
+			else
+				HAL_GPIO_WritePin(GPIOC, 0b001, GPIO_PIN_RESET);
+		}
+
+		if(tmpPltWasOn != tmpPltIsOn){
+			if(tmpPltIsOn)
+				HAL_GPIO_WritePin(GPIOC, 0b010, GPIO_PIN_SET);
+			else
+				HAL_GPIO_WritePin(GPIOC, 0b010, GPIO_PIN_RESET);
+		}
 
 	}
 }
 
-
-void tstAuxTaskExec(void *pvParameters)
-{
-//	bool tmpBttnEnabled{false};
-//	bool swapResult{false};
-//	long unsigned swapTime{12000};
-//	long unsigned lastSwap{xTaskGetTickCount() / portTICK_RATE_MS};
-
-	for(;;)
-	{
-//		if(((xTaskGetTickCount() / portTICK_RATE_MS) - lastSwap) > swapTime){
-//			lastSwap = (xTaskGetTickCount()/portTICK_RATE_MS);
-//			tmpBttnEnabled = !tmpBttnEnabled;
-//		}
-	}
-}
 
 	/* USER CODE END 4 */
 

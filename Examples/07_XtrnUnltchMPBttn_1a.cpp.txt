@@ -20,7 +20,6 @@
 //===========================>> Previous lines used to avoid CMSIS wrappers
 
 #include "../../mpbAsSwitch_STM32/src/mpbAsSwitch_STM32.h"
-
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
@@ -32,13 +31,10 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
 TaskHandle_t tstDefTaskHandle {NULL};
-//TaskHandle_t tstAuxTaskHandle {NULL};
 BaseType_t xReturned;
 
 bool tmpBttnEnabled{false};
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -46,7 +42,6 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 void tstDefTaskExec(void *pvParameters);
-void tstAuxTaskExec(void *pvParameters);
 
 /* USER CODE BEGIN PFP */
 
@@ -63,9 +58,6 @@ void tstAuxTaskExec(void *pvParameters);
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -90,10 +82,6 @@ int main(void)
 
   /* USER CODE END 2 */
 
-  /* Init scheduler */
-//  osKernelInitialize();
-
-
   /* Create the thread(s) */
   /* creation of defaultTask */
 
@@ -109,12 +97,7 @@ int main(void)
 
   /* USER CODE END RTOS_THREADS */
 
-  /* USER CODE BEGIN RTOS_EVENTS */
-  /* add events, ... */
-  /* USER CODE END RTOS_EVENTS */
-
   /* Start scheduler */
-//  osKernelStart();
   vTaskStartScheduler();
 
   /* We should never get here as control is now taken by the scheduler */
@@ -183,13 +166,6 @@ void SystemClock_Config(void)
 static void MX_USART2_UART_Init(void)
 {
 
-  /* USER CODE BEGIN USART2_Init 0 */
-
-  /* USER CODE END USART2_Init 0 */
-
-  /* USER CODE BEGIN USART2_Init 1 */
-
-  /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
   huart2.Init.BaudRate = 115200;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
@@ -340,3 +316,4 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
+  
