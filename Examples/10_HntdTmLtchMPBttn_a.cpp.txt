@@ -259,16 +259,15 @@ void tstDefTaskExec(void *pvParameters)
 	bool tmpBttnWasOn{false};
 	bool tmpBttnIsOn{false};
 
-//	bool tmpWrnngOn{false};
 	bool tmpWrnngWasOn{false};
 	bool tmpWrnngIsOn{false};
-//	bool tmpPltOn{false};
 	bool tmpPltWasOn{false};
 	bool tmpPltIsOn{false};
 
 	HntdTmLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, 4000, 33,true, true, 0, 250);
 	tstBttn.setKeepPilot(true);
 	tstBttn.setWrnngPrctg(50);
+	tstBttn.setTmerRstbl(true);
 
 	tstBttn.begin(20);
 
@@ -277,11 +276,9 @@ void tstDefTaskExec(void *pvParameters)
 		tmpBttnWasOn = tmpBttnIsOn;
 		tmpBttnIsOn = tstBttn.getIsOn();
 
-//	  tmpWrnngOn = tstBttn.getWrnngOn();
 		tmpWrnngWasOn = tmpWrnngIsOn;
 		tmpWrnngIsOn = tstBttn.getWrnngOn();
 
-//		tmpPltOn = tstBttn.getPilotOn();
 		tmpPltWasOn = tmpPltIsOn;
 		tmpPltIsOn = tstBttn.getPilotOn();
 

@@ -801,6 +801,7 @@ void LtchMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){
 				clrStatus(true);	//Check for right polymorphism Gaby.//
+				stOffNotVPP_In();
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
@@ -831,7 +832,7 @@ void LtchMPBttn::updFdaState(){
 			setSttChng();
 			//Out: >>---------------------------------->>
 			if(_sttChng){
-				stOffVPP_Out();	//At this point of development this function starts the latch timer here... to be considered if the MPB release must be the starting point Gaby
+				stOffVPP_Out();	//This function starts the latch timer here... to be considered if the MPB release must be the starting point Gaby
 			}	// Execute this code only ONCE, when exiting this state
 			break;
 
@@ -839,6 +840,7 @@ void LtchMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
+			stOnNVRP_Do();
 			if(_validReleasePend){
 				_mpbFdaState = stOnVRP;
 				setSttChng();
@@ -869,6 +871,7 @@ void LtchMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
+			stLtchNVUP_Do();
 			if(_validUnlatchPend){
 				_mpbFdaState = stLtchdVUP;
 				setSttChng();
@@ -950,7 +953,6 @@ void LtchMPBttn::updFdaState(){
 				_validDisablePend = false;
 				if(_isOn != _isOnDisabled){
 					_isOn = _isOnDisabled;
-					_outputsChange = true;
 				}
 				clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
 				_isEnabled = false;
@@ -1143,6 +1145,17 @@ bool HntdTmLtchMPBttn::begin(const unsigned long int &pollDelayMs){
    return result;
 }
 
+void HntdTmLtchMPBttn::clrStatus(bool clrIsOn){	//Check this is the one called from de updFda() Gaby
+//	Put here class specific sets/resets, including pilot and warning
+	TmLtchMPBttn::clrStatus(clrIsOn);
+	_validWrnngSetPend = false;
+	_validWrnngResetPend = false;
+	_validPilotSetPend = false;
+	_validPilotResetPend = false;
+
+	return;
+}
+
 const bool HntdTmLtchMPBttn::getPilotOn() const{
 
     return _pilotOn;
@@ -1153,6 +1166,87 @@ const bool HntdTmLtchMPBttn::getWrnngOn() const{
     return _wrnngOn;
 }
 
+void HntdTmLtchMPBttn::stOffNotVPP_In(){
+	if(_keepPilot){
+		if(!_pilotOn){
+			_pilotOn = true;
+			_outputsChange = true;
+		}
+	}
+	if(_wrnngOn){
+		_wrnngOn = false;
+		_outputsChange = true;
+	}
+
+	return;
+}
+
+void HntdTmLtchMPBttn::stOffVPP_Out(){
+	TmLtchMPBttn::stOffVPP_Out();
+	if(_pilotOn){
+		_pilotOn = false;
+		_outputsChange = true;
+	}
+
+	return;
+}
+
+void HntdTmLtchMPBttn::stOnNVRP_Do(){
+	if(_validWrnngSetPend){
+		_wrnngOn = true;
+		_validWrnngSetPend = false;
+		_outputsChange = true;
+	}
+	if(_validWrnngResetPend){
+		_wrnngOn = false;
+		_validWrnngResetPend = false;
+		_outputsChange = true;
+	}
+
+	return;
+}
+
+void HntdTmLtchMPBttn::stLtchNVUP_Do(){
+	if(_validWrnngSetPend){
+		_wrnngOn = true;
+		_validWrnngSetPend = false;
+		_outputsChange = true;
+	}
+	if(_validWrnngResetPend){
+		_wrnngOn = false;
+		_validWrnngResetPend = false;
+		_outputsChange = true;
+	}
+
+	return;
+}
+
+void HntdTmLtchMPBttn::stDisabled_In(){
+
+	if(_validWrnngSetPend)
+		_validWrnngSetPend = false;
+	if(_validWrnngResetPend)
+		_validWrnngResetPend = false;
+	if(_wrnngOn){
+		_wrnngOn = false;
+		_outputsChange = true;
+	}
+
+	if(_validPilotSetPend)
+		_validPilotSetPend = false;
+	if(_validPilotResetPend)
+		_validPilotResetPend = false;
+	if(_keepPilot && !_isOnDisabled && !_pilotOn){
+		_pilotOn = true;
+		_outputsChange = true;
+	}
+	else if(_pilotOn == true)
+		_pilotOn = false;
+
+	return;
+}
+
+
 void HntdTmLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	HntdTmLtchMPBttn* mpbObj = (HntdTmLtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
 
@@ -1162,11 +1256,10 @@ void HntdTmLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	// Flags/Triggers calculation & update
  	mpbObj->updValidPressesStatus();
  	mpbObj->updValidUnlatchStatus();
- 	// State machine state update
- 	mpbObj->updFdaState();
-
  	mpbObj->updWrnngOn();
 	mpbObj->updPilotOn();
+ 	// State machine state update
+ 	mpbObj->updFdaState();
 
 	if (mpbObj->getOutputsChange()){
 		if(mpbObj->getTaskToNotify() != NULL)
@@ -1213,18 +1306,30 @@ bool HntdTmLtchMPBttn::setWrnngPrctg (const unsigned int &newWrnngPrctg){
 bool HntdTmLtchMPBttn::updPilotOn(){
 	if (_keepPilot){
 		if(!_isOn && !_pilotOn){
-			_pilotOn = true;
-			_outputsChange = true;
+/* Previous pilot light managing
+*			_pilotOn = true;
+*			_outputsChange = true; *
+*/
+			_validPilotSetPend = true;
+			_validPilotResetPend = false;
 		}
 		else if(_isOn && _pilotOn){
+/* Previous pilot light managing
 			_pilotOn = false;
 			_outputsChange = true;
+*/
+			_validPilotResetPend = true;
+			_validPilotSetPend = false;
 		}
 	}
 	else{
 		if(_pilotOn){
-			_pilotOn = false;
-			_outputsChange = true;
+/* Previous pilot light managing
+*			_pilotOn = false;
+*			_outputsChange = true;
+*/
+			_validPilotResetPend = true;
+			_validPilotSetPend = false;
 		}
 	}
 
@@ -1232,22 +1337,37 @@ bool HntdTmLtchMPBttn::updPilotOn(){
 }
 
 bool HntdTmLtchMPBttn::updWrnngOn(){
+//Disengaging the _wrnngOn direct signal manipulation, replacing it with a flag mechanisms
+//	that relays the turning on or off in the fda
 	if(_wrnngPrctg > 0){
-		if (_isOn){
+		if (_isOn && _isEnabled){	//The _isEnabled evaluation is done to avoid computation of flags that will be ignored if the MPB is disablee
 			if (((xTaskGetTickCount() / portTICK_RATE_MS) - _srvcTimerStrt) >= (_srvcTime - _wrnngMs)){
 				if(_wrnngOn == false){
-					_wrnngOn = true;
-					_outputsChange = true;
+/* Previous warning light managing
+ *					_wrnngOn = true;
+ *					_outputsChange = true;
+ */
+					_validWrnngSetPend = true;
+					_validWrnngResetPend = false;
 				}
 			}
 			else if(_wrnngOn == true){
-				_wrnngOn = false;
-				_outputsChange = true;
+/* Previous warning light managing
+ *				_wrnngOn = false;
+ *				_outputsChange = true;
+*/
+				_validWrnngResetPend = true;
+				_validWrnngSetPend = false;
 			}
 		}
 		else if(_wrnngOn == true){
-			_wrnngOn = false;
-			_outputsChange = true;
+/* Previous warning light managing
+//			_wrnngOn = false;
+//			_outputsChange = true;
+ *
+ */
+			_validWrnngResetPend = true;
+			_validWrnngSetPend = false;
 		}
 	}
 

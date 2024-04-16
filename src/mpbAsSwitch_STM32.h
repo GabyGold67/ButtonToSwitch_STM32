@@ -54,6 +54,8 @@ uint8_t singleBitPosNum(uint16_t mask);
 
 constexpr int genNxtEnumVal(const int &curVal, const int &increment){return (curVal + increment);}
 
+//==========================================================>> BEGIN Classes declarations
+
 class DbncdMPBttn {
 protected:
 	enum fdaDmpbStts {stOffNotVPP,
@@ -170,10 +172,13 @@ protected:
 	virtual void updFdaState();
 	virtual void updValidUnlatchStatus() = 0;
 
+	virtual void stOffNotVPP_In(){};	//Setting the startup values for the FDA
 	virtual void stOffNotVPP_Out(){};
 	virtual void stOffVPP_Out(){};
 	virtual void stOffVURP_Out(){};
-   virtual void stDisabled_In(){};
+   virtual void stOnNVRP_Do(){};
+	virtual void stLtchNVUP_Do(){};
+	virtual void stDisabled_In(){};
    virtual void stDisabled_Out(){};
 public:
 	LtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
@@ -209,8 +214,8 @@ protected:
     unsigned long int _srvcTimerStrt{0};
 
     virtual void updValidUnlatchStatus();
-    virtual void stOffVPP_Out();
     virtual void stOffNotVPP_Out();
+    virtual void stOffVPP_Out();
     virtual void stOffVURP_Out();
 public:
     TmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const unsigned long int &srvcTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
@@ -232,12 +237,25 @@ protected:
 	bool _wrnngOn {false};
 	unsigned int _wrnngPrctg {0};
 
-	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
+	bool _validWrnngSetPend{false};
+	bool _validWrnngResetPend{false};
+	bool _validPilotSetPend{false};
+	bool _validPilotResetPend{false};
+
+	virtual void stOffNotVPP_In();
+	virtual void stOffVPP_Out();
+   virtual void stOnNVRP_Do();
+	virtual void stLtchNVUP_Do();
+	virtual void stDisabled_In();
+
+
+   static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
 	bool updPilotOn();
 	bool updWrnngOn();
 public:
 	HntdTmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const unsigned long int &actTime, const unsigned int &wrnngPrctg = 0, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	HntdTmLtchMPBttn(gpioPinId_t mpbttnPinStrct, const unsigned long int &actTime, const unsigned int &wrnngPrctg = 0, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+	void clrStatus(bool clrIsOn = true);
 	const bool getPilotOn() const;
 	const bool getWrnngOn() const;
 	bool setKeepPilot(const bool &newKeepPilot);
