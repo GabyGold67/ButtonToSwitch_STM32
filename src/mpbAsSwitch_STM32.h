@@ -404,6 +404,7 @@ protected:
  	fdaVmpbStts _mpbFdaState {stOffNotVPP};
 
     bool _isVoided{false};
+    bool _validVoidPend{false};
     bool _validUnvoidPend{false};
 
     static void mpbPollCallback(TimerHandle_t mpbTmrCb);

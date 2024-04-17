@@ -89,13 +89,8 @@ int main(void)
 
   /* USER CODE END 2 */
 
-  /* Init scheduler */
-//  osKernelInitialize();
-
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-//  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

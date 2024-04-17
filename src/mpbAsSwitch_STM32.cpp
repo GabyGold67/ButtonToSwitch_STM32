@@ -2147,6 +2147,10 @@ void VdblMPBttn::updFdaState(){
 				_mpbFdaState = stOnVRP;
 				setSttChng();
 			}
+			if(_validDisablePend){
+				_mpbFdaState = stDisabled;	//The MPB has been disabled
+				setSttChng();
+			}
 			//Out: >>---------------------------------->>
 			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
