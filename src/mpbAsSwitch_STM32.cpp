@@ -296,8 +296,6 @@ bool DbncdMPBttn::init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, cons
 
 		_mpbPollTmrName = _mpbPollTmrName + mpbPinNumStr + "_tmr";
 
-//		_mpbPollTmrName = mpbPollTmrName.c_str();
-
         if(_dbncTimeOrigSett < _stdMinDbncTime) 	// Best practice would impose failing the constructor (throwing an exeption or building a "zombie" object)
             _dbncTimeOrigSett = _stdMinDbncTime;    //this tolerant approach taken for developers benefit, but object will be no faithful to the instantiation parameters
         _dbncTimeTempSett = _dbncTimeOrigSett;
@@ -1533,7 +1531,6 @@ void DblActnLtchMPBttn::updFdaState(){
 				_outputsChange = true;
 			}
 			if(_validScndModPend){
-//				_sldrTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
 				_scndModTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
 				_mpbFdaState = stOnStrtScndMod;
 				setSttChng();
@@ -1605,6 +1602,10 @@ void DblActnLtchMPBttn::updFdaState(){
 				_validPressPend = false;
 				_validReleasePend = false;
 				_mpbFdaState = stOnTurnOff;
+				setSttChng();
+			}
+			if(_validDisablePend){
+				_mpbFdaState = stDisabled;	//The MPB has been disabled
 				setSttChng();
 			}
 			//Out: >>---------------------------------->>
