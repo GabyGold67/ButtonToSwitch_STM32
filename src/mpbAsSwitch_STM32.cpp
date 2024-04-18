@@ -1246,7 +1246,6 @@ void HntdTmLtchMPBttn::stDisabled_In(){
 	return;
 }
 
-
 void HntdTmLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	HntdTmLtchMPBttn* mpbObj = (HntdTmLtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
 
@@ -1400,7 +1399,6 @@ XtrnUnltchMPBttn::XtrnUnltchMPBttn(gpioPinId_t mpbttnPinStrct,
 {
 }
 
-
 bool XtrnUnltchMPBttn::begin(const unsigned long int &pollDelayMs){
    bool result {false};
    BaseType_t tmrModResult {pdFAIL};
@@ -1518,6 +1516,10 @@ void DblActnLtchMPBttn::updFdaState(){
 				_mpbFdaState = stOffVPP;	//Start pressing timer
 				setSttChng();
 			}
+			if(_validDisablePend){
+				_mpbFdaState = stDisabled;	//The MPB has been disabled
+				setSttChng();
+			}
 			//Out: >>---------------------------------->>
 			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
@@ -1621,6 +1623,32 @@ void DblActnLtchMPBttn::updFdaState(){
 			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
 
+		case stDisabled:
+			//In: >>---------------------------------->>
+			if(_sttChng){
+				_validDisablePend = false;
+				if(_isOn != _isOnDisabled){
+					_isOn = _isOnDisabled;
+					_outputsChange = true;
+				}
+				clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
+				_isEnabled = false;
+				clrSttChng();
+			}	// Execute this code only ONCE, when entering this state
+			//Do: >>---------------------------------->>
+			if(_validEnablePend){
+				if(!updIsPressed()){	//The stDisabled status will be kept until the MPB is released for security reasons
+					_isEnabled = true;
+					_validEnablePend = false;
+					_mpbFdaState = stOffNotVPP;
+					setSttChng();
+				}
+			}
+			//Out: >>---------------------------------->>
+			if(_sttChng){
+				stDisabled_Out();
+			}	// Execute this code only ONCE, when exiting this state
+			break;
 	default:
 		break;
 	}
@@ -2139,8 +2167,8 @@ void VdblMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
-			if(_isVoided){
-				_mpbFdaState = stOnVddNVUP;
+			if(_validVoidPend){
+				_mpbFdaState = stOnVVP;
 				setSttChng();
 			}
 			if(_validReleasePend){
@@ -2151,6 +2179,19 @@ void VdblMPBttn::updFdaState(){
 				_mpbFdaState = stDisabled;	//The MPB has been disabled
 				setSttChng();
 			}
+			//Out: >>---------------------------------->>
+			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
+			break;
+
+		case stOnVVP:
+			if(_sttChng){
+				_isVoided = true;
+				_validVoidPend = false;
+				_outputsChange = true;
+				clrSttChng();}	// Execute this code only ONCE, when entering this state
+			//Do: >>---------------------------------->>
+			_mpbFdaState = stOnVddNVUP;
+			setSttChng();
 			//Out: >>---------------------------------->>
 			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
@@ -2174,6 +2215,10 @@ void VdblMPBttn::updFdaState(){
 			stOffVddNVUP_Do();
 			if(_validUnvoidPend){
 				_mpbFdaState = stOffVddVUP;
+				setSttChng();
+			}
+			if(_validDisablePend){
+				_mpbFdaState = stDisabled;	//The MPB has been disabled
 				setSttChng();
 			}
 			//Out: >>---------------------------------->>
@@ -2368,9 +2413,9 @@ bool TmVdblMPBttn::updVoidStatus(){
 			 result = true;
 		}
 	}
-   _isVoided = result;
+   _validVoidPend = result;
 
-	return _isVoided;
+	return _validVoidPend;
 }
 
 //=========================================================================> Class methods delimiter

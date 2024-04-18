@@ -295,10 +295,15 @@ protected:
 		stOffNotVPP = 0,
 		stOffVPP = genNxtEnumVal(stOffNotVPP, 100),
 		stOnMPBRlsd = genNxtEnumVal(stOffVPP,100),
+		//--------
 		stOnStrtScndMod = genNxtEnumVal(stOnMPBRlsd,100),
 		stOnScndMod = genNxtEnumVal(stOnStrtScndMod,100),
 		stOnEndScndMod = genNxtEnumVal(stOnScndMod,100),
-		stOnTurnOff = genNxtEnumVal(stOnEndScndMod,100)
+		//--------
+		stOnTurnOff = genNxtEnumVal(stOnEndScndMod,100),
+		//--------
+		stDisabled = genNxtEnumVal(stOnTurnOff,100)
+
 	};
 	fdaDALmpbStts _mpbFdaState {stOffNotVPP};
 	unsigned long _scndModActvDly {2000};
@@ -390,6 +395,7 @@ protected:
  		stOffVPP,
  		stOnNVRP,
 		//--------
+		stOnVVP,
 		stOnVddNVUP,
 		stOffVddNVUP,
 		stOffVddVUP,
