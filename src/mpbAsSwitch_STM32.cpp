@@ -1533,6 +1533,7 @@ void DblActnLtchMPBttn::updFdaState(){
 				_outputsChange = true;
 			}
 			if(_validScndModPend){
+//				_sldrTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
 				_scndModTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
 				_mpbFdaState = stOnStrtScndMod;
 				setSttChng();
@@ -1572,6 +1573,7 @@ void DblActnLtchMPBttn::updFdaState(){
 				_mpbFdaState = stOnEndScndMod;
 				setSttChng();
 			}
+
 			//Out: >>---------------------------------->>
 			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
@@ -1603,10 +1605,6 @@ void DblActnLtchMPBttn::updFdaState(){
 				_validPressPend = false;
 				_validReleasePend = false;
 				_mpbFdaState = stOnTurnOff;
-				setSttChng();
-			}
-			if(_validDisablePend){
-				_mpbFdaState = stDisabled;	//The MPB has been disabled
 				setSttChng();
 			}
 			//Out: >>---------------------------------->>
