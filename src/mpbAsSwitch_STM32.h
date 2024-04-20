@@ -1,6 +1,6 @@
-/*
+/**
  * @file		: mpbAsSwitch_STM32.h
- * @brief	: Header file for mpbAsSwitch_STM32 library classes
+ * @brief	: Header file for the MpbAsSwitch_STM32 library classes
  *
  * @author	: Gabriel D. Goldman
  * @date		: Created on: Nov 6, 2023
@@ -41,9 +41,18 @@
 #define _MinSrvcTime 100	// Minimum valid time value for service/active time for Time Latched MPBs to avoid stability issues relating to debouncing, releasing and other timed events
 #define _InvalidPinNum 0xFFFF	// Value to give as "yet to be defined", the "Valid pin number" range and characteristics are development platform and environment dependable
 
+/**
+ * @brief Structure that holds all the required information to identify unequivocally a MCU's GPIO pin
+ *
+ * 			A GPIO pin identification is MCU and framework dependent, so the quantity and type of parameters
+ * 			vary. This structure provides an interface to abstract them as a single identification parameter
+ *
+ * @struct gpioPinId_t
+ *
+ */
 struct gpioPinId_t{	// Type used to keep GPIO pin identification as a single parameter, as platform independent as possible
-	GPIO_TypeDef* portId;
-	uint16_t pinNum;
+	GPIO_TypeDef* portId;	/**< The port identification as a pointer to a GPIO_TypeDef information structure*/
+	uint16_t pinNum;	/**< The number of pin represented as a one bit set binary with the set bit position indicating the pin number*/
 };
 
 //===========================>> BEGIN General use function prototypes
@@ -56,6 +65,15 @@ constexpr int genNxtEnumVal(const int &curVal, const int &increment){return (cur
 
 //==========================================================>> BEGIN Classes declarations
 
+/**
+ * @brief 	Implements a debounced deglitched Pushbutton from the original raw signal received as input
+ *
+ * 			This class provides the resources needed to process a momentary digital input signal -as the one
+ * 			provided by a MPB (momentary push button)- returning a clean signal to be used as a switch,
+ * 			implementing the needed services to replace a wide range of physical related switch characteristics.
+ *
+* 	@class	DbncdMPBttn
+ */
 class DbncdMPBttn {
 protected:
 	enum fdaDmpbStts {stOffNotVPP,
@@ -107,9 +125,24 @@ public:
 	DbncdMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
 	virtual ~DbncdMPBttn();
 	void clrStatus(bool clrIsOn = true);
-   bool disable();
+   /**
+	 * @brief	Disables the input signal processing, ignoring the changes of its values.
+    *
+    * @return	True if the object was enabled, the method invocation disabled it.
+    */
+	bool disable();
+   /**
+	 * @brief	Enables the input signal processing.
+    *
+    * @return	True if the object was disabled, the method invocation enabled it.
+    */
    bool enable();
-	const unsigned long int getCurDbncTime() const;
+	/**
+	 * @brief 	Gets the current debounce time
+	 *
+	 * @return	The current debounce time in milliseconds
+	 */
+   const unsigned long int getCurDbncTime() const;
    const bool getIsEnabled() const;
 	const bool getIsOn () const;
    const bool getIsOnDisabled() const;
@@ -119,6 +152,17 @@ public:
 	bool init(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
 	bool resetDbncTime();
 	bool resetFda();
+	/**
+	 * @brief	Sets a new debounce time
+	 *
+	 *	Sets a new time for the debouncing period. The value must be equal or greater than the minimum empirical value set as a property for all the classes, 20 milliseconds. A long debounce time will produce a delay in the press event generation, making it less "responsive".
+	 *
+	 * @param newDbncTime	unsigned long integer, the new debounce value for the object.
+	 * @return	A boolean indicating if the debounce time change was successful
+	 *
+	 * true: the new value is in the accepted range and the change was made.
+	 * false: the value was already in use, or was out of the accepted range, no change was made.
+	 */
 	bool setDbncTime(const unsigned long int &newDbncTime);
    bool setIsOnDisabled(const bool &newIsOnDisabled);
    bool setOutputsChange(bool newOutputChange);

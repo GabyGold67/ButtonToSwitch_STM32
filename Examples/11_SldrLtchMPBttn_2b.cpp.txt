@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
-  * @file	: 09_TmVdblMPBttn_1b.cpp
-  * @brief  : A simple test of the implementation of a TmVdblMPBttn object
+  * @file           : 11_SldrLtchMPBttn_2b.cpp
+  * @brief  : A simple test of the implementation of a SldrLtchMPBttn object
   *
   * This example includes:
   * _ Implementation of an object
@@ -217,35 +217,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(tstMpbOnBoard_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : tstLedOnBoard_Pin */
+    /*Configure GPIO pin : tstLedOnBoard_Pin */
   GPIO_InitStruct.Pin = tstLedOnBoard_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(tstLedOnBoard_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : tstLed0_Pin */
-  GPIO_InitStruct.Pin = tstLed0_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-  HAL_GPIO_Init(tstLed0_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : tstMPBttn_Pin */
-  GPIO_InitStruct.Pin = tstMPBttn_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(tstMPBttn_GPIO_Port, &GPIO_InitStruct);
-
 /* USER CODE BEGIN MX_GPIO_Init_2 */
-
-  /*Configure GPIO pin : Output to led in PC0 */
-  GPIO_InitStruct.Pin = 0b001;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
   /*Configure GPIO pin : Output to led in PC1 */
   GPIO_InitStruct.Pin = 0b010;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -253,7 +232,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /* USER CODE END MX_GPIO_Init_2 */
+
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -265,16 +245,22 @@ void tstDefTaskExec(void *pvParameters)
 	bool tmpBttnWasOn{false};
 	bool tmpBttnIsOn{false};
 
-	bool tmpBttnWasVoided{false};
-	bool tmpBttnIsVoided{false};
-
 	bool tmpBttnWasDisabled{false};
 	bool tmpBttnIsDisabled{false};
 
-	TmVdblMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, 3000,true, true, 50, 150);
-	TmVdblMPBttn* tstBttnPtr {&tstBttn};
+	uint16_t tmpSliderValue{0};
+	bool limitReachFlag{false};
 
-	tstBttn.setIsOnDisabled(false);
+	SldrLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 50, 150);
+	SldrLtchMPBttn* tstBttnPtr {&tstBttn};
+	tstBttn.setScndModActvDly(2000);
+	tstBttn.setSldrDirDn();
+	tstBttn.setSwpDirOnPrss(true);
+	tstBttn.setOtptValMax(10000);
+	tstBttn.setOtptSldrStpSize(1);
+	tstBttn.setOtptCurVal(5000);
+
+	tstBttn.setIsOnDisabled(true);
 
 	enableSwpTmrHndl = xTimerCreate(
 			"EnableSwapTimer",
@@ -296,29 +282,26 @@ void tstDefTaskExec(void *pvParameters)
 	{
 		tmpBttnWasOn = tmpBttnIsOn;
 		tmpBttnIsOn = tstBttn.getIsOn();
-		tmpBttnWasVoided = tmpBttnIsVoided;
-		tmpBttnIsVoided = tstBttn.getIsVoided();
 		tmpBttnWasDisabled = tmpBttnIsDisabled;
 		tmpBttnIsDisabled = !tstBttn.getIsEnabled();
 
-		if(tmpBttnWasOn != tmpBttnIsOn){
-			if(tmpBttnIsOn){
-				HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_SET);
-			}
-			else{
-				HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_RESET);
-			}
-		}
+	  if(tmpSliderValue!= tstBttn.getOtptCurVal()){
+		  tmpSliderValue = tstBttn.getOtptCurVal();
+		  if(tstBttn.getOtptCurValIsMin() || tstBttn.getOtptCurValIsMax())
+			  limitReachFlag = true;
+		  else
+			  limitReachFlag = false;
+	  }
 
-		if(tmpBttnWasVoided != tmpBttnIsVoided){
-			if(tmpBttnIsVoided){
-				HAL_GPIO_WritePin(GPIOC, 0b010, GPIO_PIN_SET);
-			}
-			else{
-				HAL_GPIO_WritePin(GPIOC, 0b010, GPIO_PIN_RESET);
-			}
-		}
-		if(tmpBttnWasDisabled != tmpBttnIsDisabled){
+	  if(tmpBttnWasOn != tmpBttnIsOn){
+		  if(tmpBttnIsOn){
+			  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_SET);
+		  }
+		  else{
+			  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_RESET);
+		  }
+	  }
+	  if(tmpBttnWasDisabled != tmpBttnIsDisabled){
 			if(tmpBttnIsDisabled){
 				HAL_GPIO_WritePin(GPIOC, 0b001, GPIO_PIN_SET);
 			}
@@ -341,7 +324,8 @@ void swpEnableCb(TimerHandle_t  pvParam){
   return;
 }
 
-/* USER CODE END 4 */
+
+	/* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_StartDefaultTask */
 /**

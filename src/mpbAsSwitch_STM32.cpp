@@ -324,7 +324,6 @@ void DbncdMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	if(mpbObj->getIsEnabled()){
 		// Input/Output signals update
 		mpbObj->updIsPressed();
-
 		// Flags/Triggers calculation & update
 		mpbObj->updValidPressesStatus();
 	}
@@ -400,6 +399,8 @@ bool DbncdMPBttn::setDbncTime(const unsigned long int &newDbncTime){
 }
 
 bool DbncdMPBttn::setIsEnabled(const bool &newEnabledValue){
+	bool result{false};
+
 	if(_isEnabled != newEnabledValue){
 		if (newEnabledValue){  //Change to Enabled = true
 			_validEnablePend = true;
@@ -411,9 +412,10 @@ bool DbncdMPBttn::setIsEnabled(const bool &newEnabledValue){
 			if(_validEnablePend)
 				_validEnablePend = false;
 		}
+		result = true;
 	}
 
-	return _validEnablePend;
+	return result;
 }
 
 bool DbncdMPBttn::setIsOnDisabled(const bool &newIsOnDisabled){
@@ -984,11 +986,13 @@ void LtchMPBttn::updFdaState(){
 void LtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
     LtchMPBttn* mpbObj = (LtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
 
-  	// Input/Output signals update
-  	mpbObj->updIsPressed();
-  	// Flags/Triggers calculation & update
-	mpbObj->updValidPressesStatus();
-	mpbObj->updValidUnlatchStatus();
+ 	if(mpbObj->getIsEnabled()){		//Retest examples for this addition Gaby
+		// Input/Output signals update
+		mpbObj->updIsPressed();
+		// Flags/Triggers calculation & update
+		mpbObj->updValidPressesStatus();
+		mpbObj->updValidUnlatchStatus();
+ 	}
 	// State machine state update
 	mpbObj->updFdaState();
 
@@ -1247,14 +1251,15 @@ void HntdTmLtchMPBttn::stDisabled_In(){
 void HntdTmLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	HntdTmLtchMPBttn* mpbObj = (HntdTmLtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
 
-	// Input/Output signals update
-	mpbObj->updIsPressed();
-
-	// Flags/Triggers calculation & update
- 	mpbObj->updValidPressesStatus();
- 	mpbObj->updValidUnlatchStatus();
- 	mpbObj->updWrnngOn();
-	mpbObj->updPilotOn();
+	if(mpbObj->getIsEnabled()){
+		// Input/Output signals update
+		mpbObj->updIsPressed();
+		// Flags/Triggers calculation & update
+		mpbObj->updValidPressesStatus();
+		mpbObj->updValidUnlatchStatus();
+		mpbObj->updWrnngOn();
+		mpbObj->updPilotOn();
+	}
  	// State machine state update
  	mpbObj->updFdaState();
 
@@ -1726,10 +1731,12 @@ void DblActnLtchMPBttn::updValidUnlatchStatus(){	//Placeholder for future develo
 void DblActnLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	DblActnLtchMPBttn* mpbObj = (DblActnLtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
 
- 	// Input/Output signals update
-	mpbObj->updIsPressed();
-	// Flags/Triggers calculation & update
- 	mpbObj->updValidPressesStatus();
+	if(mpbObj->getIsEnabled()){
+		// Input/Output signals update
+		mpbObj->updIsPressed();
+		// Flags/Triggers calculation & update
+		mpbObj->updValidPressesStatus();
+	}
  	// State machine state update
 	mpbObj->updFdaState();
 

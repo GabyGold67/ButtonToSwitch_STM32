@@ -96,7 +96,6 @@ int main(void)
 
   /* Create the thread(s) */
   /* creation of defaultTask */
-//  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -107,14 +106,6 @@ int main(void)
 		  NULL,	//Parameters to pass as arguments to the taskFunction
 		  configTIMER_TASK_PRIORITY,	//Set to the same priority level as the software timers
 		  &tstDefTaskHandle);
-
-//  xReturned = xTaskCreate(
-//		  tstAuxTaskExec, //taskFunction
-//		  "TstAuxiliaryTask", //Task function legible name
-//		  256, // Stack depth in words
-//		  NULL,	//Parameters to pass as arguments to the taskFunction
-//		  configTIMER_TASK_PRIORITY,	//Set to the same priority level as the software timers
-//		  &tstAuxTaskHandle);
 
   /* USER CODE END RTOS_THREADS */
 
@@ -242,7 +233,7 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 
-  /* USER CODE END MX_GPIO_Init_2 */
+ /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
