@@ -4,14 +4,20 @@
   * @brief  : Test for the MpbAsSwitch_STM32 library DbncdMPBttn class
   *
   * 	The test instantiates a DbncdMPBttn object using:
-  * 	- The Nucleo boad user pushbutton attached to GPIO_B00
-  * 	- The Nucleo boad user LED attached to GPIO_A05
+  * 		- The Nucleo board user pushbutton attached to GPIO_B00
+  * 		- The Nucleo board user LED attached to GPIO_A05
+  *
+  * 	@author	: Gabriel D. Goldman
+  *
+  * 	@date	: 	01/01/2024 First release
+  * 				21/04/2024 Last update
+  *
   ******************************************************************************
-  * @attention
+  * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
+  * library. All files needed are provided as part of the source code for the library.
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
@@ -87,10 +93,6 @@ int main(void)
 		  &tstDefTaskHandle);
 
   /* USER CODE END RTOS_THREADS */
-
-  /* USER CODE BEGIN RTOS_EVENTS */
-  /* add events, ... */
-  /* USER CODE END RTOS_EVENTS */
 
   /* Start scheduler */
   vTaskStartScheduler();
@@ -224,10 +226,6 @@ static void MX_GPIO_Init(void)
 //  GPIO_InitStruct.Pull = GPIO_NOPULL;
 //  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 //  HAL_GPIO_Init(ledOnPC01.portId, &GPIO_InitStruct);
-
-  /* USER CODE BEGIN MX_GPIO_Init_2 */
-
-  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -247,10 +245,8 @@ void tstDefTaskExec(void *pvParameters)
 		if(tmpBttnWasOn != tmpBttnIsOn){
 			if(tmpBttnIsOn)
 			  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_SET);
-//			  HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_SET);
 			else
 			  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_RESET);
-//			  HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_RESET);
 		}
 	}
 }

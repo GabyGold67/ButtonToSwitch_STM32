@@ -460,7 +460,10 @@ void DbncdMPBttn::updFdaState(){
 	switch(_mpbFdaState){
 		case stOffNotVPP:
 			//In: >>---------------------------------->>
-			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
+			if(_sttChng){
+				clrStatus(true);
+				clrSttChng();
+			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			if(_validPressPend){
 				_mpbFdaState = stOffVPP;
@@ -523,19 +526,23 @@ void DbncdMPBttn::updFdaState(){
 		case stDisabled:
 			//In: >>---------------------------------->>
 			if(_sttChng){
-				_validDisablePend = false;
 				if(_isOn != _isOnDisabled){
 					_isOn = _isOnDisabled;
 					_outputsChange = true;
 				}
 				clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
 				_isEnabled = false;
+				_validDisablePend = false;
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			if(_validEnablePend){
+				_isOn = false;
 				_isEnabled = true;
 				_validEnablePend = false;
+				_outputsChange = true;
+			}
+			if(_isEnabled && !updIsPressed()){	//The stDisabled status will be kept until the MPB is released for security reasons
 				_mpbFdaState = stOffNotVPP;
 				setSttChng();
 			}
@@ -950,22 +957,24 @@ void LtchMPBttn::updFdaState(){
 		case stDisabled:
 			//In: >>---------------------------------->>
 			if(_sttChng){
-				_validDisablePend = false;
 				if(_isOn != _isOnDisabled){
 					_isOn = _isOnDisabled;
 				}
 				clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
 				_isEnabled = false;
+				_validDisablePend = false;
 				_outputsChange = true;
 				stDisabled_In();
-
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			if(_validEnablePend){
+				_isOn = false;
 				_isEnabled = true;
-				_outputsChange = true;
 				_validEnablePend = false;
+				_outputsChange = true;
+			}
+			if(_isEnabled && !updIsPressed()){	//The stDisabled status will be kept until the MPB is released for security reasons
 				_mpbFdaState = stOffNotVPP;
 				setSttChng();
 			}
@@ -995,7 +1004,7 @@ void LtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
  	}
 	// State machine state update
 	mpbObj->updFdaState();
-
+	//Outputs update based on outputsChange flag
 	if (mpbObj->getOutputsChange()){
 		if(mpbObj->getTaskToNotify() != NULL)
 			xTaskNotifyGive(mpbObj->getTaskToNotify());

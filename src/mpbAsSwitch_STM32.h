@@ -1,10 +1,21 @@
 /**
+  ******************************************************************************
  * @file		: mpbAsSwitch_STM32.h
  * @brief	: Header file for the MpbAsSwitch_STM32 library classes
- *
- * @author	: Gabriel D. Goldman
+  *
+  * 	The library includes several instantiable classes
+  *
+  * 	@author	: Gabriel D. Goldman
+  *
  * @date		: Created on: Nov 6, 2023
- */
+  * 			: Last modificationon:	21/04/2024
+  *
+  ******************************************************************************
+  * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
+  * library. All files needed are provided as part of the source code for the library.
+  *
+  ******************************************************************************
+  */
 
 #ifndef MPBASSWITCH_STM32_H_
 #define MPBASSWITCH_STM32_H_
