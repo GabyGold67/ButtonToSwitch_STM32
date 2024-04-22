@@ -3,14 +3,14 @@
   * @file	: 05_TgglLtchMPBttn_a.cpp
   * @brief  : Test for the MpbAsSwitch_STM32 library TgglLtchMPBttn class
   *
-  * 	The test instantiates a DbncdDlydMPBttn object using:
+  * 	The test instantiates a TgglLtchMPBttn object using:
   * 		- The Nucleo board user pushbutton attached to GPIO_B00
   * 		- The Nucleo board user LED attached to GPIO_A05
   *
   * 	@author	: Gabriel D. Goldman
   *
   * 	@date	: 	01/01/2024 First release
-  * 				21/04/2024 Last update
+  * 				22/04/2024 Last update
   *
   ******************************************************************************
   * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
@@ -50,21 +50,12 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 void tstDefTaskExec(void *pvParameters);
 
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
-
 /**
   * @brief  The application entry point.
   * @retval int
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */

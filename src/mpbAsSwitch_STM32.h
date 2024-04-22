@@ -229,6 +229,7 @@ protected:
 
 	virtual void stOffNotVPP_In(){};	//Setting the startup values for the FDA
 	virtual void stOffNotVPP_Out(){};
+	virtual void stOffNVURP_Do(){};
 	virtual void stOffVPP_Out(){};
 	virtual void stOffVURP_Out(){};
    virtual void stOnNVRP_Do(){};
@@ -255,6 +256,7 @@ public:
 class TgglLtchMPBttn: public LtchMPBttn{
 protected:
 	virtual void updValidUnlatchStatus();
+	virtual void stOffNVURP_Do();
 public:
 	TgglLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	TgglLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);

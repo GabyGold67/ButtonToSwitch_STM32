@@ -926,6 +926,7 @@ void LtchMPBttn::updFdaState(){
 				_mpbFdaState = stOffVURP;
 				setSttChng();
 			}
+			stOffNVURP_Do();
 			//Out: >>---------------------------------->>
 			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
@@ -1024,6 +1025,15 @@ TgglLtchMPBttn::TgglLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnP
 TgglLtchMPBttn::TgglLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
 :TgglLtchMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
 {
+}
+
+void TgglLtchMPBttn::stOffNVURP_Do(){
+	if(_validDisablePend){
+		_mpbFdaState = stDisabled;
+		setSttChng();	//Set flag to execute exiting OUT code
+	}
+
+	return;
 }
 
 void TgglLtchMPBttn::updValidUnlatchStatus(){
