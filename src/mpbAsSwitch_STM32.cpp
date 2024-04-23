@@ -962,10 +962,10 @@ void LtchMPBttn::updFdaState(){
 					_isOn = _isOnDisabled;
 				}
 				clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
-				_isEnabled = false;
-				_validDisablePend = false;
-				_outputsChange = true;
 				stDisabled_In();
+				_validDisablePend = false;
+				_isEnabled = false;
+				_outputsChange = true;
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
@@ -1029,6 +1029,8 @@ TgglLtchMPBttn::TgglLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp,
 
 void TgglLtchMPBttn::stOffNVURP_Do(){
 	if(_validDisablePend){
+		if(_validUnlatchRlsPend)	// Last not tested addition Gaby
+			_validUnlatchRlsPend = false;
 		_mpbFdaState = stDisabled;
 		setSttChng();	//Set flag to execute exiting OUT code
 	}
@@ -1449,14 +1451,42 @@ bool XtrnUnltchMPBttn::begin(const unsigned long int &pollDelayMs){
    return result;
 }
 
+void XtrnUnltchMPBttn::clrStatus(bool clrIsOn){	//Check this is the one called from de updFda() Gaby
+	_xtrnUnltchPRlsCcl = false;
+	LtchMPBttn::clrStatus(clrIsOn);
+
+	return;
+}
+
+void XtrnUnltchMPBttn::stOffNVURP_Do(){
+	if(_validDisablePend){
+		if(_validUnlatchRlsPend)	// Last not tested addition Gaby
+			_validUnlatchRlsPend = false;
+		if(_xtrnUnltchPRlsCcl)
+			_xtrnUnltchPRlsCcl = false;
+		_mpbFdaState = stDisabled;
+		setSttChng();	//Set flag to execute exiting OUT code
+	}
+
+	return;
+}
+
 void XtrnUnltchMPBttn::updValidUnlatchStatus(){
 
 	if(_unLtchBttn != nullptr){
 		if(_isLatched){
-			if (_unLtchBttn->getIsOn()){
+			if (_unLtchBttn->getIsOn() && !_xtrnUnltchPRlsCcl){
 				_validUnlatchPend = true;
-				_validUnlatchRlsPend = true;
+				_xtrnUnltchPRlsCcl = true;
 			}
+			if(!_unLtchBttn->getIsOn() && _xtrnUnltchPRlsCcl){
+				_validUnlatchRlsPend = true;
+				_xtrnUnltchPRlsCcl = false;
+			}
+		}
+		else{
+			if(_xtrnUnltchPRlsCcl)
+				_xtrnUnltchPRlsCcl = false;
 		}
 	}
 	return;

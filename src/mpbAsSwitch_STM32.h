@@ -328,7 +328,11 @@ class XtrnUnltchMPBttn: public LtchMPBttn{
 
 protected:
     DbncdDlydMPBttn* _unLtchBttn {nullptr};
-    virtual void updValidUnlatchStatus();
+    bool _xtrnUnltchPRlsCcl {false};
+
+// 	virtual void stOffNotVPP_In();
+ 	virtual void stOffNVURP_Do();
+ 	virtual void updValidUnlatchStatus();
 public:
     XtrnUnltchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin,  DbncdDlydMPBttn* unLtchBttn,
         const bool &pulledUp = true,  const bool &typeNO = true,  const unsigned long int &dbncTimeOrigSett = 0,  const unsigned long int &strtDelay = 0);
@@ -340,6 +344,7 @@ public:
         const bool &pulledUp = true,  const bool &typeNO = true,  const unsigned long int &dbncTimeOrigSett = 0,  const unsigned long int &strtDelay = 0);
 
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);	// Duplicate code? Refers to the LtchMPBttn::mpbPollCallback?? Check Gaby
+    void clrStatus(bool clrIsOn = true);
 };
 
 //==========================================================>>
