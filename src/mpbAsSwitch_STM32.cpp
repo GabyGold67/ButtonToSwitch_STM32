@@ -2350,14 +2350,26 @@ void VdblMPBttn::updFdaState(){
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
+//			if(_validEnablePend){
+//				if(!updIsPressed()){	//The stDisabled status will be kept until the MPB is released for security reasons
+//					_isEnabled = true;
+//					_validEnablePend = false;
+//					_mpbFdaState = stOffNotVPP;
+//					setSttChng();
+//				}
+//			}
 			if(_validEnablePend){
-				if(!updIsPressed()){	//The stDisabled status will be kept until the MPB is released for security reasons
-					_isEnabled = true;
-					_validEnablePend = false;
-					_mpbFdaState = stOffNotVPP;
-					setSttChng();
-				}
+				_isOn = false;
+				_isEnabled = true;
+				_validEnablePend = false;
+				_outputsChange = true;
 			}
+			if(_isEnabled && !updIsPressed()){	//The stDisabled status will be kept until the MPB is released for security reasons
+				_mpbFdaState = stOffNotVPP;
+				setSttChng();
+			}
+
+
 			//Out: >>---------------------------------->>
 			if(_sttChng){
 				stDisabled_Out();
