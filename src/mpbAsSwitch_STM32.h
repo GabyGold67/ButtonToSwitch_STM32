@@ -55,8 +55,8 @@
 /**
  * @brief Structure that holds all the required information to identify unequivocally a MCU's GPIO pin
  *
- * 			A GPIO pin identification is MCU and framework dependent, so the quantity and type of parameters
- * 			vary. This structure provides an interface to abstract them as a single identification parameter
+ * A GPIO pin identification is MCU and framework dependent, so the quantity and type of parameters
+ * vary. This structure provides an interface to abstract them as a single identification parameter
  *
  * @struct gpioPinId_t
  *
@@ -79,9 +79,9 @@ constexpr int genNxtEnumVal(const int &curVal, const int &increment){return (cur
 /**
  * @brief 	Implements a debounced deglitched Pushbutton from the original raw signal received as input
  *
- * 			This class provides the resources needed to process a momentary digital input signal -as the one
- * 			provided by a MPB (momentary push button)- returning a clean signal to be used as a switch,
- * 			implementing the needed services to replace a wide range of physical related switch characteristics.
+ * This class provides the resources needed to process a momentary digital input signal -as the one
+ * provided by a MPB (momentary push button)- returning a clean signal to be used as a switch,
+ * implementing the needed services to replace a wide range of physical related switch characteristics.
  *
 * 	@class	DbncdMPBttn
  */
@@ -131,10 +131,33 @@ protected:
 	bool updIsPressed();
 	virtual bool updValidPressesStatus();
 public:
+	/**
+		 * @brief	Default class constructor
+	 *
+	 */
 	DbncdMPBttn();
+	/**
+	 * @brief Class constructor
+	 *
+	 * @param mpbttnPort GPIO port of the input signal pin
+	 * @param mpbttnPin Pin id number of the input signal pin
+	 * @param pulledUp (optional) boolean, indicates if the input pin must be configured as INPUT_PULLUP (true, default value), or INPUT_PULLDOWN (false), to calculate correctly the expected voltage level in the input pin. The pin is configured by the constructor so no previous programming is needed. The pin must be free to be used as a digital input, and must be a pin with an internal pull-up circuit, as not every GPIO pin has the option.
+	 * @param typeNO optional boolean, indicates if the mpb is a Normally Open (NO) switch (true, default value), or Normally Closed (NC) (false), to calculate correctly the expected level of voltage indicating the mpb is pressed.
+	 * @param dbncTimeOrigSett optional unsigned long integer (uLong), indicates the time (in milliseconds) to wait for a stable input signal before considering the mpb to be pressed (or not pressed). If no value is passed the constructor will assign the minimum value provided in the class, that is 20 milliseconds as it is an empirical value obtained in various published tests.
+	 */
 	DbncdMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
 	DbncdMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
+	/**
+		 * @brief Default destructor
+	 *
+	 */
 	virtual ~DbncdMPBttn();
+	/**
+	 * @brief Clears and resets flags and counters modified through the Turn-On/Turn-Off process.
+	 * Resets some object's attributes to safely resume operations -by using the resume() method- after a pause() without risking generating false "Valid presses" and "On" situations due to dangling flags or partially ran time counters
+	 *
+	 * @param clrIsOn Optional boolean value, indicates if the _isOn flag must be cleared (true, default value) or not (false)
+	 */
 	void clrStatus(bool clrIsOn = true);
    /**
 	 * @brief	Disables the input signal processing, ignoring the changes of its values.
@@ -171,17 +194,37 @@ public:
 	 * @param newDbncTime	unsigned long integer, the new debounce value for the object.
 	 * @return	A boolean indicating if the debounce time change was successful
 	 *
-	 * true: the new value is in the accepted range and the change was made.
-	 * false: the value was already in use, or was out of the accepted range, no change was made.
+	 * - true: the new value is in the accepted range and the change was made.
+	 * - false: the value was already in use, or was out of the accepted range, no change was made.
 	 */
 	bool setDbncTime(const unsigned long int &newDbncTime);
    bool setIsOnDisabled(const bool &newIsOnDisabled);
    bool setOutputsChange(bool newOutputChange);
 	bool setTaskToNotify(TaskHandle_t newHandle);
 
+	/**
+	 * @brief Attaches the instantiated object to a timer that monitors the input pin and updates the object status
+	 *
+	 * The frequency of that periodic monitoring is passed as a parameter in milliseconds, and is a value that must be small (frequent) enough to keep the object updated, but not so frequent that no other tasks can be executed. A default value is provided based on empirical values obtained in various published tests.
+	 *
+	 * @param pollDelayMs Unsigned long integer (ulong) optional, passes the time between polls in milliseconds.
+	 * @return Boolean indicating if the object could be attached to a timer.
+	 *
+	 * -true: the object could be attached to a timer, or if it was already attached to a timer when the method was invoked.
+	 * -false: the object could not create the needed timer, or the object could not be attached to it.
+	 */
 	bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 	bool pause();
 	bool resume();
+	/**
+	 * @brief Detaches the object from the timer that monitors the input pin/s and updates the object status. The timer daemon entry is deleted for the object.
+	 *
+	 * @return Boolean indicating the success of the operation
+	 *
+	 * - true: the object detachment procedure and timer entry removal was successful.
+	 * - false: the object detachment and/or entry removal was rejected by the O.S..
+	 *
+	 */
 	bool end();
 };
 

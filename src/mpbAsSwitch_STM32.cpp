@@ -2489,10 +2489,18 @@ bool TmVdblMPBttn::updVoidStatus(){
 
 //=========================================================================> Class methods delimiter
 
+/**
+ * @brief Returns the position of the single set bit on an unsigned 16 bits integer value
+ *
+ * @param mask A 16 bits single bit set unsigned integer
+ * @return The position of the single bit set on the parameter value
+ * - An unsigned 8 bits integer in the range 0 ~ 15 if the parameter is a single bit set value indicating the position of that set bit.
+ * - 0xFF otherwise.
+ */
 uint8_t singleBitPosNum(uint16_t mask){
 	uint8_t result{0xFF};
 
-	if((mask & (mask - 1)) == 0){
+	if((mask > 0) && (mask & (mask - 1)) == 0){
 		result = 0;
 		mask = mask >> 1;
 		while (mask > 0){
