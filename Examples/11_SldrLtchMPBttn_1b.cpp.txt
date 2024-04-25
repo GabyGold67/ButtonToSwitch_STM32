@@ -1,13 +1,28 @@
-Gaby: _isDisabled value checking not implemented!!!
 /**
   ******************************************************************************
-  * @file           : 11_SldrLtchMPBttn_1b.cpp
-  * @brief          : Main program body
+  * @file	: 11_SldrLtchMPBttn_1b.cpp
+  * @brief  : Test for the MpbAsSwitch_STM32 library SldrLtchMPBttn class
+  *
+  * 	The test instantiates a SldrLtchMPBttn object using:
+  * 		- The Nucleo board user pushbutton attached to GPIO_B00
+  * 		- The Nucleo board user LED attached to GPIO_A05
+  * 	This example includes:
+  * 		- Implementation of the object
+  * 		- The use of a timer that periodically enables/disables the object through the
+  * provided methods
+  *
+  * @author	: Gabriel D. Goldman
+  *
+  * @date	: 01/01/2024 First release
+  *			  25/04/2024 Last update
+  *
   ******************************************************************************
-  * @attention
+  * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
+  * library. All files needed are provided as part of the source code for the library.
   *
   ******************************************************************************
   */
+
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -32,11 +47,9 @@ Gaby: _isDisabled value checking not implemented!!!
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+gpioPinId_t ledOnPC00{GPIOC, 0b001};
 TaskHandle_t tstDefTaskHandle {NULL};
 BaseType_t xReturned;
-
-bool tmpBttnEnabled{false};
 
 /* USER CODE END PV */
 
@@ -77,28 +90,6 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
-  /* USER CODE BEGIN 2 */
-
-  /* USER CODE END 2 */
-
-  /* Init scheduler */
-//  osKernelInitialize();
-
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
-
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
-
-  /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
-
-  /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
-  /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
   /* creation of defaultTask */
@@ -125,14 +116,10 @@ int main(void)
 
   /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
   }
-  /* USER CODE END 3 */
 }
 
 /**
@@ -188,7 +175,6 @@ void SystemClock_Config(void)
   */
 static void MX_USART2_UART_Init(void)
 {
-
   huart2.Instance = USART2;
   huart2.Init.BaudRate = 115200;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
@@ -201,7 +187,6 @@ static void MX_USART2_UART_Init(void)
   {
     Error_Handler();
   }
-
 }
 
 /**
@@ -223,6 +208,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : tstMpbOnBoard_Pin */
   GPIO_InitStruct.Pin = tstMpbOnBoard_Pin;
@@ -237,7 +223,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(tstLedOnBoard_GPIO_Port, &GPIO_InitStruct);
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
+  /*Configure GPIO pin : Output to led in PC0 */
+  GPIO_InitStruct.Pin = ledOnPC00.pinNum;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+  HAL_GPIO_Init(ledOnPC00.portId, &GPIO_InitStruct);
+
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
 
   /* USER CODE END MX_GPIO_Init_2 */
 }
@@ -251,6 +244,9 @@ void tstDefTaskExec(void *pvParameters)
 	bool tmpBttnWasOn{false};
 	bool tmpBttnIsOn{false};
 
+	bool tmpBttnWasDisabled{false};
+	bool tmpBttnIsDisabled{false};
+
 	uint16_t tmpSliderValue{0};
 	bool limitReachFlag{false};
 
@@ -259,11 +255,11 @@ void tstDefTaskExec(void *pvParameters)
 	tstBttn.setScndModActvDly(3000);
 	tstBttn.setSldrDirDn();
 
-	tstBttn.setIsOnDisabled(true);
+	tstBttn.setIsOnDisabled(false);
 
 	enableSwpTmrHndl = xTimerCreate(
 			"EnableSwapTimer",
-			20000,
+			15000,
 			pdTRUE,
 			tstBttnPtr,
 			swpEnableCb
@@ -281,6 +277,8 @@ void tstDefTaskExec(void *pvParameters)
 	{
 		tmpBttnWasOn = tmpBttnIsOn;
 		tmpBttnIsOn = tstBttn.getIsOn();
+		tmpBttnWasDisabled = tmpBttnIsDisabled;
+		tmpBttnIsDisabled = !tstBttn.getIsEnabled();
 
 	  if(tmpSliderValue!= tstBttn.getOtptCurVal()){
 		  tmpSliderValue = tstBttn.getOtptCurVal();
@@ -298,6 +296,15 @@ void tstDefTaskExec(void *pvParameters)
 			  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_RESET);
 		  }
 	  }
+
+	  if(tmpBttnWasDisabled != tmpBttnIsDisabled){
+			if(tmpBttnIsDisabled){
+				HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_SET);
+			}
+			else{
+				HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_RESET);
+			}
+		}
 	}
 }
 

@@ -1,9 +1,20 @@
 /**
   ******************************************************************************
-  * @file           : 11_SldrLtchMPBttn_2a.cpp
-  * @brief          : Main program body
+  * @file	: 11_SldrLtchMPBttn_2a.cpp
+  * @brief  : Test for the MpbAsSwitch_STM32 library SldrLtchMPBttn class
+  *
+  * 	The test instantiates a SldrLtchMPBttn object using:
+  * 		- The Nucleo board user pushbutton attached to GPIO_B00
+  * 		- The Nucleo board user LED attached to GPIO_A05
+  *
+  * @author	: Gabriel D. Goldman
+  *
+  * @date	: 01/01/2024 First release
+  *			  25/04/2024 Last update
+  *
   ******************************************************************************
-  * @attention
+  * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
+  * library. All files needed are provided as part of the source code for the library.
   *
   ******************************************************************************
   */
@@ -18,8 +29,6 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
-#include "queue.h"
-#include "semphr.h"
 #include "event_groups.h"
 //===========================>> Previous lines used to avoid CMSIS wrappers
 
@@ -31,12 +40,8 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
 TaskHandle_t tstDefTaskHandle {NULL};
 BaseType_t xReturned;
-
-bool tmpBttnEnabled{false};
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -57,16 +62,8 @@ int main(void)
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
   /* Configure the system clock */
   SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
@@ -74,25 +71,6 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
-
-  /* Init scheduler */
-//  osKernelInitialize();
-
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
-
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
-
-  /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
-
-  /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
-  /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
   /* creation of defaultTask */
@@ -107,11 +85,6 @@ int main(void)
 		  configTIMER_TASK_PRIORITY,	//Set to the same priority level as the software timers
 		  &tstDefTaskHandle);
 
-  /* USER CODE END RTOS_THREADS */
-
-  /* USER CODE BEGIN RTOS_EVENTS */
-  /* add events, ... */
-  /* USER CODE END RTOS_EVENTS */
 
   /* Start scheduler */
 //  osKernelStart();
@@ -119,14 +92,10 @@ int main(void)
 
   /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
   }
-  /* USER CODE END 3 */
 }
 
 /**
@@ -182,7 +151,6 @@ void SystemClock_Config(void)
   */
 static void MX_USART2_UART_Init(void)
 {
-
   huart2.Instance = USART2;
   huart2.Init.BaudRate = 115200;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
@@ -215,7 +183,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
-    /*Configure GPIO pin Output Level */
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : tstMpbOnBoard_Pin */
@@ -224,16 +192,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(tstMpbOnBoard_GPIO_Port, &GPIO_InitStruct);
 
-    /*Configure GPIO pin : tstLedOnBoard_Pin */
+  /*Configure GPIO pin : tstLedOnBoard_Pin */
   GPIO_InitStruct.Pin = tstLedOnBoard_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(tstLedOnBoard_GPIO_Port, &GPIO_InitStruct);
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-
-/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */

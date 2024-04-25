@@ -1532,6 +1532,14 @@ bool DblActnLtchMPBttn::begin(const unsigned long int &pollDelayMs) {
     return result;
 }
 
+void DblActnLtchMPBttn::clrStatus(bool clrIsOn){	//Check this is the one called from de updFda() Gaby
+	_scndModTmrStrt = 0;
+	_validScndModPend = false;
+	LtchMPBttn::clrStatus(clrIsOn);
+
+	return;
+}
+
 unsigned long DblActnLtchMPBttn::getScndModActvDly(){
 
 	return _scndModActvDly;
@@ -1624,7 +1632,10 @@ void DblActnLtchMPBttn::updFdaState(){
 				_mpbFdaState = stOnEndScndMod;
 				setSttChng();
 			}
-
+			if(_validDisablePend){
+				_mpbFdaState = stDisabled;	//The MPB has been disabled
+				setSttChng();
+			}
 			//Out: >>---------------------------------->>
 			if(_sttChng){}	// Execute this code only ONCE, when exiting this state
 			break;
@@ -1692,16 +1703,17 @@ void DblActnLtchMPBttn::updFdaState(){
 			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			if(_validEnablePend){
-				if(!updIsPressed()){	//The stDisabled status will be kept until the MPB is released for security reasons
-					_isEnabled = true;
-					_validEnablePend = false;
-					_mpbFdaState = stOffNotVPP;
-					setSttChng();
-				}
+				_isEnabled = true;
+				_validEnablePend = false;
 			}
+			if(_isEnabled && !updIsPressed()){	//The stDisabled status will be kept until the MPB is released for security reasons
+				_mpbFdaState = stOffNotVPP;
+				setSttChng();
+			}
+
 			//Out: >>---------------------------------->>
 			if(_sttChng){
-				stDisabled_Out();
+				clrStatus(true);
 			}	// Execute this code only ONCE, when exiting this state
 			break;
 	default:
@@ -1814,26 +1826,40 @@ DDlydLtchMPBttn::~DDlydLtchMPBttn()
 {
 }
 
+void DDlydLtchMPBttn::clrStatus(bool clrIsOn){	//Check this is the one called from de updFda() Gaby
+	DblActnLtchMPBttn::clrStatus(clrIsOn);
+	if(clrIsOn && _isOn2){
+		_isOn2= false;
+		_outputsChange = true;
+	}
+
+	return;
+}
+
 bool DDlydLtchMPBttn::getIsOn2(){
 
 	return _isOn2;
 }
 
 void DDlydLtchMPBttn::stOnStrtScndMod_In(){
-	_isOn2 = true;
-	_outputsChange = true;
+	if(!_isOn2){
+		_isOn2 = true;
+		_outputsChange = true;
+	}
 
 	return;
 }
 
-void DDlydLtchMPBttn::stOnScndMod_Do(){
-
-	return;
-}
+//void DDlydLtchMPBttn::stOnScndMod_Do(){
+//
+//	return;
+//}
 
 void DDlydLtchMPBttn::stOnEndScndMod_Out(){
-	_isOn2 = false;
-	_outputsChange = true;
+	if(_isOn2){
+		_isOn2 = false;
+		_outputsChange = true;
+	}
 
 	return;
 }
@@ -1854,6 +1880,12 @@ SldrLtchMPBttn::SldrLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp,
 
 SldrLtchMPBttn::~SldrLtchMPBttn()
 {
+}
+
+void SldrLtchMPBttn::clrStatus(bool clrIsOn){	//Check this is the one called from de updFda() Gaby
+	DblActnLtchMPBttn::clrStatus(clrIsOn);
+
+	return;
 }
 
 uint16_t SldrLtchMPBttn::getOtptCurVal(){
@@ -1908,7 +1940,6 @@ void SldrLtchMPBttn::stOnScndMod_Do(){
 	_sldrTmrRemains = ((_sldrTmrNxtStrt - _scndModTmrStrt) % _otptSldrSpd) * _otptSldrSpd;
 	_sldrTmrNxtStrt -= _sldrTmrRemains;
 	_scndModTmrStrt = _sldrTmrNxtStrt;	//This ends the time management section of the state, calculating the time
-
 
 	if(_curSldrDirUp){
 		// The slider is moving up

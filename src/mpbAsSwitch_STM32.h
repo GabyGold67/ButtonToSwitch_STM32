@@ -427,6 +427,7 @@ public:
 	DblActnLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	DblActnLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	~DblActnLtchMPBttn();
+   void clrStatus(bool clrIsOn = true);
 	unsigned long getScndModActvDly();
 	bool setScndModActvDly(const unsigned long &newVal);
 
@@ -440,12 +441,13 @@ protected:
    bool _isOn2{false};
 
    virtual void stOnStrtScndMod_In();
-   virtual void stOnScndMod_Do();
+//   virtual void stOnScndMod_Do();
    virtual void stOnEndScndMod_Out();
 public:
    DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
    DDlydLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
    ~DDlydLtchMPBttn();
+   void clrStatus(bool clrIsOn = true);
    bool getIsOn2();
 };
 
@@ -462,7 +464,8 @@ protected:
 	uint16_t _otptSldrStpSize{0x01};
 	uint16_t _otptValMax{0xFFFF};
 	uint16_t _otptValMin{0x00};
-	unsigned long _sldrTmrStrt {0};
+//	unsigned long _sldrTmrNxtStrt{0};
+//	unsigned long _sldrTmrRemains{0};
 
    void stOnStrtScndMod_In();
    virtual void stOnScndMod_Do();
@@ -471,6 +474,7 @@ public:
    SldrLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
    SldrLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
    ~SldrLtchMPBttn();
+   void clrStatus(bool clrIsOn = true);
 	uint16_t getOtptCurVal();
    bool getOtptCurValIsMax();
    bool getOtptCurValIsMin();

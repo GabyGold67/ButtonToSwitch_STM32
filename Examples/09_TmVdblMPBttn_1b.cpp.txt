@@ -49,8 +49,6 @@ gpioPinId_t ledOnPC01{GPIOC, 0b010};
 TaskHandle_t tstDefTaskHandle {NULL};
 BaseType_t xReturned;
 
-//bool tmpBttnEnabled{false};
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
