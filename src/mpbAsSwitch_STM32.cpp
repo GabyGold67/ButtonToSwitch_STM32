@@ -1850,10 +1850,10 @@ void DDlydLtchMPBttn::stOnStrtScndMod_In(){
 	return;
 }
 
-//void DDlydLtchMPBttn::stOnScndMod_Do(){
-//
-//	return;
-//}
+void DDlydLtchMPBttn::stOnScndMod_Do(){
+
+	return;
+}
 
 void DDlydLtchMPBttn::stOnEndScndMod_Out(){
 	if(_isOn2){

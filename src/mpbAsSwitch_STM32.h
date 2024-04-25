@@ -441,7 +441,7 @@ protected:
    bool _isOn2{false};
 
    virtual void stOnStrtScndMod_In();
-//   virtual void stOnScndMod_Do();
+   virtual void stOnScndMod_Do();
    virtual void stOnEndScndMod_Out();
 public:
    DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);

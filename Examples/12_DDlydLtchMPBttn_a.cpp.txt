@@ -1,12 +1,25 @@
 /**
   ******************************************************************************
-  * @file           : DDlydLtchMPBttn.cpp
-  * @brief          : Main program body
+  * @file	: 12_DDlydLtchMPBttn_a.cpp
+  * @brief  : Test for the MpbAsSwitch_STM32 library DDlydLtchMPBttn class
+  *
+  * 	The test instantiates a DDlydLtchMPBttn object using:
+  * 		- The Nucleo board user pushbutton attached to GPIO_B00
+  * 		- The Nucleo board user LED attached to GPIO_A05
+  * 		- A digital output to GPIO_PC00 to show the second level action.
+  *
+  * @author	: Gabriel D. Goldman
+  *
+  * @date	: 01/01/2024 First release
+  *			  25/04/2024 Last update
+  *
   ******************************************************************************
-  * @attention
+  * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
+  * library. All files needed are provided as part of the source code for the library.
   *
   ******************************************************************************
   */
+
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
@@ -17,8 +30,6 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
-#include "queue.h"
-#include "semphr.h"
 #include "event_groups.h"
 //===========================>> Previous lines used to avoid CMSIS wrappers
 
@@ -29,21 +40,10 @@
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart2;
 
-/* Definitions for defaultTask */
-//osThreadId_t defaultTaskHandle;
-//const osThreadAttr_t defaultTask_attributes = {
-//  .name = "defaultTask",
-//  .stack_size = 128 * 4,
-//  .priority = (osPriority_t) osPriorityNormal,
-//};
 /* USER CODE BEGIN PV */
-
+gpioPinId_t ledOnPC00{GPIOC, 0b001};
 TaskHandle_t tstDefTaskHandle {NULL};
-//TaskHandle_t tstAuxTaskHandle {NULL};
 BaseType_t xReturned;
-
-bool tmpBttnEnabled{false};
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -52,16 +52,6 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 
 void tstDefTaskExec(void *pvParameters);
-//void tstAuxTaskExec(void *pvParameters);
-
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
 
 /**
   * @brief  The application entry point.
@@ -69,25 +59,13 @@ void tstDefTaskExec(void *pvParameters);
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
   /* Configure the system clock */
   SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
@@ -96,28 +74,8 @@ int main(void)
 
   /* USER CODE END 2 */
 
-  /* Init scheduler */
-//  osKernelInitialize();
-
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
-
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
-
-  /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
-
-  /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
-  /* USER CODE END RTOS_QUEUES */
-
   /* Create the thread(s) */
   /* creation of defaultTask */
-//  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -129,19 +87,6 @@ int main(void)
 		  configTIMER_TASK_PRIORITY,	//Set to the same priority level as the software timers
 		  &tstDefTaskHandle);
 
-//  xReturned = xTaskCreate(
-//		  tstAuxTaskExec, //taskFunction
-//		  "TstAuxiliaryTask", //Task function legible name
-//		  256, // Stack depth in words
-//		  NULL,	//Parameters to pass as arguments to the taskFunction
-//		  configTIMER_TASK_PRIORITY,	//Set to the same priority level as the software timers
-//		  &tstAuxTaskHandle);
-
-  /* USER CODE END RTOS_THREADS */
-
-  /* USER CODE BEGIN RTOS_EVENTS */
-  /* add events, ... */
-  /* USER CODE END RTOS_EVENTS */
 
   /* Start scheduler */
 //  osKernelStart();
@@ -149,14 +94,10 @@ int main(void)
 
   /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
   }
-  /* USER CODE END 3 */
 }
 
 /**
@@ -212,7 +153,6 @@ void SystemClock_Config(void)
   */
 static void MX_USART2_UART_Init(void)
 {
-
   huart2.Instance = USART2;
   huart2.Init.BaudRate = 115200;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
@@ -225,6 +165,7 @@ static void MX_USART2_UART_Init(void)
   {
     Error_Handler();
   }
+
 }
 
 /**
@@ -245,23 +186,16 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(tstLed0_GPIO_Port, tstLed0_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : tstMpbOnBoard_Pin */
   GPIO_InitStruct.Pin = tstMpbOnBoard_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(tstMpbOnBoard_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : tstLed0_Pin */
-  GPIO_InitStruct.Pin = tstLed0_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-  HAL_GPIO_Init(tstLed0_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : tstLedOnBoard_Pin */
   GPIO_InitStruct.Pin = tstLedOnBoard_Pin;
@@ -270,36 +204,22 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(tstLedOnBoard_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : tstMPBttn_Pin */
-  GPIO_InitStruct.Pin = tstMPBttn_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(tstMPBttn_GPIO_Port, &GPIO_InitStruct);
-
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-
-  /*Configure GPIO pin : Output to led in PC0 */
-  GPIO_InitStruct.Pin = 0b001;
+  /*Configure GPIO pin : ledOnPC00 */
+  GPIO_InitStruct.Pin = ledOnPC00.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(ledOnPC00.portId, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : Output to led in PC1 */
-  GPIO_InitStruct.Pin = 0b010;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
 void tstDefTaskExec(void *pvParameters)
 {
-	bool tmpBttnIsOn;
-	bool tmpBttnIsOn2;
+	bool tmpBttnWasOn{false};
+	bool tmpBttnIsOn{false};
+	bool tmpBttn2WasOn{false};
+	bool tmpBttn2IsOn{false};
 
 	DDlydLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 50, 50);
 	tstBttn.setScndModActvDly(2000);
@@ -308,23 +228,29 @@ void tstDefTaskExec(void *pvParameters)
 
 	for(;;)
 	{
-	  tmpBttnIsOn = tstBttn.getIsOn();
-	  tmpBttnIsOn2 = tstBttn.getIsOn2();
+		tmpBttnWasOn = tmpBttnIsOn;
+		tmpBttnIsOn = tstBttn.getIsOn();
+		tmpBttn2WasOn = tmpBttn2IsOn;
+		tmpBttn2IsOn = tstBttn.getIsOn2();
 
+		if(tmpBttnWasOn != tmpBttnIsOn){
+		  if(tmpBttnIsOn){
+			  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_SET);
+		  }
+		  else{
+			  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_RESET);
+		  }
+	  }
 
-	  if(tmpBttnIsOn){
-		  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_SET);
-	  }
-	  else{
-		  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_RESET);
+		if(tmpBttn2WasOn != tmpBttn2IsOn){
+		  if(tmpBttn2IsOn){
+			  HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_SET);
+		  }
+		  else{
+			  HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_RESET);
+		  }
 	  }
 
-	  if(tmpBttnIsOn2){
-		  HAL_GPIO_WritePin(GPIOC, 0b010, GPIO_PIN_SET);
-	  }
-	  else{
-		  HAL_GPIO_WritePin(GPIOC, 0b010, GPIO_PIN_RESET);
-	  }
 	}
 }
 
