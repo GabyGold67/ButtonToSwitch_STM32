@@ -121,10 +121,18 @@ protected:
 	bool _prssRlsCcl{false};
 	bool _sttChng {true};
 	TaskHandle_t _taskToNotifyHndl {NULL};
+	TaskHandle_t _taskWhileOn{NULL};
 	bool _validDisablePend{false};
 	bool _validEnablePend{false};
 	volatile bool _validPressPend{false};
 	volatile bool _validReleasePend{false};
+
+	//	void (*_fncTrnOn)(){nullptr};
+	//	void (*_fncTrnOff)(){nullptr};
+	//	bool setFncTrnOnPtr(void (*newFncTrnOn)());
+	//	bool setFncTrnOffPtr(void(*newFncTrnOff)());
+	//	(*fncPtr)() getFncTrnOnPtr();
+	//	(*fncPtr)() getFncTrnOffPtr();
 
 	void clrSttChng();
 	const bool getIsPressed() const;
@@ -196,6 +204,8 @@ public:
    const bool getIsOnDisabled() const;
 	const bool getOutputsChange() const;
 	const TaskHandle_t getTaskToNotify() const;
+	const TaskHandle_t getTaskWhileOn();
+
 	bool init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
 	bool init(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
 	bool resetDbncTime();
@@ -215,6 +225,7 @@ public:
    bool setIsOnDisabled(const bool &newIsOnDisabled);
    bool setOutputsChange(bool newOutputChange);
 	bool setTaskToNotify(TaskHandle_t newHandle);
+	bool setTaskWhileOn(const TaskHandle_t &newTaskHandle);
 
 	/**
 	 * @brief Attaches the instantiated object to a timer that monitors the input pin and updates the object status
