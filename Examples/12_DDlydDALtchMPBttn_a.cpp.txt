@@ -1,9 +1,9 @@
 /**
   ******************************************************************************
-  * @file	: 12_DDlydLtchMPBttn_a.cpp
-  * @brief  : Test for the MpbAsSwitch_STM32 library DDlydLtchMPBttn class
+  * @file	: 12_DDlydDALtchMPBttn_a.cpp
+  * @brief  : Test for the MpbAsSwitch_STM32 library DDlydDALtchMPBttn class
   *
-  * 	The test instantiates a DDlydLtchMPBttn object using:
+  * 	The test instantiates a DDlydDALtchMPBttn object using:
   * 		- The Nucleo board user pushbutton attached to GPIO_B00
   * 		- The Nucleo board user LED attached to GPIO_A05
   * 		- A digital output to GPIO_PC00 to show the second level action.
@@ -221,7 +221,7 @@ void tstDefTaskExec(void *pvParameters)
 	bool tmpBttn2WasOn{false};
 	bool tmpBttn2IsOn{false};
 
-	DDlydLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 50, 50);
+	DDlydDALtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 50, 50);
 	tstBttn.setScndModActvDly(2000);
 
 	tstBttn.begin(5);

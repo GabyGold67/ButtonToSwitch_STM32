@@ -1,9 +1,9 @@
 /**
   ******************************************************************************
-  * @file	: 11_SldrLtchMPBttn_2a.cpp
-  * @brief  : Test for the MpbAsSwitch_STM32 library SldrLtchMPBttn class
+  * @file	: 11_SldrDALtchMPBttn_2a.cpp
+  * @brief  : Test for the MpbAsSwitch_STM32 library SldrDALtchMPBttn class
   *
-  * 	The test instantiates a SldrLtchMPBttn object using:
+  * 	The test instantiates a SldrDALtchMPBttn object using:
   * 		- The Nucleo board user pushbutton attached to GPIO_B00
   * 		- The Nucleo board user LED attached to GPIO_A05
   *
@@ -210,7 +210,7 @@ void tstDefTaskExec(void *pvParameters)
 	uint16_t tmpSliderValue{0};
 	bool limitReachFlag{false};
 
-	SldrLtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 50, 150);
+	SldrDALtchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 50, 150);
 	tstBttn.setScndModActvDly(2000);
 	tstBttn.setSldrDirDn();
 	tstBttn.setSwpDirOnPrss(true);

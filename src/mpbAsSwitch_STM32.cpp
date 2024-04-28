@@ -1692,13 +1692,14 @@ void DblActnLtchMPBttn::updFdaState(){
 		case stDisabled:
 			//In: >>---------------------------------->>
 			if(_sttChng){
-				_validDisablePend = false;
 				if(_isOn != _isOnDisabled){
 					_isOn = _isOnDisabled;
 					_outputsChange = true;
 				}
 				clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
+				stDisabled_In();
 				_isEnabled = false;
+				_validDisablePend = false;
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
@@ -1812,36 +1813,45 @@ void DblActnLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 
 //=========================================================================> Class methods delimiter
 
-DDlydLtchMPBttn::DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
+DDlydDALtchMPBttn::DDlydDALtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
 :DblActnLtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
 {
 }
 
-DDlydLtchMPBttn::DDlydLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
-:DDlydLtchMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
+DDlydDALtchMPBttn::DDlydDALtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
+:DDlydDALtchMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
 {
 }
 
-DDlydLtchMPBttn::~DDlydLtchMPBttn()
+DDlydDALtchMPBttn::~DDlydDALtchMPBttn()
 {
 }
 
-void DDlydLtchMPBttn::clrStatus(bool clrIsOn){	//Check this is the one called from de updFda() Gaby
-	DblActnLtchMPBttn::clrStatus(clrIsOn);
+void DDlydDALtchMPBttn::clrStatus(bool clrIsOn){	//Check this is the one called from de updFda() Gaby
 	if(clrIsOn && _isOn2){
 		_isOn2= false;
+		_outputsChange = true;
+	}
+	DblActnLtchMPBttn::clrStatus(clrIsOn);
+
+	return;
+}
+
+bool DDlydDALtchMPBttn::getIsOn2(){
+
+	return _isOn2;
+}
+
+void DDlydDALtchMPBttn::stDisabled_In(){
+	if(_isOn2 != _isOnDisabled){
+		_isOn2 = _isOnDisabled;
 		_outputsChange = true;
 	}
 
 	return;
 }
 
-bool DDlydLtchMPBttn::getIsOn2(){
-
-	return _isOn2;
-}
-
-void DDlydLtchMPBttn::stOnStrtScndMod_In(){
+void DDlydDALtchMPBttn::stOnStrtScndMod_In(){
 	if(!_isOn2){
 		_isOn2 = true;
 		_outputsChange = true;
@@ -1850,12 +1860,12 @@ void DDlydLtchMPBttn::stOnStrtScndMod_In(){
 	return;
 }
 
-void DDlydLtchMPBttn::stOnScndMod_Do(){
+void DDlydDALtchMPBttn::stOnScndMod_Do(){
 
 	return;
 }
 
-void DDlydLtchMPBttn::stOnEndScndMod_Out(){
+void DDlydDALtchMPBttn::stOnEndScndMod_Out(){
 	if(_isOn2){
 		_isOn2 = false;
 		_outputsChange = true;
@@ -1866,69 +1876,69 @@ void DDlydLtchMPBttn::stOnEndScndMod_Out(){
 
 //=========================================================================> Class methods delimiter
 
-SldrLtchMPBttn::SldrLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long &dbncTimeOrigSett, const unsigned long int &strtDelay, const uint16_t initVal)
+SldrDALtchMPBttn::SldrDALtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long &dbncTimeOrigSett, const unsigned long int &strtDelay, const uint16_t initVal)
 :DblActnLtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay), _otptCurVal{initVal}
 {
 	if(_otptCurVal < _otptValMin || _otptCurVal > _otptValMax)
 		_otptCurVal = _otptValMin;	// Original development setup makes this outside limits situation impossible, as the limits are set to the full range of the data type used
 }
 
-SldrLtchMPBttn::SldrLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const bool &typeNO, const unsigned long &dbncTimeOrigSett, const unsigned long int &strtDelay, const uint16_t initVal)
-:SldrLtchMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay, initVal)
+SldrDALtchMPBttn::SldrDALtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const bool &typeNO, const unsigned long &dbncTimeOrigSett, const unsigned long int &strtDelay, const uint16_t initVal)
+:SldrDALtchMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay, initVal)
 {
 }
 
-SldrLtchMPBttn::~SldrLtchMPBttn()
+SldrDALtchMPBttn::~SldrDALtchMPBttn()
 {
 }
 
-void SldrLtchMPBttn::clrStatus(bool clrIsOn){	//Check this is the one called from de updFda() Gaby
+void SldrDALtchMPBttn::clrStatus(bool clrIsOn){	//Check this is the one called from de updFda() Gaby
 	DblActnLtchMPBttn::clrStatus(clrIsOn);
 
 	return;
 }
 
-uint16_t SldrLtchMPBttn::getOtptCurVal(){
+uint16_t SldrDALtchMPBttn::getOtptCurVal(){
 
 	return _otptCurVal;
 }
 
-bool SldrLtchMPBttn::getOtptCurValIsMax(){
+bool SldrDALtchMPBttn::getOtptCurValIsMax(){
 
 	return (_otptCurVal == _otptValMax);
 }
 
-bool SldrLtchMPBttn::getOtptCurValIsMin(){
+bool SldrDALtchMPBttn::getOtptCurValIsMin(){
 
 	return (_otptCurVal == _otptValMin);
 }
 
-unsigned long SldrLtchMPBttn::getOtptSldrSpd(){
+unsigned long SldrDALtchMPBttn::getOtptSldrSpd(){
 
 	return _otptSldrSpd;
 }
 
-uint16_t SldrLtchMPBttn::getOtptSldrStpSize(){
+uint16_t SldrDALtchMPBttn::getOtptSldrStpSize(){
 
 	return _otptSldrStpSize;
 }
 
-uint16_t SldrLtchMPBttn::getOtptValMax(){
+uint16_t SldrDALtchMPBttn::getOtptValMax(){
 
 	return _otptValMax;
 }
 
-uint16_t SldrLtchMPBttn::getOtptValMin(){
+uint16_t SldrDALtchMPBttn::getOtptValMin(){
 
 	return _otptValMin;
 }
 
-bool SldrLtchMPBttn::getSldrDirUp(){
+bool SldrDALtchMPBttn::getSldrDirUp(){
 
 	return _curSldrDirUp;
 }
 
-void SldrLtchMPBttn::stOnScndMod_Do(){
+void SldrDALtchMPBttn::stOnScndMod_Do(){
 	// Operating in Slider mode, change the associated value according to the time elapsed since last update
 	//and the step size for every time unit elapsed
 	uint16_t _otpStpsChng{0};
@@ -1987,14 +1997,14 @@ void SldrLtchMPBttn::stOnScndMod_Do(){
 	return;
 }
 
-void SldrLtchMPBttn::stOnStrtScndMod_In(){
+void SldrDALtchMPBttn::stOnStrtScndMod_In(){
 	if(_autoSwpDirOnPrss)
 		swapSldrDir();
 
 	return;
 }
 
-bool SldrLtchMPBttn::setOtptCurVal(const uint16_t &newVal){
+bool SldrDALtchMPBttn::setOtptCurVal(const uint16_t &newVal){
 	bool result{false};
 
 	if(_otptCurVal != newVal){
@@ -2007,7 +2017,7 @@ bool SldrLtchMPBttn::setOtptCurVal(const uint16_t &newVal){
 	return result;
 }
 
-bool SldrLtchMPBttn::setOtptSldrSpd(const uint16_t &newVal){
+bool SldrDALtchMPBttn::setOtptSldrSpd(const uint16_t &newVal){
 	bool result{false};
 
 	if(newVal != _otptSldrSpd){
@@ -2020,7 +2030,7 @@ bool SldrLtchMPBttn::setOtptSldrSpd(const uint16_t &newVal){
 	return result;
 }
 
-bool SldrLtchMPBttn::setOtptSldrStpSize(const uint16_t &newVal){
+bool SldrDALtchMPBttn::setOtptSldrStpSize(const uint16_t &newVal){
 	bool result{false};
 
 	if(newVal != _otptSldrStpSize){
@@ -2033,7 +2043,7 @@ bool SldrLtchMPBttn::setOtptSldrStpSize(const uint16_t &newVal){
 	return result;
 }
 
-bool SldrLtchMPBttn::setOtptValMax(const uint16_t &newVal){
+bool SldrDALtchMPBttn::setOtptValMax(const uint16_t &newVal){
 	bool result{false};
 
 	if(newVal != _otptValMax){
@@ -2050,7 +2060,7 @@ bool SldrLtchMPBttn::setOtptValMax(const uint16_t &newVal){
 	return result;
 }
 
-bool SldrLtchMPBttn::setOtptValMin(const uint16_t &newVal){
+bool SldrDALtchMPBttn::setOtptValMin(const uint16_t &newVal){
 	bool result{false};
 
 	if(newVal != _otptValMin){
@@ -2067,7 +2077,7 @@ bool SldrLtchMPBttn::setOtptValMin(const uint16_t &newVal){
 	return result;
 }
 
-bool SldrLtchMPBttn::_setSldrDir(const bool &newVal){
+bool SldrDALtchMPBttn::_setSldrDir(const bool &newVal){
 	bool result{false};
 
 	if(newVal != _curSldrDirUp){
@@ -2088,17 +2098,17 @@ bool SldrLtchMPBttn::_setSldrDir(const bool &newVal){
 	return result;
 }
 
-bool SldrLtchMPBttn::setSldrDirDn(){
+bool SldrDALtchMPBttn::setSldrDirDn(){
 
 	return _setSldrDir(false);
 }
 
-bool SldrLtchMPBttn::setSldrDirUp(){
+bool SldrDALtchMPBttn::setSldrDirUp(){
 
 	return _setSldrDir(true);
 }
 
-bool SldrLtchMPBttn::setSwpDirOnEnd(const bool &newVal){
+bool SldrDALtchMPBttn::setSwpDirOnEnd(const bool &newVal){
 
 	if(_autoSwpDirOnEnd != newVal)
 		_autoSwpDirOnEnd = newVal;
@@ -2106,7 +2116,7 @@ bool SldrLtchMPBttn::setSwpDirOnEnd(const bool &newVal){
 	return _autoSwpDirOnEnd;
 }
 
-bool SldrLtchMPBttn::setSwpDirOnPrss(const bool &newVal){
+bool SldrDALtchMPBttn::setSwpDirOnPrss(const bool &newVal){
 
 	if(_autoSwpDirOnPrss != newVal)
 		_autoSwpDirOnPrss = newVal;
@@ -2114,7 +2124,7 @@ bool SldrLtchMPBttn::setSwpDirOnPrss(const bool &newVal){
 	return _autoSwpDirOnEnd;
 }
 
-bool SldrLtchMPBttn::swapSldrDir(){
+bool SldrDALtchMPBttn::swapSldrDir(){
 
 	return _setSldrDir(!_curSldrDirUp);
 }

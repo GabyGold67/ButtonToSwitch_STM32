@@ -3,7 +3,11 @@
  * @file		: mpbAsSwitch_STM32.h
  * @brief	: Header file for the MpbAsSwitch_STM32 library classes
   *
-  * 	The library includes several instantiable classes
+  * 	The library builds several switch mechanisms replacements out of simple push buttons.
+  * 	By using just a push button (a.k.a. momentary switches or momentary buttons, _**MPB**_
+  * 	for short from here on) the classes implemented in this library will manage,
+  * 	calculate and update different parameters to **generate the behavior of standard
+  * 	 electromechanical switches**.
   *
   * 	@author	: Gabriel D. Goldman
   *
@@ -77,7 +81,7 @@ constexpr int genNxtEnumVal(const int &curVal, const int &increment){return (cur
 //==========================================================>> BEGIN Classes declarations
 
 /**
- * @brief 	Implements a debounced deglitched Pushbutton from the original raw signal received as input
+ * @brief 	Base class, implements a debounced deglitched Pushbutton from the original raw signal received as input.
  *
  * This class provides the resources needed to process a momentary digital input signal -as the one
  * provided by a MPB (momentary push button)- returning a clean signal to be used as a switch,
@@ -132,7 +136,7 @@ protected:
 	virtual bool updValidPressesStatus();
 public:
 	/**
-		 * @brief	Default class constructor
+	 * @brief Default class constructor
 	 *
 	 */
 	DbncdMPBttn();
@@ -148,15 +152,18 @@ public:
 	DbncdMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
 	DbncdMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
 	/**
-		 * @brief Default destructor
+	 * @brief Default destructor
 	 *
 	 */
 	virtual ~DbncdMPBttn();
 	/**
 	 * @brief Clears and resets flags and counters modified through the Turn-On/Turn-Off process.
-	 * Resets some object's attributes to safely resume operations -by using the resume() method- after a pause() without risking generating false "Valid presses" and "On" situations due to dangling flags or partially ran time counters
+	 * Resets object's attributes to initialization values to safely resume operations -by using the resume() method-
+	 * after a pause(). This avoids risky behavior of the object due to dangling flags or partially ran time counters.
 	 *
-	 * @param clrIsOn Optional boolean value, indicates if the _isOn flag must be cleared (true, default value) or not (false)
+	 * @param clrIsOn Optional boolean value, indicates if the _isOn flag must be included to be cleared:
+	 * - true (default value) includes the _isOn flag
+	 * - false or not (false) excludes the _isOn flag
 	 */
 	void clrStatus(bool clrIsOn = true);
    /**
@@ -177,6 +184,13 @@ public:
 	 * @return	The current debounce time in milliseconds
 	 */
    const unsigned long int getCurDbncTime() const;
+   /**
+	 * @brief Get the value of the _isEnabled flag, indicating the Enabled status of the object
+	 *
+    * @return The Enabled status of the object
+    * - true: the object is enabled.
+    * - false: The object is disabled
+    */
    const bool getIsEnabled() const;
 	const bool getIsOn () const;
    const bool getIsOnDisabled() const;
@@ -416,7 +430,8 @@ protected:
 	bool _validScndModPend{false};
 
 	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
-   virtual void stOnStrtScndMod_In();
+   virtual void stDisabled_In(){};
+	virtual void stOnStrtScndMod_In();
    virtual void stOnScndMod_Do() = 0;
    virtual void stOnEndScndMod_Out();
 	virtual void updFdaState();
@@ -436,24 +451,25 @@ public:
 
 //==========================================================>>
 
-class DDlydLtchMPBttn: public DblActnLtchMPBttn{
+class DDlydDALtchMPBttn: public DblActnLtchMPBttn{
 protected:
    bool _isOn2{false};
 
+   virtual void stDisabled_In();
    virtual void stOnStrtScndMod_In();
    virtual void stOnScndMod_Do();
    virtual void stOnEndScndMod_Out();
 public:
-   DDlydLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
-   DDlydLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
-   ~DDlydLtchMPBttn();
+   DDlydDALtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+   DDlydDALtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+   ~DDlydDALtchMPBttn();
    void clrStatus(bool clrIsOn = true);
    bool getIsOn2();
 };
 
 //==========================================================>>
 
-class SldrLtchMPBttn: public DblActnLtchMPBttn{
+class SldrDALtchMPBttn: public DblActnLtchMPBttn{
 
 protected:
 	bool _autoSwpDirOnEnd{true};	// Changes slider direction when reaches _otptValMax or _otptValMin
@@ -471,9 +487,9 @@ protected:
    virtual void stOnScndMod_Do();
 	bool _setSldrDir(const bool &newVal);
 public:
-   SldrLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
-   SldrLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
-   ~SldrLtchMPBttn();
+   SldrDALtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
+   SldrDALtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
+   ~SldrDALtchMPBttn();
    void clrStatus(bool clrIsOn = true);
 	uint16_t getOtptCurVal();
    bool getOtptCurValIsMax();
