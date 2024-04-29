@@ -1,17 +1,17 @@
 /**
   ******************************************************************************
- * @file		: mpbAsSwitch_STM32.h
- * @brief	: Header file for the MpbAsSwitch_STM32 library classes
+  * @file	: mpbAsSwitch_STM32.h
+  * @brief	: Header file for the MpbAsSwitch_STM32 library classes
   *
-  * 	The library builds several switch mechanisms replacements out of simple push buttons.
-  * 	By using just a push button (a.k.a. momentary switches or momentary buttons, _**MPB**_
-  * 	for short from here on) the classes implemented in this library will manage,
-  * 	calculate and update different parameters to **generate the behavior of standard
-  * 	 electromechanical switches**.
+  * The library builds several switch mechanisms replacements out of simple push buttons.
+  * By using just a push button (a.k.a. momentary switches or momentary buttons, _**MPB**_
+  * for short from here on) the classes implemented in this library will manage,
+  * calculate and update different parameters to **generate the behavior of standard
+  * electromechanical switches**.
   *
-  * 	@author	: Gabriel D. Goldman
+  * @author	: Gabriel D. Goldman
   *
- * @date		: Created on: Nov 6, 2023
+  * @date	: Created on: Nov 6, 2023
   * 			: Last modificationon:	21/04/2024
   *
   ******************************************************************************
@@ -60,16 +60,17 @@
  * @brief Structure that holds all the required information to identify unequivocally a MCU's GPIO pin
  *
  * A GPIO pin identification is MCU and framework dependent, so the quantity and type of parameters
- * vary. This structure provides an interface to abstract them as a single identification parameter
+ * vary. This structure provides an interface to abstract them as a single identification parameter.
  *
  * @struct gpioPinId_t
- *
  */
 struct gpioPinId_t{	// Type used to keep GPIO pin identification as a single parameter, as platform independent as possible
 	GPIO_TypeDef* portId;	/**< The port identification as a pointer to a GPIO_TypeDef information structure*/
 	uint16_t pinNum;	/**< The number of pin represented as a one bit set binary with the set bit position indicating the pin number*/
 };
 
+typedef void (*fnTrnType)();
+typedef fnTrnType (*fnPtr)();
 //===========================>> BEGIN General use function prototypes
 
 uint8_t singleBitPosNum(uint16_t mask);
@@ -81,13 +82,13 @@ constexpr int genNxtEnumVal(const int &curVal, const int &increment){return (cur
 //==========================================================>> BEGIN Classes declarations
 
 /**
- * @brief 	Base class, implements a debounced deglitched Pushbutton from the original raw signal received as input.
+ * @brief	Base class, implements a debounced deglitched Pushbutton from the original raw signal received as input.
  *
  * This class provides the resources needed to process a momentary digital input signal -as the one
  * provided by a MPB (momentary push button)- returning a clean signal to be used as a switch,
  * implementing the needed services to replace a wide range of physical related switch characteristics.
  *
-* 	@class	DbncdMPBttn
+ * @class	DbncdMPBttn
  */
 class DbncdMPBttn {
 protected:
@@ -127,12 +128,24 @@ protected:
 	volatile bool _validPressPend{false};
 	volatile bool _validReleasePend{false};
 
-	//	void (*_fncTrnOn)(){nullptr};
-	//	void (*_fncTrnOff)(){nullptr};
-	//	bool setFncTrnOnPtr(void (*newFncTrnOn)());
-	//	bool setFncTrnOffPtr(void(*newFncTrnOff)());
-	//	(*fncPtr)() getFncTrnOnPtr();
-	//	(*fncPtr)() getFncTrnOffPtr();
+	 void turnOff();
+	 void turnOn();
+
+	//================--------------->> WIP BEGIN
+	void (*_fnWhnTrnOff)(){nullptr};
+	void (*_fnWhnTrnOn)(){nullptr};
+
+	bool setFnWhnTrnOffPtr(void(*newFnWhnTrnOff)());
+	bool setFnWhnTrnOnPtr(void (*newFnWhnTrnOn)());
+
+
+//	typedef void (*fnTrnType)();
+//	typedef fnTrnType (*fnPtr)();
+
+//	fnPtr getFnWhnTrnOnPtr();
+//	fnPtr getFnWhnTrnOffPtr();
+
+	//================--------------->> WIP BEGIN
 
 	void clrSttChng();
 	const bool getIsPressed() const;
@@ -177,13 +190,15 @@ public:
    /**
 	 * @brief	Disables the input signal processing, ignoring the changes of its values.
     *
-    * @return	True if the object was enabled, the method invocation disabled it.
+    * @return	True: the object was enabled, the method invocation disabled it.
+    * @return	False: the object was disabled, the method made no changes in the status.
     */
 	bool disable();
    /**
 	 * @brief	Enables the input signal processing.
     *
-    * @return	True if the object was disabled, the method invocation enabled it.
+    * @return	True: the object was disabled, the method invocation enabled it.
+    * @return	False: the object was enabled, the method made no changes in the status.
     */
    bool enable();
 	/**
@@ -193,14 +208,19 @@ public:
 	 */
    const unsigned long int getCurDbncTime() const;
    /**
-	 * @brief Get the value of the _isEnabled flag, indicating the Enabled status of the object
+	 * @brief Gets the value of the _isEnabled flag, indicating the **Enabled** status of the object.
 	 *
-    * @return The Enabled status of the object
-    * - true: the object is enabled.
-    * - false: The object is disabled
+    * @return true: the object is enabled.
+    * @return false: The object is disabled
     */
    const bool getIsEnabled() const;
-	const bool getIsOn () const;
+   /**
+	 * @brief Gets the value of the _isOn flag, indicating the **On** status of the object.
+	 *
+    * @return true: the object is signaling **On**.
+    * @return false: The object is signaling **Off**.
+    */
+   const bool getIsOn () const;
    const bool getIsOnDisabled() const;
 	const bool getOutputsChange() const;
 	const TaskHandle_t getTaskToNotify() const;

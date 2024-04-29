@@ -703,6 +703,48 @@ bool DbncdMPBttn::setTaskWhileOn(const TaskHandle_t &newTaskHandle){
 	return result;
 }
 
+bool DbncdMPBttn::setFnWhnTrnOffPtr(void (*newFnWhnTrnOff)()){
+	bool result{false};
+
+	if (_fnWhnTrnOff != newFnWhnTrnOff){
+		_fnWhnTrnOff = newFnWhnTrnOff;
+		result = true;
+	}
+
+	return result;
+}
+
+bool DbncdMPBttn::setFnWhnTrnOnPtr(void (*newFnWhnTrnOn)()){
+	bool result{false};
+
+	if (_fnWhnTrnOn != newFnWhnTrnOn){
+		_fnWhnTrnOn = newFnWhnTrnOn;
+		result = true;
+	}
+
+	return result;
+}
+
+void DbncdMPBttn::turnOff(){
+
+	return;
+}
+
+void DbncdMPBttn::turnOn(){
+
+	return;
+}
+
+//fnPtr DbncdMPBttn::getFnWhnTrnOnPtr(){
+//
+//	return &_fnWhnTrnOn;
+//}
+
+//fnPtr DbncdMPBttn::getFnWhnTrnOffPtr(){
+//
+//	return &_fnWhnTrnOff;
+//}
+
 //=========================================================================> Class methods delimiter
 
 DbncdDlydMPBttn::DbncdDlydMPBttn()
