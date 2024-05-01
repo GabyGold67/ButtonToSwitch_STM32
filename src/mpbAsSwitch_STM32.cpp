@@ -431,6 +431,7 @@ bool DbncdMPBttn::setIsOnDisabled(const bool &newIsOnDisabled){
 		_isOnDisabled = newIsOnDisabled;
 		if(!_isEnabled){
 			if(_isOn != _isOnDisabled){
+				/* Start of code to be replaced
 				_isOn = _isOnDisabled;
 				_outputsChange = true;
 				if(_isOn){
@@ -442,6 +443,12 @@ bool DbncdMPBttn::setIsOnDisabled(const bool &newIsOnDisabled){
 					if(_taskWhileOn != NULL){
 						vTaskSuspend(_taskWhileOn);
 					}
+				}*/
+				if(_isOnDisabled){
+					_turnOn();
+				}
+				else{
+					_turnOff();
 				}
 			}
 		}
@@ -474,6 +481,52 @@ bool DbncdMPBttn::setTaskToNotify(TaskHandle_t newHandle){
     return result;
 }
 
+void DbncdMPBttn::_turnOff(){
+	//---------------->> Flags related actions
+	if(_isOn){
+		_isOn = false;
+		_outputsChange = true;
+	}
+	//---------------->> Tasks related actions
+	if(_taskWhileOn != NULL){
+		eTaskState taskWhileOnStts{eTaskGetState(_taskWhileOn)};
+		if (taskWhileOnStts != eSuspended){
+			if(taskWhileOnStts != eDeleted){
+				vTaskSuspend(_taskWhileOn);
+			}
+		}
+	}
+	//---------------->> Functions related actions
+	if(_fnWhnTrnOff != nullptr){
+		_fnWhnTrnOff();
+	}
+
+	return;
+}
+
+void DbncdMPBttn::_turnOn(){
+	//---------------->> Flags related actions
+	if(!_isOn){
+		_isOn = true;
+		_outputsChange = true;
+	}
+	//---------------->> Tasks related actions
+	if(_taskWhileOn != NULL){
+		eTaskState taskWhileOnStts{eTaskGetState(_taskWhileOn)};
+		if(taskWhileOnStts != eDeleted){
+			if (taskWhileOnStts == eSuspended){
+				vTaskResume(_taskWhileOn);
+			}
+		}
+	}
+	//---------------->> Functions related actions
+	if(_fnWhnTrnOn != nullptr){
+		_fnWhnTrnOn();
+	}
+
+	return;
+}
+
 void DbncdMPBttn::updFdaState(){
 	switch(_mpbFdaState){
 		case stOffNotVPP:
@@ -500,11 +553,7 @@ void DbncdMPBttn::updFdaState(){
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			if(!_isOn){
-				_isOn = true;
-				_outputsChange = true;
-				if(_taskWhileOn != NULL){
-					vTaskResume(_taskWhileOn);
-				}
+				_turnOn();
 			}
 			_validPressPend = false;
 			_mpbFdaState = stOn;
@@ -534,12 +583,7 @@ void DbncdMPBttn::updFdaState(){
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			if(_isOn){
-				_isOn = false;
-				_outputsChange = true;
-				if(_taskWhileOn != NULL){
-					vTaskSuspend(_taskWhileOn);
-				}
-
+				_turnOff();
 			}
 			_validReleasePend = false;
 			_mpbFdaState = stOffNotVPP;
@@ -552,35 +596,34 @@ void DbncdMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){
 				if(_isOn != _isOnDisabled){
-					_isOn = _isOnDisabled;
-					_outputsChange = true;
 					if(_isOn){
-						if(_taskWhileOn != NULL){
-							vTaskResume(_taskWhileOn);
-						}
+						_turnOff();
 					}
 					else{
-						if(_taskWhileOn != NULL){
-							vTaskSuspend(_taskWhileOn);
-						}
+						_turnOn();
 					}
 				}
 				clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
 				_isEnabled = false;
+				if(!_outputsChange)
+					_outputsChange = true;
 				_validDisablePend = false;
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			if(_validEnablePend){
 				if(_isOn){
+					/* Code to be replaced by a call to _turnOff()
 					_isOn = false;
 					if(_taskWhileOn != NULL){
 						vTaskSuspend(_taskWhileOn);
-					}
+					}*/
+					_turnOff();
 				}
 				_isEnabled = true;
 				_validEnablePend = false;
-				_outputsChange = true;
+				if(!_outputsChange)
+					_outputsChange = true;
 			}
 			if(_isEnabled && !updIsPressed()){	//The stDisabled status will be kept until the MPB is released for security reasons
 				_mpbFdaState = stOffNotVPP;
@@ -723,16 +766,6 @@ bool DbncdMPBttn::setFnWhnTrnOnPtr(void (*newFnWhnTrnOn)()){
 	}
 
 	return result;
-}
-
-void DbncdMPBttn::turnOff(){
-
-	return;
-}
-
-void DbncdMPBttn::turnOn(){
-
-	return;
 }
 
 //fnPtr DbncdMPBttn::getFnWhnTrnOnPtr(){

@@ -3,7 +3,8 @@
   * @file	: mpbAsSwitch_STM32.h
   * @brief	: Header file for the MpbAsSwitch_STM32 library classes
   *
-  * The library builds several switch mechanisms replacements out of simple push buttons.
+  * The library builds several switch mechanisms replacements out of simple push buttons
+  * or similar equivalent digital signal inputs.
   * By using just a push button (a.k.a. momentary switches or momentary buttons, _**MPB**_
   * for short from here on) the classes implemented in this library will manage,
   * calculate and update different parameters to **generate the behavior of standard
@@ -12,7 +13,7 @@
   * @author	: Gabriel D. Goldman
   *
   * @date	: Created on: Nov 6, 2023
-  * 			: Last modificationon:	21/04/2024
+  * 			: Last modificationon:	29/04/2024
   *
   ******************************************************************************
   * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
@@ -128,9 +129,6 @@ protected:
 	volatile bool _validPressPend{false};
 	volatile bool _validReleasePend{false};
 
-	 void turnOff();
-	 void turnOn();
-
 	//================--------------->> WIP BEGIN
 	void (*_fnWhnTrnOff)(){nullptr};
 	void (*_fnWhnTrnOn)(){nullptr};
@@ -152,6 +150,8 @@ protected:
 	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
    bool setIsEnabled(const bool &newEnabledValue);
 	void setSttChng();
+	void _turnOff();
+	void _turnOn();
 	virtual void updFdaState();
 	bool updIsPressed();
 	virtual bool updValidPressesStatus();
