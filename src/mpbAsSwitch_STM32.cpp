@@ -151,11 +151,13 @@ void DbncdMPBttn::clrStatus(bool clrIsOn){
 	_dbncRlsTimerStrt = 0;
 	if(clrIsOn){
 		if(_isOn){
+			/* Code to be replaced by _turnOff()
 			_isOn = false;
 			_outputsChange = true;
 			if(_taskWhileOn != NULL){
 				vTaskSuspend(_taskWhileOn);
-			}
+			}*/
+			_turnOff();
 		}
 	}
 
@@ -482,46 +484,46 @@ bool DbncdMPBttn::setTaskToNotify(TaskHandle_t newHandle){
 }
 
 void DbncdMPBttn::_turnOff(){
-	//---------------->> Flags related actions
 	if(_isOn){
+		//---------------->> Flags related actions
 		_isOn = false;
 		_outputsChange = true;
-	}
-	//---------------->> Tasks related actions
-	if(_taskWhileOn != NULL){
-		eTaskState taskWhileOnStts{eTaskGetState(_taskWhileOn)};
-		if (taskWhileOnStts != eSuspended){
-			if(taskWhileOnStts != eDeleted){
-				vTaskSuspend(_taskWhileOn);
+		//---------------->> Tasks related actions
+		if(_taskWhileOn != NULL){
+			eTaskState taskWhileOnStts{eTaskGetState(_taskWhileOn)};
+			if (taskWhileOnStts != eSuspended){
+				if(taskWhileOnStts != eDeleted){
+					vTaskSuspend(_taskWhileOn);
+				}
 			}
 		}
-	}
-	//---------------->> Functions related actions
-	if(_fnWhnTrnOff != nullptr){
-		_fnWhnTrnOff();
+		//---------------->> Functions related actions
+		if(_fnWhnTrnOff != nullptr){
+			_fnWhnTrnOff();
+		}
 	}
 
 	return;
 }
 
 void DbncdMPBttn::_turnOn(){
-	//---------------->> Flags related actions
 	if(!_isOn){
+		//---------------->> Flags related actions
 		_isOn = true;
 		_outputsChange = true;
-	}
-	//---------------->> Tasks related actions
-	if(_taskWhileOn != NULL){
-		eTaskState taskWhileOnStts{eTaskGetState(_taskWhileOn)};
-		if(taskWhileOnStts != eDeleted){
-			if (taskWhileOnStts == eSuspended){
-				vTaskResume(_taskWhileOn);
+		//---------------->> Tasks related actions
+		if(_taskWhileOn != NULL){
+			eTaskState taskWhileOnStts{eTaskGetState(_taskWhileOn)};
+			if(taskWhileOnStts != eDeleted){
+				if (taskWhileOnStts == eSuspended){
+					vTaskResume(_taskWhileOn);
+				}
 			}
 		}
-	}
-	//---------------->> Functions related actions
-	if(_fnWhnTrnOn != nullptr){
-		_fnWhnTrnOn();
+		//---------------->> Functions related actions
+		if(_fnWhnTrnOn != nullptr){
+			_fnWhnTrnOn();
+		}
 	}
 
 	return;
