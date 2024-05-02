@@ -168,9 +168,8 @@ public:
 	 *
 	 * @param pollDelayMs Unsigned long integer (ulong) optional, passes the time between polls in milliseconds.
 	 * @return Boolean indicating if the object could be attached to a timer.
-	 *
-	 * -true: the object could be attached to a timer, or if it was already attached to a timer when the method was invoked.
-	 * -false: the object could not create the needed timer, or the object could not be attached to it.
+	 * @retval true: the object could be attached to a timer, or if it was already attached to a timer when the method was invoked.
+	 * @retval false: the object could not create the needed timer, or the object could not be attached to it.
 	 */
 	bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 	/**
@@ -186,24 +185,23 @@ public:
    /**
 	 * @brief	Disables the input signal processing, ignoring the changes of its values.
     *
-    * @return	True: the object was enabled, the method invocation disabled it.
-    * @return	False: the object was disabled, the method made no changes in the status.
+    * @retval	True: the object was enabled, the method invocation disabled it.
+    * @retval	False: the object was disabled, the method made no changes in the status.
     */
 	bool disable();
    /**
 	 * @brief	Enables the input signal processing.
     *
-    * @return	True: the object was disabled, the method invocation enabled it.
-    * @return	False: the object was enabled, the method made no changes in the status.
+    * @retval	True: the object was disabled, the method invocation enabled it.
+    * @retval	False: the object was enabled, the method made no changes in the status.
     */
    bool enable();
 	/**
 	 * @brief Detaches the object from the timer that monitors the input pin/s and updates the object status. The timer daemon entry is deleted for the object.
 	 *
 	 * @return Boolean indicating the success of the operation
-	 *
-	 * - true: the object detachment procedure and timer entry removal was successful.
-	 * - false: the object detachment and/or entry removal was rejected by the O.S..
+	 * @retval true: the object detachment procedure and timer entry removal was successful.
+	 * @retval false: the object detachment and/or entry removal was rejected by the O.S..
 	 *
 	 */
 	bool end();
@@ -213,30 +211,82 @@ public:
 	 * @return	The current debounce time in milliseconds
 	 */
    const unsigned long int getCurDbncTime() const;
-	fncPtrType getFnWhnTrnOn();
+	/**
+	 * @brief Returns a pointer to the function that was set to execute every time the _isOn flag is set (the object is signaling **On**)
+	 *
+	 * @return nullptr if there is no function set to execute
+	 * @return a function pointer to the function set to execute through setFnWhnTrnOffPtr
+	 */
+   fncPtrType getFnWhnTrnOn();
+	/**
+	 * @brief Returns a pointer to the function that was set to execute every time the _isOn flag is reset (the object is signaling **Off**)
+	 *
+	 * @return nullptr if there is no function set to execute
+	 * @return a function pointer to the function set to execute through setFnWhnTrnOnPtr
+	 */
 	fncPtrType  getFnWhnTrnOff();
    /**
 	 * @brief Gets the value of the _isEnabled flag, indicating the **Enabled** status of the object.
 	 *
-    * @return true: the object is enabled.
-    * @return false: The object is disabled
+    * @retval true: the object is in **Enabled state**.
+    * @retval false: The object is in **Disabled state**.
     */
    const bool getIsEnabled() const;
    /**
-	 * @brief Gets the value of the _isOn flag, indicating the **On** status of the object.
+	 * @brief Gets the value of the _isOn flag.
 	 *
-    * @return true: the object is signaling **On**.
-    * @return false: The object is signaling **Off**.
+	 * The _isOn flag is one of the fundamental attributes of the object, it indicates if the object is in the **On** (true) or the **Off** (false) status.
+	 * While other mechanism are provided to execute code when the status of the object changes, all but the _isOn flag value are optionally executed.
+	 *
+    * @retval true: the object is in **On state**.
+    * @retval false: The object is in **Off state**.
     */
    const bool getIsOn () const;
+   /**
+	 * @brief Gets the value of the _isOnDisabled flag.
+	 *
+	 * When instantiated the class, the object is created in **Enabled state**, that might be changed when needed.
+	 * In the **Disabled state** the input signals for the MPB are not processed, and the output will be set to the **On state** or the **Off state** depending on this flag value.
+	 * The reasons to disable the ability to change the output, an keep it on either state until re-enabled are design and use dependent.
+	 * The flag value might be changed by the use of the setIsOnDisabled
+    *
+    * @retval true: the object is configured to be set to the **On state** while it is in **Disabled state**.
+    * @retval false: the object is configured to be set to the **Off state** while it is in **Disabled state**.
+    */
    const bool getIsOnDisabled() const;
-	const bool getOutputsChange() const;
+	/**
+	 * @brief Gets the value of the _outputsChange flag.
+	 *
+	 * The instantiated objects include attributes linked to their computed state, which represent the behavior expected from their respective electromechanical simulated counterparts.
+	 * When any of those attributes values change, the _outputsChange flag is set. The flag only signals changes have been done, not which flags, nor how many times changes have taken place.
+	 * The _outputsChange flag must be set or reset through the setOutputsChange() method.
+	 *
+    * @retval true: any of the object's behavior flags have changed value since last **_outputsChange** flag was reseted.
+    * @retval false: no object's behavior flags have changed value since last **_outputsChange** flag was reseted.
+	 */
+   const bool getOutputsChange() const;
+   /**
+	 * @brief Gets the value of the **_taskToNotifyHndl** task handle.
+	 *
+	 * The instantiated objects include the  **_taskToNotifyHndl** task handle, for the task to be notified by the object when its output flags changes (indicating there have been changes in the outputs since last FreeRTOS notification). When the object is created, this value is set to **nullptr** and a valid TaskHandle_t value might be set by using the **setTaskToNotify()** method. The task notifying mechanism will not be used while the task handle keeps the **nullptr** value, in which case the solution implementation will have to use any of the other provided mechanisms to test the object status, and act accordingly.
+    *
+    * @return The TaskHandle_t value of the task to be notified of the outputs change.
+    * @retval NULL: there is no task configured to be notified of the output.
+    */
 	const TaskHandle_t getTaskToNotify() const;
 	const TaskHandle_t getTaskWhileOn();
-
 	bool init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
 	bool init(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
 	bool pause();
+	/**
+	 * @brief Stops the software timer updating the calculation of the object internal flags.
+	 *
+	 * The timer will be kept for future use, but the flags will keep their last values and will not be updated until the timer is restarted with the `.resume()` method.
+	 *
+	 * @return true: the object's timer could be stopped by the O.S..
+	 * @return false: the object's timer couldn't be stopped by the O.S..
+	 *
+	 */
 	bool resetDbncTime();
 	bool resetFda();
 	bool resume();
@@ -247,9 +297,8 @@ public:
 	 *
 	 * @param newDbncTime	unsigned long integer, the new debounce value for the object.
 	 * @return	A boolean indicating if the debounce time change was successful
-	 *
-	 * - true: the new value is in the accepted range and the change was made.
-	 * - false: the value was already in use, or was out of the accepted range, no change was made.
+	 * @retval true: the new value is in the accepted range and the change was made.
+	 * @retval false: the value was already in use, or was out of the accepted range, no change was made.
 	 */
 	bool setDbncTime(const unsigned long int &newDbncTime);
 	bool setFnWhnTrnOffPtr(void(*newFnWhnTrnOff)());
