@@ -151,12 +151,6 @@ void DbncdMPBttn::clrStatus(bool clrIsOn){
 	_dbncRlsTimerStrt = 0;
 	if(clrIsOn){
 		if(_isOn){
-			/* Code to be replaced by _turnOff()
-			_isOn = false;
-			_outputsChange = true;
-			if(_taskWhileOn != NULL){
-				vTaskSuspend(_taskWhileOn);
-			}*/
 			_turnOff();
 		}
 	}
@@ -203,6 +197,16 @@ bool DbncdMPBttn::end(){
 const unsigned long int DbncdMPBttn::getCurDbncTime() const{
 
 	return _dbncTimeTempSett;
+}
+
+fncPtrType DbncdMPBttn::getFnWhnTrnOff(){
+
+	return _fnWhnTrnOff;
+}
+
+fncPtrType DbncdMPBttn::getFnWhnTrnOn(){
+
+	return _fnWhnTrnOn;
 }
 
 const bool DbncdMPBttn::getIsEnabled() const{
@@ -433,19 +437,6 @@ bool DbncdMPBttn::setIsOnDisabled(const bool &newIsOnDisabled){
 		_isOnDisabled = newIsOnDisabled;
 		if(!_isEnabled){
 			if(_isOn != _isOnDisabled){
-				/* Start of code to be replaced
-				_isOn = _isOnDisabled;
-				_outputsChange = true;
-				if(_isOn){
-					if(_taskWhileOn != NULL){
-						vTaskResume(_taskWhileOn);
-					}
-				}
-				else{
-					if(_taskWhileOn != NULL){
-						vTaskSuspend(_taskWhileOn);
-					}
-				}*/
 				if(_isOnDisabled){
 					_turnOn();
 				}
@@ -615,11 +606,6 @@ void DbncdMPBttn::updFdaState(){
 			//Do: >>---------------------------------->>
 			if(_validEnablePend){
 				if(_isOn){
-					/* Code to be replaced by a call to _turnOff()
-					_isOn = false;
-					if(_taskWhileOn != NULL){
-						vTaskSuspend(_taskWhileOn);
-					}*/
 					_turnOff();
 				}
 				_isEnabled = true;
@@ -769,16 +755,6 @@ bool DbncdMPBttn::setFnWhnTrnOnPtr(void (*newFnWhnTrnOn)()){
 
 	return result;
 }
-
-//fnPtr DbncdMPBttn::getFnWhnTrnOnPtr(){
-//
-//	return &_fnWhnTrnOn;
-//}
-
-//fnPtr DbncdMPBttn::getFnWhnTrnOffPtr(){
-//
-//	return &_fnWhnTrnOff;
-//}
 
 //=========================================================================> Class methods delimiter
 
@@ -974,11 +950,7 @@ void LtchMPBttn::updFdaState(){
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			if(!_isOn){
-				_isOn = true;
-				_outputsChange = true;
-				if(_taskWhileOn != NULL){
-					vTaskResume(_taskWhileOn);
-				}
+				_turnOn();
 			}
 			_validPressPend = false;
 			_mpbFdaState = stOnNVRP;
@@ -1043,11 +1015,7 @@ void LtchMPBttn::updFdaState(){
 			//Do: >>---------------------------------->>
 			if(_trnOffASAP){
 				if(_isOn){
-					_isOn = false;
-					_outputsChange = true;
-					if(_taskWhileOn != NULL){
-						vTaskSuspend(_taskWhileOn);
-					}
+					_turnOff();
 				}
 			}
 			_mpbFdaState = stOffVUP;
@@ -1086,11 +1054,7 @@ void LtchMPBttn::updFdaState(){
 			//Do: >>---------------------------------->>
 			_validUnlatchRlsPend = false;
 			if(_isOn){
-				_isOn = false;
-				_outputsChange = true;
-				if(_taskWhileOn != NULL){
-					vTaskSuspend(_taskWhileOn);
-				}
+				_turnOff();
 			}
 			if(_isLatched)
 				_isLatched = false;
@@ -1111,17 +1075,11 @@ void LtchMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){
 				if(_isOn != _isOnDisabled){
-					_isOn = _isOnDisabled;
-					_outputsChange = true;
 					if(_isOn){
-						if(_taskWhileOn != NULL){
-							vTaskResume(_taskWhileOn);
-						}
+						_turnOff();
 					}
 					else{
-						if(_taskWhileOn != NULL){
-							vTaskSuspend(_taskWhileOn);
-						}
+						_turnOn();
 					}
 				}
 				clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
@@ -1134,10 +1092,7 @@ void LtchMPBttn::updFdaState(){
 			//Do: >>---------------------------------->>
 			if(_validEnablePend){
 				if(_isOn){
-					_isOn = false;
-					if(_taskWhileOn != NULL){
-						vTaskSuspend(_taskWhileOn);
-					}
+					_turnOff();
 				}
 				_isEnabled = true;
 				_validEnablePend = false;
@@ -1497,28 +1452,16 @@ bool HntdTmLtchMPBttn::setWrnngPrctg (const unsigned int &newWrnngPrctg){
 bool HntdTmLtchMPBttn::updPilotOn(){
 	if (_keepPilot){
 		if(!_isOn && !_pilotOn){
-/* Previous pilot light managing
-*			_pilotOn = true;
-*			_outputsChange = true; *
-*/
 			_validPilotSetPend = true;
 			_validPilotResetPend = false;
 		}
 		else if(_isOn && _pilotOn){
-/* Previous pilot light managing
-			_pilotOn = false;
-			_outputsChange = true;
-*/
 			_validPilotResetPend = true;
 			_validPilotSetPend = false;
 		}
 	}
 	else{
 		if(_pilotOn){
-/* Previous pilot light managing
-*			_pilotOn = false;
-*			_outputsChange = true;
-*/
 			_validPilotResetPend = true;
 			_validPilotSetPend = false;
 		}
@@ -1534,29 +1477,16 @@ bool HntdTmLtchMPBttn::updWrnngOn(){
 		if (_isOn && _isEnabled){	//The _isEnabled evaluation is done to avoid computation of flags that will be ignored if the MPB is disablee
 			if (((xTaskGetTickCount() / portTICK_RATE_MS) - _srvcTimerStrt) >= (_srvcTime - _wrnngMs)){
 				if(_wrnngOn == false){
-/* Previous warning light managing
- *					_wrnngOn = true;
- *					_outputsChange = true;
- */
 					_validWrnngSetPend = true;
 					_validWrnngResetPend = false;
 				}
 			}
 			else if(_wrnngOn == true){
-/* Previous warning light managing
- *				_wrnngOn = false;
- *				_outputsChange = true;
-*/
 				_validWrnngResetPend = true;
 				_validWrnngSetPend = false;
 			}
 		}
 		else if(_wrnngOn == true){
-/* Previous warning light managing
-//			_wrnngOn = false;
-//			_outputsChange = true;
- *
- */
 			_validWrnngResetPend = true;
 			_validWrnngSetPend = false;
 		}
@@ -1757,11 +1687,7 @@ void DblActnLtchMPBttn::updFdaState(){
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			if(!_isOn){
-				_isOn = true;
-				_outputsChange = true;
-				if(_taskWhileOn != NULL){
-					vTaskResume(_taskWhileOn);
-				}
+				_turnOn();
 			}
 			if(_validScndModPend){
 				_scndModTmrStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
@@ -1852,11 +1778,7 @@ void DblActnLtchMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
-			_isOn = false;
-			if(_taskWhileOn != NULL){
-				vTaskSuspend(_taskWhileOn);
-			}
-			_outputsChange = true;
+			_turnOff();
 			_mpbFdaState = stOffNotVPP;
 			setSttChng();
 			//Out: >>---------------------------------->>
@@ -1867,17 +1789,11 @@ void DblActnLtchMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){
 				if(_isOn != _isOnDisabled){
-					_isOn = _isOnDisabled;
-					_outputsChange = true;
 					if(_isOn){
-						if(_taskWhileOn != NULL){
-							vTaskResume(_taskWhileOn);
-						}
+						_turnOff();
 					}
 					else{
-						if(_taskWhileOn != NULL){
-							vTaskSuspend(_taskWhileOn);
-						}
+						_turnOn();
 					}
 				}
 				clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
@@ -2331,10 +2247,6 @@ VdblMPBttn::~VdblMPBttn()
 }
 
 void VdblMPBttn::clrStatus(bool clrIsOn){
-    /*
-	To Resume operation after a pause() without risking generating false "Valid presses" and "On" situations,
-    several attributes must be reseted to "Start" values
-    */
 	DbncdMPBttn::clrStatus(clrIsOn);	//This method might set the _outputsChange flag if the _isOn flag was set, as it will be changed to false if the parameter clrIsOn == true.
 	setIsNotVoided();
 
@@ -2390,18 +2302,14 @@ bool VdblMPBttn::setVoided(const bool &newVoidValue){
 void VdblMPBttn::stDisabled_In(){
 	pause();    //It's pausing the timer that keeps the inputs updated and calculates and updates the output flags... Flags must be updated for the disabled condition
 	clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
+
 	if(_isOn != _isOnDisabled){
 		_isOn = _isOnDisabled;
-		_outputsChange = true;
 		if(_isOn){
-			if(_taskWhileOn != NULL){
-				vTaskResume(_taskWhileOn);
-			}
+			_turnOff();
 		}
 		else{
-			if(_taskWhileOn != NULL){
-				vTaskSuspend(_taskWhileOn);
-			}
+			_turnOn();
 		}
 	}
 
@@ -2441,11 +2349,7 @@ void VdblMPBttn::updFdaState(){
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			if(!_isOn){
-				_isOn = true;
-				_outputsChange = true;
-				if(_taskWhileOn != NULL){
-					vTaskResume(_taskWhileOn);
-				}
+				_turnOn();
 			}
 			_validPressPend = false;
 			stOffVPP_Do();	// This provides a setting point for the voiding mechanism to be started
@@ -2492,11 +2396,7 @@ void VdblMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
-			_isOn = false;
-			_outputsChange = true;
-			if(_taskWhileOn != NULL){
-				vTaskSuspend(_taskWhileOn);
-			}
+			_turnOff();
 			_mpbFdaState = stOffVddNVUP;
 			setSttChng();
 			//Out: >>---------------------------------->>
@@ -2557,11 +2457,7 @@ void VdblMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
-			_isOn = false;
-			_outputsChange = true;
-			if(_taskWhileOn != NULL){
-				vTaskSuspend(_taskWhileOn);
-			}
+			_turnOff();
 			_mpbFdaState = stOff;
 			setSttChng();
 			//Out: >>---------------------------------->>
@@ -2583,17 +2479,11 @@ void VdblMPBttn::updFdaState(){
 			if(_sttChng){
 				_validDisablePend = false;
 				if(_isOn != _isOnDisabled){
-					_isOn = _isOnDisabled;
-					_outputsChange = true;
 					if(_isOn){
-						if(_taskWhileOn != NULL){
-							vTaskResume(_taskWhileOn);
-						}
+						_turnOff();
 					}
 					else{
-						if(_taskWhileOn != NULL){
-							vTaskSuspend(_taskWhileOn);
-						}
+						_turnOn();
 					}
 				}
 				clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
@@ -2602,10 +2492,7 @@ void VdblMPBttn::updFdaState(){
 			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			if(_validEnablePend){
-				_isOn = false;
-				if(_taskWhileOn != NULL){
-					vTaskSuspend(_taskWhileOn);
-				}
+				_turnOff();
 				_isEnabled = true;
 				_validEnablePend = false;
 				_outputsChange = true;

@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file	: 01_DbncdMPBttn_b.cpp
+  * @file	: 01_DbncdMPBttn_1b.cpp
   * @brief  : Test for the MpbAsSwitch_STM32 library DbncdMPBttn class
   *
   * 	The test instantiates a DbncdMPBttn object using:

@@ -70,8 +70,8 @@ struct gpioPinId_t{	// Type used to keep GPIO pin identification as a single par
 	uint16_t pinNum;	/**< The number of pin represented as a one bit set binary with the set bit position indicating the pin number*/
 };
 
-typedef void (*fnTrnType)();
-typedef fnTrnType (*fnPtr)();
+typedef void (*fncPtrType)();
+typedef  fncPtrType (*ptrToTrnFnc)();
 //===========================>> BEGIN General use function prototypes
 
 uint8_t singleBitPosNum(uint16_t mask);
@@ -111,13 +111,14 @@ protected:
 	unsigned long int _dbncRlsTimeTempSett{0};
 	unsigned long int _dbncTimerStrt{0};
 	unsigned long int _dbncTimeTempSett{0};
+	void (*_fnWhnTrnOff)() {nullptr};
+	void (*_fnWhnTrnOn)() {nullptr};
    bool _isEnabled{true};
 	volatile bool _isOn{false};
    bool _isOnDisabled{false};
 	volatile bool _isPressed{false};
 	fdaDmpbStts _mpbFdaState {stOffNotVPP};
 	TimerHandle_t _mpbPollTmrHndl {NULL};
-//	char _mpbPollTmrName [18] {'\0'};
 	std::string _mpbPollTmrName {""};
 	volatile bool _outputsChange {false};
 	bool _prssRlsCcl{false};
@@ -128,23 +129,6 @@ protected:
 	bool _validEnablePend{false};
 	volatile bool _validPressPend{false};
 	volatile bool _validReleasePend{false};
-
-	//================--------------->> WIP BEGIN
-	void (*_fnWhnTrnOff)(){nullptr};
-	void (*_fnWhnTrnOn)(){nullptr};
-
-	bool setFnWhnTrnOffPtr(void(*newFnWhnTrnOff)());
-	bool setFnWhnTrnOnPtr(void (*newFnWhnTrnOn)());
-
-
-//	typedef void (*fnTrnType)();
-//	typedef fnTrnType (*fnPtr)();
-
-//	fnPtr getFnWhnTrnOnPtr();
-//	fnPtr getFnWhnTrnOffPtr();
-
-	//================--------------->> WIP BEGIN
-
 	void clrSttChng();
 	const bool getIsPressed() const;
 	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
@@ -178,6 +162,18 @@ public:
 	 */
 	virtual ~DbncdMPBttn();
 	/**
+	 * @brief Attaches the instantiated object to a timer that monitors the input pin and updates the object status
+	 *
+	 * The frequency of that periodic monitoring is passed as a parameter in milliseconds, and is a value that must be small (frequent) enough to keep the object updated, but not so frequent that no other tasks can be executed. A default value is provided based on empirical values obtained in various published tests.
+	 *
+	 * @param pollDelayMs Unsigned long integer (ulong) optional, passes the time between polls in milliseconds.
+	 * @return Boolean indicating if the object could be attached to a timer.
+	 *
+	 * -true: the object could be attached to a timer, or if it was already attached to a timer when the method was invoked.
+	 * -false: the object could not create the needed timer, or the object could not be attached to it.
+	 */
+	bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
+	/**
 	 * @brief Clears and resets flags and counters modified through the Turn-On/Turn-Off process.
 	 * Resets object's attributes to initialization values to safely resume operations -by using the resume() method-
 	 * after a pause(). This avoids risky behavior of the object due to dangling flags or partially ran time counters.
@@ -202,11 +198,23 @@ public:
     */
    bool enable();
 	/**
+	 * @brief Detaches the object from the timer that monitors the input pin/s and updates the object status. The timer daemon entry is deleted for the object.
+	 *
+	 * @return Boolean indicating the success of the operation
+	 *
+	 * - true: the object detachment procedure and timer entry removal was successful.
+	 * - false: the object detachment and/or entry removal was rejected by the O.S..
+	 *
+	 */
+	bool end();
+	/**
 	 * @brief 	Gets the current debounce time
 	 *
 	 * @return	The current debounce time in milliseconds
 	 */
    const unsigned long int getCurDbncTime() const;
+	fncPtrType getFnWhnTrnOn();
+	fncPtrType  getFnWhnTrnOff();
    /**
 	 * @brief Gets the value of the _isEnabled flag, indicating the **Enabled** status of the object.
 	 *
@@ -228,8 +236,10 @@ public:
 
 	bool init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
 	bool init(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
+	bool pause();
 	bool resetDbncTime();
 	bool resetFda();
+	bool resume();
 	/**
 	 * @brief	Sets a new debounce time
 	 *
@@ -242,35 +252,13 @@ public:
 	 * - false: the value was already in use, or was out of the accepted range, no change was made.
 	 */
 	bool setDbncTime(const unsigned long int &newDbncTime);
+	bool setFnWhnTrnOffPtr(void(*newFnWhnTrnOff)());
+	bool setFnWhnTrnOnPtr(void (*newFnWhnTrnOn)());
    bool setIsOnDisabled(const bool &newIsOnDisabled);
    bool setOutputsChange(bool newOutputChange);
 	bool setTaskToNotify(TaskHandle_t newHandle);
 	bool setTaskWhileOn(const TaskHandle_t &newTaskHandle);
 
-	/**
-	 * @brief Attaches the instantiated object to a timer that monitors the input pin and updates the object status
-	 *
-	 * The frequency of that periodic monitoring is passed as a parameter in milliseconds, and is a value that must be small (frequent) enough to keep the object updated, but not so frequent that no other tasks can be executed. A default value is provided based on empirical values obtained in various published tests.
-	 *
-	 * @param pollDelayMs Unsigned long integer (ulong) optional, passes the time between polls in milliseconds.
-	 * @return Boolean indicating if the object could be attached to a timer.
-	 *
-	 * -true: the object could be attached to a timer, or if it was already attached to a timer when the method was invoked.
-	 * -false: the object could not create the needed timer, or the object could not be attached to it.
-	 */
-	bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
-	bool pause();
-	bool resume();
-	/**
-	 * @brief Detaches the object from the timer that monitors the input pin/s and updates the object status. The timer daemon entry is deleted for the object.
-	 *
-	 * @return Boolean indicating the success of the operation
-	 *
-	 * - true: the object detachment procedure and timer entry removal was successful.
-	 * - false: the object detachment and/or entry removal was rejected by the O.S..
-	 *
-	 */
-	bool end();
 };
 
 //==========================================================>>

@@ -1,9 +1,9 @@
 /**
   ******************************************************************************
-  * @file	: 01_DbncdMPBttn_a.cpp
-  * @brief  : Test for the MpbAsSwitch_STM32 library DbncdMPBttn class
+  * @file	: 02_DbncdDlydMPBttn_1a.cpp
+  * @brief  : Test for the MpbAsSwitch_STM32 library DbncdDlydMPBttn class
   *
-  * 	The test instantiates a DbncdMPBttn object using:
+  * 	The test instantiates a DbncdDlydMPBttn object using:
   * 		- The Nucleo board user pushbutton attached to GPIO_B00
   * 		- The Nucleo board user LED attached to GPIO_A05
   *
@@ -91,7 +91,6 @@ int main(void)
 		  NULL,	//Parameters to pass as arguments to the taskFunction
 		  configTIMER_TASK_PRIORITY,	//Set to the same priority level as the software timers
 		  &tstDefTaskHandle);
-
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
@@ -170,10 +169,6 @@ static void MX_USART2_UART_Init(void)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN USART2_Init 2 */
-
-  /* USER CODE END USART2_Init 2 */
-
 }
 
 /**
@@ -234,7 +229,7 @@ void tstDefTaskExec(void *pvParameters)
 	bool tmpBttnWasOn{false};
 	bool tmpBttnIsOn{false};
 
-	DbncdMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 50);
+	DbncdDlydMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, true, true, 0, 600);
 
 	tstBttn.begin(20);
 
