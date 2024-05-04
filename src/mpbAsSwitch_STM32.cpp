@@ -17,8 +17,6 @@ DbncdMPBttn::DbncdMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, co
 : _mpbttnPort{mpbttnPort}, _mpbttnPin{mpbttnPin}, _pulledUp{pulledUp}, _typeNO{typeNO}, _dbncTimeOrigSett{dbncTimeOrigSett}
 {
 	if(_mpbttnPin != _InvalidPinNum){
-
-//      std::string _mpbPollTmrName{ "PollMpbPin" };
       _mpbPollTmrName = "PollMpbPin";
       std::string mpbPinNumStr{ "00" + std::to_string(singleBitPosNum(_mpbttnPin)) };
 
@@ -74,16 +72,12 @@ DbncdMPBttn::DbncdMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, co
 
 		_mpbPollTmrName = _mpbPollTmrName + mpbPinNumStr + "_tmr";
 
-//		_mpbPollTmrName = _mpbPollTmrName.c_str();
-
 		if(_dbncTimeOrigSett < _stdMinDbncTime) 	// Best practice would impose failing the constructor (throwing an exception or building a "zombie" object)
 			_dbncTimeOrigSett = _stdMinDbncTime;	//this tolerant approach taken for developers benefit, but object will be no faithful to the instantiation parameters
 		_dbncTimeTempSett = _dbncTimeOrigSett;
 		_dbncRlsTimeTempSett = _stdMinDbncTime;	//The Release debouncing time parameter is kept to the minimum empirical value
 
 		/*Configure GPIO pin : _mpbttnPin */
- 	//      HAL_GPIO_WritePin(_mpbttnPort, _mpbttnPin, GPIO_PIN_RESET);
-
       GPIO_InitTypeDef GPIO_InitStruct {0};
 
       GPIO_InitStruct.Pin = _mpbttnPin;
@@ -250,7 +244,6 @@ bool DbncdMPBttn::init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, cons
 //    uint8_t tmpBitCount{0};
     bool result {false};
 
-//    if (_mpbPollTmrName[0] == '\0'){
     if (_mpbPollTmrName == ""){
 		_mpbttnPin = mpbttnPin;
 		_pulledUp = pulledUp;
