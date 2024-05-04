@@ -10,6 +10,7 @@ var class_hntd_tm_ltch_m_p_bttn =
     [ "getIsOn", "class_hntd_tm_ltch_m_p_bttn.html#ac78bb12cb1d9bdb43b4e4e593812b300", null ],
     [ "getIsOnDisabled", "class_hntd_tm_ltch_m_p_bttn.html#a9cee3ead20e3628c02975a9d0c8a4baa", null ],
     [ "getOutputsChange", "class_hntd_tm_ltch_m_p_bttn.html#ac646101296a76321e855250ba044c8d7", null ],
+    [ "getStrtDelay", "class_hntd_tm_ltch_m_p_bttn.html#aa65d8e6c77b2de5bcf3191636949b4e8", null ],
     [ "getTaskToNotify", "class_hntd_tm_ltch_m_p_bttn.html#a3da781ff0ad5ec1064d62570fd005a3a", null ],
     [ "getTaskWhileOn", "class_hntd_tm_ltch_m_p_bttn.html#a3728d2003365cbdaf81cccfca3604fe8", null ],
     [ "pause", "class_hntd_tm_ltch_m_p_bttn.html#a3cf51be801e6024cc3ca6b984deb52c6", null ],

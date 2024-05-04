@@ -7,6 +7,7 @@ var searchData=
   ['getison_4',['getIsOn',['../class_dbncd_m_p_bttn.html#ac78bb12cb1d9bdb43b4e4e593812b300',1,'DbncdMPBttn']]],
   ['getisondisabled_5',['getIsOnDisabled',['../class_dbncd_m_p_bttn.html#a9cee3ead20e3628c02975a9d0c8a4baa',1,'DbncdMPBttn']]],
   ['getoutputschange_6',['getOutputsChange',['../class_dbncd_m_p_bttn.html#ac646101296a76321e855250ba044c8d7',1,'DbncdMPBttn']]],
-  ['gettasktonotify_7',['getTaskToNotify',['../class_dbncd_m_p_bttn.html#a3da781ff0ad5ec1064d62570fd005a3a',1,'DbncdMPBttn']]],
-  ['gettaskwhileon_8',['getTaskWhileOn',['../class_dbncd_m_p_bttn.html#a3728d2003365cbdaf81cccfca3604fe8',1,'DbncdMPBttn']]]
+  ['getstrtdelay_7',['getStrtDelay',['../class_dbncd_dlyd_m_p_bttn.html#aa65d8e6c77b2de5bcf3191636949b4e8',1,'DbncdDlydMPBttn']]],
+  ['gettasktonotify_8',['getTaskToNotify',['../class_dbncd_m_p_bttn.html#a3da781ff0ad5ec1064d62570fd005a3a',1,'DbncdMPBttn']]],
+  ['gettaskwhileon_9',['getTaskWhileOn',['../class_dbncd_m_p_bttn.html#a3728d2003365cbdaf81cccfca3604fe8',1,'DbncdMPBttn']]]
 ];

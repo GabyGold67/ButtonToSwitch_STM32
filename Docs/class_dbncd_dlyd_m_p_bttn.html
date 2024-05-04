@@ -155,8 +155,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab6441f789e2467f7922b953b8e5b873e" id="r_ab6441f789e2467f7922b953b8e5b873e"><td class="memItemLeft" align="right" valign="top"><a id="ab6441f789e2467f7922b953b8e5b873e" name="ab6441f789e2467f7922b953b8e5b873e"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>DbncdDlydMPBttn</b> (<a class="el" href="structgpio_pin_id__t.html">gpioPinId_t</a> mpbttnPinStrct, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0, const unsigned long int &amp;strtDelay=0)</td></tr>
 <tr class="separator:ab6441f789e2467f7922b953b8e5b873e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa65d8e6c77b2de5bcf3191636949b4e8" id="r_aa65d8e6c77b2de5bcf3191636949b4e8"><td class="memItemLeft" align="right" valign="top"><a id="aa65d8e6c77b2de5bcf3191636949b4e8" name="aa65d8e6c77b2de5bcf3191636949b4e8"></a>
-unsigned long int&#160;</td><td class="memItemRight" valign="bottom"><b>getStrtDelay</b> ()</td></tr>
+<tr class="memitem:aa65d8e6c77b2de5bcf3191636949b4e8" id="r_aa65d8e6c77b2de5bcf3191636949b4e8"><td class="memItemLeft" align="right" valign="top">unsigned long int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa65d8e6c77b2de5bcf3191636949b4e8">getStrtDelay</a> ()</td></tr>
+<tr class="memdesc:aa65d8e6c77b2de5bcf3191636949b4e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current value of start delay parameter.  <br /></td></tr>
 <tr class="separator:aa65d8e6c77b2de5bcf3191636949b4e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad131facd8f159575f6441fa39b072557" id="r_ad131facd8f159575f6441fa39b072557"><td class="memItemLeft" align="right" valign="top"><a id="ad131facd8f159575f6441fa39b072557" name="ad131facd8f159575f6441fa39b072557"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (GPIO_TypeDef *mpbttnPort, const uint16_t &amp;mpbttnPin, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0, const unsigned long int &amp;strtDelay=0)</td></tr>
@@ -794,6 +794,27 @@ a function pointer to the function set to execute through setFnWhnTrnOffPtr </dd
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="aa65d8e6c77b2de5bcf3191636949b4e8" name="aa65d8e6c77b2de5bcf3191636949b4e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa65d8e6c77b2de5bcf3191636949b4e8">&#9670;&#160;</a></span>getStrtDelay()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned long int DbncdDlydMPBttn::getStrtDelay </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the current value of start delay parameter. </p>
+<p>Returns the current value of time used by the object to rise the isOn flag, after the debouncing process ends, in milliseconds. If the MPB is released before completing the debounce <b>and</b> the delay time, no press will be detected by the object, and the isOn flag will not be rised. The original value for the delay process used at instantiation time might be changed with the <b>setStrtDelay()</b> method, so this method is provided to get the current value in use.</p>
+<dl class="section return"><dt>Returns</dt><dd>The current delay time, in milliseconds, being used before rising the isOn flag, after the debounce process of the current object. </dd></dl>
 
 </div>
 </div>
