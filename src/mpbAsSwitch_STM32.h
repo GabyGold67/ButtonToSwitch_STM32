@@ -361,6 +361,13 @@ public:
 
 //==========================================================>>
 
+/**
+ * @brief Subclass, implements a Debounced Delayed Momentary Pushbutton.
+ *
+ * The **Debounced Delayed Momentary Button**, keeps the ON state since the moment the signal is stable (debouncing process), plus a delay added, and until the moment the push button is released. The reasons to add the delay are design related and are usually used to avoid unintentional presses, or to give some equipment (load) that needs time between repeated activations the benefit of the pause. If the push button is released before the delay configured, no press is registered at all. The delay time in this class as in the other that implement it, might be zero (0), defined by the developer and/or modified in runtime.
+ *
+ * @class
+ */
 class DbncdDlydMPBttn: public DbncdMPBttn{
 protected:
     unsigned long int _strtDelay {0};
