@@ -235,7 +235,7 @@ const TaskHandle_t DbncdMPBttn::getTaskToNotify() const{
 
 const TaskHandle_t DbncdMPBttn::getTaskWhileOn(){
 
-	return _taskWhileOn;
+	return _taskWhileOnHndl;
 }
 
 bool DbncdMPBttn::init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett){
@@ -473,11 +473,11 @@ void DbncdMPBttn::_turnOff(){
 		_isOn = false;
 		_outputsChange = true;
 		//---------------->> Tasks related actions
-		if(_taskWhileOn != NULL){
-			eTaskState taskWhileOnStts{eTaskGetState(_taskWhileOn)};
+		if(_taskWhileOnHndl != NULL){
+			eTaskState taskWhileOnStts{eTaskGetState(_taskWhileOnHndl)};
 			if (taskWhileOnStts != eSuspended){
 				if(taskWhileOnStts != eDeleted){
-					vTaskSuspend(_taskWhileOn);
+					vTaskSuspend(_taskWhileOnHndl);
 				}
 			}
 		}
@@ -496,11 +496,11 @@ void DbncdMPBttn::_turnOn(){
 		_isOn = true;
 		_outputsChange = true;
 		//---------------->> Tasks related actions
-		if(_taskWhileOn != NULL){
-			eTaskState taskWhileOnStts{eTaskGetState(_taskWhileOn)};
+		if(_taskWhileOnHndl != NULL){
+			eTaskState taskWhileOnStts{eTaskGetState(_taskWhileOnHndl)};
 			if(taskWhileOnStts != eDeleted){
 				if (taskWhileOnStts == eSuspended){
-					vTaskResume(_taskWhileOn);
+					vTaskResume(_taskWhileOnHndl);
 				}
 			}
 		}
@@ -705,19 +705,19 @@ bool DbncdMPBttn::setTaskWhileOn(const TaskHandle_t &newTaskHandle){
 	bool result {false};
 	eTaskState taskWhileOnStts{};
 
-	if(_taskWhileOn != newTaskHandle){
+	if(_taskWhileOnHndl != newTaskHandle){
 		if (newTaskHandle == NULL){
-			taskWhileOnStts = eTaskGetState(_taskWhileOn);
+			taskWhileOnStts = eTaskGetState(_taskWhileOnHndl);
 			if (taskWhileOnStts != eSuspended){
 				if(taskWhileOnStts != eDeleted){
-					vTaskSuspend(_taskWhileOn);
-					_taskWhileOn = NULL;
+					vTaskSuspend(_taskWhileOnHndl);
+					_taskWhileOnHndl = NULL;
 				}
 				result = true;
 			}
 		}
 		else{
-			_taskWhileOn = newTaskHandle;
+			_taskWhileOnHndl = newTaskHandle;
 		}
 	}
 	else{

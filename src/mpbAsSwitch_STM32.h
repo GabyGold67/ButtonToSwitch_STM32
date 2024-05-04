@@ -83,7 +83,7 @@ constexpr int genNxtEnumVal(const int &curVal, const int &increment){return (cur
 //==========================================================>> BEGIN Classes declarations
 
 /**
- * @brief	Base class, implements a debounced deglitched Pushbutton from the original raw signal received as input.
+ * @brief	Base class, implements a Debounced Momentary Pushbutton.
  *
  * This class provides the resources needed to process a momentary digital input signal -as the one
  * provided by a MPB (momentary push button)- returning a clean signal to be used as a switch,
@@ -124,7 +124,7 @@ protected:
 	bool _prssRlsCcl{false};
 	bool _sttChng {true};
 	TaskHandle_t _taskToNotifyHndl {NULL};
-	TaskHandle_t _taskWhileOn{NULL};
+	TaskHandle_t _taskWhileOnHndl{NULL};
 	bool _validDisablePend{false};
 	bool _validEnablePend{false};
 	volatile bool _validPressPend{false};
@@ -148,13 +148,21 @@ public:
 	/**
 	 * @brief Class constructor
 	 *
-	 * @param mpbttnPort GPIO port of the input signal pin
+	 * @param mpbttnPort GPIO port identification of the input signal pin
 	 * @param mpbttnPin Pin id number of the input signal pin
 	 * @param pulledUp (optional) boolean, indicates if the input pin must be configured as INPUT_PULLUP (true, default value), or INPUT_PULLDOWN (false), to calculate correctly the expected voltage level in the input pin. The pin is configured by the constructor so no previous programming is needed. The pin must be free to be used as a digital input, and must be a pin with an internal pull-up circuit, as not every GPIO pin has the option.
 	 * @param typeNO optional boolean, indicates if the mpb is a Normally Open (NO) switch (true, default value), or Normally Closed (NC) (false), to calculate correctly the expected level of voltage indicating the mpb is pressed.
 	 * @param dbncTimeOrigSett optional unsigned long integer (uLong), indicates the time (in milliseconds) to wait for a stable input signal before considering the mpb to be pressed (or not pressed). If no value is passed the constructor will assign the minimum value provided in the class, that is 20 milliseconds as it is an empirical value obtained in various published tests.
 	 */
 	DbncdMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
+	/**
+	 * @brief Class constructor
+	 *
+	 * @param mpbttnPinStrct Structure defined to hold the GPIO port identification and the Pin id number as a single data unit
+	 * @param pulledUp
+	 * @param typeNO
+	 * @param dbncTimeOrigSett
+	 */
 	DbncdMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
 	/**
 	 * @brief Default destructor
@@ -266,18 +274,21 @@ public:
 	 */
    const bool getOutputsChange() const;
    /**
-	 * @brief Gets the value of the **_taskToNotifyHndl** task handle.
+	 * @brief Gets the task handle of the task  to be notified by the object when its output flags changes (indicating there have been changes in the outputs since last FreeRTOS notification). When the object is created, this value is set to **nullptr** and a valid TaskHandle_t value might be set by using the **setTaskToNotify()** method. The task notifying mechanism will not be used while the task handle keeps the **nullptr** value, in which case the solution implementation will have to use any of the other provided mechanisms to test the object status, and act accordingly.
 	 *
-	 * The instantiated objects include the  **_taskToNotifyHndl** task handle, for the task to be notified by the object when its output flags changes (indicating there have been changes in the outputs since last FreeRTOS notification). When the object is created, this value is set to **nullptr** and a valid TaskHandle_t value might be set by using the **setTaskToNotify()** method. The task notifying mechanism will not be used while the task handle keeps the **nullptr** value, in which case the solution implementation will have to use any of the other provided mechanisms to test the object status, and act accordingly.
-    *
     * @return The TaskHandle_t value of the task to be notified of the outputs change.
     * @retval NULL: there is no task configured to be notified of the output.
     */
 	const TaskHandle_t getTaskToNotify() const;
+	/**
+	 * @brief Gets the task handle of the task  to be **resumed** when the object enters the **On state**, and will be **paused** when the  object enters the **Off state**.
+	 *
+	 * @return The TaskHandle_t value of the task to be resumed while the object is in **On state**.
+    * @retval NULL: there is no task configured to be notified of the output.
+	 */
 	const TaskHandle_t getTaskWhileOn();
 	bool init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
 	bool init(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
-	bool pause();
 	/**
 	 * @brief Stops the software timer updating the calculation of the object internal flags.
 	 *
@@ -287,11 +298,30 @@ public:
 	 * @return false: the object's timer couldn't be stopped by the O.S..
 	 *
 	 */
+	bool pause();
+	/**
+	 * @brief Resets the debounce time of the object to the value used at instantiation.
+	 *
+	 * In case the value was not specified at instantiation the default debounce time value will be used. As the time used at instantiation might be changed with the **setDbncTime()**, this method reverts the value.
+	 *
+	 * @retval true: the value could be reverted.
+	 * @retval false: the value couldn't be reverted due to unexpected situations.
+	 *
+	 */
 	bool resetDbncTime();
 	bool resetFda();
+	/**
+	 * @brief Restarts the software timer updating the calculation of the object internal flags.
+	 *
+	 *  The timer will stop its function of computing the flags values after calling the `.pause()` method and will not be updated until the timer is restarted with this method.
+	 *
+	 * @retval true: the object's timer could be restarted by the O.S..
+	 * @retval false: the object's timer couldn't be restarted by the O.S..
+	 *
+	 */
 	bool resume();
 	/**
-	 * @brief	Sets a new debounce time
+	 * @brief Sets a new debounce time
 	 *
 	 *	Sets a new time for the debouncing period. The value must be equal or greater than the minimum empirical value set as a property for all the classes, 20 milliseconds. A long debounce time will produce a delay in the press event generation, making it less "responsive".
 	 *
@@ -304,10 +334,29 @@ public:
 	bool setFnWhnTrnOffPtr(void(*newFnWhnTrnOff)());
 	bool setFnWhnTrnOnPtr(void (*newFnWhnTrnOn)());
    bool setIsOnDisabled(const bool &newIsOnDisabled);
+   /**
+	 * @brief Sets the value of the flag indicating if a change took place in any of the output flags (IsOn included).
+	 *
+	 * The usual path for the _outputsChange flag is to be set to true by any method changing an output flag, the callback function signaled to take care of the hardware actions because of this changes clears back _outputsChange after taking care of them. In the unusual case the developer wants to "intercept" this sequence, this method is provided to set (true) or clear (false) _outputsChange value.
+    *
+    * @param newOutputChange the new value to set the _outputsChange flag to.
+    *
+    * @retval true: The value change was successful.
+    * @retval false: The value held by _outputsChange and the newOutputChange parameter are the same, no change was then produced.
+    */
    bool setOutputsChange(bool newOutputChange);
+   /**
+	 * @brief Sets the pointer to the task to be notified by the object when its output flags changes.
+	 *
+	 * When the object is created, this value is set to **nullptr** and a valid TaskHandle_t value might be set by using this method. The task notifying mechanism will not be used while the task handle keeps the **nullptr** value. After the TaskHandle value is set it might be changed to point to other task.
+    *
+    * @param newHandle A valid task handle of an actual existent task/thread running. There's no provided exception mechanism for dangling pointer errors caused by a pointed task being deleted and/or stopped.
+    * @retval true: A TaskHandle_t type was passed to the object to be it's new pointer to the task to be messaged when a change in the output flags occur. There's no checking for the validity of the pointer, if it refers to an active task/thread whatsoever.
+	 * @retval false: The value passed to the method was **nullptr**, and that's the value will be stored, so the whole RTOS messaging mechanism won't be used.
+    *
+    */
 	bool setTaskToNotify(TaskHandle_t newHandle);
 	bool setTaskWhileOn(const TaskHandle_t &newTaskHandle);
-
 };
 
 //==========================================================>>
