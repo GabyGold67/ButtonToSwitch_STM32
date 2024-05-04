@@ -26,7 +26,7 @@ Those listed mechanisms are independent, so one or more might be simultaneously 
 * **Double action On/Off + Slider combo switch**  (a.k.a. off/on/dimmer, a.k.a. off/on/volume radio switch)
 * **Double action On/Off + Secondary Debounced Delayed MPB combo switch**
 
-MpbAsSwitch Library Documentation available [HERE](https://GabyGold6.github.com/mpbAsSwitch_STM32/)
+MpbAsSwitch Library Documentation available [HERE](https://GabyGold67.github.io/mpbAsSwitch_STM32/)
 
 ![MpbAsSwitch Classes Hierarchy](https://github.com/GabyGold67/mpbAsSwitch_STM32/blob/master/Extras/MomentaryPushButtonUMLClassesOnly.jpg)
 
