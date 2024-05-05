@@ -13,7 +13,7 @@
   * @author	: Gabriel D. Goldman
   *
   * @date	: Created on: Nov 6, 2023
-  * 			: Last modificationon:	29/04/2024
+  * 			: Last modification:	29/04/2024
   *
   ******************************************************************************
   * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32

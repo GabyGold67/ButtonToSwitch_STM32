@@ -3,7 +3,8 @@
  * @brief	: Source file for mpbAsSwitch_STM32 library classes methods
  *
  * @author	: Gabriel D. Goldman
- * @date		: Created on: Nov 6, 2023
+ * @date		: Created on: 06/11/2023
+ * @date		: Last modification: 05/05/2024
  */
 
 #include "mpbAsSwitch_STM32.h"
