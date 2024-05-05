@@ -102,17 +102,22 @@ $(function(){initNavTree('class_tm_ltch_m_p_bttn.html',''); initResizable(); });
   <div class="headertitle"><div class="title">TmLtchMPBttn Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Implements a Timer Latched Debounced Delayed MPB, a.k.a. a Timer Switch.  
+ <a href="#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="mpb_as_switch___s_t_m32_8h_source.html">mpbAsSwitch_STM32.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for TmLtchMPBttn:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_tm_ltch_m_p_bttn__inherit__graph.png" border="0" usemap="#a_tm_ltch_m_p_bttn_inherit__map" alt="Inheritance graph"/></div>
 <map name="a_tm_ltch_m_p_bttn_inherit__map" id="a_tm_ltch_m_p_bttn_inherit__map">
-<area shape="rect" title=" " alt="" coords="19,229,127,256"/>
-<area shape="rect" href="class_hntd_tm_ltch_m_p_bttn.html" title=" " alt="" coords="5,304,141,331"/>
+<area shape="rect" title="Implements a Timer Latched Debounced Delayed MPB, a.k.a. a Timer Switch." alt="" coords="19,229,127,256"/>
+<area shape="rect" href="class_hntd_tm_ltch_m_p_bttn.html" title="Implements a Hinted Timer Latched Debounced Delayed MPB, a.k.a. a Staircase Switch." alt="" coords="5,304,141,331"/>
 <area shape="poly" title=" " alt="" coords="76,272,76,304,70,304,70,272"/>
-<area shape="rect" href="class_ltch_m_p_bttn.html" title=" " alt="" coords="28,155,118,181"/>
+<area shape="rect" href="class_ltch_m_p_bttn.html" title="Abstract class, implements a Latched MPB." alt="" coords="28,155,118,181"/>
 <area shape="poly" title=" " alt="" coords="76,197,76,229,70,229,70,197"/>
-<area shape="rect" href="class_dbncd_dlyd_m_p_bttn.html" title=" " alt="" coords="9,80,137,107"/>
+<area shape="rect" href="class_dbncd_dlyd_m_p_bttn.html" title="This class implements a Debounced Delayed MPB." alt="" coords="9,80,137,107"/>
 <area shape="poly" title=" " alt="" coords="76,122,76,154,70,154,70,122"/>
 <area shape="rect" href="class_dbncd_m_p_bttn.html" title="Base class, this class implements a Debounced Momentary Push Button." alt="" coords="22,5,124,32"/>
 <area shape="poly" title=" " alt="" coords="76,48,76,80,70,80,70,48"/>
@@ -123,10 +128,10 @@ Collaboration diagram for TmLtchMPBttn:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_tm_ltch_m_p_bttn__coll__graph.png" border="0" usemap="#a_tm_ltch_m_p_bttn_coll__map" alt="Collaboration graph"/></div>
 <map name="a_tm_ltch_m_p_bttn_coll__map" id="a_tm_ltch_m_p_bttn_coll__map">
-<area shape="rect" title=" " alt="" coords="15,416,124,443"/>
-<area shape="rect" href="class_ltch_m_p_bttn.html" title=" " alt="" coords="24,340,115,367"/>
+<area shape="rect" title="Implements a Timer Latched Debounced Delayed MPB, a.k.a. a Timer Switch." alt="" coords="15,416,124,443"/>
+<area shape="rect" href="class_ltch_m_p_bttn.html" title="Abstract class, implements a Latched MPB." alt="" coords="24,340,115,367"/>
 <area shape="poly" title=" " alt="" coords="72,382,72,416,67,416,67,382"/>
-<area shape="rect" href="class_dbncd_dlyd_m_p_bttn.html" title=" " alt="" coords="5,264,134,291"/>
+<area shape="rect" href="class_dbncd_dlyd_m_p_bttn.html" title="This class implements a Debounced Delayed MPB." alt="" coords="5,264,134,291"/>
 <area shape="poly" title=" " alt="" coords="72,306,72,340,67,340,67,306"/>
 <area shape="rect" href="class_dbncd_m_p_bttn.html" title="Base class, this class implements a Debounced Momentary Push Button." alt="" coords="18,188,121,215"/>
 <area shape="poly" title=" " alt="" coords="72,230,72,264,67,264,67,230"/>
@@ -466,7 +471,11 @@ volatile bool&#160;</td><td class="memItemRight" valign="bottom"><b>_validPressP
 volatile bool&#160;</td><td class="memItemRight" valign="bottom"><b>_validReleasePend</b> {false}</td></tr>
 <tr class="separator:a3bdf0010b7cb369082acf0f7231d5d92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Implements a Timer Latched Debounced Delayed MPB, a.k.a. a Timer Switch. </p>
+<p>The <b>Timer switch</b> keeps the ON state since the moment the signal is stable (debouncing + delay process), and until the unlatch signal is provided by a preseted timer <b>started immediately after</b> the MPB has passed the debounce &amp; delay process. The time countdown might be reseted by pressing the MPB before the timer expires by optionally configuring the object to do so with the provided method.</p>
+<p>class <a class="el" href="class_tm_ltch_m_p_bttn.html" title="Implements a Timer Latched Debounced Delayed MPB, a.k.a. a Timer Switch.">TmLtchMPBttn</a> </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a5d4b99f73ae49cee1b7977d0ddfbd6b4" name="a5d4b99f73ae49cee1b7977d0ddfbd6b4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5d4b99f73ae49cee1b7977d0ddfbd6b4">&#9670;&#160;</a></span>disable()</h2>
 

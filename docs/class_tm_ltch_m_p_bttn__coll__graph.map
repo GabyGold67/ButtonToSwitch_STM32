@@ -1,8 +1,8 @@
 <map id="TmLtchMPBttn" name="TmLtchMPBttn">
-<area shape="rect" id="Node000001" title=" " alt="" coords="15,416,124,443"/>
-<area shape="rect" id="Node000002" href="$class_ltch_m_p_bttn.html" title=" " alt="" coords="24,340,115,367"/>
+<area shape="rect" id="Node000001" title="Implements a Timer Latched Debounced Delayed MPB, a.k.a. a Timer Switch." alt="" coords="15,416,124,443"/>
+<area shape="rect" id="Node000002" href="$class_ltch_m_p_bttn.html" title="Abstract class, implements a Latched MPB." alt="" coords="24,340,115,367"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="72,382,72,416,67,416,67,382"/>
-<area shape="rect" id="Node000003" href="$class_dbncd_dlyd_m_p_bttn.html" title=" " alt="" coords="5,264,134,291"/>
+<area shape="rect" id="Node000003" href="$class_dbncd_dlyd_m_p_bttn.html" title="This class implements a Debounced Delayed MPB." alt="" coords="5,264,134,291"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="72,306,72,340,67,340,67,306"/>
 <area shape="rect" id="Node000004" href="$class_dbncd_m_p_bttn.html" title="Base class, this class implements a Debounced Momentary Push Button." alt="" coords="18,188,121,215"/>
 <area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="72,230,72,264,67,264,67,230"/>

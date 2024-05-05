@@ -102,21 +102,26 @@ $(function(){initNavTree('class_ltch_m_p_bttn.html',''); initResizable(); });
   <div class="headertitle"><div class="title">LtchMPBttn Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Abstract class, implements a Latched MPB.  
+ <a href="#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="mpb_as_switch___s_t_m32_8h_source.html">mpbAsSwitch_STM32.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for LtchMPBttn:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_ltch_m_p_bttn__inherit__graph.png" border="0" usemap="#a_ltch_m_p_bttn_inherit__map" alt="Inheritance graph"/></div>
 <map name="a_ltch_m_p_bttn_inherit__map" id="a_ltch_m_p_bttn_inherit__map">
-<area shape="rect" title=" " alt="" coords="347,155,437,181"/>
-<area shape="rect" href="class_dbl_actn_ltch_m_p_bttn.html" title=" " alt="" coords="106,229,243,256"/>
+<area shape="rect" title="Abstract class, implements a Latched MPB." alt="" coords="347,155,437,181"/>
+<area shape="rect" href="class_dbl_actn_ltch_m_p_bttn.html" title="Abstract class, implements a Double Action Latched Debounced Delayed MPB." alt="" coords="106,229,243,256"/>
 <area shape="poly" title=" " alt="" coords="340,189,213,231,212,226,339,184"/>
-<area shape="rect" href="class_tggl_ltch_m_p_bttn.html" title=" " alt="" coords="267,229,381,256"/>
+<area shape="rect" href="class_tggl_ltch_m_p_bttn.html" title="Implements a Toggle Latched Debounced Delayed MPB, a.k.a. a Toggle Switch." alt="" coords="267,229,381,256"/>
 <area shape="poly" title=" " alt="" coords="371,195,337,231,333,227,367,191"/>
-<area shape="rect" href="class_tm_ltch_m_p_bttn.html" title=" " alt="" coords="406,229,514,256"/>
+<area shape="rect" href="class_tm_ltch_m_p_bttn.html" title="Implements a Timer Latched Debounced Delayed MPB, a.k.a. a Timer Switch." alt="" coords="406,229,514,256"/>
 <area shape="poly" title=" " alt="" coords="416,191,450,227,446,231,412,195"/>
 <area shape="rect" href="class_xtrn_unltch_m_p_bttn.html" title=" " alt="" coords="538,229,662,256"/>
 <area shape="poly" title=" " alt="" coords="443,184,564,226,562,231,441,189"/>
-<area shape="rect" href="class_dbncd_dlyd_m_p_bttn.html" title=" " alt="" coords="328,80,456,107"/>
+<area shape="rect" href="class_dbncd_dlyd_m_p_bttn.html" title="This class implements a Debounced Delayed MPB." alt="" coords="328,80,456,107"/>
 <area shape="poly" title=" " alt="" coords="394,122,394,154,389,154,389,122"/>
 <area shape="rect" href="class_dbncd_m_p_bttn.html" title="Base class, this class implements a Debounced Momentary Push Button." alt="" coords="341,5,443,32"/>
 <area shape="poly" title=" " alt="" coords="394,48,394,80,389,80,389,48"/>
@@ -124,7 +129,7 @@ Inheritance diagram for LtchMPBttn:</div>
 <area shape="poly" title=" " alt="" coords="147,268,95,306,92,301,144,263"/>
 <area shape="rect" href="class_sldr_d_a_ltch_m_p_bttn.html" title=" " alt="" coords="173,304,304,331"/>
 <area shape="poly" title=" " alt="" coords="198,266,229,302,225,305,194,270"/>
-<area shape="rect" href="class_hntd_tm_ltch_m_p_bttn.html" title=" " alt="" coords="392,304,527,331"/>
+<area shape="rect" href="class_hntd_tm_ltch_m_p_bttn.html" title="Implements a Hinted Timer Latched Debounced Delayed MPB, a.k.a. a Staircase Switch." alt="" coords="392,304,527,331"/>
 <area shape="poly" title=" " alt="" coords="462,272,462,304,457,304,457,272"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
@@ -133,8 +138,8 @@ Collaboration diagram for LtchMPBttn:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_ltch_m_p_bttn__coll__graph.png" border="0" usemap="#a_ltch_m_p_bttn_coll__map" alt="Collaboration graph"/></div>
 <map name="a_ltch_m_p_bttn_coll__map" id="a_ltch_m_p_bttn_coll__map">
-<area shape="rect" title=" " alt="" coords="24,340,115,367"/>
-<area shape="rect" href="class_dbncd_dlyd_m_p_bttn.html" title=" " alt="" coords="5,264,134,291"/>
+<area shape="rect" title="Abstract class, implements a Latched MPB." alt="" coords="24,340,115,367"/>
+<area shape="rect" href="class_dbncd_dlyd_m_p_bttn.html" title="This class implements a Debounced Delayed MPB." alt="" coords="5,264,134,291"/>
 <area shape="poly" title=" " alt="" coords="72,306,72,340,67,340,67,306"/>
 <area shape="rect" href="class_dbncd_m_p_bttn.html" title="Base class, this class implements a Debounced Momentary Push Button." alt="" coords="18,188,121,215"/>
 <area shape="poly" title=" " alt="" coords="72,230,72,264,67,264,67,230"/>
@@ -460,7 +465,10 @@ volatile bool&#160;</td><td class="memItemRight" valign="bottom"><b>_validPressP
 volatile bool&#160;</td><td class="memItemRight" valign="bottom"><b>_validReleasePend</b> {false}</td></tr>
 <tr class="separator:a3bdf0010b7cb369082acf0f7231d5d92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Abstract class, implements a Latched MPB. </p>
+<p>All <b>Latched MPB</b> subclasses implement switches that keep the ON state since the moment the input signal is stable (debouncing + Delay process), and keeps the ON state after the push button is released and until an event unlatches them, setting them free to go to the <b>Off State</b>. The different releasing event defines the sub-class of the Latched MPB class. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a5d4b99f73ae49cee1b7977d0ddfbd6b4" name="a5d4b99f73ae49cee1b7977d0ddfbd6b4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5d4b99f73ae49cee1b7977d0ddfbd6b4">&#9670;&#160;</a></span>disable()</h2>
 

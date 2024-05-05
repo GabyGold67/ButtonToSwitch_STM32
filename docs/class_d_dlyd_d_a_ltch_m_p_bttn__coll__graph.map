@@ -1,10 +1,10 @@
 <map id="DDlydDALtchMPBttn" name="DDlydDALtchMPBttn">
 <area shape="rect" id="Node000001" title=" " alt="" coords="5,492,149,519"/>
-<area shape="rect" id="Node000002" href="$class_dbl_actn_ltch_m_p_bttn.html" title=" " alt="" coords="9,416,145,443"/>
+<area shape="rect" id="Node000002" href="$class_dbl_actn_ltch_m_p_bttn.html" title="Abstract class, implements a Double Action Latched Debounced Delayed MPB." alt="" coords="9,416,145,443"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="80,458,80,492,74,492,74,458"/>
-<area shape="rect" id="Node000003" href="$class_ltch_m_p_bttn.html" title=" " alt="" coords="32,340,122,367"/>
+<area shape="rect" id="Node000003" href="$class_ltch_m_p_bttn.html" title="Abstract class, implements a Latched MPB." alt="" coords="32,340,122,367"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="80,382,80,416,74,416,74,382"/>
-<area shape="rect" id="Node000004" href="$class_dbncd_dlyd_m_p_bttn.html" title=" " alt="" coords="13,264,141,291"/>
+<area shape="rect" id="Node000004" href="$class_dbncd_dlyd_m_p_bttn.html" title="This class implements a Debounced Delayed MPB." alt="" coords="13,264,141,291"/>
 <area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="80,306,80,340,74,340,74,306"/>
 <area shape="rect" id="Node000005" href="$class_dbncd_m_p_bttn.html" title="Base class, this class implements a Debounced Momentary Push Button." alt="" coords="26,188,128,215"/>
 <area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="80,230,80,264,74,264,74,230"/>

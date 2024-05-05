@@ -10,9 +10,9 @@ All classes provide several communication mechanisms to keep it's output states 
 Those mechanisms include:    
 	- **Flags value getters**: Return the value of each significant output flag.  
 	- **General flags value change getter**: Returns a value indicating if **any** of the significant output flags values has changed.  
-	- **Binary Semaphore**: Implementation of a **xTaskNotifyGive()** FreeRTOS macro to unblock a developer defined task, everytime **any** of the output flags values is changed.  
+	- **Binary Semaphore**: Implementation of a **xTaskNotifyGive()** FreeRTOS macro to unblock a developer defined task, every time **any** of the output flags values is changed.  
 	- **Task Resume/Suspend**: A mechanism is provided to run a developer defined task while the object is in **On State**. The designated task will be set to "Suspended State" while the object is in **Off State** and will be set to "Resume" while it is in **On State**, providing means to execute far more complex task than just "turning On & turning Off" devices.  
-	- **Functions execution**: A developer defined function might be set to be executed everytime the instantiated object enters the **On State**, and a function might be set to be executed everytime the instantiated object enters the **Off State**. The functions are to be independently defined, so one, the other or both might be defined, and even the same function might be used for both events.  
+	- **Functions execution**: A developer defined function might be set to be executed every time the instantiated object enters the **On State**, and a function might be set to be executed every time the instantiated object enters the **Off State**. The functions are to be independently defined, so one, the other or both might be defined, and even the same function might be used for both events.  
 
 Those listed mechanisms are independent, so one or more might be simultaneously used depending on implementation convenience.    
 

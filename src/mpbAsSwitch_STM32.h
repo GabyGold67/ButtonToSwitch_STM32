@@ -86,7 +86,7 @@ constexpr int genNxtEnumVal(const int &curVal, const int &increment){return (cur
  *
  * This class provides the resources needed to process a momentary digital input signal -as the one provided by a MPB (momentary push button)- returning a clean signal to be used as a switch, implementing the needed services to replace a wide range of physical related switch characteristics: Debouncing, deglitching, disabling.
  *
- * @class	DbncdMPBttn
+ * @class DbncdMPBttn
  */
 class DbncdMPBttn {
 protected:
@@ -433,7 +433,7 @@ public:
  *
  * The **Debounced Delayed Momentary Button**, keeps the ON state since the moment the signal is stable (debouncing process), plus a delay added, and until the moment the push button is released. The reasons to add the delay are design related and are usually used to avoid unintentional presses, or to give some equipment (load) that needs time between repeated activations the benefit of the pause. If the push button is released before the delay configured, no press is registered at all. The delay time in this class as in the other that implement it, might be zero (0), defined by the developer and/or modified in runtime.
  *
- * @class
+ * @class DbncdDlydMPBttn
  */
 class DbncdDlydMPBttn: public DbncdMPBttn{
 protected:
@@ -460,11 +460,11 @@ public:
 //==========================================================>>
 
 /**
- * @brief Abstract class, this class implements a Latched MPB.
+ * @brief Abstract class, implements a Latched MPB.
  *
- * All Latched MPB subclasses implement switches that keep the ON state since the moment the input signal is stable (debouncing + Delay process), and keeps the ON state after the push button is released and until an event unlatches them, setting them free to go to the **Off State**. The releasing event defines the sub-class of the Latched MPB class.
+ * All **Latched MPB** subclasses implement switches that keep the ON state since the moment the input signal is stable (debouncing + Delay process), and keeps the ON state after the push button is released and until an event unlatches them, setting them free to go to the **Off State**. The different releasing event defines the sub-class of the Latched MPB class.
  *
- * @class
+ * @class LtchMPBttn
  */
 class LtchMPBttn: public DbncdDlydMPBttn{
 protected:
@@ -516,11 +516,11 @@ public:
 //==========================================================>>
 
 /**
- * @brief This class implements a Latched Debounced Delayed MPB, a.k.a. a Toggle MPB
+ * @brief Implements a Toggle Latched Debounced Delayed MPB, a.k.a. a Toggle Switch.
  *
- * The **Toggle switch**  keeps the ON state since the moment the signal is stable (debouncing + Delay process), and keeps the ON state after the push button is released and until it is pressed once again. So this simulates a simple On-Off switch like the ones used to turn on/off a room light.
+ * The **Toggle switch** keeps the ON state since the moment the signal is stable (debouncing + delay process), and keeps the ON state after the push button is released and until it is pressed once again. So this simulates a simple On-Off switch like the ones used to turn on/off a room light. The included methods lets the designer define the unlatch event as the instant de MPB is started to be pressed for the second time or when the MPB is released from that second press.
  *
- * @class
+ * @class TgglLtchMPBttn
  */
 class TgglLtchMPBttn: public LtchMPBttn{
 protected:
@@ -533,6 +533,13 @@ public:
 
 //==========================================================>>
 
+/**
+ * @brief Implements a Timer Latched Debounced Delayed MPB, a.k.a. a Timer Switch.
+ *
+ * The **Timer switch** keeps the ON state since the moment the signal is stable (debouncing + delay process), and until the unlatch signal is provided by a preseted timer **started immediately after** the MPB has passed the debounce & delay process. The time countdown might be reseted by pressing the MPB before the timer expires by optionally configuring the object to do so with the provided method.
+ *
+ * class TmLtchMPBttn
+ */
 class TmLtchMPBttn: public LtchMPBttn{
 protected:
     bool _tmRstbl {true};
@@ -554,6 +561,13 @@ public:
 
 //==========================================================>>
 
+/**
+ * @brief Implements a Hinted Timer Latched Debounced Delayed MPB, a.k.a. a Staircase Switch.
+ *
+ * The **Staircase switch** keeps the ON state since the moment the signal is stable (debouncing + delay process), and until the unlatch signal is provided by a preseted timer **started immediately after** the MPB has passed the debounce & delay process, and a warning flag might be configured to raise when time to keep the ON signal is close to expiration, based on a configurable % of the total **On State** time. The time countdown might be reseted by pressing the MPB before the timer expires by optionally configuring the object to do so with the provided method. A **Pilot Signal** flag is included to emulate completely the staircase switches, that might be activated or not by the provided method, it might be considered just a perk as it's not much more than the **isOn** flag negated output, but gives the advantage of freeing the designer of added coding.
+ *
+ * class HntdTmLtchMPBttn
+ */
 class HntdTmLtchMPBttn: public TmLtchMPBttn{
 
 protected:
@@ -618,6 +632,12 @@ public:
 
 //==========================================================>>
 
+/**
+ * @brief Abstract class, implements a Double Action Latched Debounced Delayed MPB.
+ *
+ *
+ * @class DblActnLtchMPBttn
+ */
 class DblActnLtchMPBttn: public LtchMPBttn{
 	friend constexpr int genNxtEnumVal(const int &curVal, const int &increment);
 
