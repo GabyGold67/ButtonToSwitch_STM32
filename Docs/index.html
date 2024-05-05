@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.10.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>MpbAsSwitch_STM32 Library: &lt;strong&gt;Momentary Push Buttons as Switches&lt;/strong&gt; Library (mpbAsSwitch)</title>
+<title>MpbAsSwitch Library for STM32: &lt;strong&gt;Momentary Push Buttons as Switches&lt;/strong&gt; Library (&lt;em&gt;&lt;strong&gt;mpbAsSwitch&lt;/strong&gt;&lt;/em&gt;)</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">MpbAsSwitch_STM32 Library<span id="projectnumber">&#160;1.0.0</span>
+   <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;1.0.0</span>
    </div>
    <div id="projectbrief">A library that provides elaborated switch mechanism simulation for digital signals inputs</div>
   </td>
@@ -92,7 +92,7 @@ $(function(){initNavTree('index.html',''); initResizable(); });
 </div>
 
 <div><div class="header">
-  <div class="headertitle"><div class="title"><b>Momentary Push Buttons as Switches</b> Library (mpbAsSwitch) </div></div>
+  <div class="headertitle"><div class="title"><b>Momentary Push Buttons as Switches</b> Library (<em><b>mpbAsSwitch</b></em>) </div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md__momentary_push_button_tester_s_t_m32_2mpb_as_switch___s_t_m32_2_r_e_a_d_m_e"></a> </p>
@@ -102,17 +102,18 @@ An STM32-RTOS library that builds switch mechanisms replacements out of simple p
 </p>
 <h2><a class="anchor" id="the-main-output-flag-generated-for-each-and-every-class-is-the-ison-flag-which-defines-the-_off-state_-ison--false-and-the-_on-state_-ison--true-of-the-instantiated-objects"></a>
 The main output flag generated for each and every class is the <b>isOn</b> flag, which defines the <em><b>Off State</b></em> (isOn = false) and the <em><b>On State</b></em> (isOn = true) of the instantiated objects.</h2>
-<p>All classes provide several communication mechanisms to keep its output states available by request or their value change automatically informed. Those mechanisms include: <br  />
+<p>All classes provide several communication mechanisms to keep it's output states available by request and by having their value change automatically informed. <br  />
+ Those mechanisms include: <br  />
 </p><ul>
-<li><b>Flag value getters</b>: Return the value of each significant output flag. <br  />
+<li><b>Flags value getters</b>: Return the value of each significant output flag. <br  />
 </li>
 <li><b>General flags value change getter</b>: Returns a value indicating if <b>any</b> of the significant output flags values has changed. <br  />
 </li>
-<li><b>Binary Semaphore</b>: Implementation of a <b>xTaskNotifyGive()</b> FreeRTOS macro to unblock a developer defined task, anytime <b>any</b> of the output flags values was changed. <br  />
+<li><b>Binary Semaphore</b>: Implementation of a <b>xTaskNotifyGive()</b> FreeRTOS macro to unblock a developer defined task, everytime <b>any</b> of the output flags values is changed. <br  />
 </li>
-<li><b>Task Resume/Suspend</b>: A mechanism is provided to run a developer defined task while the object is in <b>On State</b>. The designated task will be set to Suspended State while the object is in <b>Off State</b> and will be set to <b>Resume</b> while it is in <b>On State</b>, providing means to execute far more complex task than just "turning On, turning Off" devices. <br  />
+<li><b>Task Resume/Suspend</b>: A mechanism is provided to run a developer defined task while the object is in <b>On State</b>. The designated task will be set to "Suspended State" while the object is in <b>Off State</b> and will be set to "Resume" while it is in <b>On State</b>, providing means to execute far more complex task than just "turning On &amp; turning Off" devices. <br  />
 </li>
-<li><b>Functions executions</b>: A developer defined function might be set to be executed everytime the instantiated object enters the <b>On State</b>, and a function might be set to be executed everytime the instantiated object enters the <b>Off State</b>. The functions are to be independently defined, so one, the other or both might be defined, and even the same function might be used for both events. <br  />
+<li><b>Functions execution</b>: A developer defined function might be set to be executed everytime the instantiated object enters the <b>On State</b>, and a function might be set to be executed everytime the instantiated object enters the <b>Off State</b>. The functions are to be independently defined, so one, the other or both might be defined, and even the same function might be used for both events. <br  />
 </li>
 </ul>
 <p>Those listed mechanisms are independent, so one or more might be simultaneously used depending on implementation convenience. <br  />

@@ -1,4 +1,4 @@
-# **Momentary Push Buttons as Switches** Library (mpbAsSwitch)
+# **Momentary Push Buttons as Switches** Library (_**mpbAsSwitch**_)
 
 ### An STM32-RTOS library that builds switch mechanisms replacements out of simple push buttons.  
 By using just a push button (a.k.a. momentary switches or momentary buttons, _**MPB**_ for short from here on) the classes implemented in this library will manage, calculate and update different parameters to **generate the behavior of standard electromechanical switches**, including some well known industry specific switches. 
@@ -6,12 +6,13 @@ Those parameters include presses, releases, timings, counters or secondary input
 
 ### The main output flag generated for each and every class is the **isOn** flag, which defines the _**Off State**_ (isOn = false) and the _**On State**_ (isOn = true) of the instantiated objects.  
 
-All classes provide several communication mechanisms to keep its output states available by request or their value change automatically informed. Those mechanisms include:    
-	- **Flag value getters**: Return the value of each significant output flag.  
+All classes provide several communication mechanisms to keep it's output states available by request and by having their value change automatically informed.  
+Those mechanisms include:    
+	- **Flags value getters**: Return the value of each significant output flag.  
 	- **General flags value change getter**: Returns a value indicating if **any** of the significant output flags values has changed.  
-	- **Binary Semaphore**: Implementation of a **xTaskNotifyGive()** FreeRTOS macro to unblock a developer defined task, anytime **any** of the output flags values was changed.  
-	- **Task Resume/Suspend**: A mechanism is provided to run a developer defined task while the object is in **On State**. The designated task will be set to Suspended State while the object is in **Off State** and will be set to **Resume** while it is in **On State**, providing means to execute far more complex task than just "turning On, turning Off" devices.  
-	- **Functions executions**: A developer defined function might be set to be executed everytime the instantiated object enters the **On State**, and a function might be set to be executed everytime the instantiated object enters the **Off State**. The functions are to be independently defined, so one, the other or both might be defined, and even the same function might be used for both events.  
+	- **Binary Semaphore**: Implementation of a **xTaskNotifyGive()** FreeRTOS macro to unblock a developer defined task, everytime **any** of the output flags values is changed.  
+	- **Task Resume/Suspend**: A mechanism is provided to run a developer defined task while the object is in **On State**. The designated task will be set to "Suspended State" while the object is in **Off State** and will be set to "Resume" while it is in **On State**, providing means to execute far more complex task than just "turning On & turning Off" devices.  
+	- **Functions execution**: A developer defined function might be set to be executed everytime the instantiated object enters the **On State**, and a function might be set to be executed everytime the instantiated object enters the **Off State**. The functions are to be independently defined, so one, the other or both might be defined, and even the same function might be used for both events.  
 
 Those listed mechanisms are independent, so one or more might be simultaneously used depending on implementation convenience.    
 
