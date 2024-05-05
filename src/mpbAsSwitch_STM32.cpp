@@ -920,7 +920,7 @@ void LtchMPBttn::updFdaState(){
 		case stOffNotVPP:
 			//In: >>---------------------------------->>
 			if(_sttChng){
-				clrStatus(true);	//Check for right polymorphism Gaby.//
+				clrStatus(true);
 				stOffNotVPP_In();
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
@@ -1113,7 +1113,7 @@ void LtchMPBttn::updFdaState(){
 void LtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
     LtchMPBttn* mpbObj = (LtchMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
 
- 	if(mpbObj->getIsEnabled()){		//Retest examples for this addition Gaby
+ 	if(mpbObj->getIsEnabled()){
 		// Input/Output signals update
 		mpbObj->updIsPressed();
 		// Flags/Triggers calculation & update
@@ -1146,7 +1146,7 @@ TgglLtchMPBttn::TgglLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp,
 
 void TgglLtchMPBttn::stOffNVURP_Do(){
 	if(_validDisablePend){
-		if(_validUnlatchRlsPend)	// Last not tested addition Gaby
+		if(_validUnlatchRlsPend)
 			_validUnlatchRlsPend = false;
 		_mpbFdaState = stDisabled;
 		setSttChng();	//Set flag to execute exiting OUT code
@@ -1182,7 +1182,7 @@ TmLtchMPBttn::TmLtchMPBttn(gpioPinId_t mpbttnPinStrct, const unsigned long int &
 {
 }
 
-void TmLtchMPBttn::clrStatus(bool clrIsOn){	//Check this is the one called from de updFda() Gaby
+void TmLtchMPBttn::clrStatus(bool clrIsOn){
 	_srvcTimerStrt = 0;
 	LtchMPBttn::clrStatus(clrIsOn);
 
@@ -1285,7 +1285,7 @@ bool HntdTmLtchMPBttn::begin(const unsigned long int &pollDelayMs){
    return result;
 }
 
-void HntdTmLtchMPBttn::clrStatus(bool clrIsOn){	//Check this is the one called from de updFda() Gaby
+void HntdTmLtchMPBttn::clrStatus(bool clrIsOn){
 //	Put here class specific sets/resets, including pilot and warning
 	TmLtchMPBttn::clrStatus(clrIsOn);
 	_validWrnngSetPend = false;
@@ -1543,7 +1543,7 @@ bool XtrnUnltchMPBttn::begin(const unsigned long int &pollDelayMs){
    return result;
 }
 
-void XtrnUnltchMPBttn::clrStatus(bool clrIsOn){	//Check this is the one called from de updFda() Gaby
+void XtrnUnltchMPBttn::clrStatus(bool clrIsOn){
 	_xtrnUnltchPRlsCcl = false;
 	LtchMPBttn::clrStatus(clrIsOn);
 
@@ -1552,7 +1552,7 @@ void XtrnUnltchMPBttn::clrStatus(bool clrIsOn){	//Check this is the one called f
 
 void XtrnUnltchMPBttn::stOffNVURP_Do(){
 	if(_validDisablePend){
-		if(_validUnlatchRlsPend)	// Last not tested addition Gaby
+		if(_validUnlatchRlsPend)
 			_validUnlatchRlsPend = false;
 		if(_xtrnUnltchPRlsCcl)
 			_xtrnUnltchPRlsCcl = false;
@@ -1624,7 +1624,7 @@ bool DblActnLtchMPBttn::begin(const unsigned long int &pollDelayMs) {
     return result;
 }
 
-void DblActnLtchMPBttn::clrStatus(bool clrIsOn){	//Check this is the one called from de updFda() Gaby
+void DblActnLtchMPBttn::clrStatus(bool clrIsOn){
 	_scndModTmrStrt = 0;
 	_validScndModPend = false;
 	LtchMPBttn::clrStatus(clrIsOn);
@@ -1875,11 +1875,8 @@ bool DblActnLtchMPBttn::updValidPressesStatus(){
 	return (_validPressPend || _validScndModPend);
 }
 
-void DblActnLtchMPBttn::updValidUnlatchStatus(){	//Placeholder for future development Gaby
-//	if(true){
-		_validUnlatchPend = true;
-//		_validUnlatchRlsPend = true;
-//	}
+void DblActnLtchMPBttn::updValidUnlatchStatus(){
+	_validUnlatchPend = true;
 
 	return;
 }
@@ -1921,7 +1918,7 @@ DDlydDALtchMPBttn::~DDlydDALtchMPBttn()
 {
 }
 
-void DDlydDALtchMPBttn::clrStatus(bool clrIsOn){	//Check this is the one called from de updFda() Gaby
+void DDlydDALtchMPBttn::clrStatus(bool clrIsOn){
 	if(clrIsOn && _isOn2){
 		_isOn2= false;
 		_outputsChange = true;
@@ -1986,7 +1983,7 @@ SldrDALtchMPBttn::~SldrDALtchMPBttn()
 {
 }
 
-void SldrDALtchMPBttn::clrStatus(bool clrIsOn){	//Check this is the one called from de updFda() Gaby
+void SldrDALtchMPBttn::clrStatus(bool clrIsOn){
 	DblActnLtchMPBttn::clrStatus(clrIsOn);
 
 	return;
