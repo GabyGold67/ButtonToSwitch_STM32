@@ -1,5 +1,5 @@
 <map id="DbncdMPBttn" name="DbncdMPBttn">
-<area shape="rect" id="Node000001" title="Base class, implements a Debounced Momentary Pushbutton." alt="" coords="466,5,568,32"/>
+<area shape="rect" id="Node000001" title="Base class, this class implements a Debounced Momentary Push Button." alt="" coords="466,5,568,32"/>
 <area shape="rect" id="Node000002" href="$class_dbncd_dlyd_m_p_bttn.html" title=" " alt="" coords="453,80,581,107"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="520,48,520,80,514,80,514,48"/>
 <area shape="rect" id="Node000003" href="$class_ltch_m_p_bttn.html" title=" " alt="" coords="415,155,505,181"/>

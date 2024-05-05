@@ -14,10 +14,15 @@ var class_vdbl_m_p_bttn =
     [ "getStrtDelay", "class_vdbl_m_p_bttn.html#aa65d8e6c77b2de5bcf3191636949b4e8", null ],
     [ "getTaskToNotify", "class_vdbl_m_p_bttn.html#a3da781ff0ad5ec1064d62570fd005a3a", null ],
     [ "getTaskWhileOn", "class_vdbl_m_p_bttn.html#a3728d2003365cbdaf81cccfca3604fe8", null ],
+    [ "init", "class_vdbl_m_p_bttn.html#a748f95239413d4c9c0a5b5d0d6396e60", null ],
+    [ "init", "class_vdbl_m_p_bttn.html#af2df06a9433c30b95611494e43709883", null ],
     [ "pause", "class_vdbl_m_p_bttn.html#a3cf51be801e6024cc3ca6b984deb52c6", null ],
     [ "resetDbncTime", "class_vdbl_m_p_bttn.html#a02fe9905a8a92b7fc605778b95da20ff", null ],
     [ "resume", "class_vdbl_m_p_bttn.html#a9540a12554008a6705056b02fbafed38", null ],
     [ "setDbncTime", "class_vdbl_m_p_bttn.html#afa8a94396ee3fe8f9cc41c8ea9d8b8d3", null ],
+    [ "setFnWhnTrnOffPtr", "class_vdbl_m_p_bttn.html#aecc1a4b485d2ca810c063b9d2e3e4cc5", null ],
+    [ "setFnWhnTrnOnPtr", "class_vdbl_m_p_bttn.html#a8f8d4b6fb7dd20c1feeb2d86cda61f2d", null ],
+    [ "setIsOnDisabled", "class_vdbl_m_p_bttn.html#a8543d49f49955678cdbc921510622796", null ],
     [ "setOutputsChange", "class_vdbl_m_p_bttn.html#a8c78cfe36c96568225b3e8f3f60566eb", null ],
     [ "setTaskToNotify", "class_vdbl_m_p_bttn.html#a7046c5b8462844954207f2851a85c5df", null ]
 ];

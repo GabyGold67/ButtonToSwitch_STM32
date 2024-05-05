@@ -10,7 +10,7 @@
 <area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="443,184,564,226,562,231,441,189"/>
 <area shape="rect" id="Node000002" href="$class_dbncd_dlyd_m_p_bttn.html" title=" " alt="" coords="328,80,456,107"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="394,122,394,154,389,154,389,122"/>
-<area shape="rect" id="Node000003" href="$class_dbncd_m_p_bttn.html" title="Base class, implements a Debounced Momentary Pushbutton." alt="" coords="341,5,443,32"/>
+<area shape="rect" id="Node000003" href="$class_dbncd_m_p_bttn.html" title="Base class, this class implements a Debounced Momentary Push Button." alt="" coords="341,5,443,32"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="394,48,394,80,389,80,389,48"/>
 <area shape="rect" id="Node000005" href="$class_d_dlyd_d_a_ltch_m_p_bttn.html" title=" " alt="" coords="5,304,149,331"/>
 <area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="147,268,95,306,92,301,144,263"/>

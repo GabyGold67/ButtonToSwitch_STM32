@@ -4,7 +4,7 @@
 <area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="500,121,472,156,467,153,496,117"/>
 <area shape="rect" id="Node000011" href="$class_vdbl_m_p_bttn.html" title=" " alt="" coords="611,155,703,181"/>
 <area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="556,112,634,152,631,156,554,117"/>
-<area shape="rect" id="Node000002" href="$class_dbncd_m_p_bttn.html" title="Base class, implements a Debounced Momentary Pushbutton." alt="" coords="466,5,568,32"/>
+<area shape="rect" id="Node000002" href="$class_dbncd_m_p_bttn.html" title="Base class, this class implements a Debounced Momentary Push Button." alt="" coords="466,5,568,32"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="520,48,520,80,514,80,514,48"/>
 <area shape="rect" id="Node000004" href="$class_dbl_actn_ltch_m_p_bttn.html" title=" " alt="" coords="106,229,243,256"/>
 <area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="400,187,225,231,223,226,399,182"/>
