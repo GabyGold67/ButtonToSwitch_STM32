@@ -786,11 +786,14 @@ bool DbncdDlydMPBttn::init(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, con
 }
 
 bool DbncdDlydMPBttn::setStrtDelay(const unsigned long int &newStrtDelay){
+	bool result {false};
+
     if(_strtDelay != newStrtDelay){
         _strtDelay = newStrtDelay;
+        result = true;
     }
 
-    return true;
+    return result;
 }
 
 bool DbncdDlydMPBttn::updValidPressesStatus(){

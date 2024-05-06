@@ -23,6 +23,7 @@ var class_d_dlyd_d_a_ltch_m_p_bttn =
     [ "setFnWhnTrnOnPtr", "class_d_dlyd_d_a_ltch_m_p_bttn.html#a8f8d4b6fb7dd20c1feeb2d86cda61f2d", null ],
     [ "setIsOnDisabled", "class_d_dlyd_d_a_ltch_m_p_bttn.html#a8543d49f49955678cdbc921510622796", null ],
     [ "setOutputsChange", "class_d_dlyd_d_a_ltch_m_p_bttn.html#a8c78cfe36c96568225b3e8f3f60566eb", null ],
+    [ "setStrtDelay", "class_d_dlyd_d_a_ltch_m_p_bttn.html#a66a811f673e7d888c3668f059fc067a1", null ],
     [ "setTaskToNotify", "class_d_dlyd_d_a_ltch_m_p_bttn.html#a7046c5b8462844954207f2851a85c5df", null ],
     [ "setTaskWhileOn", "class_d_dlyd_d_a_ltch_m_p_bttn.html#a48c551520cf30e15f24e384927e37552", null ]
 ];

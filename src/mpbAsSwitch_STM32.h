@@ -468,19 +468,53 @@ protected:
 
     virtual bool updValidPressesStatus();
 public:
+    /**
+     * @brief Default constructor
+     *
+     */
     DbncdDlydMPBttn();
+    /**
+     * @brief Class constructor
+     *
+     * @param strtDelay Sets the initial value for the **strtDelay** attribute.
+     *
+     * @note For the rest of the parameters see DbncdMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int)
+     *
+     * @note If the **delay** attribute is set to 0, the resulting object is equal to a **DbncdMPBttn** class object.
+     *
+     */
     DbncdDlydMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+    /**
+     * @brief Class constructor
+     *
+     * @param strtDelay See DbncdDlydMPBttn(gpioPinId_t, const bool, const bool, const unsigned long int, const unsigned long int)
+     *
+     * @note For the rest of the parameters see DbncdMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int)
+     *
+     * @note If the **delay** attribute is set to 0, the resulting object is equal to a **DbncdMPBttn** class object.
+     *
+     */
     DbncdDlydMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
     /**
-     * @brief Gets the current value of start delay parameter.
+     * @brief Gets the current value of strtDelay attribute.
      *
-     * Returns the current value of time used by the object to rise the isOn flag, after the debouncing process ends, in milliseconds. If the MPB is released before completing the debounce **and** the delay time, no press will be detected by the object, and the isOn flag will not be rised. The original value for the delay process used at instantiation time might be changed with the **setStrtDelay()** method, so this method is provided to get the current value in use.
+     * Returns the current value of time used by the object to rise the isOn flag, after the debouncing process ends, in milliseconds. If the MPB is released before completing the debounce **and** the strtDelay time, no press will be detected by the object, and the isOn flag will not be affected. The original value for the delay process used at instantiation time might be changed with the setStrtDelay() method, so this method is provided to get the current value in use.
      *
-     * @return The current delay time, in milliseconds, being used before rising the isOn flag, after the debounce process of the current object.
+     * @return The current strtDelay time in milliseconds.
      */
     unsigned long int getStrtDelay();
     bool init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
     bool init(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+    /**
+     * @brief Sets a new value to the **delay** attribute
+     *
+     * @param newStrtDelay New value for the **delay** attribute.
+     *
+     * @retval true: the existing delay value was different from newStrDelay, the value was updated to newStrtValue.
+     * @retval false: the existing delay value and newStrtDelay were equal no change was made.
+     *
+     * @note: Using a very high **delay** values are valid but might make the systems seem less responsive, be aware of how it will affect the user experience.
+     */
     bool setStrtDelay(const unsigned long int &newStrtDelay);
 };
 
