@@ -25,7 +25,7 @@
 var NAVTREE =
 [
   [ "MpbAsSwitch Library for STM32", "index.html", [
-    [ "<strong>Momentary Push Buttons as Switches</strong> Library (<em><strong>mpbAsSwitch</strong></em>)", "index.html", null ],
+    [ "Momentary Push Buttons as Switches Library (<em><strong>mpbAsSwitch</strong></em>)", "index.html", null ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
@@ -49,7 +49,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"class_tm_vdbl_m_p_bttn.html#a9cee3ead20e3628c02975a9d0c8a4baa"
+"class_tm_vdbl_m_p_bttn.html#a3cf51be801e6024cc3ca6b984deb52c6"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

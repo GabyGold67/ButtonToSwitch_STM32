@@ -1,4 +1,4 @@
-# **Momentary Push Buttons as Switches** Library (_**mpbAsSwitch**_)
+# Momentary Push Buttons as Switches Library (_**mpbAsSwitch**_)
 
 ### An STM32-RTOS library that builds switch mechanisms replacements out of simple push buttons.  
 By using just a push button (a.k.a. momentary switches or momentary buttons, _**MPB**_ for short from here on) the classes implemented in this library will manage, calculate and update different parameters to **generate the behavior of standard electromechanical switches**, including some well known industry specific switches. 

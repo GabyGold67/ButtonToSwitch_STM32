@@ -22,11 +22,13 @@ var class_dbncd_m_p_bttn =
     [ "init", "class_dbncd_m_p_bttn.html#af2df06a9433c30b95611494e43709883", null ],
     [ "pause", "class_dbncd_m_p_bttn.html#a3cf51be801e6024cc3ca6b984deb52c6", null ],
     [ "resetDbncTime", "class_dbncd_m_p_bttn.html#a02fe9905a8a92b7fc605778b95da20ff", null ],
+    [ "resetFda", "class_dbncd_m_p_bttn.html#a2798815df62ffd1b4bcdf91dd7088931", null ],
     [ "resume", "class_dbncd_m_p_bttn.html#a9540a12554008a6705056b02fbafed38", null ],
     [ "setDbncTime", "class_dbncd_m_p_bttn.html#afa8a94396ee3fe8f9cc41c8ea9d8b8d3", null ],
     [ "setFnWhnTrnOffPtr", "class_dbncd_m_p_bttn.html#aecc1a4b485d2ca810c063b9d2e3e4cc5", null ],
     [ "setFnWhnTrnOnPtr", "class_dbncd_m_p_bttn.html#a8f8d4b6fb7dd20c1feeb2d86cda61f2d", null ],
     [ "setIsOnDisabled", "class_dbncd_m_p_bttn.html#a8543d49f49955678cdbc921510622796", null ],
     [ "setOutputsChange", "class_dbncd_m_p_bttn.html#a8c78cfe36c96568225b3e8f3f60566eb", null ],
-    [ "setTaskToNotify", "class_dbncd_m_p_bttn.html#a7046c5b8462844954207f2851a85c5df", null ]
+    [ "setTaskToNotify", "class_dbncd_m_p_bttn.html#a7046c5b8462844954207f2851a85c5df", null ],
+    [ "setTaskWhileOn", "class_dbncd_m_p_bttn.html#a48c551520cf30e15f24e384927e37552", null ]
 ];

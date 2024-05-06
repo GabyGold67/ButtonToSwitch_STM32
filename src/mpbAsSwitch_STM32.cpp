@@ -406,6 +406,28 @@ bool DbncdMPBttn::setDbncTime(const unsigned long int &newDbncTime){
     return result;
 }
 
+bool DbncdMPBttn::setFnWhnTrnOffPtr(void (*newFnWhnTrnOff)()){
+	bool result{false};
+
+	if (_fnWhnTrnOff != newFnWhnTrnOff){
+		_fnWhnTrnOff = newFnWhnTrnOff;
+		result = true;
+	}
+
+	return result;
+}
+
+bool DbncdMPBttn::setFnWhnTrnOnPtr(void (*newFnWhnTrnOn)()){
+	bool result{false};
+
+	if (_fnWhnTrnOn != newFnWhnTrnOn){
+		_fnWhnTrnOn = newFnWhnTrnOn;
+		result = true;
+	}
+
+	return result;
+}
+
 bool DbncdMPBttn::setIsEnabled(const bool &newEnabledValue){
 	bool result{false};
 
@@ -466,6 +488,30 @@ bool DbncdMPBttn::setTaskToNotify(TaskHandle_t newHandle){
         result = false;
 
     return result;
+}
+
+bool DbncdMPBttn::setTaskWhileOn(const TaskHandle_t &newTaskHandle){
+	bool result {false};
+	eTaskState taskWhileOnStts{};
+
+	if(_taskWhileOnHndl != newTaskHandle){
+		if (newTaskHandle == NULL){
+			taskWhileOnStts = eTaskGetState(_taskWhileOnHndl);
+			if (taskWhileOnStts != eSuspended){
+				if(taskWhileOnStts != eDeleted){
+					vTaskSuspend(_taskWhileOnHndl);
+					_taskWhileOnHndl = NULL;
+				}
+				result = true;
+			}
+		}
+		else{
+			_taskWhileOnHndl = newTaskHandle;
+			result = true;
+		}
+	}
+
+	return result;
 }
 
 void DbncdMPBttn::_turnOff(){
@@ -700,54 +746,6 @@ bool DbncdMPBttn::updValidPressesStatus(){
 	}
 
 	return (_validPressPend||_validReleasePend);
-}
-
-bool DbncdMPBttn::setTaskWhileOn(const TaskHandle_t &newTaskHandle){
-	bool result {false};
-	eTaskState taskWhileOnStts{};
-
-	if(_taskWhileOnHndl != newTaskHandle){
-		if (newTaskHandle == NULL){
-			taskWhileOnStts = eTaskGetState(_taskWhileOnHndl);
-			if (taskWhileOnStts != eSuspended){
-				if(taskWhileOnStts != eDeleted){
-					vTaskSuspend(_taskWhileOnHndl);
-					_taskWhileOnHndl = NULL;
-				}
-				result = true;
-			}
-		}
-		else{
-			_taskWhileOnHndl = newTaskHandle;
-		}
-	}
-	else{
-		result = true;
-	}
-
-	return result;
-}
-
-bool DbncdMPBttn::setFnWhnTrnOffPtr(void (*newFnWhnTrnOff)()){
-	bool result{false};
-
-	if (_fnWhnTrnOff != newFnWhnTrnOff){
-		_fnWhnTrnOff = newFnWhnTrnOff;
-		result = true;
-	}
-
-	return result;
-}
-
-bool DbncdMPBttn::setFnWhnTrnOnPtr(void (*newFnWhnTrnOn)()){
-	bool result{false};
-
-	if (_fnWhnTrnOn != newFnWhnTrnOn){
-		_fnWhnTrnOn = newFnWhnTrnOn;
-		result = true;
-	}
-
-	return result;
 }
 
 //=========================================================================> Class methods delimiter
