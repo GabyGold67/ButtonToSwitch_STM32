@@ -521,9 +521,11 @@ public:
 //==========================================================>>
 
 /**
- * @brief Abstract class, base to implement Latched Debounced Delayed MPBs (LDD-MPB).
+ * @brief Abstract class, base to implement Latched Debounced Delayed MPBs (**LDD-MPB**).
  *
- * All **Latched MPB** subclasses implement switches that keep the ON state since the moment the input signal is stable (debouncing + Delay process), and keeps the ON state after the push button is released and until an event unlatches them, setting them free to go to the **Off State**. The different releasing event defines the sub-class of the Latched MPB class.
+ * **Latched DD-MPB** are MPBs whose distinctive characteristic is that implement switches that keep the ON state since the moment the input signal is stable (debouncing + Delay process), and keeps the ON state after the MPB is released and until an event un-latches them, setting them free to move to the **Off State**.
+ * The un-latching mechanisms include but are not limited to: same MPB presses, timers, other MPB presses or external un-latch signals.
+ * The different un-latching events defines the sub-classes of the LDD-MPB class.
  *
  * @class LtchMPBttn
  */
@@ -577,7 +579,7 @@ public:
 //==========================================================>>
 
 /**
- * @brief Implements a Toggle LDD-MPB, a.k.a. a Toggle Switch.
+ * @brief Implements a Toggle LDD-MPB, a.k.a. a Toggle Switch (**ToLDD-MPB**).
  *
  * The **Toggle switch** keeps the ON state since the moment the signal is stable (debouncing + delay process), and keeps the ON state after the push button is released and until it is pressed once again. So this simulates a simple On-Off switch like the ones used to turn on/off a room light. The included methods lets the designer define the unlatch event as the instant de MPB is started to be pressed for the second time or when the MPB is released from that second press.
  *
@@ -595,7 +597,7 @@ public:
 //==========================================================>>
 
 /**
- * @brief Implements a Timer LDD-MPB, a.k.a. a Timer Switch.
+ * @brief Implements a Timer LDD-MPB, a.k.a. a Timer Switch (**TiLDD-MPB**).
  *
  * The **Timer switch** keeps the ON state since the moment the signal is stable (debouncing + delay process), and until the unlatch signal is provided by a preseted timer **started immediately after** the MPB has passed the debounce & delay process. The time countdown might be reseted by pressing the MPB before the timer expires by optionally configuring the object to do so with the provided method.
  *
@@ -623,7 +625,7 @@ public:
 //==========================================================>>
 
 /**
- * @brief Implements a Hinted Timer LDD-MPB, a.k.a.  Staircase Switch.
+ * @brief Implements a Hinted Timer LDD-MPB, a.k.a.  Staircase Switch (**HTiLDD-MPB**).
  *
  * The **Staircase switch** keeps the ON state since the moment the signal is stable (debouncing + delay process), and until the unlatch signal is provided by a preseted timer **started immediately after** the MPB has passed the debounce & delay process, and a warning flag might be configured to raise when time to keep the ON signal is close to expiration, based on a configurable % of the total **On State** time. The time countdown might be reseted by pressing the MPB before the timer expires by optionally configuring the object to do so with the provided method. A **Pilot Signal** flag is included to emulate completely the staircase switches, that might be activated or not by the provided method, it might be considered just a perk as it's not much more than the **isOn** flag negated output, but gives the advantage of freeing the designer of added coding.
  *
@@ -699,8 +701,26 @@ public:
 //==========================================================>>
 
 /**
- * @brief Abstract class, base to implement Double Action LDD-MPBs.
+ * @brief Abstract class, base to implement Double Action LDD-MPBs (**DALDD-MPBs**).
  *
+ * **Double Action Latched DD-MPB** are MPBs whose distinctive characteristic is that implement switches that present two different behaviors based on the time length of the presses detected.
+ * The pattern selected for this class is the following:
+ * - A **short press** makes the MPB to behave as a Toggle LDD-MPB Switch (**ToLDD-MPB**) -designated as the **main behavior**-, swapping from the **Off state** to the **On state** and back as usual LDD-MPB.
+ * - A **long press** activates another behavior, making the only MPB used as a second MPB. That different behavior -designated as the **secondary behavior**- defines the sub-classes of the **DALDD-MPB** class.
+ * Using a notation where the first component is the Off/On state of the main behavior and the second component the state of the secondary behavior the simplest activation path would be:
+ * - 1. Off-Off
+ * - 2. On-Off
+ * - 3. On-On
+ * - 4. On-Off
+ * - 5. Off-Off
+ *
+ * The presses patterns are:
+ * - 1. -> 2.: short press.
+ * - 1. -> 3.: long press.
+ * - 2. -> 3.: long press.
+ * - 2. -> 5.: short press.
+ * - 3. -> 4.: release.
+ * - 4. -> 5.: short press.
  *
  * @class DblActnLtchMPBttn
  */
@@ -741,7 +761,24 @@ public:
 	DblActnLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	~DblActnLtchMPBttn();
    void clrStatus(bool clrIsOn = true);
-	unsigned long getScndModActvDly();
+	/**
+	 * @brief Gets the current value of the  scndModActvDly class attribute.
+	 *
+	 * The scndModActvDly attribute defines the time length a MPB must remain pressed to consider it a **long press**.
+	 *
+	 */
+   unsigned long getScndModActvDly();
+	/**
+	 * @brief Sets a new value for the scndModActvDly class attribute
+	 *
+	 * The scndModActvDly attribute defines the time length a MPB must remain pressed to consider it a **long press**.
+	 *
+	 * @param newVal The new value for the scndModActvDly attribute.
+	 *
+	 * @retval true: The new value is different from the existent setting, the value was updated.
+	 * @retval false: The new value is equal from the existent setting, no change was made.
+	 *
+	 */
 	bool setScndModActvDly(const unsigned long &newVal);
 
    bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
@@ -821,8 +858,12 @@ public:
 //==========================================================>>
 
 /**
- * @brief Abstract class, base to implement Voidable DD-MPBs.
+ * @brief Abstract class, base to implement Voidable DD-MPBs (VDD-MPB).
  *
+ * **Voidable DD-MPBs** are MPBs whose distinctive characteristic is that implement switches that while being pressed their state might change from **On State** to a **Voided & Off state** due to different voiding conditions.
+ * Those conditions include but are not limited to: pressed time, external signals or reaching the **On state**.
+ * The mechanisms to "un-void" the MPB and return it to an operational state include but are not limited to: releasing the MPB, receiving an external signal, the reading of the **isOn** flag and others.
+ * The voiding condition and the un-voiding mechanism define the VDD-MPB subclasses.
  *
  * @class VdblMPBttn
  */
@@ -877,7 +918,6 @@ public:
  *
  * class TmVdblMPBttn
  */
-
 class TmVdblMPBttn: public VdblMPBttn{
 protected:
     unsigned long int _voidTime;

@@ -8,7 +8,7 @@ var mpb_as_switch___s_t_m32_8h =
     [ "TmLtchMPBttn", "class_tm_ltch_m_p_bttn.html", null ],
     [ "HntdTmLtchMPBttn", "class_hntd_tm_ltch_m_p_bttn.html", null ],
     [ "XtrnUnltchMPBttn", "class_xtrn_unltch_m_p_bttn.html", null ],
-    [ "DblActnLtchMPBttn", "class_dbl_actn_ltch_m_p_bttn.html", null ],
+    [ "DblActnLtchMPBttn", "class_dbl_actn_ltch_m_p_bttn.html", "class_dbl_actn_ltch_m_p_bttn" ],
     [ "DDlydDALtchMPBttn", "class_d_dlyd_d_a_ltch_m_p_bttn.html", null ],
     [ "SldrDALtchMPBttn", "class_sldr_d_a_ltch_m_p_bttn.html", null ],
     [ "VdblMPBttn", "class_vdbl_m_p_bttn.html", null ],

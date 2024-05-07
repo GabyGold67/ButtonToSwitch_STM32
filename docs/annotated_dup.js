@@ -1,6 +1,6 @@
 var annotated_dup =
 [
-    [ "DblActnLtchMPBttn", "class_dbl_actn_ltch_m_p_bttn.html", null ],
+    [ "DblActnLtchMPBttn", "class_dbl_actn_ltch_m_p_bttn.html", "class_dbl_actn_ltch_m_p_bttn" ],
     [ "DbncdDlydMPBttn", "class_dbncd_dlyd_m_p_bttn.html", "class_dbncd_dlyd_m_p_bttn" ],
     [ "DbncdMPBttn", "class_dbncd_m_p_bttn.html", "class_dbncd_m_p_bttn" ],
     [ "DDlydDALtchMPBttn", "class_d_dlyd_d_a_ltch_m_p_bttn.html", null ],
