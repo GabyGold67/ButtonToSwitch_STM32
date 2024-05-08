@@ -65,10 +65,13 @@
  *
  * @struct gpioPinId_t
  */
+#ifndef GPIOPINID_T
+#define GPIOPINID_T
 struct gpioPinId_t{	// Type used to keep GPIO pin identification as a single parameter, as platform independent as possible
 	GPIO_TypeDef* portId;	/**< The port identification as a pointer to a GPIO_TypeDef information structure*/
 	uint16_t pinNum;	/**< The number of pin represented as a one bit set binary with the set bit position indicating the pin number*/
 };
+#endif	//GPIOPINID_T
 
 typedef void (*fncPtrType)();
 typedef  fncPtrType (*ptrToTrnFnc)();
