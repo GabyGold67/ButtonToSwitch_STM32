@@ -568,6 +568,14 @@ public:
 	LtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	LtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	void clrStatus(bool clrIsOn = true);
+   /**
+	 * @brief Gets the value of the isLatched flag, indicating the **Latched** or **Unlatched** condition of the object.
+	 *
+	 * The isLatched flag is automatically updated periodically by the timer that cumputes the object state.
+	 *
+    * @retval true: the object is in **Latched condition**.
+    * @retval false: The object is in **Unlatched condition**.
+    */
 	const bool getIsLatched() const;
 	bool getTrnOffASAP();
 	const bool getUnlatchPend() const;
@@ -575,7 +583,10 @@ public:
 	bool setTrnOffASAP(const bool &newVal);
 	bool setUnlatchPend(const bool &newVal);
    bool unlatch();
-
+   /**
+	 * @brief See DbncdMPBttn::begin(const unsigned long int)
+    *
+    */
 	bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 

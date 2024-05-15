@@ -3,7 +3,7 @@ var mpb_as_switch___s_t_m32_8h =
     [ "gpioPinId_t", "structgpio_pin_id__t.html", "structgpio_pin_id__t" ],
     [ "DbncdMPBttn", "class_dbncd_m_p_bttn.html", "class_dbncd_m_p_bttn" ],
     [ "DbncdDlydMPBttn", "class_dbncd_dlyd_m_p_bttn.html", "class_dbncd_dlyd_m_p_bttn" ],
-    [ "LtchMPBttn", "class_ltch_m_p_bttn.html", null ],
+    [ "LtchMPBttn", "class_ltch_m_p_bttn.html", "class_ltch_m_p_bttn" ],
     [ "TgglLtchMPBttn", "class_tggl_ltch_m_p_bttn.html", null ],
     [ "TmLtchMPBttn", "class_tm_ltch_m_p_bttn.html", null ],
     [ "HntdTmLtchMPBttn", "class_hntd_tm_ltch_m_p_bttn.html", null ],
