@@ -8,18 +8,18 @@
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="520,48,520,80,514,80,514,48"/>
 <area shape="rect" id="Node000004" href="$class_dbl_actn_ltch_m_p_bttn.html" title="Abstract class, base to implement Double Action LDD&#45;MPBs (DALDD&#45;MPBs)." alt="" coords="106,229,243,256"/>
 <area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="400,187,225,231,223,226,399,182"/>
-<area shape="rect" id="Node000007" href="$class_tggl_ltch_m_p_bttn.html" title="Implements a Toggle LDD&#45;MPB, a.k.a. a Toggle Switch (ToLDD&#45;MPB)." alt="" coords="267,229,381,256"/>
+<area shape="rect" id="Node000007" href="$class_tggl_ltch_m_p_bttn.html" title="Implements a Toggle Latch DD&#45;MPB, a.k.a. a Toggle Switch (ToLDD&#45;MPB)." alt="" coords="267,229,381,256"/>
 <area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="424,191,349,231,346,226,421,187"/>
-<area shape="rect" id="Node000008" href="$class_tm_ltch_m_p_bttn.html" title="Implements a Timer LDD&#45;MPB, a.k.a. a Timer Switch (TiLDD&#45;MPB)." alt="" coords="406,229,514,256"/>
+<area shape="rect" id="Node000008" href="$class_tm_ltch_m_p_bttn.html" title="Implements a Timer Latch DD&#45;MPB, a.k.a. a Timer Switch (TiLDD&#45;MPB)." alt="" coords="406,229,514,256"/>
 <area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="462,197,462,229,457,229,457,197"/>
-<area shape="rect" id="Node000010" href="$class_xtrn_unltch_m_p_bttn.html" title="Implements an External Unlatch LDD&#45;MPB, a.k.a. Emergency Latched Switch." alt="" coords="538,229,662,256"/>
+<area shape="rect" id="Node000010" href="$class_xtrn_unltch_m_p_bttn.html" title="Implements an External Unlatch LDD&#45;MPB, a.k.a. Emergency Latched Switch (XULDD&#45;MPB)" alt="" coords="538,229,662,256"/>
 <area shape="poly" id="edge9_Node000003_Node000010" title=" " alt="" coords="499,186,576,226,574,231,496,191"/>
-<area shape="rect" id="Node000005" href="$class_d_dlyd_d_a_ltch_m_p_bttn.html" title="Implements a Debounced Delayed Double Action LDD&#45;MPB combo switch, a.k.a. Secondary Debounced Delayed..." alt="" coords="5,304,149,331"/>
+<area shape="rect" id="Node000005" href="$class_d_dlyd_d_a_ltch_m_p_bttn.html" title="Implements a Debounced Delayed DALDD&#45;MPB combo switch, a.k.a. Dobule Debounced Delayed Latched MPB co..." alt="" coords="5,304,149,331"/>
 <area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="147,268,95,306,92,301,144,263"/>
 <area shape="rect" id="Node000006" href="$class_sldr_d_a_ltch_m_p_bttn.html" title="Implements a Slider Double Action LDD&#45;MPB combo switch, a.k.a. off/on/dimmer, a.k...." alt="" coords="173,304,304,331"/>
 <area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="198,266,229,302,225,305,194,270"/>
-<area shape="rect" id="Node000009" href="$class_hntd_tm_ltch_m_p_bttn.html" title="Implements a Hinted Timer LDD&#45;MPB, a.k.a. Staircase Switch (HTiLDD&#45;MPB)." alt="" coords="392,304,527,331"/>
+<area shape="rect" id="Node000009" href="$class_hntd_tm_ltch_m_p_bttn.html" title="Implements a Hinted Timer Latch DD&#45;MPB, a.k.a. Staircase Switch (HTiLDD&#45;MPB)." alt="" coords="392,304,527,331"/>
 <area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="462,272,462,304,457,304,457,272"/>
-<area shape="rect" id="Node000012" href="$class_tm_vdbl_m_p_bttn.html" title="Implements a Time Voidable DD&#45;MPB, a.k.a. Anti&#45;tampering switch." alt="" coords="686,229,796,256"/>
+<area shape="rect" id="Node000012" href="$class_tm_vdbl_m_p_bttn.html" title="Implements a Time Voidable DD&#45;MPB, a.k.a. Anti&#45;tampering switch (TVDD&#45;MPB)" alt="" coords="686,229,796,256"/>
 <area shape="poly" id="edge11_Node000011_Node000012" title=" " alt="" coords="685,190,728,227,725,231,682,194"/>
 </map>

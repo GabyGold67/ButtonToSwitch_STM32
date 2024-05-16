@@ -11,5 +11,7 @@ var searchData=
   ['getscndmodactvdly_8',['getScndModActvDly',['../class_dbl_actn_ltch_m_p_bttn.html#aa4cc7c3c653fcd60fc333ac5ac4e2fdb',1,'DblActnLtchMPBttn']]],
   ['getstrtdelay_9',['getStrtDelay',['../class_dbncd_dlyd_m_p_bttn.html#aa65d8e6c77b2de5bcf3191636949b4e8',1,'DbncdDlydMPBttn']]],
   ['gettasktonotify_10',['getTaskToNotify',['../class_dbncd_m_p_bttn.html#a3da781ff0ad5ec1064d62570fd005a3a',1,'DbncdMPBttn']]],
-  ['gettaskwhileon_11',['getTaskWhileOn',['../class_dbncd_m_p_bttn.html#a3728d2003365cbdaf81cccfca3604fe8',1,'DbncdMPBttn']]]
+  ['gettaskwhileon_11',['getTaskWhileOn',['../class_dbncd_m_p_bttn.html#a3728d2003365cbdaf81cccfca3604fe8',1,'DbncdMPBttn']]],
+  ['gettrnoffasap_12',['getTrnOffASAP',['../class_ltch_m_p_bttn.html#a8469aec51e8f6151b72be5d423d855e3',1,'LtchMPBttn']]],
+  ['getunlatchpend_13',['getUnlatchPend',['../class_ltch_m_p_bttn.html#a4a640fee342b1e51983d0efb67ce9727',1,'LtchMPBttn']]]
 ];

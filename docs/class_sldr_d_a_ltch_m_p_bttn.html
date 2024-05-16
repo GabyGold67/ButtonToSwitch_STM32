@@ -98,7 +98,7 @@ $(function(){initNavTree('class_sldr_d_a_ltch_m_p_bttn.html',''); initResizable(
 </div><!--header-->
 <div class="contents">
 
-<p>Implements a Slider Double Action LDD-MPB combo switch, a.k.a. off/on/dimmer, a.k.a. off/on/volume radio switch)  
+<p>Implements a Slider Double Action LDD-MPB combo switch, a.k.a. off/on/dimmer, a.k.a. off/on/volume radio switch)(<b>S-DALDD-MPB</b>)  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="mpb_as_switch___s_t_m32_8h_source.html">mpbAsSwitch_STM32.h</a>&gt;</code></p>
@@ -149,9 +149,35 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:a03f22ae440e7a47e29c1089cef3f01e3 inherit pub_methods_class_dbl_actn_ltch_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a new value for the scndModActvDly class attribute.  <br /></td></tr>
 <tr class="separator:a03f22ae440e7a47e29c1089cef3f01e3 inherit pub_methods_class_dbl_actn_ltch_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_ltch_m_p_bttn"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_class_ltch_m_p_bttn')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_ltch_m_p_bttn.html">LtchMPBttn</a></td></tr>
+<tr class="memitem:a8f6fbebb9d33e282cedbec115fe7cb98 inherit pub_methods_class_ltch_m_p_bttn" id="r_a8f6fbebb9d33e282cedbec115fe7cb98"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ltch_m_p_bttn.html#a8f6fbebb9d33e282cedbec115fe7cb98">LtchMPBttn</a> (GPIO_TypeDef *mpbttnPort, const uint16_t &amp;mpbttnPin, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0, const unsigned long int &amp;strtDelay=0)</td></tr>
+<tr class="memdesc:a8f6fbebb9d33e282cedbec115fe7cb98 inherit pub_methods_class_ltch_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class constructor.  <br /></td></tr>
+<tr class="separator:a8f6fbebb9d33e282cedbec115fe7cb98 inherit pub_methods_class_ltch_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa52047bd930afc19d8c1f9026f7605ef inherit pub_methods_class_ltch_m_p_bttn" id="r_aa52047bd930afc19d8c1f9026f7605ef"><td class="memItemLeft" align="right" valign="top">
+void&#160;</td><td class="memItemRight" valign="bottom"><b>clrStatus</b> (bool clrIsOn=true)</td></tr>
+<tr class="memdesc:aa52047bd930afc19d8c1f9026f7605ef inherit pub_methods_class_ltch_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">See <a class="el" href="class_dbncd_m_p_bttn.html#a3009725646aeb160884b8109d180b530" title="Clears and resets flags, timers and counters modified through the object&#39;s signals processing.">DbncdMPBttn::clrStatus(bool)</a> <br /></td></tr>
+<tr class="separator:aa52047bd930afc19d8c1f9026f7605ef inherit pub_methods_class_ltch_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00dfc51bc5d19ed9edaf8f97b0df34c9 inherit pub_methods_class_ltch_m_p_bttn" id="r_a00dfc51bc5d19ed9edaf8f97b0df34c9"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ltch_m_p_bttn.html#a00dfc51bc5d19ed9edaf8f97b0df34c9">getIsLatched</a> () const</td></tr>
 <tr class="memdesc:a00dfc51bc5d19ed9edaf8f97b0df34c9 inherit pub_methods_class_ltch_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the isLatched flag, indicating the <b>Latched</b> or <b>Unlatched</b> condition of the object.  <br /></td></tr>
 <tr class="separator:a00dfc51bc5d19ed9edaf8f97b0df34c9 inherit pub_methods_class_ltch_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8469aec51e8f6151b72be5d423d855e3 inherit pub_methods_class_ltch_m_p_bttn" id="r_a8469aec51e8f6151b72be5d423d855e3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ltch_m_p_bttn.html#a8469aec51e8f6151b72be5d423d855e3">getTrnOffASAP</a> ()</td></tr>
+<tr class="memdesc:a8469aec51e8f6151b72be5d423d855e3 inherit pub_methods_class_ltch_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the trnOffASfAP class attribute.  <br /></td></tr>
+<tr class="separator:a8469aec51e8f6151b72be5d423d855e3 inherit pub_methods_class_ltch_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a640fee342b1e51983d0efb67ce9727 inherit pub_methods_class_ltch_m_p_bttn" id="r_a4a640fee342b1e51983d0efb67ce9727"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ltch_m_p_bttn.html#a4a640fee342b1e51983d0efb67ce9727">getUnlatchPend</a> () const</td></tr>
+<tr class="memdesc:a4a640fee342b1e51983d0efb67ce9727 inherit pub_methods_class_ltch_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the validUnlatchPending attribute.  <br /></td></tr>
+<tr class="separator:a4a640fee342b1e51983d0efb67ce9727 inherit pub_methods_class_ltch_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a402b034dca985f4f32a4842c94a8c5c2 inherit pub_methods_class_ltch_m_p_bttn" id="r_a402b034dca985f4f32a4842c94a8c5c2"><td class="memItemLeft" align="right" valign="top">
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>resetFda</b> ()</td></tr>
+<tr class="memdesc:a402b034dca985f4f32a4842c94a8c5c2 inherit pub_methods_class_ltch_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">See <a class="el" href="class_dbncd_m_p_bttn.html#a2798815df62ffd1b4bcdf91dd7088931" title="Resets the MPB behavior automaton to it&#39;s Initial or Start State">DbncdMPBttn::resetFda()</a> <br /></td></tr>
+<tr class="separator:a402b034dca985f4f32a4842c94a8c5c2 inherit pub_methods_class_ltch_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a4aa64b8ec230cda2c8b09b1eacb63b inherit pub_methods_class_ltch_m_p_bttn" id="r_a5a4aa64b8ec230cda2c8b09b1eacb63b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ltch_m_p_bttn.html#a5a4aa64b8ec230cda2c8b09b1eacb63b">setTrnOffASAP</a> (const bool &amp;newVal)</td></tr>
+<tr class="memdesc:a5a4aa64b8ec230cda2c8b09b1eacb63b inherit pub_methods_class_ltch_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the trnOffASAP attribute.  <br /></td></tr>
+<tr class="separator:a5a4aa64b8ec230cda2c8b09b1eacb63b inherit pub_methods_class_ltch_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8097c54b97d9fbce616e1ccee51c71d8 inherit pub_methods_class_ltch_m_p_bttn" id="r_a8097c54b97d9fbce616e1ccee51c71d8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ltch_m_p_bttn.html#a8097c54b97d9fbce616e1ccee51c71d8">setUnlatchPend</a> (const bool &amp;newVal)</td></tr>
+<tr class="memdesc:a8097c54b97d9fbce616e1ccee51c71d8 inherit pub_methods_class_ltch_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the validUnlatchPending attribute.  <br /></td></tr>
+<tr class="separator:a8097c54b97d9fbce616e1ccee51c71d8 inherit pub_methods_class_ltch_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25933288a98bd0a2efc406e7a009fbc1 inherit pub_methods_class_ltch_m_p_bttn" id="r_a25933288a98bd0a2efc406e7a009fbc1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ltch_m_p_bttn.html#a25933288a98bd0a2efc406e7a009fbc1">unlatch</a> ()</td></tr>
+<tr class="memdesc:a25933288a98bd0a2efc406e7a009fbc1 inherit pub_methods_class_ltch_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the validUnlatchPending attribute.  <br /></td></tr>
+<tr class="separator:a25933288a98bd0a2efc406e7a009fbc1 inherit pub_methods_class_ltch_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa15f59d4fa5b3d57d6884914399bfa4d inherit pub_methods_class_ltch_m_p_bttn" id="r_aa15f59d4fa5b3d57d6884914399bfa4d"><td class="memItemLeft" align="right" valign="top">
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>begin</b> (const unsigned long int &amp;pollDelayMs=_StdPollDelay)</td></tr>
 <tr class="memdesc:aa15f59d4fa5b3d57d6884914399bfa4d inherit pub_methods_class_ltch_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">See DbncdMPBttn::begin(const unsigned long int) <br /></td></tr>
@@ -271,7 +297,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="separator:a48c551520cf30e15f24e384927e37552 inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Implements a Slider Double Action LDD-MPB combo switch, a.k.a. off/on/dimmer, a.k.a. off/on/volume radio switch) </p>
+<div class="textblock"><p>Implements a Slider Double Action LDD-MPB combo switch, a.k.a. off/on/dimmer, a.k.a. off/on/volume radio switch)(<b>S-DALDD-MPB</b>) </p>
 <p>class <a class="el" href="class_sldr_d_a_ltch_m_p_bttn.html" title="Implements a Slider Double Action LDD-MPB combo switch, a.k.a. off/on/dimmer, a.k....">SldrDALtchMPBttn</a> </p>
 </div><hr/>The documentation for this class was generated from the following files:<ul>
 <li>C:/Users/Gabriel D. Goldman/Documents/My Projects/Training Projects/MomentaryPushButtonTesterSTM32/mpbAsSwitch_STM32/src/<a class="el" href="mpb_as_switch___s_t_m32_8h_source.html">mpbAsSwitch_STM32.h</a></li>

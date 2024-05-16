@@ -13,5 +13,7 @@ var searchData=
   ['getstrtdelay_10',['getStrtDelay',['../class_dbncd_dlyd_m_p_bttn.html#aa65d8e6c77b2de5bcf3191636949b4e8',1,'DbncdDlydMPBttn']]],
   ['gettasktonotify_11',['getTaskToNotify',['../class_dbncd_m_p_bttn.html#a3da781ff0ad5ec1064d62570fd005a3a',1,'DbncdMPBttn']]],
   ['gettaskwhileon_12',['getTaskWhileOn',['../class_dbncd_m_p_bttn.html#a3728d2003365cbdaf81cccfca3604fe8',1,'DbncdMPBttn']]],
-  ['gpiopinid_5ft_13',['gpioPinId_t',['../structgpio_pin_id__t.html',1,'']]]
+  ['gettrnoffasap_13',['getTrnOffASAP',['../class_ltch_m_p_bttn.html#a8469aec51e8f6151b72be5d423d855e3',1,'LtchMPBttn']]],
+  ['getunlatchpend_14',['getUnlatchPend',['../class_ltch_m_p_bttn.html#a4a640fee342b1e51983d0efb67ce9727',1,'LtchMPBttn']]],
+  ['gpiopinid_5ft_15',['gpioPinId_t',['../structgpio_pin_id__t.html',1,'']]]
 ];

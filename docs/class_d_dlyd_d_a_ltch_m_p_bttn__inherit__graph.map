@@ -1,5 +1,5 @@
 <map id="DDlydDALtchMPBttn" name="DDlydDALtchMPBttn">
-<area shape="rect" id="Node000001" title="Implements a Debounced Delayed Double Action LDD&#45;MPB combo switch, a.k.a. Secondary Debounced Delayed..." alt="" coords="5,304,149,331"/>
+<area shape="rect" id="Node000001" title="Implements a Debounced Delayed DALDD&#45;MPB combo switch, a.k.a. Dobule Debounced Delayed Latched MPB co..." alt="" coords="5,304,149,331"/>
 <area shape="rect" id="Node000002" href="$class_dbl_actn_ltch_m_p_bttn.html" title="Abstract class, base to implement Double Action LDD&#45;MPBs (DALDD&#45;MPBs)." alt="" coords="9,229,145,256"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="80,272,80,304,74,304,74,272"/>
 <area shape="rect" id="Node000003" href="$class_ltch_m_p_bttn.html" title="Abstract class, base to implement Latched Debounced Delayed MPBs (LDD&#45;MPB)." alt="" coords="32,155,122,181"/>

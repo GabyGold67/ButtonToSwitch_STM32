@@ -1,5 +1,5 @@
 <map id="TgglLtchMPBttn" name="TgglLtchMPBttn">
-<area shape="rect" id="Node000001" title="Implements a Toggle LDD&#45;MPB, a.k.a. a Toggle Switch (ToLDD&#45;MPB)." alt="" coords="12,416,127,443"/>
+<area shape="rect" id="Node000001" title="Implements a Toggle Latch DD&#45;MPB, a.k.a. a Toggle Switch (ToLDD&#45;MPB)." alt="" coords="12,416,127,443"/>
 <area shape="rect" id="Node000002" href="$class_ltch_m_p_bttn.html" title="Abstract class, base to implement Latched Debounced Delayed MPBs (LDD&#45;MPB)." alt="" coords="24,340,115,367"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="72,382,72,416,67,416,67,382"/>
 <area shape="rect" id="Node000003" href="$class_dbncd_dlyd_m_p_bttn.html" title="Implements a Debounced Delayed MPB (DD&#45;MPB)." alt="" coords="5,264,134,291"/>

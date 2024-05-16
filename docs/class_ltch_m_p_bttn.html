@@ -111,21 +111,21 @@ Inheritance diagram for LtchMPBttn:</div>
 <area shape="rect" title="Abstract class, base to implement Latched Debounced Delayed MPBs (LDD&#45;MPB)." alt="" coords="347,155,437,181"/>
 <area shape="rect" href="class_dbl_actn_ltch_m_p_bttn.html" title="Abstract class, base to implement Double Action LDD&#45;MPBs (DALDD&#45;MPBs)." alt="" coords="106,229,243,256"/>
 <area shape="poly" title=" " alt="" coords="340,189,213,231,212,226,339,184"/>
-<area shape="rect" href="class_tggl_ltch_m_p_bttn.html" title="Implements a Toggle LDD&#45;MPB, a.k.a. a Toggle Switch (ToLDD&#45;MPB)." alt="" coords="267,229,381,256"/>
+<area shape="rect" href="class_tggl_ltch_m_p_bttn.html" title="Implements a Toggle Latch DD&#45;MPB, a.k.a. a Toggle Switch (ToLDD&#45;MPB)." alt="" coords="267,229,381,256"/>
 <area shape="poly" title=" " alt="" coords="371,195,337,231,333,227,367,191"/>
-<area shape="rect" href="class_tm_ltch_m_p_bttn.html" title="Implements a Timer LDD&#45;MPB, a.k.a. a Timer Switch (TiLDD&#45;MPB)." alt="" coords="406,229,514,256"/>
+<area shape="rect" href="class_tm_ltch_m_p_bttn.html" title="Implements a Timer Latch DD&#45;MPB, a.k.a. a Timer Switch (TiLDD&#45;MPB)." alt="" coords="406,229,514,256"/>
 <area shape="poly" title=" " alt="" coords="416,191,450,227,446,231,412,195"/>
-<area shape="rect" href="class_xtrn_unltch_m_p_bttn.html" title="Implements an External Unlatch LDD&#45;MPB, a.k.a. Emergency Latched Switch." alt="" coords="538,229,662,256"/>
+<area shape="rect" href="class_xtrn_unltch_m_p_bttn.html" title="Implements an External Unlatch LDD&#45;MPB, a.k.a. Emergency Latched Switch (XULDD&#45;MPB)" alt="" coords="538,229,662,256"/>
 <area shape="poly" title=" " alt="" coords="443,184,564,226,562,231,441,189"/>
 <area shape="rect" href="class_dbncd_dlyd_m_p_bttn.html" title="Implements a Debounced Delayed MPB (DD&#45;MPB)." alt="" coords="328,80,456,107"/>
 <area shape="poly" title=" " alt="" coords="394,122,394,154,389,154,389,122"/>
 <area shape="rect" href="class_dbncd_m_p_bttn.html" title="Base class, implements a Debounced Momentary Push Button (D&#45;MPB)." alt="" coords="341,5,443,32"/>
 <area shape="poly" title=" " alt="" coords="394,48,394,80,389,80,389,48"/>
-<area shape="rect" href="class_d_dlyd_d_a_ltch_m_p_bttn.html" title="Implements a Debounced Delayed Double Action LDD&#45;MPB combo switch, a.k.a. Secondary Debounced Delayed..." alt="" coords="5,304,149,331"/>
+<area shape="rect" href="class_d_dlyd_d_a_ltch_m_p_bttn.html" title="Implements a Debounced Delayed DALDD&#45;MPB combo switch, a.k.a. Dobule Debounced Delayed Latched MPB co..." alt="" coords="5,304,149,331"/>
 <area shape="poly" title=" " alt="" coords="147,268,95,306,92,301,144,263"/>
 <area shape="rect" href="class_sldr_d_a_ltch_m_p_bttn.html" title="Implements a Slider Double Action LDD&#45;MPB combo switch, a.k.a. off/on/dimmer, a.k...." alt="" coords="173,304,304,331"/>
 <area shape="poly" title=" " alt="" coords="198,266,229,302,225,305,194,270"/>
-<area shape="rect" href="class_hntd_tm_ltch_m_p_bttn.html" title="Implements a Hinted Timer LDD&#45;MPB, a.k.a. Staircase Switch (HTiLDD&#45;MPB)." alt="" coords="392,304,527,331"/>
+<area shape="rect" href="class_hntd_tm_ltch_m_p_bttn.html" title="Implements a Hinted Timer Latch DD&#45;MPB, a.k.a. Staircase Switch (HTiLDD&#45;MPB)." alt="" coords="392,304,527,331"/>
 <area shape="poly" title=" " alt="" coords="462,272,462,304,457,304,457,272"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
@@ -148,9 +148,35 @@ Collaboration diagram for LtchMPBttn:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a8f6fbebb9d33e282cedbec115fe7cb98" id="r_a8f6fbebb9d33e282cedbec115fe7cb98"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8f6fbebb9d33e282cedbec115fe7cb98">LtchMPBttn</a> (GPIO_TypeDef *mpbttnPort, const uint16_t &amp;mpbttnPin, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0, const unsigned long int &amp;strtDelay=0)</td></tr>
+<tr class="memdesc:a8f6fbebb9d33e282cedbec115fe7cb98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class constructor.  <br /></td></tr>
+<tr class="separator:a8f6fbebb9d33e282cedbec115fe7cb98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa52047bd930afc19d8c1f9026f7605ef" id="r_aa52047bd930afc19d8c1f9026f7605ef"><td class="memItemLeft" align="right" valign="top"><a id="aa52047bd930afc19d8c1f9026f7605ef" name="aa52047bd930afc19d8c1f9026f7605ef"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>clrStatus</b> (bool clrIsOn=true)</td></tr>
+<tr class="memdesc:aa52047bd930afc19d8c1f9026f7605ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">See <a class="el" href="class_dbncd_m_p_bttn.html#a3009725646aeb160884b8109d180b530" title="Clears and resets flags, timers and counters modified through the object&#39;s signals processing.">DbncdMPBttn::clrStatus(bool)</a> <br /></td></tr>
+<tr class="separator:aa52047bd930afc19d8c1f9026f7605ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00dfc51bc5d19ed9edaf8f97b0df34c9" id="r_a00dfc51bc5d19ed9edaf8f97b0df34c9"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a00dfc51bc5d19ed9edaf8f97b0df34c9">getIsLatched</a> () const</td></tr>
 <tr class="memdesc:a00dfc51bc5d19ed9edaf8f97b0df34c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the isLatched flag, indicating the <b>Latched</b> or <b>Unlatched</b> condition of the object.  <br /></td></tr>
 <tr class="separator:a00dfc51bc5d19ed9edaf8f97b0df34c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8469aec51e8f6151b72be5d423d855e3" id="r_a8469aec51e8f6151b72be5d423d855e3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8469aec51e8f6151b72be5d423d855e3">getTrnOffASAP</a> ()</td></tr>
+<tr class="memdesc:a8469aec51e8f6151b72be5d423d855e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the trnOffASfAP class attribute.  <br /></td></tr>
+<tr class="separator:a8469aec51e8f6151b72be5d423d855e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a640fee342b1e51983d0efb67ce9727" id="r_a4a640fee342b1e51983d0efb67ce9727"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4a640fee342b1e51983d0efb67ce9727">getUnlatchPend</a> () const</td></tr>
+<tr class="memdesc:a4a640fee342b1e51983d0efb67ce9727"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the validUnlatchPending attribute.  <br /></td></tr>
+<tr class="separator:a4a640fee342b1e51983d0efb67ce9727"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a402b034dca985f4f32a4842c94a8c5c2" id="r_a402b034dca985f4f32a4842c94a8c5c2"><td class="memItemLeft" align="right" valign="top"><a id="a402b034dca985f4f32a4842c94a8c5c2" name="a402b034dca985f4f32a4842c94a8c5c2"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>resetFda</b> ()</td></tr>
+<tr class="memdesc:a402b034dca985f4f32a4842c94a8c5c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">See <a class="el" href="class_dbncd_m_p_bttn.html#a2798815df62ffd1b4bcdf91dd7088931" title="Resets the MPB behavior automaton to it&#39;s Initial or Start State">DbncdMPBttn::resetFda()</a> <br /></td></tr>
+<tr class="separator:a402b034dca985f4f32a4842c94a8c5c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a4aa64b8ec230cda2c8b09b1eacb63b" id="r_a5a4aa64b8ec230cda2c8b09b1eacb63b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5a4aa64b8ec230cda2c8b09b1eacb63b">setTrnOffASAP</a> (const bool &amp;newVal)</td></tr>
+<tr class="memdesc:a5a4aa64b8ec230cda2c8b09b1eacb63b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the trnOffASAP attribute.  <br /></td></tr>
+<tr class="separator:a5a4aa64b8ec230cda2c8b09b1eacb63b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8097c54b97d9fbce616e1ccee51c71d8" id="r_a8097c54b97d9fbce616e1ccee51c71d8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8097c54b97d9fbce616e1ccee51c71d8">setUnlatchPend</a> (const bool &amp;newVal)</td></tr>
+<tr class="memdesc:a8097c54b97d9fbce616e1ccee51c71d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the validUnlatchPending attribute.  <br /></td></tr>
+<tr class="separator:a8097c54b97d9fbce616e1ccee51c71d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25933288a98bd0a2efc406e7a009fbc1" id="r_a25933288a98bd0a2efc406e7a009fbc1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a25933288a98bd0a2efc406e7a009fbc1">unlatch</a> ()</td></tr>
+<tr class="memdesc:a25933288a98bd0a2efc406e7a009fbc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the validUnlatchPending attribute.  <br /></td></tr>
+<tr class="separator:a25933288a98bd0a2efc406e7a009fbc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa15f59d4fa5b3d57d6884914399bfa4d" id="r_aa15f59d4fa5b3d57d6884914399bfa4d"><td class="memItemLeft" align="right" valign="top"><a id="aa15f59d4fa5b3d57d6884914399bfa4d" name="aa15f59d4fa5b3d57d6884914399bfa4d"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>begin</b> (const unsigned long int &amp;pollDelayMs=_StdPollDelay)</td></tr>
 <tr class="memdesc:aa15f59d4fa5b3d57d6884914399bfa4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">See DbncdMPBttn::begin(const unsigned long int) <br /></td></tr>
@@ -271,8 +297,53 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstract class, base to implement Latched Debounced Delayed MPBs (<b>LDD-MPB</b>). </p>
-<p><b>Latched DD-MPB</b> are MPBs whose distinctive characteristic is that implement switches that keep the ON state since the moment the input signal is stable (debouncing + Delay process), and keeps the ON state after the MPB is released and until an event un-latches them, setting them free to move to the <b>Off State</b>. The un-latching mechanisms include but are not limited to: same MPB presses, timers, other MPB presses or external un-latch signals. The different un-latching events defines the sub-classes of the LDD-MPB class. </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+<p><b>Latched DD-MPB</b> are MPBs whose distinctive characteristic is that implement switches that keep the ON state since the moment the input signal is stable (debouncing + Delay process), and keeps the ON state after the MPB is released and until an event un-latches them, setting them free to move to the <b>Off State</b>. The un-latching mechanisms include but are not limited to: same MPB presses, timers, other MPB presses, other GPIO external un-latch signals or the use of the public method <a class="el" href="#a25933288a98bd0a2efc406e7a009fbc1" title="Sets the value of the validUnlatchPending attribute.">unlatch()</a>. The different un-latching events defines the sub-classes of the LDD-MPB class. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a8f6fbebb9d33e282cedbec115fe7cb98" name="a8f6fbebb9d33e282cedbec115fe7cb98"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f6fbebb9d33e282cedbec115fe7cb98">&#9670;&#160;</a></span>LtchMPBttn()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">LtchMPBttn::LtchMPBttn </td>
+          <td>(</td>
+          <td class="paramtype">GPIO_TypeDef *</td>          <td class="paramname"><span class="paramname"><em>mpbttnPort</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint16_t &amp;</td>          <td class="paramname"><span class="paramname"><em>mpbttnPin</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool &amp;</td>          <td class="paramname"><span class="paramname"><em>pulledUp</em><span class="paramdefsep"> = </span><span class="paramdefval">true</span>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool &amp;</td>          <td class="paramname"><span class="paramname"><em>typeNO</em><span class="paramdefsep"> = </span><span class="paramdefval">true</span>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned long int &amp;</td>          <td class="paramname"><span class="paramname"><em>dbncTimeOrigSett</em><span class="paramdefsep"> = </span><span class="paramdefval">0</span>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned long int &amp;</td>          <td class="paramname"><span class="paramname"><em>strtDelay</em><span class="paramdefsep"> = </span><span class="paramdefval">0</span></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Class constructor. </p>
+<dl class="section note"><dt>Note</dt><dd>For the parameters see <a class="el" href="class_dbncd_m_p_bttn.html" title="Base class, implements a Debounced Momentary Push Button (D-MPB).">DbncdMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int, const unsigned long int)</a> </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a id="a00dfc51bc5d19ed9edaf8f97b0df34c9" name="a00dfc51bc5d19ed9edaf8f97b0df34c9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a00dfc51bc5d19ed9edaf8f97b0df34c9">&#9670;&#160;</a></span>getIsLatched()</h2>
 
@@ -289,7 +360,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Gets the value of the isLatched flag, indicating the <b>Latched</b> or <b>Unlatched</b> condition of the object. </p>
-<p>The isLatched flag is automatically updated periodically by the timer that cumputes the object state.</p>
+<p>The isLatched flag is automatically updated periodically by the timer that calculates the object state.</p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">true</td><td>the object is in <b>Latched condition</b>. </td></tr>
@@ -297,6 +368,131 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a8469aec51e8f6151b72be5d423d855e3" name="a8469aec51e8f6151b72be5d423d855e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8469aec51e8f6151b72be5d423d855e3">&#9670;&#160;</a></span>getTrnOffASAP()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LtchMPBttn::getTrnOffASAP </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the value of the trnOffASfAP class attribute. </p>
+<p>The range of signals accepted by the instantiated objects to execute the unlatch process is diverse, and their nature and characteristics might affect the expected switch behavior. While some of the signals might be instantaneous, meaning that the <b>start of the unlatch signal</b> is coincidental with the <b>end of the unlatch signal</b>, some others might extend the time between both ends. The <b>trnOffASAP</b> flag sets the behavior of the MPB in the second case.</p><ul>
+<li>If the <b>trnOffASAP</b> flag is set (true) the <b>isOn</b> flag will be reseted as soon as the <b>start of the unlatch signal</b> is detected</li>
+<li>If the <b>trnOffASAP</b> flag is reset (false) the <b>isOn</b> flag will be reseted only when the <b>end of the unlatch signal</b> is detected.</li>
+</ul>
+<dl class="section return"><dt>Returns</dt><dd>The current value of the trnOffASAP attribute. </dd></dl>
+
+</div>
+</div>
+<a id="a4a640fee342b1e51983d0efb67ce9727" name="a4a640fee342b1e51983d0efb67ce9727"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a640fee342b1e51983d0efb67ce9727">&#9670;&#160;</a></span>getUnlatchPend()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const bool LtchMPBttn::getUnlatchPend </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the value of the validUnlatchPending attribute. </p>
+<p>The validUnlatchPending holds the existence of a still to be processed confirmed unlatch signal. Getting it's current value makes possible taking actions before the unlatch process is started or even discard it completely by using the setUnlatchPend(const bool) method.</p>
+<dl class="section return"><dt>Returns</dt><dd>The current value of the validUnlatchPending attribute. </dd></dl>
+
+</div>
+</div>
+<a id="a5a4aa64b8ec230cda2c8b09b1eacb63b" name="a5a4aa64b8ec230cda2c8b09b1eacb63b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a4aa64b8ec230cda2c8b09b1eacb63b">&#9670;&#160;</a></span>setTrnOffASAP()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LtchMPBttn::setTrnOffASAP </td>
+          <td>(</td>
+          <td class="paramtype">const bool &amp;</td>          <td class="paramname"><span class="paramname"><em>newVal</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the value of the trnOffASAP attribute. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">newVal</td><td>New value for the trnOffASAP attribute</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The value of the trnOffASAP attribute after the method execution </dd></dl>
+
+</div>
+</div>
+<a id="a8097c54b97d9fbce616e1ccee51c71d8" name="a8097c54b97d9fbce616e1ccee51c71d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8097c54b97d9fbce616e1ccee51c71d8">&#9670;&#160;</a></span>setUnlatchPend()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LtchMPBttn::setUnlatchPend </td>
+          <td>(</td>
+          <td class="paramtype">const bool &amp;</td>          <td class="paramname"><span class="paramname"><em>newVal</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the value of the validUnlatchPending attribute. </p>
+<p>By setting the value of the validUnlatchPending it's possible to modify the current MPB status by generating an unlatch signal or by canceling an existent unlatch signal.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">newVal</td><td>New value for the validUnlatchPending attribute</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The value of the validUnlatchPending attribute after the method execution </dd></dl>
+
+</div>
+</div>
+<a id="a25933288a98bd0a2efc406e7a009fbc1" name="a25933288a98bd0a2efc406e7a009fbc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25933288a98bd0a2efc406e7a009fbc1">&#9670;&#160;</a></span>unlatch()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LtchMPBttn::unlatch </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the value of the validUnlatchPending attribute. </p>
+<p>By setting the value of the validUnlatchPending it's possible to modify the current MPB status by generating an unlatch signal or by canceling an existent unlatch signal.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">newVal</td><td>New value for the validUnlatchPending attribute</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The value of the validUnlatchPending attribute after the method execution </dd></dl>
 
 </div>
 </div>

@@ -98,7 +98,7 @@ $(function(){initNavTree('class_tm_vdbl_m_p_bttn.html',''); initResizable(); });
 </div><!--header-->
 <div class="contents">
 
-<p>Implements a Time Voidable DD-MPB, a.k.a. Anti-tampering switch.  
+<p>Implements a Time Voidable DD-MPB, a.k.a. Anti-tampering switch (<b>TVDD-MPB</b>)  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="mpb_as_switch___s_t_m32_8h_source.html">mpbAsSwitch_STM32.h</a>&gt;</code></p>
@@ -107,7 +107,7 @@ Inheritance diagram for TmVdblMPBttn:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_tm_vdbl_m_p_bttn__inherit__graph.png" border="0" usemap="#a_tm_vdbl_m_p_bttn_inherit__map" alt="Inheritance graph"/></div>
 <map name="a_tm_vdbl_m_p_bttn_inherit__map" id="a_tm_vdbl_m_p_bttn_inherit__map">
-<area shape="rect" title="Implements a Time Voidable DD&#45;MPB, a.k.a. Anti&#45;tampering switch." alt="" coords="15,229,124,256"/>
+<area shape="rect" title="Implements a Time Voidable DD&#45;MPB, a.k.a. Anti&#45;tampering switch (TVDD&#45;MPB)" alt="" coords="15,229,124,256"/>
 <area shape="rect" href="class_vdbl_m_p_bttn.html" title="Abstract class, base to implement Voidable DD&#45;MPBs (VDD&#45;MPB)." alt="" coords="24,155,115,181"/>
 <area shape="poly" title=" " alt="" coords="72,197,72,229,67,229,67,197"/>
 <area shape="rect" href="class_dbncd_dlyd_m_p_bttn.html" title="Implements a Debounced Delayed MPB (DD&#45;MPB)." alt="" coords="5,80,134,107"/>
@@ -121,7 +121,7 @@ Collaboration diagram for TmVdblMPBttn:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_tm_vdbl_m_p_bttn__coll__graph.png" border="0" usemap="#a_tm_vdbl_m_p_bttn_coll__map" alt="Collaboration graph"/></div>
 <map name="a_tm_vdbl_m_p_bttn_coll__map" id="a_tm_vdbl_m_p_bttn_coll__map">
-<area shape="rect" title="Implements a Time Voidable DD&#45;MPB, a.k.a. Anti&#45;tampering switch." alt="" coords="15,416,124,443"/>
+<area shape="rect" title="Implements a Time Voidable DD&#45;MPB, a.k.a. Anti&#45;tampering switch (TVDD&#45;MPB)" alt="" coords="15,416,124,443"/>
 <area shape="rect" href="class_vdbl_m_p_bttn.html" title="Abstract class, base to implement Voidable DD&#45;MPBs (VDD&#45;MPB)." alt="" coords="24,340,115,367"/>
 <area shape="poly" title=" " alt="" coords="72,382,72,416,67,416,67,382"/>
 <area shape="rect" href="class_dbncd_dlyd_m_p_bttn.html" title="Implements a Debounced Delayed MPB (DD&#45;MPB)." alt="" coords="5,264,134,291"/>
@@ -252,8 +252,9 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="separator:a48c551520cf30e15f24e384927e37552 inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Implements a Time Voidable DD-MPB, a.k.a. Anti-tampering switch. </p>
-<p>class <a class="el" href="class_tm_vdbl_m_p_bttn.html" title="Implements a Time Voidable DD-MPB, a.k.a. Anti-tampering switch.">TmVdblMPBttn</a> </p>
+<div class="textblock"><p>Implements a Time Voidable DD-MPB, a.k.a. Anti-tampering switch (<b>TVDD-MPB</b>) </p>
+<p>The <b>Time Voidable Momentary Button</b>, keeps the ON state since the moment the signal is stable (debouncing process), plus a delay added, and until the moment the push button is released, or until a preset time in the ON state is reached. Then the switch will return to the Off position until the push button is released and pushed back. This kind of switches are used to activate limited resources related management or physical safety devices, and the possibility of a physical blocking of the switch to extend the ON signal forcibly beyond designer's plans is highly undesired. Water valves, door unlocking mechanisms, hands-off security mechanisms, high power heating devices are some of the usual uses for these type of switches.</p>
+<p>class <a class="el" href="class_tm_vdbl_m_p_bttn.html" title="Implements a Time Voidable DD-MPB, a.k.a. Anti-tampering switch (TVDD-MPB)">TmVdblMPBttn</a> </p>
 </div><hr/>The documentation for this class was generated from the following files:<ul>
 <li>C:/Users/Gabriel D. Goldman/Documents/My Projects/Training Projects/MomentaryPushButtonTesterSTM32/mpbAsSwitch_STM32/src/<a class="el" href="mpb_as_switch___s_t_m32_8h_source.html">mpbAsSwitch_STM32.h</a></li>
 <li>C:/Users/Gabriel D. Goldman/Documents/My Projects/Training Projects/MomentaryPushButtonTesterSTM32/mpbAsSwitch_STM32/src/<a class="el" href="mpb_as_switch___s_t_m32_8cpp.html">mpbAsSwitch_STM32.cpp</a></li>
