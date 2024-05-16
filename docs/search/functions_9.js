@@ -11,5 +11,6 @@ var searchData=
   ['settaskwhileon_8',['setTaskWhileOn',['../class_dbncd_m_p_bttn.html#a48c551520cf30e15f24e384927e37552',1,'DbncdMPBttn']]],
   ['settrnoffasap_9',['setTrnOffASAP',['../class_ltch_m_p_bttn.html#a5a4aa64b8ec230cda2c8b09b1eacb63b',1,'LtchMPBttn']]],
   ['setunlatchpend_10',['setUnlatchPend',['../class_ltch_m_p_bttn.html#a8097c54b97d9fbce616e1ccee51c71d8',1,'LtchMPBttn']]],
-  ['singlebitposnum_11',['singleBitPosNum',['../mpb_as_switch___s_t_m32_8cpp.html#a2d4786dedee4fde298afb23bf2ba11ac',1,'singleBitPosNum(uint16_t mask):&#160;mpbAsSwitch_STM32.cpp'],['../mpb_as_switch___s_t_m32_8h.html#a2d4786dedee4fde298afb23bf2ba11ac',1,'singleBitPosNum(uint16_t mask):&#160;mpbAsSwitch_STM32.cpp']]]
+  ['singlebitposnum_11',['singleBitPosNum',['../mpb_as_switch___s_t_m32_8cpp.html#a2d4786dedee4fde298afb23bf2ba11ac',1,'singleBitPosNum(uint16_t mask):&#160;mpbAsSwitch_STM32.cpp'],['../mpb_as_switch___s_t_m32_8h.html#a2d4786dedee4fde298afb23bf2ba11ac',1,'singleBitPosNum(uint16_t mask):&#160;mpbAsSwitch_STM32.cpp']]],
+  ['sldrdaltchmpbttn_12',['SldrDALtchMPBttn',['../class_sldr_d_a_ltch_m_p_bttn.html#a28d3678ab93aadcb4e7b70955c919a7d',1,'SldrDALtchMPBttn']]]
 ];

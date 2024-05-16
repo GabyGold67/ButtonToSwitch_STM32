@@ -47,9 +47,9 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
-#include "queue.h"
-#include "semphr.h"
-#include "event_groups.h"
+//#include "queue.h"
+//#include "semphr.h"
+//#include "event_groups.h"
 //===========================>> END libraries used to avoid CMSIS wrappers
 
 #define _HwMinDbncTime 20  // Documented minimum wait time for a MPB signal to stabilize to consider it pressed or released (in milliseconds)
@@ -57,18 +57,12 @@
 #define _MinSrvcTime 100	// Minimum valid time value for service/active time for Time Latched MPBs to avoid stability issues relating to debouncing, releasing and other timed events
 #define _InvalidPinNum 0xFFFF	// Value to give as "yet to be defined", the "Valid pin number" range and characteristics are development platform and environment dependable
 
-/**
- * @brief Structure that holds all the required information to identify unequivocally a MCU's GPIO pin
- *
- * A GPIO pin identification is MCU and framework dependent, so the quantity and type of parameters
- * vary. This structure provides an interface to abstract them as a single identification parameter.
- *
- * @struct gpioPinId_t
- */
 #ifndef GPIOPINID_T
 #define GPIOPINID_T
 /**
- * @brief Type used to keep GPIO pin identification as a single parameter, to define class methods declarations as platform agnostic as possible.
+ * @brief Type used to keep GPIO pin identification as a single parameter, independently of the platform requirements.
+ *
+ * GPIO pin identification is hardware and development environment framework dependents, for some platforms it needs one, some two, some more parameters, and each one of these parameters type depend once again on the platform. This type is provided to define each pin referenced as a single parameter for class methods and attributes declarations, as platform independent as possible.
  *
  * struct
  */
@@ -78,6 +72,7 @@ struct gpioPinId_t{	//
 };
 #endif	//GPIOPINID_T
 
+// Definition workaround to let a function/method return value to be a function pointer
 typedef void (*fncPtrType)();
 typedef  fncPtrType (*ptrToTrnFnc)();
 
@@ -166,7 +161,9 @@ public:
 	/**
 	 * @brief Class constructor
 	 *
-	 * @param mpbttnPinStrct Structure defined to hold the GPIO port identification and the Pin id number as a single data unit
+	 * @param mpbttnPinStrct GPIO port identification and the Pin id number defined as a single gpioPinId_t parameter.
+	 *
+	 * For the rest of the parameters see DbncdMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int)
 	 *
 	 */
 	DbncdMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0);
@@ -178,7 +175,7 @@ public:
 	/**
 	 * @brief Attaches the instantiated object to a timer that monitors the input pins and updates the object status.
 	 *
-	 * The frequency of that periodic monitoring is passed as a parameter in milliseconds, and is a value that must be small (frequent) enough to keep the object updated, but not so frequent that waste unneeded resources from other tasks. A default value is provided based on empirical values obtained in various published tests.
+	 * The frequency of the periodic monitoring is passed as a parameter in milliseconds, and is a value that must be small (frequent) enough to keep the object updated, but not so frequent that waste unneeded resources from other tasks. A default value is provided based on empirical values obtained in various published tests.
 	 *
 	 * @param pollDelayMs (Optional) unsigned long integer (ulong), the time between polls in milliseconds.
 	 *
@@ -195,18 +192,18 @@ public:
 	 *
 	 * @param clrIsOn Optional boolean value, indicates if the _isOn flag must be included to be cleared:
 	 * - true (default value) includes the isOn flag.
-	 * - false or not (false) excludes the isOn flag.
+	 * - false excludes the isOn flag.
 	 *
 	 */
 	void clrStatus(bool clrIsOn = true);
    /**
 	 * @brief Disables the input signal processing, ignoring the changes of its values.
 	 *
-	 * Invoking the disable() method sends a message to the object requesting it to enter the **Disabled state**. Due to security and stability of the object's behavior the message will not be be processed at every stage of the input signals detection and output computations, but in every safe and stable stage. When the message is processed the object will:
+	 * Invoking the disable() method sends a message to the object requesting it to enter the **Disabled state**. Due to security and stability of the object's behavior the message will not be processed at every stage of the input signals detection and output computations, but in every safe and stable stage. When the message is processed the object will:
 	 * - Stop all input signal reading.
 	 * - Stop any new output flag computation.
 	 * - Reset all output flag values.
-	 * - Force the isOn flag according to the isOnDisabled flag setting.
+	 * - Force the isOn flag according to the **isOnDisabled** flag setting.
 	 * - Keep this **Disabled state** behavior until an enabling message is received through an **enable()** method.
     *
     * @retval true: the object was enabled, the method invocation disabled it.
@@ -229,7 +226,7 @@ public:
 	/**
 	 * @brief Detaches the object from the timer that monitors the input pins, compute and updates the object's status. The timer daemon entry is deleted for the object.
 	 *
-	 * The immediate detachment of the object from the timer that keeps it's state updated implies that the object's state will be kept, whatever that state is it. If a certain status is preferred some of the provided methods should be used for that including clrStatus(), resetFda(), disable(), setIsOnDisabled(), etc. Also consider that if a task is set to be executed while the object is in On state**, the **end()** invocation wouldn't affect that task execution state.
+	 * The immediate detachment of the object from the timer that keeps it's state updated implies that the object's state will be kept, whatever that state is it. If a certain status is preferred some of the provided methods should be used for that including clrStatus(), resetFda(), disable(), setIsOnDisabled(), etc. Also consider that if a task is set to be executed while the object is in **On state**, the **end()** invocation wouldn't affect that task execution state.
 	 *
 	 * @return Boolean indicating the success of the operation
 	 * @retval true: the object detachment procedure and timer entry removal was successful.
@@ -240,7 +237,7 @@ public:
 	/**
 	 * @brief Gets the current debounce time set for the object.
 	 *
-	 * The original value for the debouncing process used at instantiation time might be changed with the **setDbncTime()** or with the **resetDbncTime()** methods. This method gets the current value of the attribute in use.
+	 * The original value for the debouncing process used at instantiation time might be changed with the **setDbncTime(const unsigned long int)** or with the **resetDbncTime()** methods. This method gets the current value of the attribute in use.
 	 *
 	 * @return The current debounce time in milliseconds
 	 */
@@ -248,7 +245,7 @@ public:
 	/**
 	 * @brief Gets the function that is set to execute every time the object enters the **Off State**.
 	 *
-	 * The function to be executed is an attribute that might be modified by the setFnWhnTrnOffPtr() method.
+	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnOffPtr()** method.
 	 *
 	 * @return A function pointer to the function set to execute every time the object enters the **Off State**.
 	 * @retval nullptr if there is no function set to execute when the object enters the **Off State**.
@@ -258,7 +255,7 @@ public:
 	/**
 	 * @brief Gets the function that is set to execute every time the object enters the **On State**.
 	 *
-	 * The function to be executed is an attribute that might be modified by the setFnWhnTrnOnPtr() method.
+	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnOnPtr()** method.
 	 *
 	 * @return A function pointer to the function set to execute every time the object enters the **On State**.
 	 * @retval nullptr if there is no function set to execute when the object enters the **On State**.
@@ -277,7 +274,7 @@ public:
    /**
 	 * @brief Gets the value of the **isOn** flag.
 	 *
-	 * The **isOn** flag is the fundamental attribute of the object, it might be considered the "Raison d'etre" of all this classes design: the isOn signal is not just the detection of an expected voltage value at a mcu pin, but the combination of that voltage, filtered and verified, for a determined period of time and until a new event modifies that situation.  While other mechanism are provided to execute code when the status of the object changes, all but the **isOn** flag value update are optionally executed.
+	 * The **isOn** flag is the fundamental attribute of the object, it might be considered the "Raison d'etre" of all this classes design: the isOn signal is not just the detection of an expected voltage value at a mcu pin, but the combination of that voltage level, filtered and verified, for a determined period of time and until a new event modifies that situation.  While other mechanism are provided to execute code when the status of the object changes, all but the **isOn** flag value update are optionally executed.
 	 *
     * @retval true: The object is in **On state**.
     * @retval false: The object is in **Off state**.
@@ -288,7 +285,7 @@ public:
 	 * @brief Gets the value of the **isOnDisabled** flag.
 	 *
 	 * When instantiated the class, the object is created in **Enabled state**. That might be changed when needed.
-	 * In the **Disabled state** the input signals for the MPB are not processed, and the output will be set to the **On state** or the **Off state** depending on this flag value.
+	 * In the **Disabled state** the input signals for the MPB are not processed, and the output will be set to the **On state** or the **Off state** depending on this flag's value.
 	 * The reasons to disable the ability to change the output, and keep it on either state until re-enabled are design and use dependent.
 	 * The flag value might be changed by the use of the setIsOnDisabled() method.
     *
@@ -304,14 +301,14 @@ public:
 	 * When any of those attributes values change, the **outputsChange** flag is set. The flag only signals changes have been done, not which flags, nor how many times changes have taken place, since the last **outputsChange** flag reset.
 	 * The **outputsChange** flag must be reset (or set if desired) through the setOutputsChange() method.
 	 *
-    * @retval true: any of the object's behavior flags have changed value since last time *_outputsChange** flag was reseted.
+    * @retval true: any of the object's behavior flags have changed value since last time **outputsChange** flag was reseted.
     * @retval false: no object's behavior flags have changed value since last time **outputsChange** flag was reseted.
 	 */
    const bool getOutputsChange() const;
    /**
 	 * @brief Gets the task to be notified by the object when its output flags changes.
 	 *
-	 * The task handle of the task to be notified by the object when its **outputsChange** flag is set (indicating there have been changes in the outputs since last notification) is set to **nullptr** when the object is created. A valid task's TaskHandle_t value might be set by using the setTaskToNotify() method, as many times as needed, and even set back to **nullptr** to disable the task notification mechanism.
+	 * The task handle of the task to be notified by the object when its **outputsChange** flag is set (see getOutputsChange()) holds a **NULL** when the object is created. A valid task's TaskHandle_t value might be set by using the setTaskToNotify() method, as many times as needed, and even set back to **NULL** to disable the task notification mechanism.
 	 *
     * @return TaskHandle_t value of the task to be notified of the outputs change.
     * @retval NULL: there is no task configured to be notified of the outputs change.
@@ -321,10 +318,12 @@ public:
 	/**
 	 * @brief Gets the task to be run while the object is in the **On state**.
 	 *
-	 * Gets the task handle of the task to be **resumed** when the object enters the **On state**, and will be **paused** when the  object enters the **Off state**. This task execution mechamism dependant of the **On state** extends the concept of the **Switch object** far away of the simple turning On/Off a single hardware signal, attaching to it all the task execution capabilities of the MCU.
+	 * Gets the task handle of the task to be **resumed** every time the object enters the **On state**, and will be **paused** when the  object enters the **Off state**. This task execution mechamism dependant of the **On state** extends the concept of the **Switch object** far away of the simple turning On/Off a single hardware signal, attaching to it all the task execution capabilities of the MCU.
 	 *
-	 * @return The TaskHandle_t value of the task to be run while the object is in **On state**.
-    * @retval NULL: there is no task configured to be notified of the output.
+	 * @return The TaskHandle_t value of the task to be resumed while the object is in **On state**.
+    * @retval NULL  if there is no task configured to be resumed while the object is in **On state**.
+    *
+    * @warning Free-RTOS has no mechanism implemented to notify a task that it is about to be set in **paused** state, so there is no way to that task to ensure it will be set to pause in an orderly fashion. So the task to be designated to be used by this mechanism has to be task that can withold being interrupted at any point of it's execution, an be restarted from that same point next time the **isOn** flag is set. For tasks that might need attaching resources or other issues every time it is resumed and releasing resources of any kind before being **paused**, using the function attached by using **setFnWhnTrnOnPtr()** to gain control of the resources before resuming a task, and the function attached by using **setFnWhnTrnOffPtr()** to release the resources and pause the task in an orderly fashion.
 	 */
 	const TaskHandle_t getTaskWhileOn();
 	/**
@@ -354,7 +353,7 @@ public:
 	/**
 	 * @brief Resets the debounce process time of the object to the value used at instantiation.
 	 *
-	 *  The debounce process time used at instantiation might be changed with the setDbncTime() as needed, as many times as needed. This method reverts the value to the instantiation time value. In case the value was not specified at instantiation the default debounce time value will be used.
+	 *  The debounce process time used at instantiation might be changed with the setDbncTime() as needed, as many times as needed. This method reverts the value to the instantiation time value. In case the value was not specified at instantiation time the default debounce time value will be used.
 	 *
 	 * @retval true: the value could be reverted.
 	 * @retval false: the value couldn't be reverted due to unexpected situations.
@@ -364,9 +363,9 @@ public:
 	/**
 	 * @brief Resets the MPB behavior automaton to it's **Initial or Start State**
 	 *
-	 * This method is provided for security and for error handling purposes, so that in case of unexpected situations detected, the driving **Deterministic Finite Automaton** used to compute the MPB objects states might be reset to it's initial state to safely restart it.
+	 * This method is provided for security and for error handling purposes, so that in case of unexpected situations detected, the driving **Deterministic Finite Automaton** used to compute the MPB objects states might be reset to it's initial state to safely restart it, usually as part of an **Error Handling** rutine.
 	 *
-	 * @retval true alwasy it is invoked.
+	 * @retval true always it is invoked.
 	 */
 	bool resetFda();
 	/**
@@ -380,14 +379,15 @@ public:
 	 */
 	bool resume();
 	/**
-	 * @brief Sets a new debounce time
+	 * @brief Sets a new debounce time.
 	 *
 	 *	Sets a new time for the debouncing period. The value must be equal or greater than the minimum empirical value set as a property for all the classes, 20 milliseconds. A long debounce time will produce a delay in the press event generation, making it less "responsive".
 	 *
 	 * @param newDbncTime unsigned long integer, the new debounce value for the object.
+	 *
 	 * @return	A boolean indicating if the debounce time change was successful.
 	 * @retval true: the new value is in the accepted range and the change was made.
-	 * @retval false: the value was already in use, or was out of the accepted range, no change was made.
+	 * @retval false: the value was the already in use, or was out of the accepted range, no change was made.
 	 */
 	bool setDbncTime(const unsigned long int &newDbncTime);
 	/**
@@ -395,7 +395,7 @@ public:
 	 *
 	 * The function to be executed must be of the form **void (*newFnWhnTrnOff)()**, meaning it must take no arguments and must return no value, it will be executed only once by the object (recursion must be handled with the usual precautions). When instantiated the attribute value is set to **nullptr**.
 	 *
-	 * @param newFnWhnTrnOff: function pointer to the function intended to be called when the object enters the **Off State**. Passing **nullptr** as parameter deactivates the function execution mechanism.
+	 * @param newFnWhnTrnOff Function pointer to the function intended to be called when the object enters the **Off State**. Passing **nullptr** as parameter deactivates the function execution mechanism.
 	 *
 	 * @retval true: the passed parameter was different to the previous attribute setting, the new value was set.
 	 * @retval false: the passed parameter was equal to the previous attribute setting, no new value was set.
@@ -415,9 +415,10 @@ public:
    /**
 	 * @brief Sets the value of the **isOnDisabled** flag.
 	 *
-	 * When instantiated the class, the object is created in **Enabled state**. That might be changed when needed.
+	 * When instantiated the class, the object is created in **Enabled state**. That might be changed as needed.
 	 * While in the **Disabled state** the input signals for the MPB are not processed, and the output will be set to the **On state** or the **Off state** depending on this flag value.
-	 * The reasons to disable the ability to change the output, and keep it on either state until re-enabled are design and use dependent, being an obvious one security reasons, disabling the ability of the users to manipulate the switch while keeping the desired **On/Off state**. A simple example would be to keep a light on in a place where a meeting is taking place, disabling the lights switches and keeping the **On State**. Another obvious one would be to keep a machine off while servicing it's internal mechanisms, disabling the possibility of turning it on.
+	 *
+	 * @note The reasons to disable the ability to change the output, and keep it on either state until re-enabled are design and use dependent, being an obvious one security reasons, disabling the ability of the users to manipulate the switch while keeping the desired **On/Off state**. A simple example would be to keep a light on in a place where a meeting is taking place, disabling the lights switches and keeping the **On State**. Another obvious one would be to keep a machine off while servicing it's internal mechanisms, disabling the possibility of turning it on.
     *
     * @retval true: the object is configured to be set to the **On state** while it is in **Disabled state**.
     * @retval false: the object is configured to be set to the **Off state** while it is in **Disabled state**.
@@ -441,6 +442,7 @@ public:
 	 * When the object is created, this value is set to **NULL**, and a valid TaskHandle_t value might be set by using this method. The task notifying mechanism will not be used while the task handle keeps the **NULL** value, in which case the solution implementation will have to use any of the other provided mechanisms to test the object status, and act accordingly. After the TaskHandle value is set it might be changed to point to other task.
 	 *
     * @param newHandle A valid task handle of an actual existent task/thread running. There's no provided exception mechanism for dangling pointer errors caused by a pointed task being deleted and/or stopped.
+    *
     * @retval true: A TaskHandle_t type was passed to the object to be it's new pointer to the task to be messaged when a change in the output flags occur. There's no checking for the validity of the pointer, if it refers to an active task/thread whatsoever.
 	 * @retval false: The value passed to the method was **NULL**, and that's the value will be stored, so the whole RTOS messaging mechanism won't be used.
     *
@@ -467,6 +469,8 @@ public:
  * @brief Implements a Debounced Delayed MPB (**DD-MPB**).
  *
  * The **Debounced Delayed Momentary Button**, keeps the ON state since the moment the signal is stable (debouncing process), plus a delay added, and until the moment the push button is released. The reasons to add the delay are design related and are usually used to avoid unintentional presses, or to give some equipment (load) that needs time between repeated activations the benefit of the pause. If the push button is released before the delay configured, no press is registered at all. The delay time in this class as in the other that implement it, might be zero (0), defined by the developer and/or modified in runtime.
+ *
+ * @note If the **delay** attribute is set to 0, the resulting object is equal to a **DbncdMPBttn** class object.
  *
  * @class DbncdDlydMPBttn
  */
@@ -511,7 +515,17 @@ public:
      * @return The current strtDelay time in milliseconds.
      */
     unsigned long int getStrtDelay();
+    /**
+     *
+     * @brief see DbncdMPBttn::init(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int)
+     *
+     */
     bool init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+    /**
+     *
+     * @brief see DbncdMPBttn::init(gpioPinId_t, const bool, const bool, const unsigned long int)
+     *
+     */
     bool init(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
     /**
      * @brief Sets a new value to the **delay** attribute
@@ -522,7 +536,7 @@ public:
      * @retval false: the existing delay value and newStrtDelay were equal no change was made.
      *
      * @note Setting the delay attribute to 0 makes the instantiated object act exactly as a Debounced MPB (D-MPB)
-     * @warning: Using a very high **delay** values are valid but might make the systems seem less responsive, be aware of how it will affect the user experience.
+     * @warning: Using a very high **delay** values are valid but might make the system seem less responsive, be aware of how it will affect the user experience.
      */
     bool setStrtDelay(const unsigned long int &newStrtDelay);
 };
@@ -574,7 +588,7 @@ public:
    /**
     * @brief Class constructor
     *
-    * @note For the parameters see DbncdMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int, const unsigned long int)
+    * @note For the parameters see DbncdDlydMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int, const unsigned long int)
     *
     */
    LtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
@@ -879,8 +893,8 @@ public:
  * - While on the 1.state (Off-Off), a short press will activate only the regular **main On state** 2. (On-Off).
  * - While on the 1.state (Off-Off), a long press will activate both the regular **main On state** and the **secondary On state** simultaneously 3. (On-On).
  * When releasing the MPB the switch will stay in the **main On state** 2. (On-Off).
- * While in the 2. state (On-Off), a short press will set the switch to the 5. state (Off-Off)
- * While in the 2. state (On-Off), a long press will set the switch to the 3. state (On-On)
+ * While in the 2. state (On-Off), a short press will set the switch to the 5./1. state (Off-Off)
+ * While in the 2. state (On-Off), a long press will set the switch to the 3. state (On-On), until the releasing of the MPB, returning the switch to the **main On state** 2. (On-Off).
  *
  * class DDlydDALtchMPBttn
  */
@@ -905,6 +919,8 @@ public:
 /**
  * @brief Implements a Slider Double Action LDD-MPB combo switch, a.k.a. off/on/dimmer, a.k.a. off/on/volume radio switch)(**S-DALDD-MPB**)
  *
+ * This is a subclass of the **DALDD-MPB** whose **secondary behavior** is that of a **Digital potentiometer (DigiPot)** or a **Discreet values incremental/decremental register** that means that when in the second mode, while the MPB remains pressed, an attribute set as a register changes its value. The minimum and maximum values, rate in steps/seconds, size of each step and direction (incremental or decremental) are all configurable, as is the starting value and the mechanism to revert direction.
+ *
  * class SldrDALtchMPBttn
  */
 class SldrDALtchMPBttn: public DblActnLtchMPBttn{
@@ -925,7 +941,13 @@ protected:
    virtual void stOnScndMod_Do();
 	bool _setSldrDir(const bool &newVal);
 public:
-   SldrDALtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
+   /**
+	 * @brief Class constructor
+    *
+    * @param initVal (Optional) Initial value of the **wiper**, in this implementation the value corresponds to the **Output Current Value (otpCurVal)** attribute of the class. As the attribute type is uint16_t and the minimum and maximum limits are set to 0x0000 and 0xFFFF respectively, the initial value might be set to any value of the type. If no value is provided 0xFFFF will be the instantiation value.
+    *
+    * @note For the remaining parameters see DbncdDlydMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int, const unsigned long int)    */
+	SldrDALtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
    SldrDALtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const uint16_t initVal = 0xFFFF);
    ~SldrDALtchMPBttn();
    void clrStatus(bool clrIsOn = true);

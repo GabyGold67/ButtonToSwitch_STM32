@@ -121,17 +121,13 @@ Collaboration diagram for TmVdblMPBttn:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_tm_vdbl_m_p_bttn__coll__graph.png" border="0" usemap="#a_tm_vdbl_m_p_bttn_coll__map" alt="Collaboration graph"/></div>
 <map name="a_tm_vdbl_m_p_bttn_coll__map" id="a_tm_vdbl_m_p_bttn_coll__map">
-<area shape="rect" title="Implements a Time Voidable DD&#45;MPB, a.k.a. Anti&#45;tampering switch (TVDD&#45;MPB)" alt="" coords="15,416,124,443"/>
-<area shape="rect" href="class_vdbl_m_p_bttn.html" title="Abstract class, base to implement Voidable DD&#45;MPBs (VDD&#45;MPB)." alt="" coords="24,340,115,367"/>
-<area shape="poly" title=" " alt="" coords="72,382,72,416,67,416,67,382"/>
-<area shape="rect" href="class_dbncd_dlyd_m_p_bttn.html" title="Implements a Debounced Delayed MPB (DD&#45;MPB)." alt="" coords="5,264,134,291"/>
-<area shape="poly" title=" " alt="" coords="72,306,72,340,67,340,67,306"/>
-<area shape="rect" href="class_dbncd_m_p_bttn.html" title="Base class, implements a Debounced Momentary Push Button (D&#45;MPB)." alt="" coords="18,188,121,215"/>
-<area shape="poly" title=" " alt="" coords="72,230,72,264,67,264,67,230"/>
-<area shape="rect" title=" " alt="" coords="30,97,109,124"/>
-<area shape="poly" title=" " alt="" coords="72,140,72,187,67,187,67,140"/>
-<area shape="rect" title=" " alt="" coords="7,5,132,48"/>
-<area shape="poly" title=" " alt="" coords="72,64,72,97,67,97,67,64"/>
+<area shape="rect" title="Implements a Time Voidable DD&#45;MPB, a.k.a. Anti&#45;tampering switch (TVDD&#45;MPB)" alt="" coords="15,229,124,256"/>
+<area shape="rect" href="class_vdbl_m_p_bttn.html" title="Abstract class, base to implement Voidable DD&#45;MPBs (VDD&#45;MPB)." alt="" coords="24,155,115,181"/>
+<area shape="poly" title=" " alt="" coords="72,197,72,229,67,229,67,197"/>
+<area shape="rect" href="class_dbncd_dlyd_m_p_bttn.html" title="Implements a Debounced Delayed MPB (DD&#45;MPB)." alt="" coords="5,80,134,107"/>
+<area shape="poly" title=" " alt="" coords="72,122,72,154,67,154,67,122"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html" title="Base class, implements a Debounced Momentary Push Button (D&#45;MPB)." alt="" coords="18,5,121,32"/>
+<area shape="poly" title=" " alt="" coords="72,48,72,80,67,80,67,48"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -151,6 +147,14 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:aa65d8e6c77b2de5bcf3191636949b4e8 inherit pub_methods_class_dbncd_dlyd_m_p_bttn" id="r_aa65d8e6c77b2de5bcf3191636949b4e8"><td class="memItemLeft" align="right" valign="top">unsigned long int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_dlyd_m_p_bttn.html#aa65d8e6c77b2de5bcf3191636949b4e8">getStrtDelay</a> ()</td></tr>
 <tr class="memdesc:aa65d8e6c77b2de5bcf3191636949b4e8 inherit pub_methods_class_dbncd_dlyd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current value of strtDelay attribute.  <br /></td></tr>
 <tr class="separator:aa65d8e6c77b2de5bcf3191636949b4e8 inherit pub_methods_class_dbncd_dlyd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad131facd8f159575f6441fa39b072557 inherit pub_methods_class_dbncd_dlyd_m_p_bttn" id="r_ad131facd8f159575f6441fa39b072557"><td class="memItemLeft" align="right" valign="top">
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (GPIO_TypeDef *mpbttnPort, const uint16_t &amp;mpbttnPin, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0, const unsigned long int &amp;strtDelay=0)</td></tr>
+<tr class="memdesc:ad131facd8f159575f6441fa39b072557 inherit pub_methods_class_dbncd_dlyd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">see DbncdMPBttn::init(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int) <br /></td></tr>
+<tr class="separator:ad131facd8f159575f6441fa39b072557 inherit pub_methods_class_dbncd_dlyd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea025f48a5a6281ba24e84aaf385212b inherit pub_methods_class_dbncd_dlyd_m_p_bttn" id="r_aea025f48a5a6281ba24e84aaf385212b"><td class="memItemLeft" align="right" valign="top">
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (<a class="el" href="structgpio_pin_id__t.html">gpioPinId_t</a> mpbttnPinStrct, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0, const unsigned long int &amp;strtDelay=0)</td></tr>
+<tr class="memdesc:aea025f48a5a6281ba24e84aaf385212b inherit pub_methods_class_dbncd_dlyd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">see DbncdMPBttn::init(gpioPinId_t, const bool, const bool, const unsigned long int) <br /></td></tr>
+<tr class="separator:aea025f48a5a6281ba24e84aaf385212b inherit pub_methods_class_dbncd_dlyd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66a811f673e7d888c3668f059fc067a1 inherit pub_methods_class_dbncd_dlyd_m_p_bttn" id="r_a66a811f673e7d888c3668f059fc067a1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_dlyd_m_p_bttn.html#a66a811f673e7d888c3668f059fc067a1">setStrtDelay</a> (const unsigned long int &amp;newStrtDelay)</td></tr>
 <tr class="memdesc:a66a811f673e7d888c3668f059fc067a1 inherit pub_methods_class_dbncd_dlyd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a new value to the <b>delay</b> attribute.  <br /></td></tr>
 <tr class="separator:a66a811f673e7d888c3668f059fc067a1 inherit pub_methods_class_dbncd_dlyd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>

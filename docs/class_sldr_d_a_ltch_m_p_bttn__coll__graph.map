@@ -1,15 +1,11 @@
 <map id="SldrDALtchMPBttn" name="SldrDALtchMPBttn">
-<area shape="rect" id="Node000001" title="Implements a Slider Double Action LDD&#45;MPB combo switch, a.k.a. off/on/dimmer, a.k...." alt="" coords="8,492,139,519"/>
-<area shape="rect" id="Node000002" href="$class_dbl_actn_ltch_m_p_bttn.html" title="Abstract class, base to implement Double Action LDD&#45;MPBs (DALDD&#45;MPBs)." alt="" coords="5,416,142,443"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="76,458,76,492,71,492,71,458"/>
-<area shape="rect" id="Node000003" href="$class_ltch_m_p_bttn.html" title="Abstract class, base to implement Latched Debounced Delayed MPBs (LDD&#45;MPB)." alt="" coords="28,340,119,367"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="76,382,76,416,71,416,71,382"/>
-<area shape="rect" id="Node000004" href="$class_dbncd_dlyd_m_p_bttn.html" title="Implements a Debounced Delayed MPB (DD&#45;MPB)." alt="" coords="9,264,138,291"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="76,306,76,340,71,340,71,306"/>
-<area shape="rect" id="Node000005" href="$class_dbncd_m_p_bttn.html" title="Base class, implements a Debounced Momentary Push Button (D&#45;MPB)." alt="" coords="22,188,125,215"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="76,230,76,264,71,264,71,230"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="34,97,113,124"/>
-<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="76,140,76,187,71,187,71,140"/>
-<area shape="rect" id="Node000007" title=" " alt="" coords="11,5,136,48"/>
-<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="76,64,76,97,71,97,71,64"/>
+<area shape="rect" id="Node000001" title="Implements a Slider Double Action LDD&#45;MPB combo switch, a.k.a. off/on/dimmer, a.k...." alt="" coords="8,304,139,331"/>
+<area shape="rect" id="Node000002" href="$class_dbl_actn_ltch_m_p_bttn.html" title="Abstract class, base to implement Double Action LDD&#45;MPBs (DALDD&#45;MPBs)." alt="" coords="5,229,142,256"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="76,272,76,304,71,304,71,272"/>
+<area shape="rect" id="Node000003" href="$class_ltch_m_p_bttn.html" title="Abstract class, base to implement Latched Debounced Delayed MPBs (LDD&#45;MPB)." alt="" coords="28,155,119,181"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="76,197,76,229,71,229,71,197"/>
+<area shape="rect" id="Node000004" href="$class_dbncd_dlyd_m_p_bttn.html" title="Implements a Debounced Delayed MPB (DD&#45;MPB)." alt="" coords="9,80,138,107"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="76,122,76,154,71,154,71,122"/>
+<area shape="rect" id="Node000005" href="$class_dbncd_m_p_bttn.html" title="Base class, implements a Debounced Momentary Push Button (D&#45;MPB)." alt="" coords="22,5,125,32"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="76,48,76,80,71,80,71,48"/>
 </map>

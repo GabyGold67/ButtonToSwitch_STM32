@@ -99,7 +99,7 @@ $(function(){initNavTree('structgpio_pin_id__t.html',''); initResizable(); });
 </div><!--header-->
 <div class="contents">
 
-<p>Type used to keep GPIO pin identification as a single parameter, to define class methods declarations as platform agnostic as possible.  
+<p>Type used to keep GPIO pin identification as a single parameter, independently of the platform requirements.  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="mpb_as_switch___s_t_m32_8h_source.html">mpbAsSwitch_STM32.h</a>&gt;</code></p>
@@ -112,10 +112,9 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a253157d338560df0fef34d2978ce170d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Type used to keep GPIO pin identification as a single parameter, to define class methods declarations as platform agnostic as possible. </p>
-<p>Structure that holds all the required information to identify unequivocally a MCU's GPIO pin.</p>
-<p>struct</p>
-<p>A GPIO pin identification is MCU and framework dependent, so the quantity and type of parameters vary. This structure provides an interface to abstract them as a single identification parameter. </p>
+<div class="textblock"><p>Type used to keep GPIO pin identification as a single parameter, independently of the platform requirements. </p>
+<p>GPIO pin identification is hardware and development environment framework dependents, for some platforms it needs one, some two, some more parameters, and each one of these parameters type depend once again on the platform. This type is provided to define each pin referenced as a single parameter for class methods and attributes declarations, as platform independent as possible.</p>
+<p>struct </p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="a253157d338560df0fef34d2978ce170d" name="a253157d338560df0fef34d2978ce170d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a253157d338560df0fef34d2978ce170d">&#9670;&#160;</a></span>pinNum</h2>

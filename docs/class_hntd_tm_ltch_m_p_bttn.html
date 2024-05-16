@@ -123,19 +123,15 @@ Collaboration diagram for HntdTmLtchMPBttn:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_hntd_tm_ltch_m_p_bttn__coll__graph.png" border="0" usemap="#a_hntd_tm_ltch_m_p_bttn_coll__map" alt="Collaboration graph"/></div>
 <map name="a_hntd_tm_ltch_m_p_bttn_coll__map" id="a_hntd_tm_ltch_m_p_bttn_coll__map">
-<area shape="rect" title="Implements a Hinted Timer Latch DD&#45;MPB, a.k.a. Staircase Switch (HTiLDD&#45;MPB)." alt="" coords="5,492,141,519"/>
-<area shape="rect" href="class_tm_ltch_m_p_bttn.html" title="Implements a Timer Latch DD&#45;MPB, a.k.a. a Timer Switch (TiLDD&#45;MPB)." alt="" coords="19,416,127,443"/>
-<area shape="poly" title=" " alt="" coords="76,458,76,492,70,492,70,458"/>
-<area shape="rect" href="class_ltch_m_p_bttn.html" title="Abstract class, base to implement Latched Debounced Delayed MPBs (LDD&#45;MPB)." alt="" coords="28,340,118,367"/>
-<area shape="poly" title=" " alt="" coords="76,382,76,416,70,416,70,382"/>
-<area shape="rect" href="class_dbncd_dlyd_m_p_bttn.html" title="Implements a Debounced Delayed MPB (DD&#45;MPB)." alt="" coords="9,264,137,291"/>
-<area shape="poly" title=" " alt="" coords="76,306,76,340,70,340,70,306"/>
-<area shape="rect" href="class_dbncd_m_p_bttn.html" title="Base class, implements a Debounced Momentary Push Button (D&#45;MPB)." alt="" coords="22,188,124,215"/>
-<area shape="poly" title=" " alt="" coords="76,230,76,264,70,264,70,230"/>
-<area shape="rect" title=" " alt="" coords="33,97,113,124"/>
-<area shape="poly" title=" " alt="" coords="76,140,76,187,70,187,70,140"/>
-<area shape="rect" title=" " alt="" coords="10,5,136,48"/>
-<area shape="poly" title=" " alt="" coords="76,64,76,97,70,97,70,64"/>
+<area shape="rect" title="Implements a Hinted Timer Latch DD&#45;MPB, a.k.a. Staircase Switch (HTiLDD&#45;MPB)." alt="" coords="5,304,141,331"/>
+<area shape="rect" href="class_tm_ltch_m_p_bttn.html" title="Implements a Timer Latch DD&#45;MPB, a.k.a. a Timer Switch (TiLDD&#45;MPB)." alt="" coords="19,229,127,256"/>
+<area shape="poly" title=" " alt="" coords="76,272,76,304,70,304,70,272"/>
+<area shape="rect" href="class_ltch_m_p_bttn.html" title="Abstract class, base to implement Latched Debounced Delayed MPBs (LDD&#45;MPB)." alt="" coords="28,155,118,181"/>
+<area shape="poly" title=" " alt="" coords="76,197,76,229,70,229,70,197"/>
+<area shape="rect" href="class_dbncd_dlyd_m_p_bttn.html" title="Implements a Debounced Delayed MPB (DD&#45;MPB)." alt="" coords="9,80,137,107"/>
+<area shape="poly" title=" " alt="" coords="76,122,76,154,70,154,70,122"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html" title="Base class, implements a Debounced Momentary Push Button (D&#45;MPB)." alt="" coords="22,5,124,32"/>
+<area shape="poly" title=" " alt="" coords="76,48,76,80,70,80,70,48"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -189,6 +185,14 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>begin</b> (const unsi
 <tr class="memitem:aa65d8e6c77b2de5bcf3191636949b4e8 inherit pub_methods_class_dbncd_dlyd_m_p_bttn" id="r_aa65d8e6c77b2de5bcf3191636949b4e8"><td class="memItemLeft" align="right" valign="top">unsigned long int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_dlyd_m_p_bttn.html#aa65d8e6c77b2de5bcf3191636949b4e8">getStrtDelay</a> ()</td></tr>
 <tr class="memdesc:aa65d8e6c77b2de5bcf3191636949b4e8 inherit pub_methods_class_dbncd_dlyd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current value of strtDelay attribute.  <br /></td></tr>
 <tr class="separator:aa65d8e6c77b2de5bcf3191636949b4e8 inherit pub_methods_class_dbncd_dlyd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad131facd8f159575f6441fa39b072557 inherit pub_methods_class_dbncd_dlyd_m_p_bttn" id="r_ad131facd8f159575f6441fa39b072557"><td class="memItemLeft" align="right" valign="top">
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (GPIO_TypeDef *mpbttnPort, const uint16_t &amp;mpbttnPin, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0, const unsigned long int &amp;strtDelay=0)</td></tr>
+<tr class="memdesc:ad131facd8f159575f6441fa39b072557 inherit pub_methods_class_dbncd_dlyd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">see DbncdMPBttn::init(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int) <br /></td></tr>
+<tr class="separator:ad131facd8f159575f6441fa39b072557 inherit pub_methods_class_dbncd_dlyd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea025f48a5a6281ba24e84aaf385212b inherit pub_methods_class_dbncd_dlyd_m_p_bttn" id="r_aea025f48a5a6281ba24e84aaf385212b"><td class="memItemLeft" align="right" valign="top">
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (<a class="el" href="structgpio_pin_id__t.html">gpioPinId_t</a> mpbttnPinStrct, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0, const unsigned long int &amp;strtDelay=0)</td></tr>
+<tr class="memdesc:aea025f48a5a6281ba24e84aaf385212b inherit pub_methods_class_dbncd_dlyd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">see DbncdMPBttn::init(gpioPinId_t, const bool, const bool, const unsigned long int) <br /></td></tr>
+<tr class="separator:aea025f48a5a6281ba24e84aaf385212b inherit pub_methods_class_dbncd_dlyd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66a811f673e7d888c3668f059fc067a1 inherit pub_methods_class_dbncd_dlyd_m_p_bttn" id="r_a66a811f673e7d888c3668f059fc067a1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_dlyd_m_p_bttn.html#a66a811f673e7d888c3668f059fc067a1">setStrtDelay</a> (const unsigned long int &amp;newStrtDelay)</td></tr>
 <tr class="memdesc:a66a811f673e7d888c3668f059fc067a1 inherit pub_methods_class_dbncd_dlyd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a new value to the <b>delay</b> attribute.  <br /></td></tr>
 <tr class="separator:a66a811f673e7d888c3668f059fc067a1 inherit pub_methods_class_dbncd_dlyd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
