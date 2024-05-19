@@ -5,7 +5,7 @@ var annotated_dup =
     [ "DbncdMPBttn", "class_dbncd_m_p_bttn.html", "class_dbncd_m_p_bttn" ],
     [ "DDlydDALtchMPBttn", "class_d_dlyd_d_a_ltch_m_p_bttn.html", null ],
     [ "gpioPinId_t", "structgpio_pin_id__t.html", "structgpio_pin_id__t" ],
-    [ "HntdTmLtchMPBttn", "class_hntd_tm_ltch_m_p_bttn.html", null ],
+    [ "HntdTmLtchMPBttn", "class_hntd_tm_ltch_m_p_bttn.html", "class_hntd_tm_ltch_m_p_bttn" ],
     [ "LtchMPBttn", "class_ltch_m_p_bttn.html", "class_ltch_m_p_bttn" ],
     [ "SldrDALtchMPBttn", "class_sldr_d_a_ltch_m_p_bttn.html", "class_sldr_d_a_ltch_m_p_bttn" ],
     [ "TgglLtchMPBttn", "class_tggl_ltch_m_p_bttn.html", "class_tggl_ltch_m_p_bttn" ],

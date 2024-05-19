@@ -806,7 +806,7 @@ public:
  * @brief Implements a Hinted Timer Latch DD-MPB, a.k.a. Staircase Switch (**HTiLDD-MPB**).
  *
  * The **Staircase switch** keeps the ON state since the moment the signal is stable (debouncing + delay process), and until the unlatch signal is provided by a preseted timer **started immediately after** the MPB has passed the debounce & delay process.
- * A warning flag might be configured to raise when time to keep the ON signal is close to expiration, based on a configurable % of the total **On State** time.
+ * A warning flag might be configured to raise when time to keep the ON signal is close to expiration, based on a configurable percentage of the total **On State** (Service) time.
  * The time count down might be reseted by pressing the MPB before the timer expires by optionally configuring the object to do so with the provided method.
  * A **Pilot Signal** flag is included to emulate completely the staircase switches, that might be activated while the MPB is in **Off state**,  by optionally configuring the object to do so with the provided method. This might be considered just a perk as it's not much more than the **isOn** flag negated output, but gives the advantage of freeing the designer of additional coding.
  *
@@ -832,20 +832,89 @@ protected:
 	virtual void stLtchNVUP_Do();
 	virtual void stDisabled_In();
 
-
    static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
 	bool updPilotOn();
 	bool updWrnngOn();
 public:
+	/**
+	 * @brief Class constructor
+	 *
+	 * @param wrnngPrctg Time **before expiration** of service time that the warning flag must be set. The time is set as a percentage of the total service time so it's a value in the 0 <= wrnngPrctg <= 100 range.
+	 *
+	 * For the rest of the parameters see TmLtchMPBttn(GPIO_TypeDef*, const uint16_t, const unsigned long int, const bool, const bool, const unsigned long int, const unsigned long int)
+	 *
+	 */
 	HntdTmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const unsigned long int &actTime, const unsigned int &wrnngPrctg = 0, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+	/**
+	 * @brief Class constructor
+	 *
+	 * @param wrnngPrctg Time **before expiration** of service time that the warning flag must be set. The time is set as a percentage of the total service time so it's a value in the 0 <= wrnngPrctg <= 100 range.
+	 *
+	 * For the rest of the parameters see TmLtchMPBttn(gpioPinId_t, const unsigned long int, const bool, const bool, const unsigned long int, const unsigned long int)
+	 *
+	 */
 	HntdTmLtchMPBttn(gpioPinId_t mpbttnPinStrct, const unsigned long int &actTime, const unsigned int &wrnngPrctg = 0, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+   /**
+    * @brief see DbncdMPBttn::clrStatus(bool)
+    *
+    */
 	void clrStatus(bool clrIsOn = true);
+	/**
+	 * @brief Gets the current value of the pilotOn flag
+	 *
+	 * The pilotOn flag will be set when the isOn flag is reset (~isOn), while the keepPilot attribute is set. If the keepPilot attribute is false the pilotOn will keep reset independently of the isOn flag value.
+	 *
+	 * @return The current value of the pilotOn flag
+	 * @retval true: the pilotOn flag value is true
+	 * @retval false: the pilotOn flag value is false
+	 */
 	const bool getPilotOn() const;
+	/**
+	 * @brief Gets the current value of the warningOn flag.
+	 *
+	 * The warningOn flag will be set when the configured service time (to keep the ON signal set) is close to expiration, based on a configurable percentage of the total **On State** (Service) time.
+	 *
+	 * @return The current value of the warningOn flag
+	 * @retval true: the warningOn flag value is true
+	 * @retval false: the warningOn flag value is false
+	 *
+	 * @note As there is no configuration setting to keep the warning flag from working, the way to force the flag to stay set or stay reset is by configuring the accepted limits:
+	 * - 0: Will keep the warningOn flag always false (i.e. will turn to true 0 ms before reaching Service Time).
+	 * - 100: Will keep the warningOn flag always true (i.e. will turn to true for the 100% of the Service Time).
+	 */
 	const bool getWrnngOn() const;
+	/**
+	 * @brief Sets the configuration of the keepPilot service flag.
+	 *
+	 * @param newKeepPilot The new setting for the keepPilot service flag
+	 *
+	 * @return The updated value of the keepPilot service flag
+	 */
 	bool setKeepPilot(const bool &newKeepPilot);
+	/**
+	 * @brief See TmLtchMPBttn::setSrvcTime(const unsigned long int)
+	 *
+	 * @note As the warningOn flag behavior is based on a percentage of the service time setting, changing the value of that service time implies changing the time amount for the warning signal service, recalculating such time as the set percentage of the new service time.
+	 *
+	 */
 	bool setSrvcTime(const unsigned long int &newActTime);
+	/**
+	 * @brief Sets the warning percentage of service time for calculating the warningOn flag value.
+	 *
+	 * The amount of **time before expiration** of service time that the warning flag must be set is defined as a percentage of the total service time so it's a value in the 0 <= wrnngPrctg <= 100 range.
+	 *
+	 * @param newWrnngPrctg The new percentage of service time value used to calculate the time before service time expiration to set the warningOn flag.
+	 *
+	 * @return Success changing the percentage to a new value
+	 * @retval true: the value was within range, the new value is set
+	 * @retval false: the value was outside range, the value change was dismissed.
+	 *
+	 */
 	bool setWrnngPrctg (const unsigned int &newWrnngPrctg);
-
+	/**
+	 * @brief See DbncdMPBttn::begin(const unsigned long int)
+	 *
+	 */
 	bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 
