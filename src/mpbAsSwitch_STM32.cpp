@@ -907,6 +907,13 @@ bool LtchMPBttn::setUnlatchPend(const bool &newVal){
 	return _validUnlatchPend;
 }
 
+bool LtchMPBttn::setUnlatchRlsPend(const bool &newVal){
+	if(_validUnlatchRlsPend != newVal)
+		_validUnlatchRlsPend = newVal;
+
+	return _validUnlatchRlsPend;
+}
+
 bool LtchMPBttn::unlatch(){
 	if(_isLatched){
 		_validUnlatchPend = true;

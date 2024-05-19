@@ -8,8 +8,8 @@ var annotated_dup =
     [ "HntdTmLtchMPBttn", "class_hntd_tm_ltch_m_p_bttn.html", null ],
     [ "LtchMPBttn", "class_ltch_m_p_bttn.html", "class_ltch_m_p_bttn" ],
     [ "SldrDALtchMPBttn", "class_sldr_d_a_ltch_m_p_bttn.html", "class_sldr_d_a_ltch_m_p_bttn" ],
-    [ "TgglLtchMPBttn", "class_tggl_ltch_m_p_bttn.html", null ],
-    [ "TmLtchMPBttn", "class_tm_ltch_m_p_bttn.html", null ],
+    [ "TgglLtchMPBttn", "class_tggl_ltch_m_p_bttn.html", "class_tggl_ltch_m_p_bttn" ],
+    [ "TmLtchMPBttn", "class_tm_ltch_m_p_bttn.html", "class_tm_ltch_m_p_bttn" ],
     [ "TmVdblMPBttn", "class_tm_vdbl_m_p_bttn.html", null ],
     [ "VdblMPBttn", "class_vdbl_m_p_bttn.html", null ],
     [ "XtrnUnltchMPBttn", "class_xtrn_unltch_m_p_bttn.html", null ]

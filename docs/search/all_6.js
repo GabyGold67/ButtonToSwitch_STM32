@@ -10,10 +10,12 @@ var searchData=
   ['getisondisabled_7',['getIsOnDisabled',['../class_dbncd_m_p_bttn.html#a9cee3ead20e3628c02975a9d0c8a4baa',1,'DbncdMPBttn']]],
   ['getoutputschange_8',['getOutputsChange',['../class_dbncd_m_p_bttn.html#ac646101296a76321e855250ba044c8d7',1,'DbncdMPBttn']]],
   ['getscndmodactvdly_9',['getScndModActvDly',['../class_dbl_actn_ltch_m_p_bttn.html#aa4cc7c3c653fcd60fc333ac5ac4e2fdb',1,'DblActnLtchMPBttn']]],
-  ['getstrtdelay_10',['getStrtDelay',['../class_dbncd_dlyd_m_p_bttn.html#aa65d8e6c77b2de5bcf3191636949b4e8',1,'DbncdDlydMPBttn']]],
-  ['gettasktonotify_11',['getTaskToNotify',['../class_dbncd_m_p_bttn.html#a3da781ff0ad5ec1064d62570fd005a3a',1,'DbncdMPBttn']]],
-  ['gettaskwhileon_12',['getTaskWhileOn',['../class_dbncd_m_p_bttn.html#a3728d2003365cbdaf81cccfca3604fe8',1,'DbncdMPBttn']]],
-  ['gettrnoffasap_13',['getTrnOffASAP',['../class_ltch_m_p_bttn.html#a8469aec51e8f6151b72be5d423d855e3',1,'LtchMPBttn']]],
-  ['getunlatchpend_14',['getUnlatchPend',['../class_ltch_m_p_bttn.html#a4a640fee342b1e51983d0efb67ce9727',1,'LtchMPBttn']]],
-  ['gpiopinid_5ft_15',['gpioPinId_t',['../structgpio_pin_id__t.html',1,'']]]
+  ['getsrvctime_10',['getSrvcTime',['../class_tm_ltch_m_p_bttn.html#a472a8d82fb9943f947ab7b97ecf8f544',1,'TmLtchMPBttn']]],
+  ['getstrtdelay_11',['getStrtDelay',['../class_dbncd_dlyd_m_p_bttn.html#aa65d8e6c77b2de5bcf3191636949b4e8',1,'DbncdDlydMPBttn']]],
+  ['gettasktonotify_12',['getTaskToNotify',['../class_dbncd_m_p_bttn.html#a3da781ff0ad5ec1064d62570fd005a3a',1,'DbncdMPBttn']]],
+  ['gettaskwhileon_13',['getTaskWhileOn',['../class_dbncd_m_p_bttn.html#a3728d2003365cbdaf81cccfca3604fe8',1,'DbncdMPBttn']]],
+  ['gettrnoffasap_14',['getTrnOffASAP',['../class_ltch_m_p_bttn.html#a8469aec51e8f6151b72be5d423d855e3',1,'LtchMPBttn']]],
+  ['getunlatchpend_15',['getUnlatchPend',['../class_ltch_m_p_bttn.html#a4a640fee342b1e51983d0efb67ce9727',1,'LtchMPBttn']]],
+  ['getunlatchrlspend_16',['getUnlatchRlsPend',['../class_ltch_m_p_bttn.html#a41d12e22aaa4af6b79908365ecf3788a',1,'LtchMPBttn']]],
+  ['gpiopinid_5ft_17',['gpioPinId_t',['../structgpio_pin_id__t.html',1,'']]]
 ];

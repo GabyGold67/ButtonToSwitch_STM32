@@ -30,13 +30,10 @@
 #include <stdio.h>
 
 //===========================>> Next lines included for developing purposes, corresponding headers must be provided for the production platform/s
-#define MCU_SPEC 1
-
-#ifdef MCU_SPEC
+#ifndef MCU_SPEC
 	#ifndef __STM32F4xx_HAL_H
 		#include "stm32f4xx_hal.h"
 	#endif
-
 	#ifndef __STM32F4xx_HAL_GPIO_H
 		#include "stm32f4xx_hal_gpio.h"
 	#endif
@@ -50,6 +47,7 @@
 //#include "queue.h"
 //#include "semphr.h"
 //#include "event_groups.h"
+
 //===========================>> END libraries used to avoid CMSIS wrappers
 
 #define _HwMinDbncTime 20  // Documented minimum wait time for a MPB signal to stabilize to consider it pressed or released (in milliseconds)
@@ -79,8 +77,6 @@ typedef  fncPtrType (*ptrToTrnFnc)();
 //===========================>> BEGIN General use function prototypes
 uint8_t singleBitPosNum(uint16_t mask);
 //===========================>> END General use function prototypes
-
-constexpr int genNxtEnumVal(const int &curVal, const int &increment){return (curVal + increment);}
 
 //==========================================================>> BEGIN Classes declarations
 
@@ -161,7 +157,7 @@ public:
 	/**
 	 * @brief Class constructor
 	 *
-	 * @param mpbttnPinStrct GPIO port identification and the Pin id number defined as a single gpioPinId_t parameter.
+	 * @param mpbttnPinStrct GPIO port and Pin identification defined as a single gpioPinId_t parameter.
 	 *
 	 * For the rest of the parameters see DbncdMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int)
 	 *
@@ -550,6 +546,13 @@ public:
  * The un-latching mechanisms include but are not limited to: same MPB presses, timers, other MPB presses, other GPIO external un-latch signals or the use of the public method unlatch().
  * The different un-latching events defines the sub-classes of the LDD-MPB class.
  *
+ * @attention The range of signals accepted by the instantiated objects to execute the unlatch process is diverse, and their nature and characteristics might affect the expected switch behavior. While some of the signals might be instantaneous, meaning that the **start of the unlatch signal** is coincidental with the **end of the unlatch signal**, some others might extend the time between both ends. To accomodate the logic required by each subclass the **_unlatch_** process is then split into two stages:
+ * 1. Validated Unlatch signal (or Validated Unlatch signal start).
+ * 2. Validated Unlatch Release signal (or Validated Unlatch signal end).
+ * The class provides methods to generate the signals independently of the designated signal sources to modify the instantiated object behavior if needed by the design requirements, Validated Unlatch signal (see LtchMPBttn::setUnlatchPend(const bool), Validated Unlatch Release signal (see LtchMPBttn::setUnlatchRlsPend(const bool), or to **set** both flags to generate an unlatch (see LtchMPBttn::unlatch().
+ *
+ * @warning Generating the unlatach related flags independently of the unlatch signals provided by the LDD-MPB subclasses might result in unexpected behavior which might result on the locking of the object with it's unexpected consequences
+ *
  * @class LtchMPBttn
  */
 class LtchMPBttn: public DbncdDlydMPBttn{
@@ -592,7 +595,14 @@ public:
     *
     */
    LtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
-	LtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+	/**
+	 * @brief Class constructor
+	 *
+	 * @param mpbttnPinStrct GPIO port and Pin identification defined as a single gpioPinId_t parameter.
+	 *
+	 * For the rest of the parameters see DbncdMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int)
+		 */
+   LtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 	/**
 	 * @brief See 	DbncdMPBttn::clrStatus(bool)
 	 *
@@ -610,9 +620,9 @@ public:
 	/**
 	 * @brief Gets the value of the trnOffASfAP class attribute
 	 *
-	 * The range of signals accepted by the instantiated objects to execute the unlatch process is diverse, and their nature and characteristics might affect the expected switch behavior. While some of the signals might be instantaneous, meaning that the **start of the unlatch signal** is coincidental with the **end of the unlatch signal**, some others might extend the time between both ends. The **trnOffASAP** flag sets the behavior of the MPB in the second case.
-	 * - If the **trnOffASAP** flag is set (true) the **isOn** flag will be reseted as soon as the **start of the unlatch signal** is detected
-	 * - If the **trnOffASAP** flag is reset (false) the **isOn** flag will be reseted only when the **end of the unlatch signal** is detected.
+	 * As described in the class characteristics the unlatching process comprises two stages, Validated Unlatch Signal and Validates unlatch Release Signal, that might be simultaneous or separated in time. The **trnOffASAP** flag sets the behavior of the MPB in the second case.
+	 * - If the **trnOffASAP** flag is set (true) the **isOn** flag will be reseted as soon as the **Validated Unlatch Signal** is detected
+	 * - If the **trnOffASAP** flag is reset (false) the **isOn** flag will be reseted only when the **Validated Unlatch Release signal** is detected.
 	 *
 	 * @return The current value of the trnOffASAP attribute.
 	 */
@@ -625,6 +635,14 @@ public:
 	 * @return The current value of the validUnlatchPending attribute.
 	 */
 	const bool getUnlatchPend() const;
+	/**
+	 * @brief Gets the value of the validUnlatchReleasePending attribute
+	 *
+	 * The validUnlatchReleasePending holds the existence of a still to be processed confirmed unlatch signal. Getting it's current value makes possible taking actions before the unlatch process is started or even discard it completely by using the setUnlatchRlsPend(const bool) method.
+	 *
+	 * @return The current value of the validUnlatchReleasePending attribute.
+	 */
+	const bool getUnlatchRlsPend() const;
 	/**
 	 * @brief See DbncdMPBttn::resetFda()
 	 *
@@ -649,13 +667,23 @@ public:
 	 */
 	bool setUnlatchPend(const bool &newVal);
 	/**
-	 * @brief Sets the value of the validUnlatchPending attribute
+	 * @brief Sets the value of the validUnlatchRlsPending attribute
 	 *
-	 * By setting the value of the validUnlatchPending it's possible to modify the current MPB status by generating an unlatch signal or by canceling an existent unlatch signal.
+	 * By setting the value of the validUnlatchPending and validUnlatchReleasePending flags it's possible to modify the current MPB status by generating an unlatch signal or by canceling an existent unlatch signal.
 	 *
-	 * @param newVal New value for the validUnlatchPending attribute
+	 * @param newVal New value for the validUnlatchReleasePending attribute
 	 *
-	 * @return The value of the validUnlatchPending attribute after the method execution
+	 * @return The value of the validUnlatchReleasePending attribute after the method execution
+	 */
+	bool setUnlatchRlsPend(const bool &newVal);
+	/**
+	 * @brief Sets the values of the flags needed to unlatch a latched MPB
+	 *
+	 * By setting the values of the validUnlatchPending **and** validUnlatchReleasePending flags it's possible to modify the current MPB status by generating an unlatch signal.
+	 *
+	 * @return The current value of the isLatched flag attribute after the method execution.
+	 *
+	 * @note Setting the values of the validUnlatchPending and validUnlatchReleasePending flags does not implicate immediate unlatching the MPB but providing the unlatching signals. The unlatching signals will be processed by the MPB according to it's embedded behavioral pattern. For example, the signals will be processed if the MPB is in Enabled state, and latched, but will be ignored if the MPB is disabled.
 	 */
 	bool unlatch();
    /**
@@ -679,7 +707,20 @@ protected:
 	virtual void updValidUnlatchStatus();
 	virtual void stOffNVURP_Do();
 public:
+	/**
+	 * @brief Class constructor
+	 *
+    * @note For the parameters see DbncdDlydMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int, const unsigned long int)
+    *
+    */
 	TgglLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+/**
+ * @brief Class constructor
+ *
+ * @param mpbttnPinStrct GPIO port and Pin identification defined as a single gpioPinId_t parameter.
+ *
+ * For the rest of the parameters see DbncdMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int)
+ */
 	TgglLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
 };
 
@@ -688,7 +729,7 @@ public:
 /**
  * @brief Implements a Timer Latch DD-MPB, a.k.a. a Timer Switch (**TiLDD-MPB**).
  *
- * The **Timer switch** keeps the ON state since the moment the signal is stable (debouncing + delay process), and until the unlatch signal is provided by a preseted timer **started immediately after** the MPB has passed the debounce & delay process.
+ * The **Timer switch** keeps the **On state** since the moment the signal is stable (debouncing + delay process), and until the unlatch signal is provided by a preseted timer **started immediately after** the MPB has passed the debounce & delay process.
  * The time count down might be reseted by pressing the MPB before the timer expires by optionally configuring the object to do so with the provided method.
  * The total count down time might be changed by using a provided method.
  *
@@ -706,11 +747,56 @@ protected:
     virtual void stOffVPP_Out();
     virtual void stOffVURP_Out();
 public:
+ 	/**
+ 	 * @brief Class constructor
+ 	 *
+ 	 * @param srvcTime The service time (time to keep the **isOn** flag seted).
+ 	 *
+ 	 * @note For the other parameters see DbncdDlydMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int, const unsigned long int)
+     *
+     */
     TmLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const unsigned long int &srvcTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+    /**
+     * @brief Class constructor
+     *
+     * @param mpbttnPinStrct GPIO port and Pin identification defined as a single gpioPinId_t parameter.
+ 	 * @param srvcTime The service time (time to keep the **isOn** flag seted).
+     *
+     * For the rest of the parameters see DbncdMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int)
+     */
     TmLtchMPBttn(gpioPinId_t mpbttnPinStrct, const unsigned long int &srvcTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+    /**
+     * @brief see DbncdMPBttn::clrStatus(bool)
+     *
+     */
     void clrStatus(bool clrIsOn = true);
+    /**
+     * @brief Gets the configured Service Time.
+     *
+     * @return The current Service Time setting in milliseconds
+     */
     const unsigned long int getSrvcTime() const;
+    /**
+     * @brief Sets a new value to the Service Time attribute
+     *
+     * @param newSrvcTime New value for the Service Time attribute
+     *
+     * @note To ensure a safe and predictable behavior from the instantiated objects a minimum Service Time setting guard is provided, ensuring data and signals processing are completed before unlatching process is enforced by the timer. The guard is setted by the defined _MinSrvcTime constant.
+     *
+     * @retval: true if the newSrvcTime parameter is different from the previous Service Time value, and is equal to or greater than the minimum setting guard.
+     * @reval: false otherwise.
+     *
+     */
     bool setSrvcTime(const unsigned long int &newSrvcTime);
+    /**
+     * @brief Configures the timer for the Service Time to be resetted before it reaches voiding time.
+     *
+     * If the isResetable flag is cleared the MPB will return to **Off state** when the Service Time is reached no matter if the MPB was pressed during the servide period. If the flag is set, pressing the MPB (debounce and delay times enforced) while on the **On state** resets the timer to 0. The reseting might be repeated as many times as desired.
+     *
+     * @param newIsRstbl The new setting for the isResetable flag.
+     *
+     * @return The new setting of the isResetable flag.
+     */
     bool setTmerRstbl(const bool &newIsRstbl);
 };
 
@@ -830,17 +916,17 @@ class DblActnLtchMPBttn: public LtchMPBttn{
 
 protected:
 	enum fdaDALmpbStts{
-		stOffNotVPP = 0,
-		stOffVPP = genNxtEnumVal(stOffNotVPP, 100),
-		stOnMPBRlsd = genNxtEnumVal(stOffVPP,100),
+		stOffNotVPP,
+		stOffVPP,
+		stOnMPBRlsd,
 		//--------
-		stOnStrtScndMod = genNxtEnumVal(stOnMPBRlsd,100),
-		stOnScndMod = genNxtEnumVal(stOnStrtScndMod,100),
-		stOnEndScndMod = genNxtEnumVal(stOnScndMod,100),
+		stOnStrtScndMod,
+		stOnScndMod,
+		stOnEndScndMod,
 		//--------
-		stOnTurnOff = genNxtEnumVal(stOnEndScndMod,100),
+		stOnTurnOff,
 		//--------
-		stDisabled = genNxtEnumVal(stOnTurnOff,100)
+		stDisabled
 
 	};
 	fdaDALmpbStts _mpbFdaState {stOffNotVPP};
