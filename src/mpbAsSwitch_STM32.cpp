@@ -2037,72 +2037,6 @@ bool SldrDALtchMPBttn::getSldrDirUp(){
 	return _curSldrDirUp;
 }
 
-void SldrDALtchMPBttn::stOnScndMod_Do(){
-	// Operating in Slider mode, change the associated value according to the time elapsed since last update
-	//and the step size for every time unit elapsed
-	uint16_t _otpStpsChng{0};
-	unsigned long _sldrTmrNxtStrt{0};
-	unsigned long _sldrTmrRemains{0};
-
-	_sldrTmrNxtStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
-	_otpStpsChng = (_sldrTmrNxtStrt - _scndModTmrStrt) /_otptSldrSpd;
-	_sldrTmrRemains = ((_sldrTmrNxtStrt - _scndModTmrStrt) % _otptSldrSpd) * _otptSldrSpd;
-	_sldrTmrNxtStrt -= _sldrTmrRemains;
-	_scndModTmrStrt = _sldrTmrNxtStrt;	//This ends the time management section of the state, calculating the time
-
-	if(_curSldrDirUp){
-		// The slider is moving up
-		if(_otptCurVal != _otptValMax){
-			if((_otptValMax - _otptCurVal) >= (_otpStpsChng * _otptSldrStpSize)){
-				//The value change is in range
-				_otptCurVal += (_otpStpsChng * _otptSldrStpSize);
-			}
-			else{
-				//The value change goes out of range
-				_otptCurVal = _otptValMax;
-			}
-			_outputsChange = true;
-		}
-		if(_outputsChange){
-			if(_otptCurVal == _otptValMax){
-				if(_autoSwpDirOnEnd == true){
-					_curSldrDirUp = false;
-				}
-			}
-		}
-	}
-	else{
-		// The slider is moving down
-		if(_otptCurVal != _otptValMin){
-			if((_otptCurVal - _otptValMin) >= (_otpStpsChng * _otptSldrStpSize)){
-				//The value change is in range
-				_otptCurVal -= (_otpStpsChng * _otptSldrStpSize);
-			}
-			else{
-				//The value change goes out of range
-				_otptCurVal = _otptValMin;
-			}
-			_outputsChange = true;
-		}
-		if(_outputsChange){
-			if(_otptCurVal == _otptValMin){
-				if(_autoSwpDirOnEnd == true){
-					_curSldrDirUp = true;
-				}
-			}
-		}
-	}
-
-	return;
-}
-
-void SldrDALtchMPBttn::stOnStrtScndMod_In(){
-	if(_autoSwpDirOnPrss)
-		swapSldrDir();
-
-	return;
-}
-
 bool SldrDALtchMPBttn::setOtptCurVal(const uint16_t &newVal){
 	bool result{false};
 
@@ -2221,6 +2155,72 @@ bool SldrDALtchMPBttn::setSwpDirOnPrss(const bool &newVal){
 		_autoSwpDirOnPrss = newVal;
 
 	return _autoSwpDirOnEnd;
+}
+
+void SldrDALtchMPBttn::stOnScndMod_Do(){
+	// Operating in Slider mode, change the associated value according to the time elapsed since last update
+	//and the step size for every time unit elapsed
+	uint16_t _otpStpsChng{0};
+	unsigned long _sldrTmrNxtStrt{0};
+	unsigned long _sldrTmrRemains{0};
+
+	_sldrTmrNxtStrt = (xTaskGetTickCount() / portTICK_RATE_MS);
+	_otpStpsChng = (_sldrTmrNxtStrt - _scndModTmrStrt) /_otptSldrSpd;
+	_sldrTmrRemains = ((_sldrTmrNxtStrt - _scndModTmrStrt) % _otptSldrSpd) * _otptSldrSpd;
+	_sldrTmrNxtStrt -= _sldrTmrRemains;
+	_scndModTmrStrt = _sldrTmrNxtStrt;	//This ends the time management section of the state, calculating the time
+
+	if(_curSldrDirUp){
+		// The slider is moving up
+		if(_otptCurVal != _otptValMax){
+			if((_otptValMax - _otptCurVal) >= (_otpStpsChng * _otptSldrStpSize)){
+				//The value change is in range
+				_otptCurVal += (_otpStpsChng * _otptSldrStpSize);
+			}
+			else{
+				//The value change goes out of range
+				_otptCurVal = _otptValMax;
+			}
+			_outputsChange = true;
+		}
+		if(_outputsChange){
+			if(_otptCurVal == _otptValMax){
+				if(_autoSwpDirOnEnd == true){
+					_curSldrDirUp = false;
+				}
+			}
+		}
+	}
+	else{
+		// The slider is moving down
+		if(_otptCurVal != _otptValMin){
+			if((_otptCurVal - _otptValMin) >= (_otpStpsChng * _otptSldrStpSize)){
+				//The value change is in range
+				_otptCurVal -= (_otpStpsChng * _otptSldrStpSize);
+			}
+			else{
+				//The value change goes out of range
+				_otptCurVal = _otptValMin;
+			}
+			_outputsChange = true;
+		}
+		if(_outputsChange){
+			if(_otptCurVal == _otptValMin){
+				if(_autoSwpDirOnEnd == true){
+					_curSldrDirUp = true;
+				}
+			}
+		}
+	}
+
+	return;
+}
+
+void SldrDALtchMPBttn::stOnStrtScndMod_In(){
+	if(_autoSwpDirOnPrss)
+		swapSldrDir();
+
+	return;
 }
 
 bool SldrDALtchMPBttn::swapSldrDir(){
