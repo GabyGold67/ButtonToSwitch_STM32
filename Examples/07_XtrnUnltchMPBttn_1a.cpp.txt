@@ -18,6 +18,13 @@
   *
   ******************************************************************************
   */
+//----------------------- BEGIN Specific to use STM32F4xxyy testing platform
+#define MCU_SPEC
+#include "stm32f4xx_hal.h"
+#include "stm32f4xx_hal_gpio.h"
+//----------------------- End Specific to use STM32F4xxyy testing platform
+
+
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 

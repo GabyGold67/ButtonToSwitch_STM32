@@ -760,9 +760,9 @@ public:
      * @brief Class constructor
      *
      * @param mpbttnPinStrct GPIO port and Pin identification defined as a single gpioPinId_t parameter.
- 	 * @param srvcTime The service time (time to keep the **isOn** flag seted).
+     * @param srvcTime The service time (time to keep the **isOn** flag seted).
      *
-     * For the rest of the parameters see DbncdMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int)
+     * @note For the rest of the parameters see DbncdMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int)
      */
     TmLtchMPBttn(gpioPinId_t mpbttnPinStrct, const unsigned long int &srvcTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
     /**
@@ -839,7 +839,7 @@ public:
 	/**
 	 * @brief Class constructor
 	 *
-	 * @param wrnngPrctg Time **before expiration** of service time that the warning flag must be set. The time is set as a percentage of the total service time so it's a value in the 0 <= wrnngPrctg <= 100 range.
+	 * @param wrnngPrctg Time **before expiration** of service time that the warning flag must be set. The time is expressed as a percentage of the total service time so it's a value in the 0 <= wrnngPrctg <= 100 range.
 	 *
 	 * For the rest of the parameters see TmLtchMPBttn(GPIO_TypeDef*, const uint16_t, const unsigned long int, const bool, const bool, const unsigned long int, const unsigned long int)
 	 *
@@ -848,7 +848,7 @@ public:
 	/**
 	 * @brief Class constructor
 	 *
-	 * @param wrnngPrctg Time **before expiration** of service time that the warning flag must be set. The time is set as a percentage of the total service time so it's a value in the 0 <= wrnngPrctg <= 100 range.
+	 * @param wrnngPrctg Time **before expiration** of service time that the warning flag must be set. The time is expressed as a percentage of the total service time so it's a value in the 0 <= wrnngPrctg <= 100 range.
 	 *
 	 * For the rest of the parameters see TmLtchMPBttn(gpioPinId_t, const unsigned long int, const bool, const bool, const unsigned long int, const unsigned long int)
 	 *
@@ -879,7 +879,7 @@ public:
 	 * @retval false: the warningOn flag value is false
 	 *
 	 * @note As there is no configuration setting to keep the warning flag from working, the way to force the flag to stay set or stay reset is by configuring the accepted limits:
-	 * - 0: Will keep the warningOn flag always false (i.e. will turn to true 0 ms before reaching Service Time).
+	 * - 0: Will keep the warningOn flag always false (i.e. will turn to true 0 ms before reaching the end of Service Time).
 	 * - 100: Will keep the warningOn flag always true (i.e. will turn to true for the 100% of the Service Time).
 	 */
 	const bool getWrnngOn() const;
@@ -899,7 +899,7 @@ public:
 	 */
 	bool setSrvcTime(const unsigned long int &newActTime);
 	/**
-	 * @brief Sets the warning percentage of service time for calculating the warningOn flag value.
+	 * @brief Sets the value for the percentage of service time for calculating the warningOn flag value.
 	 *
 	 * The amount of **time before expiration** of service time that the warning flag must be set is defined as a percentage of the total service time so it's a value in the 0 <= wrnngPrctg <= 100 range.
 	 *
@@ -934,20 +934,72 @@ protected:
     DbncdDlydMPBttn* _unLtchBttn {nullptr};
     bool _xtrnUnltchPRlsCcl {false};
 
-// 	virtual void stOffNotVPP_In();
  	virtual void stOffNVURP_Do();
  	virtual void updValidUnlatchStatus();
 public:
+ 	/**
+	 * @brief Class constructor
+	 *
+	 * This class constructor makes specific reference to a source for the unlatch signal by including a parameter referencing an object that implements the needed getIsOn() method to get the external unlatch signal.
+	 *
+ 	 * @param unLtchBttn Pointer to a DbncdDlydMPBttn object that will provide the unlatch source signal through it's **getIsOn()** method.
+ 	 *
+ 	 * @warning Referencing a DbncdDlydMPBttn subclass object that keeps the isOn flag set for a preset time period might affect the latching/unlatching process, as this class's objects don't check for the isOn condition of the unlatching object prior to setting it's own isOn flag.
+ 	 *
+ 	 * @note For the other parameters see DbncdDlydMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int, const unsigned long int)
+ 	 *
+ 	 * @note Other unlatch signal origins might be developed through the unlatch() method provided.
+ 	 *
+ 	 */
     XtrnUnltchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin,  DbncdDlydMPBttn* unLtchBttn,
         const bool &pulledUp = true,  const bool &typeNO = true,  const unsigned long int &dbncTimeOrigSett = 0,  const unsigned long int &strtDelay = 0);
+  	/**
+ 	 * @brief Class constructor
+ 	 *
+ 	 * This class constructor makes specific reference to a source of the unlatch signal by including a parameter referencing an object that implements the needed getIsOn() method to get the external unlatch signal.
+ 	 *
+    * @param mpbttnPinStrct GPIO port and Pin identification defined as a single gpioPinId_t parameter.
+  	 * @param unLtchBttn Pointer to a DbncdDlydMPBttn object that will provide the unlatch source signal through it's **getIsOn()** method.
+  	 *
+  	 * @warning Referencing a DbncdDlydMPBttn subclass object that keeps the isOn flag set for a preset time period might affect the latching/unlatching process, as this class's objects don't check for the isOn condition of the unlatching object prior to setting it's own isOn flag.
+  	 *
+  	 * @note For the other parameters see DbncdDlydMPBttn(gpioPinId_t, const bool, const bool, const unsigned long int, const unsigned long int)
+  	 *
+  	 * @note Other unlatch signal origins might be developed through the unlatch() method provided.
+  	 *
+  	 */
     XtrnUnltchMPBttn(gpioPinId_t mpbttnPinStrct,  DbncdDlydMPBttn* unLtchBttn,
         const bool &pulledUp = true,  const bool &typeNO = true,  const unsigned long int &dbncTimeOrigSett = 0,  const unsigned long int &strtDelay = 0);
+    /**
+     * @brief Class constructor
+     *
+     * This class constructor instantiates an object that relies on the **unlatch()** method invocation to release the latched MPB
+     *
+     * @note For the parameters see DbncdDlydMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int, const unsigned long int)
+     *
+     */
     XtrnUnltchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin,
         const bool &pulledUp = true,  const bool &typeNO = true,  const unsigned long int &dbncTimeOrigSett = 0,  const unsigned long int &strtDelay = 0);
+    /**
+	  * @brief Class constructor
+	  *
+	  * This class constructor instantiates an object that relies on the **unlatch()** method invocation to release the latched MPB
+	  *
+	  * @param mpbttnPinStrct GPIO port and Pin identification defined as a single gpioPinId_t parameter.
+	  *
+	  * @note For the parameters see DbncdDlydMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int, const unsigned long int)
+	  *
+	  */
     XtrnUnltchMPBttn(gpioPinId_t mpbttnPinStrct,
-        const bool &pulledUp = true,  const bool &typeNO = true,  const unsigned long int &dbncTimeOrigSett = 0,  const unsigned long int &strtDelay = 0);
+   		const bool &pulledUp = true,  const bool &typeNO = true,  const unsigned long int &dbncTimeOrigSett = 0,  const unsigned long int &strtDelay = 0);
 
-    bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);	// Duplicate code? Refers to the LtchMPBttn::mpbPollCallback?? Check Gaby
+    /**
+     * @brief See DbncdMPBttn::begin(const unsigned long int)
+     */
+    bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
+    /**
+     * @brief See DbncdMPBttn::clrStatus(bool)
+     */
     void clrStatus(bool clrIsOn = true);
 };
 
@@ -960,20 +1012,18 @@ public:
  * The pattern selected for this class is the following:
  * - A **short press** makes the MPB to behave as a Toggle LDD-MPB Switch (**ToLDD-MPB**) -designated as the **main behavior**-, swapping from the **Off state** to the **On state** and back as usual LDD-MPB.
  * - A **long press** activates another behavior, allowing the only MPB to be used as a second MPB. That different behavior -designated as the **secondary behavior**- defines the sub-classes of the **DALDD-MPB** class.
- * Using a notation where the first component is the Off/On state of the main behavior and the second component the state of the secondary behavior the simplest activation path would be:
+ * Using a notation where the first component is the Off/On state of the main behavior and the second component the state of the secondary behavior the only possible combinations would be:
  * - 1. Off-Off
  * - 2. On-Off
  * - 3. On-On
- * - 4. On-Off
- * - 5. Off-Off
  *
  * The presses patterns are:
  * - 1. -> 2.: short press.
  * - 1. -> 3.: long press.
  * - 2. -> 3.: long press.
- * - 2. -> 5.: short press.
- * - 3. -> 4.: release.
- * - 4. -> 5.: short press.
+ * - 2. -> 1.: short press.
+ * - 3. -> 2.: release.
+ * - 2. -> 1.: short press.
  *
  * @note The **short press** will always be calculated as the Debounce + Delay set attributes.
  * @note The **long press** is a configurable attribute of the class, the **Secondary Mode Activation Delay** (scndModActvDly) that holds the time after the Debounce + Delay period that the MPB must remain pressed to activate the mentioned mode.
@@ -1013,21 +1063,41 @@ protected:
    virtual void updValidUnlatchStatus();
 
 public:
-	DblActnLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
-	DblActnLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+	/**
+	 * @brief Abstract Class constructor
+	 *
+	 * @note For parameters see DbncdDlydMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int, const unsigned long int)
+	 *
+	 */
+   DblActnLtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+	/**
+	 * @brief Class constructor
+	 *
+	 * @note For parameters see DbncdDlydMPBttn(gpioPinId_t, const bool, const bool, const unsigned long int, const unsigned long int)
+	 *
+	 */
+   DblActnLtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+   /**
+	 * @brief Virtual destructor
+    *
+    */
 	~DblActnLtchMPBttn();
+	/**
+	 * @brief See DbncddMPBttn::clrStatus(bool)
+	 *
+	 */
    void clrStatus(bool clrIsOn = true);
 	/**
-	 * @brief Gets the current value of the  scndModActvDly class attribute.
+	 * @brief Gets the current value of the scndModActvDly class attribute.
 	 *
-	 * The scndModActvDly attribute defines the time length a MPB must remain pressed to consider it a **long press**.
+	 * The scndModActvDly attribute defines the time length a MPB must remain pressed to consider it a **long press**, needed to activate the **secondary mode**.
 	 *
 	 */
    unsigned long getScndModActvDly();
 	/**
 	 * @brief Sets a new value for the scndModActvDly class attribute
 	 *
-	 * The scndModActvDly attribute defines the time length a MPB must remain pressed to consider it a **long press**.
+	 * The scndModActvDly attribute defines the time length a MPB must remain pressed to consider it a **long press**, needed to activate the **secondary mode**.
 	 *
 	 * @param newVal The new value for the scndModActvDly attribute.
 	 *
@@ -1036,7 +1106,11 @@ public:
 	 *
 	 */
 	bool setScndModActvDly(const unsigned long &newVal);
-
+	/**
+	 *
+	 * @brief See DbncdMPBttn::begin(const unsigned long int)
+	 *
+	 */
    bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 
@@ -1048,7 +1122,7 @@ public:
  * - While on the 1.state (Off-Off), a short press will activate only the regular **main On state** 2. (On-Off).
  * - While on the 1.state (Off-Off), a long press will activate both the regular **main On state** and the **secondary On state** simultaneously 3. (On-On).
  * When releasing the MPB the switch will stay in the **main On state** 2. (On-Off).
- * While in the 2. state (On-Off), a short press will set the switch to the 5./1. state (Off-Off)
+ * While in the 2. state (On-Off), a short press will set the switch to the 1. state (Off-Off)
  * While in the 2. state (On-Off), a long press will set the switch to the 3. state (On-On), until the releasing of the MPB, returning the switch to the **main On state** 2. (On-Off).
  *
  * class DDlydDALtchMPBttn
@@ -1062,10 +1136,36 @@ protected:
    virtual void stOnScndMod_Do();
    virtual void stOnEndScndMod_Out();
 public:
+   /**
+	 * @brief Class constructor
+    *
+	 * @note For parameters see DbncdDlydMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int, const unsigned long int)
+	 *
+    */
    DDlydDALtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+   /**
+	 * @brief Class constructor
+    *
+	 * @note For parameters see DbncdDlydMPBttn(gpioPinId_t, const bool, const bool, const unsigned long int, const unsigned long int)
+    */
    DDlydDALtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+   /**
+	 * @brief Class virtual destructor
+    *
+    */
    ~DDlydDALtchMPBttn();
+	/**
+	 * @brief See DbncddMPBttn::clrStatus(bool)
+	 *
+	 */
    void clrStatus(bool clrIsOn = true);
+   /**
+	 * @brief Gets the current value of the isOn2 flag
+	 *
+	 * The isOn2 flag holds the **secondary On state**, when the MPB is pressed for the seted **long press** time from the Off-Off or the On-Off state as described in the DblActnLtchMPBttn class.
+    *
+    * @return The current value of the isOn2 flag.
+    */
    bool getIsOn2();
 };
 

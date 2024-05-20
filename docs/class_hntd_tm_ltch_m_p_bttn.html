@@ -161,7 +161,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>clrStatus</b> (bool c
 <tr class="memdesc:af14573c7889fc1a65129b1dc685ff840"><td class="mdescLeft">&#160;</td><td class="mdescRight">See TmLtchMPBttn::setSrvcTime(const unsigned long int)  <br /></td></tr>
 <tr class="separator:af14573c7889fc1a65129b1dc685ff840"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adadd5081bffa5143d6c7143aeafac67e" id="r_adadd5081bffa5143d6c7143aeafac67e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adadd5081bffa5143d6c7143aeafac67e">setWrnngPrctg</a> (const unsigned int &amp;newWrnngPrctg)</td></tr>
-<tr class="memdesc:adadd5081bffa5143d6c7143aeafac67e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the warning percentage of service time for calculating the warningOn flag value.  <br /></td></tr>
+<tr class="memdesc:adadd5081bffa5143d6c7143aeafac67e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value for the percentage of service time for calculating the warningOn flag value.  <br /></td></tr>
 <tr class="separator:adadd5081bffa5143d6c7143aeafac67e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef2d66789885135fd35547a535b6e344" id="r_aef2d66789885135fd35547a535b6e344"><td class="memItemLeft" align="right" valign="top"><a id="aef2d66789885135fd35547a535b6e344" name="aef2d66789885135fd35547a535b6e344"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>begin</b> (const unsigned long int &amp;pollDelayMs=_StdPollDelay)</td></tr>
@@ -409,7 +409,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <p>Class constructor. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">wrnngPrctg</td><td>Time <b>before expiration</b> of service time that the warning flag must be set. The time is set as a percentage of the total service time so it's a value in the 0 &lt;= wrnngPrctg &lt;= 100 range.</td></tr>
+    <tr><td class="paramname">wrnngPrctg</td><td>Time <b>before expiration</b> of service time that the warning flag must be set. The time is expressed as a percentage of the total service time so it's a value in the 0 &lt;= wrnngPrctg &lt;= 100 range.</td></tr>
   </table>
   </dd>
 </dl>
@@ -464,7 +464,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <p>Class constructor. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">wrnngPrctg</td><td>Time <b>before expiration</b> of service time that the warning flag must be set. The time is set as a percentage of the total service time so it's a value in the 0 &lt;= wrnngPrctg &lt;= 100 range.</td></tr>
+    <tr><td class="paramname">wrnngPrctg</td><td>Time <b>before expiration</b> of service time that the warning flag must be set. The time is expressed as a percentage of the total service time so it's a value in the 0 &lt;= wrnngPrctg &lt;= 100 range.</td></tr>
   </table>
   </dd>
 </dl>
@@ -527,7 +527,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
   </dd>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>As there is no configuration setting to keep the warning flag from working, the way to force the flag to stay set or stay reset is by configuring the accepted limits:<ul>
-<li>0: Will keep the warningOn flag always false (i.e. will turn to true 0 ms before reaching Service Time).</li>
+<li>0: Will keep the warningOn flag always false (i.e. will turn to true 0 ms before reaching the end of Service Time).</li>
 <li>100: Will keep the warningOn flag always true (i.e. will turn to true for the 100% of the Service Time). </li>
 </ul>
 </dd></dl>
@@ -595,7 +595,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
       </table>
 </div><div class="memdoc">
 
-<p>Sets the warning percentage of service time for calculating the warningOn flag value. </p>
+<p>Sets the value for the percentage of service time for calculating the warningOn flag value. </p>
 <p>The amount of <b>time before expiration</b> of service time that the warning flag must be set is defined as a percentage of the total service time so it's a value in the 0 &lt;= wrnngPrctg &lt;= 100 range.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

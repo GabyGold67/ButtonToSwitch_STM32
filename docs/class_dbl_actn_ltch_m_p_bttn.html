@@ -138,12 +138,30 @@ Collaboration diagram for DblActnLtchMPBttn:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a8d6d22c7f4467a0be4ba53c922857921" id="r_a8d6d22c7f4467a0be4ba53c922857921"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8d6d22c7f4467a0be4ba53c922857921">DblActnLtchMPBttn</a> (GPIO_TypeDef *mpbttnPort, const uint16_t &amp;mpbttnPin, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0, const unsigned long int &amp;strtDelay=0)</td></tr>
+<tr class="memdesc:a8d6d22c7f4467a0be4ba53c922857921"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract Class constructor.  <br /></td></tr>
+<tr class="separator:a8d6d22c7f4467a0be4ba53c922857921"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab342cf7b86a49a8e54bcb7ecc7c794c3" id="r_ab342cf7b86a49a8e54bcb7ecc7c794c3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab342cf7b86a49a8e54bcb7ecc7c794c3">DblActnLtchMPBttn</a> (<a class="el" href="structgpio_pin_id__t.html">gpioPinId_t</a> mpbttnPinStrct, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0, const unsigned long int &amp;strtDelay=0)</td></tr>
+<tr class="memdesc:ab342cf7b86a49a8e54bcb7ecc7c794c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class constructor.  <br /></td></tr>
+<tr class="separator:ab342cf7b86a49a8e54bcb7ecc7c794c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeac43f6938213f2de9cb4060b1d47c00" id="r_aeac43f6938213f2de9cb4060b1d47c00"><td class="memItemLeft" align="right" valign="top"><a id="aeac43f6938213f2de9cb4060b1d47c00" name="aeac43f6938213f2de9cb4060b1d47c00"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>~DblActnLtchMPBttn</b> ()</td></tr>
+<tr class="memdesc:aeac43f6938213f2de9cb4060b1d47c00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor. <br /></td></tr>
+<tr class="separator:aeac43f6938213f2de9cb4060b1d47c00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7454fc41a95d7bb028831a66781dffb3" id="r_a7454fc41a95d7bb028831a66781dffb3"><td class="memItemLeft" align="right" valign="top"><a id="a7454fc41a95d7bb028831a66781dffb3" name="a7454fc41a95d7bb028831a66781dffb3"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>clrStatus</b> (bool clrIsOn=true)</td></tr>
+<tr class="memdesc:a7454fc41a95d7bb028831a66781dffb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">See DbncddMPBttn::clrStatus(bool) <br /></td></tr>
+<tr class="separator:a7454fc41a95d7bb028831a66781dffb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4cc7c3c653fcd60fc333ac5ac4e2fdb" id="r_aa4cc7c3c653fcd60fc333ac5ac4e2fdb"><td class="memItemLeft" align="right" valign="top">unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa4cc7c3c653fcd60fc333ac5ac4e2fdb">getScndModActvDly</a> ()</td></tr>
 <tr class="memdesc:aa4cc7c3c653fcd60fc333ac5ac4e2fdb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current value of the scndModActvDly class attribute.  <br /></td></tr>
 <tr class="separator:aa4cc7c3c653fcd60fc333ac5ac4e2fdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a03f22ae440e7a47e29c1089cef3f01e3" id="r_a03f22ae440e7a47e29c1089cef3f01e3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a03f22ae440e7a47e29c1089cef3f01e3">setScndModActvDly</a> (const unsigned long &amp;newVal)</td></tr>
 <tr class="memdesc:a03f22ae440e7a47e29c1089cef3f01e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a new value for the scndModActvDly class attribute.  <br /></td></tr>
 <tr class="separator:a03f22ae440e7a47e29c1089cef3f01e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abbe944688e0b7402905d2c88d5d670de" id="r_abbe944688e0b7402905d2c88d5d670de"><td class="memItemLeft" align="right" valign="top"><a id="abbe944688e0b7402905d2c88d5d670de" name="abbe944688e0b7402905d2c88d5d670de"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>begin</b> (const unsigned long int &amp;pollDelayMs=_StdPollDelay)</td></tr>
+<tr class="memdesc:abbe944688e0b7402905d2c88d5d670de"><td class="mdescLeft">&#160;</td><td class="mdescRight">See DbncdMPBttn::begin(const unsigned long int) <br /></td></tr>
+<tr class="separator:abbe944688e0b7402905d2c88d5d670de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_ltch_m_p_bttn"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_class_ltch_m_p_bttn')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_ltch_m_p_bttn.html">LtchMPBttn</a></td></tr>
 <tr class="memitem:a8f6fbebb9d33e282cedbec115fe7cb98 inherit pub_methods_class_ltch_m_p_bttn" id="r_a8f6fbebb9d33e282cedbec115fe7cb98"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ltch_m_p_bttn.html#a8f6fbebb9d33e282cedbec115fe7cb98">LtchMPBttn</a> (GPIO_TypeDef *mpbttnPort, const uint16_t &amp;mpbttnPin, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0, const unsigned long int &amp;strtDelay=0)</td></tr>
 <tr class="memdesc:a8f6fbebb9d33e282cedbec115fe7cb98 inherit pub_methods_class_ltch_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class constructor.  <br /></td></tr>
@@ -313,25 +331,107 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <div class="textblock"><p>Abstract class, base to implement Double Action LDD-MPBs (<b>DALDD-MPBs</b>). </p>
 <p><b>Double Action Latched DD-MPB</b> are MPBs whose distinctive characteristic is that implement switches that present two different behaviors based on the time length of the presses detected. The pattern selected for this class is the following:</p><ul>
 <li>A <b>short press</b> makes the MPB to behave as a Toggle LDD-MPB Switch (<b>ToLDD-MPB</b>) -designated as the <b>main behavior</b>-, swapping from the <b>Off state</b> to the <b>On state</b> and back as usual LDD-MPB.</li>
-<li>A <b>long press</b> activates another behavior, allowing the only MPB to be used as a second MPB. That different behavior -designated as the <b>secondary behavior</b>- defines the sub-classes of the <b>DALDD-MPB</b> class. Using a notation where the first component is the Off/On state of the main behavior and the second component the state of the secondary behavior the simplest activation path would be:</li>
+<li>A <b>long press</b> activates another behavior, allowing the only MPB to be used as a second MPB. That different behavior -designated as the <b>secondary behavior</b>- defines the sub-classes of the <b>DALDD-MPB</b> class. Using a notation where the first component is the Off/On state of the main behavior and the second component the state of the secondary behavior the only possible combinations would be:</li>
 <li>1. Off-Off</li>
 <li>2. On-Off</li>
 <li>3. On-On</li>
-<li>4. On-Off</li>
-<li>5. Off-Off</li>
 </ul>
 <p>The presses patterns are:</p><ul>
 <li>1. -&gt; 2.: short press.</li>
 <li>1. -&gt; 3.: long press.</li>
 <li>2. -&gt; 3.: long press.</li>
-<li>2. -&gt; 5.: short press.</li>
-<li>3. -&gt; 4.: release.</li>
-<li>4. -&gt; 5.: short press.</li>
+<li>2. -&gt; 1.: short press.</li>
+<li>3. -&gt; 2.: release.</li>
+<li>2. -&gt; 1.: short press.</li>
 </ul>
 <dl class="section note"><dt>Note</dt><dd>The <b>short press</b> will always be calculated as the Debounce + Delay set attributes. </dd>
 <dd>
 The <b>long press</b> is a configurable attribute of the class, the <b>Secondary Mode Activation Delay</b> (scndModActvDly) that holds the time after the Debounce + Delay period that the MPB must remain pressed to activate the mentioned mode. </dd></dl>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a8d6d22c7f4467a0be4ba53c922857921" name="a8d6d22c7f4467a0be4ba53c922857921"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d6d22c7f4467a0be4ba53c922857921">&#9670;&#160;</a></span>DblActnLtchMPBttn() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DblActnLtchMPBttn::DblActnLtchMPBttn </td>
+          <td>(</td>
+          <td class="paramtype">GPIO_TypeDef *</td>          <td class="paramname"><span class="paramname"><em>mpbttnPort</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint16_t &amp;</td>          <td class="paramname"><span class="paramname"><em>mpbttnPin</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool &amp;</td>          <td class="paramname"><span class="paramname"><em>pulledUp</em><span class="paramdefsep"> = </span><span class="paramdefval">true</span>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool &amp;</td>          <td class="paramname"><span class="paramname"><em>typeNO</em><span class="paramdefsep"> = </span><span class="paramdefval">true</span>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned long int &amp;</td>          <td class="paramname"><span class="paramname"><em>dbncTimeOrigSett</em><span class="paramdefsep"> = </span><span class="paramdefval">0</span>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned long int &amp;</td>          <td class="paramname"><span class="paramname"><em>strtDelay</em><span class="paramdefsep"> = </span><span class="paramdefval">0</span></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Abstract Class constructor. </p>
+<dl class="section note"><dt>Note</dt><dd>For parameters see <a class="el" href="class_dbncd_dlyd_m_p_bttn.html" title="Implements a Debounced Delayed MPB (DD-MPB).">DbncdDlydMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int, const unsigned long int)</a> </dd></dl>
+
+</div>
+</div>
+<a id="ab342cf7b86a49a8e54bcb7ecc7c794c3" name="ab342cf7b86a49a8e54bcb7ecc7c794c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab342cf7b86a49a8e54bcb7ecc7c794c3">&#9670;&#160;</a></span>DblActnLtchMPBttn() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DblActnLtchMPBttn::DblActnLtchMPBttn </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structgpio_pin_id__t.html">gpioPinId_t</a></td>          <td class="paramname"><span class="paramname"><em>mpbttnPinStrct</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool &amp;</td>          <td class="paramname"><span class="paramname"><em>pulledUp</em><span class="paramdefsep"> = </span><span class="paramdefval">true</span>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool &amp;</td>          <td class="paramname"><span class="paramname"><em>typeNO</em><span class="paramdefsep"> = </span><span class="paramdefval">true</span>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned long int &amp;</td>          <td class="paramname"><span class="paramname"><em>dbncTimeOrigSett</em><span class="paramdefsep"> = </span><span class="paramdefval">0</span>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned long int &amp;</td>          <td class="paramname"><span class="paramname"><em>strtDelay</em><span class="paramdefsep"> = </span><span class="paramdefval">0</span></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Class constructor. </p>
+<dl class="section note"><dt>Note</dt><dd>For parameters see <a class="el" href="class_dbncd_dlyd_m_p_bttn.html" title="Implements a Debounced Delayed MPB (DD-MPB).">DbncdDlydMPBttn(gpioPinId_t, const bool, const bool, const unsigned long int, const unsigned long int)</a> </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a id="aa4cc7c3c653fcd60fc333ac5ac4e2fdb" name="aa4cc7c3c653fcd60fc333ac5ac4e2fdb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa4cc7c3c653fcd60fc333ac5ac4e2fdb">&#9670;&#160;</a></span>getScndModActvDly()</h2>
 
@@ -348,7 +448,7 @@ The <b>long press</b> is a configurable attribute of the class, the <b>Secondary
 </div><div class="memdoc">
 
 <p>Gets the current value of the scndModActvDly class attribute. </p>
-<p>The scndModActvDly attribute defines the time length a MPB must remain pressed to consider it a <b>long press</b>. </p>
+<p>The scndModActvDly attribute defines the time length a MPB must remain pressed to consider it a <b>long press</b>, needed to activate the <b>secondary mode</b>. </p>
 
 </div>
 </div>
@@ -368,7 +468,7 @@ The <b>long press</b> is a configurable attribute of the class, the <b>Secondary
 </div><div class="memdoc">
 
 <p>Sets a new value for the scndModActvDly class attribute. </p>
-<p>The scndModActvDly attribute defines the time length a MPB must remain pressed to consider it a <b>long press</b>.</p>
+<p>The scndModActvDly attribute defines the time length a MPB must remain pressed to consider it a <b>long press</b>, needed to activate the <b>secondary mode</b>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">newVal</td><td>The new value for the scndModActvDly attribute.</td></tr>
