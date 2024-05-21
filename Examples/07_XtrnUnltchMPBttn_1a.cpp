@@ -1,11 +1,12 @@
 /**
   ******************************************************************************
   * @file	: 07_XtrnUnltchMPBttn_1a.cpp
-  * @brief  : Test for the MpbAsSwitch_STM32 library XtrnUnltchMPBttn class
+  * @brief  : Example for the MpbAsSwitch_STM32 library XtrnUnltchMPBttn class
   *
-  * 	The test instantiates a XtrnUnltchMPBttn object using:
+  * 	The example instantiates a XtrnUnltchMPBttn object using:
   * 		- The Nucleo board user pushbutton attached to GPIO_B00
   * 		- The Nucleo board user LED attached to GPIO_A05
+  * 		- The external unlatch pushbutton attached to GPIO_PB00
   *
   * 	@author	: Gabriel D. Goldman
   *
@@ -20,16 +21,12 @@
   */
 //----------------------- BEGIN Specific to use STM32F4xxyy testing platform
 #define MCU_SPEC
+//======================> Replace the following two lines with the files corresponding with the used STM32 configuration files
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_gpio.h"
 //----------------------- End Specific to use STM32F4xxyy testing platform
 
-
-/* Includes ------------------------------------------------------------------*/
-#include "main.h"
-
 /* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
 //===========================>> Next lines used to avoid CMSIS wrappers
 #include "FreeRTOS.h"
 #include "task.h"
@@ -37,6 +34,7 @@
 #include "event_groups.h"
 //===========================>> Previous lines used to avoid CMSIS wrappers
 
+/* USER CODE BEGIN Includes */
 #include "../../mpbAsSwitch_STM32/src/mpbAsSwitch_STM32.h"
 /* USER CODE END Includes */
 
@@ -44,9 +42,12 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-gpioPinId_t ledOnPC00{GPIOC, 0b001};
-gpioPinId_t ledOnPC01{GPIOC, 0b010};
-gpioPinId_t mpbttnOnPB00{GPIOB, 0b001};
+gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0010 0000
+gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
+
+gpioPinId_t ledOnPC00{GPIOC, GPIO_PIN_0};	//Pin 0b 0000 0001
+gpioPinId_t ledOnPC01{GPIOC, GPIO_PIN_1};	//Pin 0b 0000 0010
+gpioPinId_t mpbttnOnPB00{GPIOB, GPIO_PIN_0};	//Pin 0b 0000 0001
 TaskHandle_t tstDefTaskHandle {NULL};
 BaseType_t xReturned;
 
@@ -56,6 +57,8 @@ BaseType_t xReturned;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
+void Error_Handler(void);
+
 void tstDefTaskExec(void *pvParameters);
 
 /**
@@ -78,7 +81,6 @@ int main(void)
 
   /* Create the thread(s) */
   /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
   xReturned = xTaskCreate(
 		  tstDefTaskExec, //taskFunction
 		  "TstMainTask", //Task function legible name
@@ -174,8 +176,6 @@ static void MX_USART2_UART_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -184,38 +184,20 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level for tstLedOnBoard*/
-  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_RESET);
-  /*Configure GPIO pin Output Level for ledOnPC00))*/
-//  HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_RESET);
-  /*Configure GPIO pin Output Level for ledOnPC01))*/
-//  HAL_GPIO_WritePin(ledOnPC01.portId, ledOnPC01.pinNum, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : tstMpbOnBoard_Pin */
-  GPIO_InitStruct.Pin = tstMpbOnBoard_Pin;
+  GPIO_InitStruct.Pin = tstMpbOnBoard.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(tstMpbOnBoard_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(tstMpbOnBoard.portId, &GPIO_InitStruct);
 
   /*Configure GPIO pin : tstLedOnBoard_Pin */
-  GPIO_InitStruct.Pin = tstLedOnBoard_Pin;
+  GPIO_InitStruct.Pin = tstLedOnBoard.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(tstLedOnBoard_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pin : ledOnPC00_Pin */
-//  GPIO_InitStruct.Pin = ledOnPC00.pinNum;
-//  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-//  GPIO_InitStruct.Pull = GPIO_NOPULL;
-//  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-//  HAL_GPIO_Init(ledOnPC00.portId, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : ledOnPC01_Pin */
-//  GPIO_InitStruct.Pin = ledOnPC01.pinNum;
-//  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-//  GPIO_InitStruct.Pull = GPIO_NOPULL;
-//  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-//  HAL_GPIO_Init(ledOnPC01.portId, &GPIO_InitStruct);
+  HAL_GPIO_Init(tstLedOnBoard.portId, &GPIO_InitStruct);
 
   /*Configure GPIO pin : mpbttnOnPB00_Pin */
   GPIO_InitStruct.Pin = mpbttnOnPB00.pinNum;
@@ -232,7 +214,7 @@ void tstDefTaskExec(void *pvParameters)
 
 	DbncdDlydMPBttn unLtchTstBttnObj(mpbttnOnPB00.portId, mpbttnOnPB00.pinNum, true, true, 0, 200);
 	DbncdDlydMPBttn* unLtchTstBttnPtr {&unLtchTstBttnObj};
-	XtrnUnltchMPBttn tstBttn(tstMpbOnBoard_GPIO_Port, tstMpbOnBoard_Pin, unLtchTstBttnPtr, true, true, 0, 50);
+	XtrnUnltchMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, unLtchTstBttnPtr, true, true, 0, 50);
 
 	tstBttn.setTrnOffASAP(true);
 	tstBttn.begin(20);
@@ -243,9 +225,9 @@ void tstDefTaskExec(void *pvParameters)
 		tmpBttnIsOn = tstBttn.getIsOn();
 		if(tmpBttnWasOn != tmpBttnIsOn){
 			if(tmpBttnIsOn)
-			  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_SET);
+			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_SET);
 			else
-			  HAL_GPIO_WritePin(tstLedOnBoard_GPIO_Port, tstLedOnBoard_Pin, GPIO_PIN_RESET);
+			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
 		}
 	}
 }
