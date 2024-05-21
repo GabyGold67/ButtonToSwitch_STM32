@@ -27,9 +27,9 @@ Those listed mechanisms are independent, so one or more might be simultaneously 
 * **Double action On/Off + Slider combo switch**  (a.k.a. off/on/dimmer, a.k.a. off/on/volume radio switch)
 * **Double action On/Off + Secondary Debounced Delayed MPB combo switch**
 
-MpbAsSwitch Library Documentation available in Github Pages [Github Pages](https://GabyGold67.github.io/mpbAsSwitch_STM32/)
+MpbAsSwitch Library Documentation available at [Github Pages](https://GabyGold67.github.io/mpbAsSwitch_STM32/)
 
-![MpbAsSwitch Classes Hierarchy](MomentaryPushButtonUMLClassesOnly.jpg)
+![MpbAsSwitch Library Classes Hierarchy](./Extras/MomentaryPushButtonUMLClassesOnly.jpg)
 
 Each instantiated object returns a debounced, deglitched, clean "isOn" signal based on the expected behavior of the simulated switch mechanism. 
 

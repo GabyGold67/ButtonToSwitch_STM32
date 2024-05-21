@@ -1365,14 +1365,18 @@ public:
 /**
  * @brief Abstract class, base to implement Voidable DD-MPBs (**VDD-MPB**).
  *
- * **Voidable DD-MPBs** are MPBs whose distinctive characteristic is that implement switches that while being pressed their state might change from **On State** to a **Voided & Off state** due to different voiding conditions.
- * Those conditions include but are not limited to: pressed time, external signals or reaching the **On state**.
+ * **Voidable DD-MPBs** are MPBs whose distinctive characteristic is that implement non-latching switches that while being pressed their state might change from **On State** to a **Voided & Off state** due to different voiding conditions.
+ * Those conditions include but are not limited to:
+ * - pressing time
+ * - external signals
+ * - entering the **On state**
+ *
  * The mechanisms to "un-void" the MPB and return it to an operational state include but are not limited to:
- * - releasing the MPB
+ * - releasing the MPBs
  * - receiving an external signal
  * - the reading of the **isOn** flag
- * - others.
- * The voiding condition and the un-voiding mechanism define the VDD-MPB subclasses.
+ *
+ * The voiding conditions and the un-voiding mechanisms define the VDD-MPB subclasses.
  *
  * @class VdblMPBttn
  */
@@ -1411,12 +1415,61 @@ protected:
     virtual void updFdaState();
     virtual bool updVoidStatus() = 0;
 public:
+    /**
+     * @brief Class constructor
+     *
+     * @param isOnDisabled (Optional) Sets the instantiation value for the isOnDisabled flag attribute.
+     *
+     * @note For the other parameters see DbncdDlydMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int, const unsigned long int)
+ 	 *
+ 	 */
     VdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
+    /**
+     * @brief Class constructor
+     *
+     * @param mpbttnPinStrct GPIO port and Pin identification defined as a single gpioPinId_t parameter.
+     * @param isOnDisabled (Optional) Sets the instantiation value for the isOnDisabled flag attribute.
+     *
+     * @note For the other parameters see DbncdDlydMPBttn(gpioPinId_t, const bool, const bool, const unsigned long int, const unsigned long int).
+     *
+     */
     VdblMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
+    /**
+     * @brief Default virtual destructor
+     *
+     */
     virtual ~VdblMPBttn();
+    /**
+     * @brief See DbncdMPBttn::clrStatus(bool)
+     */
     void clrStatus(bool clrIsOn = true);
+    /**
+     * @brief Gets the current value of the isVoided attribute flag
+     *
+     * @return The value of the flag.
+     * @retval true The object is in **voided state**
+     * @retval false The object is in **not voided state**
+     *
+     */
     const bool getIsVoided() const;
+    /**
+     * @brief Sets the value of the isVoided attribute flag to false
+     *
+     * @warning The value of the isVoided attribute flag is computed as a result of the current state of the instantiated object, considering the inputs and embedded simulated behavior.
+     * - Arbitrarily setting a value to the isVoided attribute flag might affect the normal behavior path for the object.
+     * - The attribute flag value might return to it's natural value when the behavior imposes the change.
+     * - The use of this method must be limited to certain states and conditions of the object, being the most suitable situation while the object is in **Disabled state**: If the application development requires the isVoided attribute flag to be in a specific value, this method and the setIsVoided() method are the required tools.
+     *
+     * @return The new value of the isVoided attribute flag.
+     */
     bool setIsNotVoided();
+    /**
+     * @brief Sets the value of the isVoided attribute flag to false
+     *
+     * @warning See the Warnings for setIsNotVoided()
+     *
+     * @return The new value of the isVoided attribute flag.
+     */
     bool setIsVoided();
 };
 
@@ -1425,7 +1478,7 @@ public:
 /**
  * @brief Implements a Time Voidable DD-MPB, a.k.a. Anti-tampering switch (**TVDD-MPB**)
  *
- * The **Time Voidable Momentary Button**, keeps the ON state since the moment the signal is stable (debouncing process), plus a delay added, and until the moment the push button is released, or until a preset time in the ON state is reached. Then the switch will return to the Off position until the push button is released and pushed back. This kind of switches are used to activate limited resources related management or physical safety devices, and the possibility of a physical blocking of the switch to extend the ON signal forcibly beyond designer's plans is highly undesired. Water valves, door unlocking mechanisms, hands-off security mechanisms, high power heating devices are some of the usual uses for these type of switches.
+ * The **Time Voidable Momentary Push Button**, keeps the ON state since the moment the signal is stable (debounce & delay process) and until the moment the push button is released, or until a preset time in the ON state is reached. Then the switch will return to the Off position until the push button is released and pushed back. This kind of switches are used to activate limited resources related management or physical safety devices, and the possibility of a physical blocking of the switch to extend the ON signal forcibly beyond designer's plans is highly undesired. Water valves, door unlocking mechanisms, hands-off security mechanisms, high power heating devices are some of the usual uses for these type of switches.
  *
  * class TmVdblMPBttn
  */
@@ -1440,13 +1493,57 @@ protected:
     bool updIsPressed();
     virtual bool updVoidStatus();
 public:
+    /**
+     * @brief Class constructor
+     *
+     * @param voidTime The time -in milliseconds- the MPB must be pressed to enter the **voided state**.
+     *
+     * @note For the rest of the parameters see VdblMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool , const unsigned long int, const unsigned long int, const bool)
+     *
+     */
     TmVdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, unsigned long int voidTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
+    /**
+     * @brief Class constructor
+     *
+     * @param voidTime The time -in milliseconds- the MPB must be pressed to enter the **voided state**.
+     *
+     * @note For the rest of the parameters see VdblMPBttn(gpioPinId_t, const bool, const bool , const unsigned long int, const unsigned long int, const bool)
+     *
+     */
     TmVdblMPBttn(gpioPinId_t mpbttnPinStrct, unsigned long int voidTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
+    /**
+     * @brief Class virtual destructor
+     *
+     */
     virtual ~TmVdblMPBttn();
+    /**
+     * @brief See DbncdMPBttn::clrStatus(bool)
+     */
     void clrStatus();
+    /**
+     * @brief Gets the voidTime attribute current value.
+     *
+     * The voidTime attribute holds the time -in milliseconds- the MPB must be pressed to enter the **voided state**.
+     *
+     * @return The current value of the voidTime attribute.
+     */
     const unsigned long int getVoidTime() const;
+    /**
+     * @brief Sets a new value to the Void Time attribute
+     *
+     * @param newVoidTime New value for the Void Time attribute
+     *
+     * @note To ensure a safe and predictable behavior from the instantiated objects a minimum Void Time (equal to the minimum Service Time) setting guard is provided, ensuring data and signals processing are completed before voiding process is enforced by the timer. The guard is set by the defined _MinSrvcTime constant.
+     *
+     * @retval: true if the newVoidTime parameter is different from the previous Void Time value, and is equal to or greater than the minimum setting guard.
+     * @reval: false otherwise.
+     *
+     */
     bool setVoidTime(const unsigned long int &newVoidTime);
 
+    /**
+     * @brief See DbncdMPBttn::begin(const unsigned long int)
+     */
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 

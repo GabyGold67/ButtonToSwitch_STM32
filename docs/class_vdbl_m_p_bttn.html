@@ -93,6 +93,7 @@ $(function(){initNavTree('class_vdbl_m_p_bttn.html',''); initResizable(); });
 
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="class_vdbl_m_p_bttn-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">VdblMPBttn Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
 </div><!--header-->
@@ -129,8 +130,31 @@ Collaboration diagram for VdblMPBttn:</div>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a513da8ca7527e3a50f632ebb33448d40" id="r_a513da8ca7527e3a50f632ebb33448d40"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a513da8ca7527e3a50f632ebb33448d40">VdblMPBttn</a> (GPIO_TypeDef *mpbttnPort, const uint16_t &amp;mpbttnPin, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0, const unsigned long int &amp;strtDelay=0, const bool &amp;isOnDisabled=false)</td></tr>
+<tr class="memdesc:a513da8ca7527e3a50f632ebb33448d40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class constructor.  <br /></td></tr>
+<tr class="separator:a513da8ca7527e3a50f632ebb33448d40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e395dc43999e431f91fd1ba9ae179e2" id="r_a5e395dc43999e431f91fd1ba9ae179e2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5e395dc43999e431f91fd1ba9ae179e2">VdblMPBttn</a> (<a class="el" href="structgpio_pin_id__t.html">gpioPinId_t</a> mpbttnPinStrct, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0, const unsigned long int &amp;strtDelay=0, const bool &amp;isOnDisabled=false)</td></tr>
+<tr class="memdesc:a5e395dc43999e431f91fd1ba9ae179e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class constructor.  <br /></td></tr>
+<tr class="separator:a5e395dc43999e431f91fd1ba9ae179e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99c75dd8225c791015dcdbc8b1c9a07e" id="r_a99c75dd8225c791015dcdbc8b1c9a07e"><td class="memItemLeft" align="right" valign="top"><a id="a99c75dd8225c791015dcdbc8b1c9a07e" name="a99c75dd8225c791015dcdbc8b1c9a07e"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~VdblMPBttn</b> ()</td></tr>
+<tr class="memdesc:a99c75dd8225c791015dcdbc8b1c9a07e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default virtual destructor. <br /></td></tr>
+<tr class="separator:a99c75dd8225c791015dcdbc8b1c9a07e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ea82534da6a8f39d9715a3126387d30" id="r_a7ea82534da6a8f39d9715a3126387d30"><td class="memItemLeft" align="right" valign="top"><a id="a7ea82534da6a8f39d9715a3126387d30" name="a7ea82534da6a8f39d9715a3126387d30"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>clrStatus</b> (bool clrIsOn=true)</td></tr>
+<tr class="memdesc:a7ea82534da6a8f39d9715a3126387d30"><td class="mdescLeft">&#160;</td><td class="mdescRight">See <a class="el" href="class_dbncd_m_p_bttn.html#a3009725646aeb160884b8109d180b530" title="Clears and resets flags, timers and counters modified through the object&#39;s signals processing.">DbncdMPBttn::clrStatus(bool)</a> <br /></td></tr>
+<tr class="separator:a7ea82534da6a8f39d9715a3126387d30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2689fca49bfdf672da6d91b0fa5db1f0" id="r_a2689fca49bfdf672da6d91b0fa5db1f0"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2689fca49bfdf672da6d91b0fa5db1f0">getIsVoided</a> () const</td></tr>
+<tr class="memdesc:a2689fca49bfdf672da6d91b0fa5db1f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current value of the isVoided attribute flag.  <br /></td></tr>
+<tr class="separator:a2689fca49bfdf672da6d91b0fa5db1f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae868643c7398bc5e351f8a70eb47201c" id="r_ae868643c7398bc5e351f8a70eb47201c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae868643c7398bc5e351f8a70eb47201c">setIsNotVoided</a> ()</td></tr>
+<tr class="memdesc:ae868643c7398bc5e351f8a70eb47201c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the isVoided attribute flag to false.  <br /></td></tr>
+<tr class="separator:ae868643c7398bc5e351f8a70eb47201c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0dc4ed07ada4aea43c6aa2e03ba3f949" id="r_a0dc4ed07ada4aea43c6aa2e03ba3f949"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0dc4ed07ada4aea43c6aa2e03ba3f949">setIsVoided</a> ()</td></tr>
+<tr class="memdesc:a0dc4ed07ada4aea43c6aa2e03ba3f949"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the isVoided attribute flag to false.  <br /></td></tr>
+<tr class="separator:a0dc4ed07ada4aea43c6aa2e03ba3f949"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_dbncd_dlyd_m_p_bttn"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_class_dbncd_dlyd_m_p_bttn')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_dbncd_dlyd_m_p_bttn.html">DbncdDlydMPBttn</a></td></tr>
 <tr class="memitem:a6b28f4f72471deb4a48b4dee9083e884 inherit pub_methods_class_dbncd_dlyd_m_p_bttn" id="r_a6b28f4f72471deb4a48b4dee9083e884"><td class="memItemLeft" align="right" valign="top">
 &#160;</td><td class="memItemRight" valign="bottom"><b>DbncdDlydMPBttn</b> ()</td></tr>
@@ -255,13 +279,200 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstract class, base to implement Voidable DD-MPBs (<b>VDD-MPB</b>). </p>
-<p><b>Voidable DD-MPBs</b> are MPBs whose distinctive characteristic is that implement switches that while being pressed their state might change from <b>On State</b> to a <b>Voided &amp; Off state</b> due to different voiding conditions. Those conditions include but are not limited to: pressed time, external signals or reaching the <b>On state</b>. The mechanisms to "un-void" the MPB and return it to an operational state include but are not limited to:</p><ul>
-<li>releasing the MPB</li>
+<p><b>Voidable DD-MPBs</b> are MPBs whose distinctive characteristic is that implement non-latching switches that while being pressed their state might change from <b>On State</b> to a <b>Voided &amp; Off state</b> due to different voiding conditions. Those conditions include but are not limited to:</p><ul>
+<li>pressing time</li>
+<li>external signals</li>
+<li>entering the <b>On state</b></li>
+</ul>
+<p>The mechanisms to "un-void" the MPB and return it to an operational state include but are not limited to:</p><ul>
+<li>releasing the MPBs</li>
 <li>receiving an external signal</li>
 <li>the reading of the <b>isOn</b> flag</li>
-<li>others. The voiding condition and the un-voiding mechanism define the VDD-MPB subclasses. </li>
 </ul>
-</div><hr/>The documentation for this class was generated from the following files:<ul>
+<p>The voiding conditions and the un-voiding mechanisms define the VDD-MPB subclasses. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a513da8ca7527e3a50f632ebb33448d40" name="a513da8ca7527e3a50f632ebb33448d40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a513da8ca7527e3a50f632ebb33448d40">&#9670;&#160;</a></span>VdblMPBttn() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">VdblMPBttn::VdblMPBttn </td>
+          <td>(</td>
+          <td class="paramtype">GPIO_TypeDef *</td>          <td class="paramname"><span class="paramname"><em>mpbttnPort</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint16_t &amp;</td>          <td class="paramname"><span class="paramname"><em>mpbttnPin</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool &amp;</td>          <td class="paramname"><span class="paramname"><em>pulledUp</em><span class="paramdefsep"> = </span><span class="paramdefval">true</span>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool &amp;</td>          <td class="paramname"><span class="paramname"><em>typeNO</em><span class="paramdefsep"> = </span><span class="paramdefval">true</span>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned long int &amp;</td>          <td class="paramname"><span class="paramname"><em>dbncTimeOrigSett</em><span class="paramdefsep"> = </span><span class="paramdefval">0</span>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned long int &amp;</td>          <td class="paramname"><span class="paramname"><em>strtDelay</em><span class="paramdefsep"> = </span><span class="paramdefval">0</span>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool &amp;</td>          <td class="paramname"><span class="paramname"><em>isOnDisabled</em><span class="paramdefsep"> = </span><span class="paramdefval">false</span></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Class constructor. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">isOnDisabled</td><td>(Optional) Sets the instantiation value for the isOnDisabled flag attribute.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>For the other parameters see <a class="el" href="class_dbncd_dlyd_m_p_bttn.html" title="Implements a Debounced Delayed MPB (DD-MPB).">DbncdDlydMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int, const unsigned long int)</a> </dd></dl>
+
+</div>
+</div>
+<a id="a5e395dc43999e431f91fd1ba9ae179e2" name="a5e395dc43999e431f91fd1ba9ae179e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e395dc43999e431f91fd1ba9ae179e2">&#9670;&#160;</a></span>VdblMPBttn() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">VdblMPBttn::VdblMPBttn </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structgpio_pin_id__t.html">gpioPinId_t</a></td>          <td class="paramname"><span class="paramname"><em>mpbttnPinStrct</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool &amp;</td>          <td class="paramname"><span class="paramname"><em>pulledUp</em><span class="paramdefsep"> = </span><span class="paramdefval">true</span>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool &amp;</td>          <td class="paramname"><span class="paramname"><em>typeNO</em><span class="paramdefsep"> = </span><span class="paramdefval">true</span>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned long int &amp;</td>          <td class="paramname"><span class="paramname"><em>dbncTimeOrigSett</em><span class="paramdefsep"> = </span><span class="paramdefval">0</span>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned long int &amp;</td>          <td class="paramname"><span class="paramname"><em>strtDelay</em><span class="paramdefsep"> = </span><span class="paramdefval">0</span>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool &amp;</td>          <td class="paramname"><span class="paramname"><em>isOnDisabled</em><span class="paramdefsep"> = </span><span class="paramdefval">false</span></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Class constructor. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mpbttnPinStrct</td><td>GPIO port and Pin identification defined as a single <a class="el" href="structgpio_pin_id__t.html" title="Type used to keep GPIO pin identification as a single parameter, independently of the platform requir...">gpioPinId_t</a> parameter. </td></tr>
+    <tr><td class="paramname">isOnDisabled</td><td>(Optional) Sets the instantiation value for the isOnDisabled flag attribute.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>For the other parameters see <a class="el" href="class_dbncd_dlyd_m_p_bttn.html" title="Implements a Debounced Delayed MPB (DD-MPB).">DbncdDlydMPBttn(gpioPinId_t, const bool, const bool, const unsigned long int, const unsigned long int)</a>. </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a2689fca49bfdf672da6d91b0fa5db1f0" name="a2689fca49bfdf672da6d91b0fa5db1f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2689fca49bfdf672da6d91b0fa5db1f0">&#9670;&#160;</a></span>getIsVoided()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const bool VdblMPBttn::getIsVoided </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the current value of the isVoided attribute flag. </p>
+<dl class="section return"><dt>Returns</dt><dd>The value of the flag. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">true</td><td>The object is in <b>voided state</b> </td></tr>
+    <tr><td class="paramname">false</td><td>The object is in <b>not voided state</b> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae868643c7398bc5e351f8a70eb47201c" name="ae868643c7398bc5e351f8a70eb47201c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae868643c7398bc5e351f8a70eb47201c">&#9670;&#160;</a></span>setIsNotVoided()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool VdblMPBttn::setIsNotVoided </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the value of the isVoided attribute flag to false. </p>
+<dl class="section warning"><dt>Warning</dt><dd>The value of the isVoided attribute flag is computed as a result of the current state of the instantiated object, considering the inputs and embedded simulated behavior.<ul>
+<li>Arbitrarily setting a value to the isVoided attribute flag might affect the normal behavior path for the object.</li>
+<li>The attribute flag value might return to it's natural value when the behavior imposes the change.</li>
+<li>The use of this method must be limited to certain states and conditions of the object, being the most suitable situation while the object is in <b>Disabled state</b>: If the application development requires the isVoided attribute flag to be in a specific value, this method and the <a class="el" href="#a0dc4ed07ada4aea43c6aa2e03ba3f949" title="Sets the value of the isVoided attribute flag to false.">setIsVoided()</a> method are the required tools.</li>
+</ul>
+</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The new value of the isVoided attribute flag. </dd></dl>
+
+</div>
+</div>
+<a id="a0dc4ed07ada4aea43c6aa2e03ba3f949" name="a0dc4ed07ada4aea43c6aa2e03ba3f949"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dc4ed07ada4aea43c6aa2e03ba3f949">&#9670;&#160;</a></span>setIsVoided()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool VdblMPBttn::setIsVoided </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the value of the isVoided attribute flag to false. </p>
+<dl class="section warning"><dt>Warning</dt><dd>See the Warnings for <a class="el" href="#ae868643c7398bc5e351f8a70eb47201c" title="Sets the value of the isVoided attribute flag to false.">setIsNotVoided()</a></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The new value of the isVoided attribute flag. </dd></dl>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>C:/Users/Gabriel D. Goldman/Documents/My Projects/Training Projects/MomentaryPushButtonTesterSTM32/mpbAsSwitch_STM32/src/<a class="el" href="mpb_as_switch___s_t_m32_8h_source.html">mpbAsSwitch_STM32.h</a></li>
 <li>C:/Users/Gabriel D. Goldman/Documents/My Projects/Training Projects/MomentaryPushButtonTesterSTM32/mpbAsSwitch_STM32/src/<a class="el" href="mpb_as_switch___s_t_m32_8cpp.html">mpbAsSwitch_STM32.cpp</a></li>
 </ul>
