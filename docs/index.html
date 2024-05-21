@@ -102,7 +102,7 @@ An STM32-RTOS library that builds switch mechanisms replacements out of simple p
 </p>
 <h2><a class="anchor" id="the-main-output-flag-generated-for-each-and-every-class-is-the-ison-flag-which-defines-the-_off-state_-ison--false-and-the-_on-state_-ison--true-of-the-instantiated-objects"></a>
 The main output flag generated for each and every class is the <b>isOn</b> flag, which defines the <em><b>Off State</b></em> (isOn = false) and the <em><b>On State</b></em> (isOn = true) of the instantiated objects.</h2>
-<p>All classes provide several communication mechanisms to keep it's output states available by request and by having their value change automatically informed. <br  />
+<p>All classes provide several communication mechanisms to keep it's output states available by request and by having their value change automatically notified. <br  />
  Those mechanisms include: <br  />
 </p><ul>
 <li><b>Flags value getters</b>: Return the value of each significant output flag. <br  />
@@ -111,19 +111,19 @@ The main output flag generated for each and every class is the <b>isOn</b> flag,
 </li>
 <li><b>Binary Semaphore</b>: Implementation of a <b>xTaskNotifyGive()</b> FreeRTOS macro to unblock a developer defined task, every time <b>any</b> of the output flags values is changed. <br  />
 </li>
-<li><b>Task Resume/Suspend</b>: A mechanism is provided to run a developer defined task while the object is in <b>On State</b>. The designated task will be set to "Suspended State" while the object is in <b>Off State</b> and will be set to "Resume" while it is in <b>On State</b>, providing means to execute far more complex task than just "turning On &amp; turning Off" devices. <br  />
+<li><b>Task Resume/Suspend</b>: A mechanism is provided to run a developer defined task while the object is in <b>On State</b>. The designated task will be set to "Suspended State" while the object is in <b>Off State</b> and will be set to "Resume" while it is in <b>On State</b>, providing means to execute far more complex tasks than just "turning On &amp; turning Off" devices. <br  />
 </li>
 <li><b>Functions execution</b>: A developer defined function might be set to be executed every time the instantiated object enters the <b>On State</b>, and a function might be set to be executed every time the instantiated object enters the <b>Off State</b>. The functions are to be independently defined, so one, the other or both might be defined, and even the same function might be used for both events. <br  />
 </li>
 </ul>
 <p>Those listed mechanisms are independent, so one or more might be simultaneously used depending on implementation convenience. <br  />
 </p>
-<h2><a class="anchor" id="the-library-implements-the-following-switches-mechanisms"></a>
-The library implements the following switches mechanisms:</h2>
+<h2><a class="anchor" id="the-library-implements-the-following-switches-behaviors"></a>
+The library implements the following switches behaviors:</h2>
 <ul>
-<li><b>Debounced Momentary Button</b> (a.k.a. Momentary switch, a.k.a. Pushbutton) <br  />
+<li><b>Debounced Momentary Push Button</b> (a.k.a. Momentary switch, a.k.a. Pushbutton) <br  />
 </li>
-<li><b>Debounced Delayed Momentary Button</b> <br  />
+<li><b>Debounced Delayed Momentary Push Button</b> <br  />
 </li>
 <li><b>Toggle Switch</b> (a.k.a. alternate, a.k.a. latched) <br  />
 </li>
@@ -136,8 +136,8 @@ The library implements the following switches mechanisms:</h2>
 <li><b>Double action On/Off + Slider combo switch</b> (a.k.a. off/on/dimmer, a.k.a. off/on/volume radio switch)</li>
 <li><b>Double action On/Off + Secondary Debounced Delayed MPB combo switch</b></li>
 </ul>
-<p>MpbAsSwitch Library Documentation available <a href="https://GabyGold67.github.io/mpbAsSwitch_STM32/">HERE</a></p>
-<p><img src="https://github.com/GabyGold67/mpbAsSwitch_STM32/blob/master/Extras/MomentaryPushButtonUMLClassesOnly.jpg" alt="MpbAsSwitch Classes Hierarchy" class="inline"/></p>
+<p>MpbAsSwitch Library Documentation available in Github Pages <a href="https://GabyGold67.github.io/mpbAsSwitch_STM32/">Github Pages</a></p>
+<p><img src="MomentaryPushButtonUMLClassesOnly.jpg" alt="MpbAsSwitch Classes Hierarchy" class="inline"/></p>
 <p>Each instantiated object returns a debounced, deglitched, clean "isOn" signal based on the expected behavior of the simulated switch mechanism.</p>
 <p>The system timer will periodically check the input pins associated to the objects and compute the object's output flags, the timer period for that checking is a general parameter that can be changed. </p>
 </div></div><!-- PageDoc -->
