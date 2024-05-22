@@ -3,11 +3,13 @@
   * @file	: 01_DbncdMPBttn_1b.cpp
   * @brief  : Example for the MpbAsSwitch_STM32 library DbncdMPBttn class
   *
-  * 	The test instantiates a DbncdMPBttn object using:
+  * 	The example instantiates a DbncdMPBttn object using:
   * 		- The Nucleo board user pushbutton attached to GPIO_B00
   * 		- The Nucleo board user LED attached to GPIO_A05
-  * 	This example includes a Free-RTOS timer that periodically toggle the isEnabled attribute flag
-  * 	value showing the change of behavior of the instantiated object.
+  * 		- A LED attached to GPIO_C00 to visualize the isEnabled attribute flag status
+  *
+  * 	This example includes a timer that periodically toggle the isEnabled attribute flag value
+  * 	showing the behavior of the instantiated object when enabled and when disabled.
   *
   * 	@author	: Gabriel D. Goldman
   *

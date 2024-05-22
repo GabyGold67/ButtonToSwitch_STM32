@@ -84,7 +84,8 @@ int main(void)
 		  256, // Stack depth in words
 		  NULL,	//Parameters to pass as arguments to the taskFunction
 		  configTIMER_TASK_PRIORITY,	//Set to the same priority level as the software timers
-		  &tstDefTaskHandle);
+		  &tstDefTaskHandle
+		  );
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */

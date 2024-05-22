@@ -45,8 +45,6 @@ UART_HandleTypeDef huart2;
 gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
 
-gpioPinId_t ledOnPC00{GPIOC, GPIO_PIN_0};	//Pin 0b 0000 0001
-gpioPinId_t ledOnPC01{GPIOC, GPIO_PIN_1};	//Pin 0b 0000 0010
 gpioPinId_t mpbttnOnPB00{GPIOB, GPIO_PIN_0};	//Pin 0b 0000 0001
 TaskHandle_t tstDefTaskHandle {NULL};
 BaseType_t xReturned;
@@ -87,7 +85,8 @@ int main(void)
 		  256, // Stack depth in words
 		  NULL,	//Parameters to pass as arguments to the taskFunction
 		  configTIMER_TASK_PRIORITY,	//Set to the same priority level as the software timers
-		  &tstDefTaskHandle);
+		  &tstDefTaskHandle
+		  );
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */

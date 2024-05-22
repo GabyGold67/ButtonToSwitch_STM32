@@ -40,8 +40,11 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-gpioPinId_t ledOnPC00{GPIOC, 0b001};
-gpioPinId_t ledOnPC01{GPIOC, 0b010};
+gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0010 0000
+gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
+
+gpioPinId_t ledOnPC00{GPIOC, GPIO_PIN_0};	//Pin 0b 0000 0001
+gpioPinId_t ledOnPC01{GPIOC, GPIO_PIN_1};	//Pin 0b 0000 0010
 TaskHandle_t tstDefTaskHandle {NULL};
 BaseType_t xReturned;
 /* USER CODE END PV */
