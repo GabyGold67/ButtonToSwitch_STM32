@@ -57,9 +57,9 @@ BaseType_t xReturned;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
-void tstDefTaskExec(void *pvParameters);
 void Error_Handler(void);
 
+void tstDefTaskExec(void *pvParameters);
 void swpEnableCb(TimerHandle_t  pvParam);
 
 /**
