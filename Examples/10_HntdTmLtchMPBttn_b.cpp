@@ -6,8 +6,8 @@
   * 	The example instantiates a HntdTmLtchMPBttn object using:
   * 		- The Nucleo board user pushbutton attached to GPIO_B00
   * 		- The Nucleo board user LED attached to GPIO_A05
-  * 		- A digital output to GPIO_PC00 to show _pilotOn attribute flag state
-  * 		- A digital output to GPIO_PC01 to show _wrnngOn attribute flag state
+  * 		- A digital output to GPIO_PC00 to show pilotOn attribute flag state
+  * 		- A digital output to GPIO_PC01 to show wrnngOn attribute flag state
   * 	This example includes:
   * 		- Implementation of the object
   * 		- A timer that periodically toggle the isEnabled attribute flag value
