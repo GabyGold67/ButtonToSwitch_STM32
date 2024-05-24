@@ -25,7 +25,7 @@
 var NAVTREE =
 [
   [ "MpbAsSwitch Library for STM32", "index.html", [
-    [ "Momentary Push Buttons as Switches Library (<em><strong>mpbAsSwitch</strong></em>)", "index.html", null ],
+    [ "Momentary Push Buttons as Switches Library (<em><strong>mpbAsSwitch</strong></em>)", "index.html", "index" ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],

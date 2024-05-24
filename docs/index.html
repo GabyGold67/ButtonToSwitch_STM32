@@ -98,18 +98,18 @@ $(function(){initNavTree('index.html',''); initResizable(); });
 <div class="textblock"><p><a class="anchor" id="md__c_1_2_users_2_gabriel_01_d_8_01_goldman_2_documents_2_my_01_projects_2_training_01_projects_2_momentary_push_button_tester_s_t_m32_2mpb_as_switch___s_t_m32_2_r_e_a_d_m_e"></a> </p>
 <h2><a class="anchor" id="an-stm32-rtos-library-that-builds-switch-mechanisms-replacements-out-of-simple-push-buttons"></a>
 An STM32-RTOS library that builds switch mechanisms replacements out of simple push buttons.</h2>
-<p>By using just a push button (a.k.a. momentary switches or momentary buttons, <em><b>MPB</b></em> for short from here on) the classes implemented in this library will manage, calculate and update different parameters to <b>generate the behavior of standard electromechanical switches</b>, including some well known industry specific switches. Those parameters include presses, releases, timings, counters or secondary inputs readings as needed, and corresponding primary and secondary outputs generated. <br  />
+<p>By using just a push button (a.k.a. momentary switches or momentary buttons -_**MPB**_ for short from here on- the classes implemented in this library will manage, calculate and update different parameters to <b>generate the behavior of standard electromechanical switches</b>, including some well known industry specific switches. Those parameters include presses, releases, timings, counters or secondary inputs readings as needed, and corresponding primary and secondary outputs generated. <br  />
 </p>
-<h2><a class="anchor" id="the-main-output-flag-generated-for-each-and-every-class-is-the-ison-flag-which-defines-the-_off-state_-ison--false-and-the-_on-state_-ison--true-of-the-instantiated-objects"></a>
-The main output flag generated for each and every class is the <b>isOn</b> flag, which defines the <em><b>Off State</b></em> (isOn = false) and the <em><b>On State</b></em> (isOn = true) of the instantiated objects.</h2>
+<h1><a class="anchor" id="the-main-output-flag-generated-for-each-and-every-class-is-the-ison-flag-which-defines-the-_off-state_-ison--false-and-the-_on-state_-ison--true-of-the-instantiated-objects"></a>
+The main output flag generated for each and every class is the <b>isOn</b> flag, which defines the <em><b>Off State</b></em> (isOn = false) and the <em><b>On State</b></em> (isOn = true) of the instantiated objects.</h1>
 <p>All classes provide several communication mechanisms to keep it's output states available by request and by having their value change automatically notified. <br  />
  Those mechanisms include: <br  />
 </p><ul>
 <li><b>Flags value getters</b>: Return the value of each significant output flag. <br  />
 </li>
-<li><b>General flags value change getter</b>: Returns a value indicating if <b>any</b> of the significant output flags values has changed. <br  />
+<li><b>General flags value change getter</b>: Returns a value indicating if <b>any</b> of the significant output flags' values has changed. <br  />
 </li>
-<li><b>Binary Semaphore</b>: Implementation of a <b>xTaskNotifyGive()</b> FreeRTOS macro to unblock a developer defined task, every time <b>any</b> of the output flags values is changed. <br  />
+<li><b>Binary Semaphore</b>: Implementation of a <b>xTaskNotifyGive()</b> FreeRTOS macro to unblock a developer defined task, every time <b>any</b> of the output flags' values changes. <br  />
 </li>
 <li><b>Task Resume/Suspend</b>: A mechanism is provided to run a developer defined task while the object is in <b>On State</b>. The designated task will be set to "Suspended State" while the object is in <b>Off State</b> and will be set to "Resume" while it is in <b>On State</b>, providing means to execute far more complex tasks than just "turning On &amp; turning Off" devices. <br  />
 </li>
