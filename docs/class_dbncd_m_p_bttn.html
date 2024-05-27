@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;1.0.0</span>
+   <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;1.1.0</span>
    </div>
    <div id="projectbrief">A library that provides elaborated switch mechanism simulation for digital signals inputs</div>
   </td>
@@ -186,6 +186,9 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memitem:ac646101296a76321e855250ba044c8d7" id="r_ac646101296a76321e855250ba044c8d7"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac646101296a76321e855250ba044c8d7">getOutputsChange</a> () const</td></tr>
 <tr class="memdesc:ac646101296a76321e855250ba044c8d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the <b>outputsChange</b> flag.  <br /></td></tr>
 <tr class="separator:ac646101296a76321e855250ba044c8d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4e601d4adc84085481782d5ab71a7d0" id="r_ad4e601d4adc84085481782d5ab71a7d0"><td class="memItemLeft" align="right" valign="top">unsigned long int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad4e601d4adc84085481782d5ab71a7d0">getStrtDelay</a> ()</td></tr>
+<tr class="memdesc:ad4e601d4adc84085481782d5ab71a7d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current value of strtDelay attribute.  <br /></td></tr>
+<tr class="separator:ad4e601d4adc84085481782d5ab71a7d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3da781ff0ad5ec1064d62570fd005a3a" id="r_a3da781ff0ad5ec1064d62570fd005a3a"><td class="memItemLeft" align="right" valign="top">const TaskHandle_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3da781ff0ad5ec1064d62570fd005a3a">getTaskToNotify</a> () const</td></tr>
 <tr class="memdesc:a3da781ff0ad5ec1064d62570fd005a3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be notified by the object when its output flags changes.  <br /></td></tr>
 <tr class="separator:a3da781ff0ad5ec1064d62570fd005a3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -661,6 +664,27 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="ad4e601d4adc84085481782d5ab71a7d0" name="ad4e601d4adc84085481782d5ab71a7d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4e601d4adc84085481782d5ab71a7d0">&#9670;&#160;</a></span>getStrtDelay()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned long int DbncdMPBttn::getStrtDelay </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the current value of strtDelay attribute. </p>
+<p>Returns the current value of time used by the object to rise the isOn flag, after the debouncing process ends, in milliseconds. If the MPB is released before completing the debounce <b>and</b> the strtDelay time, no press will be detected by the object, and the isOn flag will not be affected. The original value for the delay process used at instantiation time might be changed with the setStrtDelay() method, so this method is provided to get the current value in use.</p>
+<dl class="section return"><dt>Returns</dt><dd>The current strtDelay time in milliseconds. </dd></dl>
 
 </div>
 </div>

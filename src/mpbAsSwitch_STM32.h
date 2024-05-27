@@ -119,6 +119,7 @@ protected:
 	std::string _mpbPollTmrName {""};
 	volatile bool _outputsChange {false};
 	bool _prssRlsCcl{false};
+   unsigned long int _strtDelay {0};
 	bool _sttChng {true};
 	TaskHandle_t _taskToNotifyHndl {NULL};
 	TaskHandle_t _taskWhileOnHndl{NULL};
@@ -302,6 +303,15 @@ public:
 	 */
    const bool getOutputsChange() const;
    /**
+    * @brief Gets the current value of strtDelay attribute.
+    *
+    * Returns the current value of time used by the object to rise the isOn flag, after the debouncing process ends, in milliseconds. If the MPB is released before completing the debounce **and** the strtDelay time, no press will be detected by the object, and the isOn flag will not be affected. The original value for the delay process used at instantiation time might be changed with the setStrtDelay() method, so this method is provided to get the current value in use.
+    *
+    * @return The current strtDelay time in milliseconds.
+    */
+   unsigned long int getStrtDelay();
+   /**
+
 	 * @brief Gets the task to be notified by the object when its output flags changes.
 	 *
 	 * The task handle of the task to be notified by the object when its **outputsChange** flag is set (see getOutputsChange()) holds a **NULL** when the object is created. A valid task's TaskHandle_t value might be set by using the setTaskToNotify() method, as many times as needed, and even set back to **NULL** to disable the task notification mechanism.
@@ -471,10 +481,6 @@ public:
  * @class DbncdDlydMPBttn
  */
 class DbncdDlydMPBttn: public DbncdMPBttn{
-protected:
-    unsigned long int _strtDelay {0};
-
-    virtual bool updValidPressesStatus();
 public:
     /**
      * @brief Default constructor
@@ -503,14 +509,6 @@ public:
      *
      */
     DbncdDlydMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
-    /**
-     * @brief Gets the current value of strtDelay attribute.
-     *
-     * Returns the current value of time used by the object to rise the isOn flag, after the debouncing process ends, in milliseconds. If the MPB is released before completing the debounce **and** the strtDelay time, no press will be detected by the object, and the isOn flag will not be affected. The original value for the delay process used at instantiation time might be changed with the setStrtDelay() method, so this method is provided to get the current value in use.
-     *
-     * @return The current strtDelay time in milliseconds.
-     */
-    unsigned long int getStrtDelay();
     /**
      *
      * @brief see DbncdMPBttn::init(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int)

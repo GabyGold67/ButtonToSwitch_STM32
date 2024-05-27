@@ -95,7 +95,6 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
-
   }
 }
 
@@ -236,15 +235,7 @@ void tstDefTaskExec(void *pvParameters)
 	  }
 	}
 }
-
 	/* USER CODE END 4 */
-
-/* USER CODE BEGIN Header_StartDefaultTask */
-/**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used
-  * @retval None
-  */
 
 /**
   * @brief  Period elapsed callback in non blocking mode

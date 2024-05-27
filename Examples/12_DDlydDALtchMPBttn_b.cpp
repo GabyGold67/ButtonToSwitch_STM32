@@ -85,7 +85,6 @@ int main(void)
   MX_USART2_UART_Init();
 
   /* Create the thread(s) */
-
   /* USER CODE BEGIN RTOS_THREADS */
   xReturned = xTaskCreate(
 		  tstDefTaskExec, //taskFunction
@@ -208,19 +207,12 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : ledOnPC00 */
   GPIO_InitStruct.Pin = ledOnPC00.pinNum;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(ledOnPC00.portId, &GPIO_InitStruct);
 
   /*Configure GPIO pin : ledOnPC01 */
   GPIO_InitStruct.Pin = ledOnPC01.pinNum;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(ledOnPC01.portId, &GPIO_InitStruct);
 }
-
 /* USER CODE BEGIN 4 */
 void tstDefTaskExec(void *pvParameters)
 {
@@ -249,7 +241,6 @@ void tstDefTaskExec(void *pvParameters)
 			tstBttnPtr,
 			swpEnableCb
 			);
-
 
 	tstBttn.begin(5);
 
@@ -308,7 +299,6 @@ void swpEnableCb(TimerHandle_t  pvParam){
 
   return;
 }
-
 /* USER CODE END 4 */
 
 /**
@@ -319,18 +309,11 @@ void swpEnableCb(TimerHandle_t  pvParam){
   * @param  htim : TIM handle
   * @retval None
   */
-
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  /* USER CODE BEGIN Callback 0 */
-
-  /* USER CODE END Callback 0 */
   if (htim->Instance == TIM9) {
     HAL_IncTick();
   }
-  /* USER CODE BEGIN Callback 1 */
-
-  /* USER CODE END Callback 1 */
 }
 
 /**

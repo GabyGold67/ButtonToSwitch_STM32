@@ -16,6 +16,7 @@ var class_dbncd_m_p_bttn =
     [ "getIsOn", "class_dbncd_m_p_bttn.html#ac78bb12cb1d9bdb43b4e4e593812b300", null ],
     [ "getIsOnDisabled", "class_dbncd_m_p_bttn.html#a9cee3ead20e3628c02975a9d0c8a4baa", null ],
     [ "getOutputsChange", "class_dbncd_m_p_bttn.html#ac646101296a76321e855250ba044c8d7", null ],
+    [ "getStrtDelay", "class_dbncd_m_p_bttn.html#ad4e601d4adc84085481782d5ab71a7d0", null ],
     [ "getTaskToNotify", "class_dbncd_m_p_bttn.html#a3da781ff0ad5ec1064d62570fd005a3a", null ],
     [ "getTaskWhileOn", "class_dbncd_m_p_bttn.html#a3728d2003365cbdaf81cccfca3604fe8", null ],
     [ "init", "class_dbncd_m_p_bttn.html#a748f95239413d4c9c0a5b5d0d6396e60", null ],

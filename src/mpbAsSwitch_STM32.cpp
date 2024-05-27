@@ -229,6 +229,11 @@ const bool DbncdMPBttn::getOutputsChange() const{
     return _outputsChange;
 }
 
+unsigned long int DbncdMPBttn::getStrtDelay(){
+
+	return _strtDelay;
+}
+
 const TaskHandle_t DbncdMPBttn::getTaskToNotify() const{
 
     return _taskToNotifyHndl;
@@ -240,9 +245,6 @@ const TaskHandle_t DbncdMPBttn::getTaskWhileOn(){
 }
 
 bool DbncdMPBttn::init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett){
-//    char mpbttnPinChar[3]{};
-//    uint16_t tmpPinNum {_mpbttnPin};
-//    uint8_t tmpBitCount{0};
     bool result {false};
 
     if (_mpbPollTmrName == ""){
@@ -721,7 +723,7 @@ bool DbncdMPBttn::updValidPressesStatus(){
 				_dbncTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be pressed
 			}
 			else{
-				if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= (_dbncTimeTempSett)){
+				if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= (_dbncTimeTempSett + _strtDelay)){
 					_validPressPend = true;
 					_validReleasePend = false;
 					_prssRlsCcl = true;
@@ -756,18 +758,14 @@ DbncdDlydMPBttn::DbncdDlydMPBttn()
 }
 
 DbncdDlydMPBttn::DbncdDlydMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
-:DbncdMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett), _strtDelay{strtDelay}
+:DbncdMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett)
 {
+	 _strtDelay = strtDelay;
 }
 
 DbncdDlydMPBttn::DbncdDlydMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
 :DbncdDlydMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
 {
-}
-
-unsigned long int DbncdDlydMPBttn::getStrtDelay(){
-
-	return _strtDelay;
 }
 
 bool DbncdDlydMPBttn::init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay){
@@ -794,42 +792,6 @@ bool DbncdDlydMPBttn::setStrtDelay(const unsigned long int &newStrtDelay){
     }
 
     return result;
-}
-
-bool DbncdDlydMPBttn::updValidPressesStatus(){
-	if(_isPressed){
-		if(_dbncRlsTimerStrt != 0)
-			_dbncRlsTimerStrt = 0;
-		if(!_prssRlsCcl){
-			if(_dbncTimerStrt == 0){    //This is the first detection of the press event
-				_dbncTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be pressed
-			}
-			else{
-				if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= (_dbncTimeTempSett + _strtDelay)){
-					_validPressPend = true;
-					_validReleasePend = false;
-					_prssRlsCcl = true;
-				}
-			}
-		}
-	}
-	else{
-		if(_dbncTimerStrt != 0)
-			_dbncTimerStrt = 0;
-		if(_prssRlsCcl){
-			if(_dbncRlsTimerStrt == 0){    //This is the first detection of the release event
-				_dbncRlsTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be UNpressed
-			}
-			else{
-				if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncRlsTimerStrt) >= (_dbncRlsTimeTempSett)){
-					_validReleasePend = true;
-					_prssRlsCcl = false;
-				}
-			}
-		}
-	}
-
-	return (_validPressPend||_validReleasePend);
 }
 
 //=========================================================================> Class methods delimiter
@@ -1281,7 +1243,7 @@ bool HntdTmLtchMPBttn::begin(const unsigned long int &pollDelayMs){
 				pdTRUE,     //Auto-reload true
 				this,       //TimerID: data passed to the callback function to work
 				mpbPollCallback
-			);
+				);
 			if (_mpbPollTmrHndl != NULL){
 				tmrModResult = xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
 				if (tmrModResult == pdPASS)
@@ -1830,24 +1792,6 @@ bool DblActnLtchMPBttn::updValidPressesStatus(){
 	if(_isPressed){
 		if(_dbncRlsTimerStrt != 0)
 			_dbncRlsTimerStrt = 0;
-//		if(_dbncTimerStrt == 0){    //It was not previously pressed
-//			_dbncTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be pressed
-//		}
-//		else{
-//			if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= ((_dbncTimeTempSett + _strtDelay) + _scndModActvDly)){
-//				_validScndModPend = true;
-//				_validPressPend = false;
-//				_validReleasePend = false;	//Needed for the singular case of _scndModActvDly = 0
-//			}
-//			if (((xTaskGetTickCount() / portTICK_RATE_MS) - _dbncTimerStrt) >= (_dbncTimeTempSett + _strtDelay)){
-//				if(!_validScndModPend){
-//					_validPressPend = true;
-//					_validReleasePend = false;
-//					_prssRlsCcl = true;
-//
-//				}
-//			}
-//		}
 		if(_dbncTimerStrt == 0){    //It was not previously pressed
 			_dbncTimerStrt = xTaskGetTickCount() / portTICK_RATE_MS;	//Started to be pressed
 		}

@@ -61,7 +61,6 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 void Error_Handler(void);
 
-/* Private function prototypes -----------------------------------------------*/
 void tstDefTaskExec(void *pvParameters);
 void swpEnableCb(TimerHandle_t  pvParam);
 
@@ -206,9 +205,6 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : Output to led in PC0 */
   GPIO_InitStruct.Pin = ledOnPC00.pinNum;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(ledOnPC00.portId, &GPIO_InitStruct);
 }
 
@@ -301,15 +297,7 @@ void swpEnableCb(TimerHandle_t  pvParam){
 
   return;
 }
-
 /* USER CODE END 4 */
-
-/* USER CODE BEGIN Header_StartDefaultTask */
-/**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used
-  * @retval None
-  */
 
 /**
   * @brief  Period elapsed callback in non blocking mode
@@ -319,12 +307,8 @@ void swpEnableCb(TimerHandle_t  pvParam){
   * @param  htim : TIM handle
   * @retval None
   */
-
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  /* USER CODE BEGIN Callback 0 */
-
-  /* USER CODE END Callback 0 */
   if (htim->Instance == TIM9) {
     HAL_IncTick();
   }

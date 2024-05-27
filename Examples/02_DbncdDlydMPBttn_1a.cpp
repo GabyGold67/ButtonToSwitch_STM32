@@ -47,7 +47,6 @@ gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
 gpioPinId_t ledOnPC00{GPIOC, GPIO_PIN_0};	//Pin 0b 0000 0001
 TaskHandle_t tstDefTaskHandle {NULL};
 BaseType_t xReturned;
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -95,7 +94,6 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
-
   }
 }
 
@@ -204,7 +202,7 @@ void tstDefTaskExec(void *pvParameters)
 	bool tmpBttnWasOn{false};
 	bool tmpBttnIsOn{false};
 
-	DbncdDlydMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, true, true, 0, 600);
+	DbncdDlydMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, true, true, 0, 1000);
 
 	tstBttn.begin(20);
 
@@ -222,13 +220,6 @@ void tstDefTaskExec(void *pvParameters)
 }
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_StartDefaultTask */
-/**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used
-  * @retval None
-  */
-
 /**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM9 interrupt took place, inside
@@ -239,9 +230,6 @@ void tstDefTaskExec(void *pvParameters)
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  /* USER CODE BEGIN Callback 0 */
-
-  /* USER CODE END Callback 0 */
   if (htim->Instance == TIM9) {
     HAL_IncTick();
   }

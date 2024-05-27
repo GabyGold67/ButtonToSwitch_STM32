@@ -53,7 +53,6 @@ gpioPinId_t ledOnPC00{GPIOC, GPIO_PIN_0};	//Pin 0b 0000 0001
 gpioPinId_t mpbttnOnPB00{GPIOB, GPIO_PIN_0};	//Pin 0b 0000 0001
 TaskHandle_t tstDefTaskHandle {NULL};
 BaseType_t xReturned;
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -102,7 +101,6 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
-
   }
 }
 
@@ -284,13 +282,6 @@ void swpEnableCb(TimerHandle_t  pvParam){
 }
 
 /* USER CODE END 4 */
-
-/* USER CODE BEGIN Header_StartDefaultTask */
-/**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used
-  * @retval None
-  */
 
 /**
   * @brief  Period elapsed callback in non blocking mode

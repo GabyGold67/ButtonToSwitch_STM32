@@ -199,9 +199,6 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : ledOnPC00 */
   GPIO_InitStruct.Pin = ledOnPC00.pinNum;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(ledOnPC00.portId, &GPIO_InitStruct);
 }
 
@@ -244,7 +241,6 @@ void tstDefTaskExec(void *pvParameters)
 	  }
 	}
 }
-
 	/* USER CODE END 4 */
 
 /**
@@ -255,7 +251,6 @@ void tstDefTaskExec(void *pvParameters)
   * @param  htim : TIM handle
   * @retval None
   */
-
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if (htim->Instance == TIM9) {

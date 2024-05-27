@@ -53,16 +53,15 @@ gpioPinId_t ledOnPC00{GPIOC, GPIO_PIN_0};	//Pin 0b 0000 0001
 gpioPinId_t mpbttnOnPB00{GPIOB, GPIO_PIN_0};	//Pin 0b 0000 0001
 TaskHandle_t tstDefTaskHandle {NULL};
 BaseType_t xReturned;
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
-void tstDefTaskExec(void *pvParameters);
 void Error_Handler(void);
 
+void tstDefTaskExec(void *pvParameters);
 void swpEnableCb(TimerHandle_t  pvParam);
 
 /**
@@ -102,7 +101,6 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
-
   }
 }
 
@@ -292,16 +290,7 @@ void swpEnableCb(TimerHandle_t  pvParam){
 
   return;
 }
-
-
 /* USER CODE END 4 */
-
-/* USER CODE BEGIN Header_StartDefaultTask */
-/**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used
-  * @retval None
-  */
 
 /**
   * @brief  Period elapsed callback in non blocking mode
@@ -313,15 +302,9 @@ void swpEnableCb(TimerHandle_t  pvParam){
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  /* USER CODE BEGIN Callback 0 */
-
-  /* USER CODE END Callback 0 */
   if (htim->Instance == TIM9) {
     HAL_IncTick();
   }
-  /* USER CODE BEGIN Callback 1 */
-
-  /* USER CODE END Callback 1 */
 }
 
 /**

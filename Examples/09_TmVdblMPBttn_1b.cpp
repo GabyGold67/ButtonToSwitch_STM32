@@ -54,7 +54,6 @@ gpioPinId_t ledOnPC00{GPIOC, GPIO_PIN_0};
 gpioPinId_t ledOnPC01{GPIOC, GPIO_PIN_1};
 TaskHandle_t tstDefTaskHandle {NULL};
 BaseType_t xReturned;
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -66,7 +65,6 @@ void Error_Handler(void);
 void tstDefTaskExec(void *pvParameters);
 void swpEnableCb(TimerHandle_t  pvParam);
 
-/* Private user code ---------------------------------------------------------*/
 /**
   * @brief  The application entry point.
   * @retval int
@@ -96,8 +94,7 @@ int main(void)
 		  configTIMER_TASK_PRIORITY,	//Set to the same priority level as the software timers
 		  &tstDefTaskHandle
 		  );
-
-  /* USER CODE END RTOS_EVENTS */
+  /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
   vTaskStartScheduler();
@@ -106,7 +103,6 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
-
   }
 }
 
@@ -310,15 +306,7 @@ void swpEnableCb(TimerHandle_t  pvParam){
 
   return;
 }
-
 /* USER CODE END 4 */
-
-/* USER CODE BEGIN Header_StartDefaultTask */
-/**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used
-  * @retval None
-  */
 
 /**
   * @brief  Period elapsed callback in non blocking mode
@@ -331,15 +319,9 @@ void swpEnableCb(TimerHandle_t  pvParam){
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  /* USER CODE BEGIN Callback 0 */
-
-  /* USER CODE END Callback 0 */
   if (htim->Instance == TIM9) {
     HAL_IncTick();
   }
-  /* USER CODE BEGIN Callback 1 */
-
-  /* USER CODE END Callback 1 */
 }
 
 /**

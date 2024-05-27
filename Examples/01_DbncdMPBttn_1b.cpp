@@ -30,7 +30,6 @@
 //----------------------- End Specific to use STM32F4xxyy testing platform
 
 /* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
 //===========================>> Next lines used to avoid CMSIS wrappers
 #include "FreeRTOS.h"
 #include "task.h"
@@ -38,6 +37,7 @@
 #include "event_groups.h"
 //===========================>> Previous lines used to avoid CMSIS wrappers
 
+/* USER CODE BEGIN Includes */
 #include "../../mpbAsSwitch_STM32/src/mpbAsSwitch_STM32.h"
 /* USER CODE END Includes */
 
@@ -51,7 +51,6 @@ gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
 gpioPinId_t ledOnPC00{GPIOC, GPIO_PIN_0};	//Pin 0b 0000 0001
 TaskHandle_t tstDefTaskHandle {NULL};
 BaseType_t xReturned;
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -99,7 +98,6 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
-
   }
 }
 
@@ -168,10 +166,6 @@ static void MX_USART2_UART_Init(void)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN USART2_Init 2 */
-
-  /* USER CODE END USART2_Init 2 */
-
 }
 
 /**
@@ -213,10 +207,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(ledOnPC00.portId, &GPIO_InitStruct);
-
-  /* USER CODE BEGIN MX_GPIO_Init_2 */
-
-  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -240,7 +230,7 @@ void tstDefTaskExec(void *pvParameters)
 			pdTRUE,
 			tstBttnPtr,
 			swpEnableCb
-	);
+			);
 	if (enableSwpTmrHndl != NULL){
       tmrModRslt = xTimerStart(enableSwpTmrHndl, portMAX_DELAY);
    }
@@ -284,13 +274,6 @@ void swpEnableCb(TimerHandle_t  pvParam){
 }
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_StartDefaultTask */
-/**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used
-  * @retval None
-  */
-
 /**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM9 interrupt took place, inside
@@ -301,15 +284,9 @@ void swpEnableCb(TimerHandle_t  pvParam){
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  /* USER CODE BEGIN Callback 0 */
-
-  /* USER CODE END Callback 0 */
   if (htim->Instance == TIM9) {
     HAL_IncTick();
   }
-  /* USER CODE BEGIN Callback 1 */
-
-  /* USER CODE END Callback 1 */
 }
 
 /**

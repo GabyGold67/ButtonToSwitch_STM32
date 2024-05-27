@@ -105,7 +105,6 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
-
   }
 }
 
@@ -212,23 +211,15 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : ledOnPC00 */
   GPIO_InitStruct.Pin = ledOnPC00.pinNum;
-//  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-//  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(ledOnPC00.portId, &GPIO_InitStruct);
 
   /*Configure GPIO pin : ledOnPC01 */
   GPIO_InitStruct.Pin = ledOnPC01.pinNum;
-//  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-//  GPIO_InitStruct.Pull = GPIO_NOPULL;
-//  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(ledOnPC01.portId, &GPIO_InitStruct);
 
   /*Configure GPIO pin : ledOnA04 */
   GPIO_InitStruct.Pin = ledOnPA04.pinNum;
-//  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-//  GPIO_InitStruct.Pull = GPIO_NOPULL;
-//  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(ledOnPA04.portId, &GPIO_InitStruct);
 }
 
@@ -334,15 +325,7 @@ void swpEnableCb(TimerHandle_t  pvParam){
 
   return;
 }
-
 /* USER CODE END 4 */
-
-/* USER CODE BEGIN Header_StartDefaultTask */
-/**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used
-  * @retval None
-  */
 
 /**
   * @brief  Period elapsed callback in non blocking mode

@@ -82,7 +82,6 @@ int main(void)
 
   /* Create the thread(s) */
   /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
   xReturned = xTaskCreate(
 		  tstDefTaskExec, //taskFunction
 		  "TstMainTask", //Task function legible name
@@ -91,7 +90,6 @@ int main(void)
 		  configTIMER_TASK_PRIORITY,	//Set to the same priority level as the software timers
 		  &tstDefTaskHandle
 		  );
-
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
@@ -101,7 +99,6 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
-
   }
 }
 
@@ -236,7 +233,7 @@ void tstDefTaskExec(void *pvParameters)
 			pdTRUE,
 			tstBttnPtr,
 			swpEnableCb
-	);
+			);
 	if (enableSwpTmrHndl != NULL){
       tmrModRslt = xTimerStart(enableSwpTmrHndl, portMAX_DELAY);
    }
@@ -280,13 +277,6 @@ void swpEnableCb(TimerHandle_t  pvParam){
 }
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_StartDefaultTask */
-/**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used
-  * @retval None
-  */
-
 /**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM9 interrupt took place, inside
@@ -297,15 +287,9 @@ void swpEnableCb(TimerHandle_t  pvParam){
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  /* USER CODE BEGIN Callback 0 */
-
-  /* USER CODE END Callback 0 */
   if (htim->Instance == TIM9) {
     HAL_IncTick();
   }
-  /* USER CODE BEGIN Callback 1 */
-
-  /* USER CODE END Callback 1 */
 }
 
 /**

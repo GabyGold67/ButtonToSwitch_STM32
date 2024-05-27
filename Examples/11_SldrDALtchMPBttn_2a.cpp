@@ -95,7 +95,6 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
-
   }
 }
 
@@ -240,10 +239,8 @@ void tstDefTaskExec(void *pvParameters)
 	  }
 	}
 }
-
 	/* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_StartDefaultTask */
 /**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM9 interrupt took place, inside
@@ -252,12 +249,8 @@ void tstDefTaskExec(void *pvParameters)
   * @param  htim : TIM handle
   * @retval None
   */
-
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  /* USER CODE BEGIN Callback 0 */
-
-  /* USER CODE END Callback 0 */
   if (htim->Instance == TIM9) {
     HAL_IncTick();
   }
