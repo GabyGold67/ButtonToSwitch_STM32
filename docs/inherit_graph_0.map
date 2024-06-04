@@ -14,7 +14,7 @@
 <area shape="poly" id="edge7_Node000002_Node000007" title=" " alt="" coords="438,143,485,143,485,148,438,148"/>
 <area shape="rect" id="Node000009" href="$class_xtrn_unltch_m_p_bttn.html" title="Implements an External Unlatch LDD&#45;MPB, a.k.a. Emergency Latched Switch (XULDD&#45;MPB)" alt="" coords="477,183,602,209"/>
 <area shape="poly" id="edge9_Node000002_Node000009" title=" " alt="" coords="438,161,495,180,494,185,436,166"/>
-<area shape="rect" id="Node000004" href="$class_d_dlyd_d_a_ltch_m_p_bttn.html" title="Implements a Debounced Delayed DALDD&#45;MPB combo switch, a.k.a. Dobule Debounced Delayed Latched MPB co..." alt="" coords="656,5,799,32"/>
+<area shape="rect" id="Node000004" href="$class_d_dlyd_d_a_ltch_m_p_bttn.html" title="Implements a Debounced Delayed DALDD&#45;MPB combo switch (Debounced Delayed Double Action Latched MPB co..." alt="" coords="656,5,799,32"/>
 <area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="623,30,655,26,656,31,624,35"/>
 <area shape="rect" id="Node000005" href="$class_sldr_d_a_ltch_m_p_bttn.html" title="Implements a Slider Double Action LDD&#45;MPB combo switch, a.k.a. off/on/dimmer, a.k...." alt="" coords="662,56,793,83"/>
 <area shape="poly" id="edge5_Node000003_Node000005" title=" " alt="" coords="623,53,662,58,661,63,623,58"/>
