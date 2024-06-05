@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;1.1.0</span>
+   <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;2.0.0</span>
    </div>
    <div id="projectbrief">A library that provides elaborated switch mechanism simulation for digital signals inputs</div>
   </td>
@@ -155,6 +155,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>clrStatus</b> (bool c
 <tr class="memitem:a0dc4ed07ada4aea43c6aa2e03ba3f949" id="r_a0dc4ed07ada4aea43c6aa2e03ba3f949"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0dc4ed07ada4aea43c6aa2e03ba3f949">setIsVoided</a> ()</td></tr>
 <tr class="memdesc:a0dc4ed07ada4aea43c6aa2e03ba3f949"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the isVoided attribute flag to false.  <br /></td></tr>
 <tr class="separator:a0dc4ed07ada4aea43c6aa2e03ba3f949"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44b4adbb89ef5d1678ede65b3390cf43" id="r_a44b4adbb89ef5d1678ede65b3390cf43"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a44b4adbb89ef5d1678ede65b3390cf43">getFrcOtptLvldWhnVdd</a> ()</td></tr>
+<tr class="memdesc:a44b4adbb89ef5d1678ede65b3390cf43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the frcOtptLvlWhnVdd attribute.  <br /></td></tr>
+<tr class="separator:a44b4adbb89ef5d1678ede65b3390cf43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2bb4d3c30f63dbac92521968aecd36a" id="r_ab2bb4d3c30f63dbac92521968aecd36a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab2bb4d3c30f63dbac92521968aecd36a">getStOnWhnOtpFrcd</a> ()</td></tr>
+<tr class="memdesc:ab2bb4d3c30f63dbac92521968aecd36a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the stOnWhnOtptFrcd attribute.  <br /></td></tr>
+<tr class="separator:ab2bb4d3c30f63dbac92521968aecd36a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42f1bf11862fe074f4fe867d52533014" id="r_a42f1bf11862fe074f4fe867d52533014"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a42f1bf11862fe074f4fe867d52533014">setFrcdOtptWhnVdd</a> (const bool &amp;newVal)</td></tr>
+<tr class="memdesc:a42f1bf11862fe074f4fe867d52533014"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the frcOtptLvlWhnVdd attribute flag.  <br /></td></tr>
+<tr class="separator:a42f1bf11862fe074f4fe867d52533014"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92a31a71f39c62db8156c61d18199f28" id="r_a92a31a71f39c62db8156c61d18199f28"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a92a31a71f39c62db8156c61d18199f28">setStOnWhnOtpFrcd</a> (const bool &amp;newVal)</td></tr>
+<tr class="memdesc:a92a31a71f39c62db8156c61d18199f28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the stOnWhnOtptFrcd attribute flag.  <br /></td></tr>
+<tr class="separator:a92a31a71f39c62db8156c61d18199f28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_dbncd_dlyd_m_p_bttn"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_class_dbncd_dlyd_m_p_bttn')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_dbncd_dlyd_m_p_bttn.html">DbncdDlydMPBttn</a></td></tr>
 <tr class="memitem:a6b28f4f72471deb4a48b4dee9083e884 inherit pub_methods_class_dbncd_dlyd_m_p_bttn" id="r_a6b28f4f72471deb4a48b4dee9083e884"><td class="memItemLeft" align="right" valign="top">
 &#160;</td><td class="memItemRight" valign="bottom"><b>DbncdDlydMPBttn</b> ()</td></tr>
@@ -279,7 +291,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstract class, base to implement Voidable DD-MPBs (<b>VDD-MPB</b>). </p>
-<p><b>Voidable DD-MPBs</b> are MPBs whose distinctive characteristic is that implement non-latching switches that while being pressed their state might change from <b>On State</b> to a <b>Voided &amp; Off state</b> due to different voiding conditions. Those conditions include but are not limited to:</p><ul>
+<p><b>Voidable DD-MPBs</b> are MPBs whose distinctive characteristic is that implement non-latching switches that while being pressed their state might change from <b>On State</b> to a <b>Voided state</b> due to different voiding conditions. Depending on the classes the voided state might be <b>Voided &amp; Off state</b>, <b>Voided &amp; On state</b> or <b>Voided &amp; Not enforced</b> states. Those conditions to change to a voided state include but are not limited to:</p><ul>
 <li>pressing time</li>
 <li>external signals</li>
 <li>entering the <b>On state</b></li>
@@ -398,6 +410,27 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a44b4adbb89ef5d1678ede65b3390cf43" name="a44b4adbb89ef5d1678ede65b3390cf43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44b4adbb89ef5d1678ede65b3390cf43">&#9670;&#160;</a></span>getFrcOtptLvldWhnVdd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool VdblMPBttn::getFrcOtptLvldWhnVdd </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the value of the frcOtptLvlWhnVdd attribute. </p>
+<p>The frcOtptLvlWhnVdd (Force Output Level When Voided) attribute configures the object to either keep it's isOn attribute flag current value when entering the <b>voided state</b> (false) or forces a specific isOn value (true).</p>
+<dl class="section return"><dt>Returns</dt><dd>the current value of the frcOtptLvlWhnVdd attribute. </dd></dl>
+
+</div>
+</div>
 <a id="a2689fca49bfdf672da6d91b0fa5db1f0" name="a2689fca49bfdf672da6d91b0fa5db1f0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2689fca49bfdf672da6d91b0fa5db1f0">&#9670;&#160;</a></span>getIsVoided()</h2>
 
@@ -419,6 +452,59 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
   <table class="retval">
     <tr><td class="paramname">true</td><td>The object is in <b>voided state</b> </td></tr>
     <tr><td class="paramname">false</td><td>The object is in <b>not voided state</b> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab2bb4d3c30f63dbac92521968aecd36a" name="ab2bb4d3c30f63dbac92521968aecd36a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2bb4d3c30f63dbac92521968aecd36a">&#9670;&#160;</a></span>getStOnWhnOtpFrcd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool VdblMPBttn::getStOnWhnOtpFrcd </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the value of the stOnWhnOtptFrcd attribute. </p>
+<p>If the frcOtptLvlWhnVdd attribute flag is set to true, the instantiated object will force the isOn flag attribute value when entering the <b>voided state</b>, in which case the enforced value will be defined by the stOnWhnOtptFrcd (Set On When Output Forced) attribute. If this attribute value is true, the isOn attribute flag will be forced to true, if it is false the isOn attribute flag will be forced to false. In both cases, if the isOn value is forced to change, the respective <b>turning on</b> or <b>turning off</b> actions will be executed.</p>
+<dl class="section return"><dt>Returns</dt><dd>the current value of the stOnWhnOtptFrcd attribute. </dd></dl>
+
+</div>
+</div>
+<a id="a42f1bf11862fe074f4fe867d52533014" name="a42f1bf11862fe074f4fe867d52533014"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42f1bf11862fe074f4fe867d52533014">&#9670;&#160;</a></span>setFrcdOtptWhnVdd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool VdblMPBttn::setFrcdOtptWhnVdd </td>
+          <td>(</td>
+          <td class="paramtype">const bool &amp;</td>          <td class="paramname"><span class="paramname"><em>newVal</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the value of the frcOtptLvlWhnVdd attribute flag. </p>
+<p>See <a class="el" href="#a44b4adbb89ef5d1678ede65b3390cf43" title="Gets the value of the frcOtptLvlWhnVdd attribute.">getFrcOtptLvldWhnVdd()</a></p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">newVal</td><td>The new value for the frcOtptLvlWhnVdd attribute flag.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">true</td><td></td></tr>
   </table>
   </dd>
 </dl>
@@ -469,6 +555,38 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <p>Sets the value of the isVoided attribute flag to false. </p>
 <dl class="section warning"><dt>Warning</dt><dd>See the Warnings for <a class="el" href="#ae868643c7398bc5e351f8a70eb47201c" title="Sets the value of the isVoided attribute flag to false.">setIsNotVoided()</a></dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>The new value of the isVoided attribute flag. </dd></dl>
+
+</div>
+</div>
+<a id="a92a31a71f39c62db8156c61d18199f28" name="a92a31a71f39c62db8156c61d18199f28"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92a31a71f39c62db8156c61d18199f28">&#9670;&#160;</a></span>setStOnWhnOtpFrcd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool VdblMPBttn::setStOnWhnOtpFrcd </td>
+          <td>(</td>
+          <td class="paramtype">const bool &amp;</td>          <td class="paramname"><span class="paramname"><em>newVal</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the value of the stOnWhnOtptFrcd attribute flag. </p>
+<p>See <a class="el" href="#ab2bb4d3c30f63dbac92521968aecd36a" title="Gets the value of the stOnWhnOtptFrcd attribute.">getStOnWhnOtpFrcd()</a></p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">newVal</td><td>The new value for the stOnWhnOtptFrcd attribute flag.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">true</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

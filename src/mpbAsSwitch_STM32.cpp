@@ -1684,6 +1684,9 @@ void DblActnLtchMPBttn::clrStatus(bool clrIsOn){
 	taskENTER_CRITICAL();
 	_scndModTmrStrt = 0;
 	_validScndModPend = false;
+	if(clrIsOn)
+		if(_isOnScndry)
+			_turnOffScndry();
 	LtchMPBttn::clrStatus(clrIsOn);
 	taskEXIT_CRITICAL();
 
@@ -1708,6 +1711,66 @@ bool DblActnLtchMPBttn::setScndModActvDly(const unsigned long &newVal){
 	taskEXIT_CRITICAL();
 
 	return result;
+}
+
+void DblActnLtchMPBttn::_turnOffScndry(){
+	if(_isOnScndry){
+		//---------------->> Tasks related actions
+		/*
+		if(_taskWhileOnHndl != NULL){
+			eTaskState taskWhileOnStts{eTaskGetState(_taskWhileOnHndl)};
+			if (taskWhileOnStts != eSuspended){
+				if(taskWhileOnStts != eDeleted){
+					vTaskSuspend(_taskWhileOnHndl);
+				}
+			}
+		}*/
+		//---------------->> Functions related actions
+		/*
+		if(_fnWhnTrnOff != nullptr){
+			_fnWhnTrnOff();
+		}*/
+	}
+
+	taskENTER_CRITICAL();
+	if(_isOnScndry){
+		//---------------->> Flags related actions
+		_isOnScndry = false;
+		_outputsChange = true;
+	}
+	taskEXIT_CRITICAL();
+
+	return;
+}
+
+void DblActnLtchMPBttn::_turnOnScndry(){
+	if(!_isOnScndry){
+		//---------------->> Tasks related actions
+		/*
+		if(_taskWhileOnHndl != NULL){
+			eTaskState taskWhileOnStts{eTaskGetState(_taskWhileOnHndl)};
+			if(taskWhileOnStts != eDeleted){
+				if (taskWhileOnStts == eSuspended){
+					vTaskResume(_taskWhileOnHndl);
+				}
+			}
+		}*/
+		//---------------->> Functions related actions
+		/*
+		if(_fnWhnTrnOn != nullptr){
+			_fnWhnTrnOn();
+		}*/
+	}
+
+	taskENTER_CRITICAL();
+	if(!_isOnScndry){
+		//---------------->> Flags related actions
+		_isOnScndry = true;
+		_outputsChange = true;
+	}
+	taskEXIT_CRITICAL();
+
+	return;
 }
 
 void DblActnLtchMPBttn::updFdaState(){
@@ -1941,7 +2004,8 @@ void DblActnLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 }
 
 //=========================================================================> Class methods delimiter
-// v2.x.x integrity check up to here Gaby
+
+// v2.x.x integrity check up pending Gaby
 
 DDlydDALtchMPBttn::DDlydDALtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
 :DblActnLtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
@@ -1958,8 +2022,8 @@ DDlydDALtchMPBttn::~DDlydDALtchMPBttn()
 }
 
 void DDlydDALtchMPBttn::clrStatus(bool clrIsOn){
-	if(clrIsOn && _isOn2){
-		_isOn2= false;
+	if(clrIsOn && _isOnScndry){
+		_turnOffScndry();
 		_outputsChange = true;
 	}
 	DblActnLtchMPBttn::clrStatus(clrIsOn);
@@ -1969,12 +2033,15 @@ void DDlydDALtchMPBttn::clrStatus(bool clrIsOn){
 
 bool DDlydDALtchMPBttn::getIsOn2(){
 
-	return _isOn2;
+	return _isOnScndry;
 }
 
 void DDlydDALtchMPBttn::stDisabled_In(){
-	if(_isOn2 != _isOnDisabled){
-		_isOn2 = _isOnDisabled;
+	if(_isOnScndry != _isOnDisabled){
+		if(_isOnDisabled)
+			_turnOnScndry();
+		else
+			_turnOffScndry();
 		_outputsChange = true;
 	}
 
@@ -1982,8 +2049,8 @@ void DDlydDALtchMPBttn::stDisabled_In(){
 }
 
 void DDlydDALtchMPBttn::stOnStrtScndMod_In(){
-	if(!_isOn2){
-		_isOn2 = true;
+	if(!_isOnScndry){
+		_turnOnScndry();
 		_outputsChange = true;
 	}
 
@@ -1996,8 +2063,8 @@ void DDlydDALtchMPBttn::stOnScndMod_Do(){
 }
 
 void DDlydDALtchMPBttn::stOnEndScndMod_Out(){
-	if(_isOn2){
-		_isOn2 = false;
+	if(_isOnScndry){
+		_turnOffScndry();
 		_outputsChange = true;
 	}
 
@@ -2005,6 +2072,8 @@ void DDlydDALtchMPBttn::stOnEndScndMod_Out(){
 }
 
 //=========================================================================> Class methods delimiter
+
+// v2.x.x integrity check up pending Gaby
 
 SldrDALtchMPBttn::SldrDALtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long &dbncTimeOrigSett, const unsigned long int &strtDelay, const uint16_t initVal)
 :DblActnLtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay), _otptCurVal{initVal}
@@ -2260,6 +2329,8 @@ bool SldrDALtchMPBttn::swapSldrDir(){
 }
 
 //=========================================================================> Class methods delimiter
+
+// v2.x.x integrity check up pending Gaby
 
 VdblMPBttn::VdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay, const bool &isOnDisabled)
 :DbncdDlydMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
@@ -2544,7 +2615,38 @@ void VdblMPBttn::updFdaState(){
 	return;
 }
 
+bool VdblMPBttn::getFrcOtptLvldWhnVdd(){
+
+	return _frcOtptLvlWhnVdd;
+}
+
+bool VdblMPBttn::getStOnWhnOtpFrcd(){
+
+	return _stOnWhnOtptFrcd;
+}
+
+bool VdblMPBttn::setFrcdOtptWhnVdd(const bool &newVal){
+	taskENTER_CRITICAL();
+	if(_frcOtptLvlWhnVdd != newVal)
+		_frcOtptLvlWhnVdd = newVal;
+	taskEXIT_CRITICAL();
+
+	return true;
+}
+
+bool VdblMPBttn::setStOnWhnOtpFrcd(const bool &newVal){
+	taskENTER_CRITICAL();
+	if(_stOnWhnOtptFrcd != newVal)
+		_stOnWhnOtptFrcd = newVal;
+	taskEXIT_CRITICAL();
+
+	return true;
+}
+
+
 //=========================================================================> Class methods delimiter
+
+// v2.x.x integrity check up pending Gaby
 
 TmVdblMPBttn::TmVdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, unsigned long int voidTime, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay, const bool &isOnDisabled)
 :VdblMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay, isOnDisabled), _voidTime{voidTime}

@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;1.1.0</span>
+   <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;2.0.0</span>
    </div>
    <div id="projectbrief">A library that provides elaborated switch mechanism simulation for digital signals inputs</div>
   </td>
@@ -341,7 +341,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <li>1. -&gt; 3.: long press.</li>
 <li>2. -&gt; 3.: long press.</li>
 <li>2. -&gt; 1.: short press.</li>
-<li>3. -&gt; 2.: secondary behavior unlatch (subclass dependant, maybe release, external unlatch, etc.)</li>
+<li>3. -&gt; 2.: secondary behavior unlatch (subclass dependent, maybe release, external unlatch, etc.)</li>
 <li>2. -&gt; 1.: short press.</li>
 </ul>
 <dl class="section note"><dt>Note</dt><dd>The <b>short press</b> will always be calculated as the Debounce + Delay set attributes. </dd>
@@ -448,7 +448,8 @@ The <b>long press</b> is a configurable attribute of the class, the <b>Secondary
 </div><div class="memdoc">
 
 <p>Gets the current value of the scndModActvDly class attribute. </p>
-<p>The scndModActvDly attribute defines the time length a MPB must remain pressed to consider it a <b>long press</b>, needed to activate the <b>secondary mode</b>. </p>
+<p>The scndModActvDly attribute defines the time length a MPB must remain pressed to consider it a <b>long press</b>, needed to activate the <b>secondary mode</b>.</p>
+<dl class="section return"><dt>Returns</dt><dd>The current scndModActvDly value, i.e. the delay in milliseconds. </dd></dl>
 
 </div>
 </div>

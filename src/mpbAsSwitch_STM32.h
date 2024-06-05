@@ -993,7 +993,7 @@ public:
  * - 1. -> 3.: long press.
  * - 2. -> 3.: long press.
  * - 2. -> 1.: short press.
- * - 3. -> 2.: secondary behavior unlatch (subclass dependant, maybe release, external unlatch, etc.)
+ * - 3. -> 2.: secondary behavior unlatch (subclass dependent, maybe release, external unlatch, etc.)
  * - 2. -> 1.: short press.
  *
  * @note The **short press** will always be calculated as the Debounce + Delay set attributes.
@@ -1016,6 +1016,7 @@ protected:
 		//--------
 		stDisabled
 	};
+   volatile bool _isOnScndry{false};
 	fdaDALmpbStts _mpbFdaState {stOffNotVPP};
 	unsigned long _scndModActvDly {2000};
 	unsigned long _scndModTmrStrt {0};
@@ -1026,6 +1027,8 @@ protected:
 	virtual void stOnStrtScndMod_In(){};
    virtual void stOnScndMod_Do() = 0;
    virtual void stOnEndScndMod_Out(){};
+	virtual void _turnOffScndry();
+	virtual void _turnOnScndry();
 	virtual void updFdaState();
 	virtual bool updValidPressesStatus();
    virtual void updValidUnlatchStatus();
@@ -1060,6 +1063,8 @@ public:
 	 * @brief Gets the current value of the scndModActvDly class attribute.
 	 *
 	 * The scndModActvDly attribute defines the time length a MPB must remain pressed to consider it a **long press**, needed to activate the **secondary mode**.
+	 *
+	 * @return The current scndModActvDly value, i.e. the delay in milliseconds.
 	 */
    unsigned long getScndModActvDly();
 	/**
@@ -1091,8 +1096,6 @@ public:
  */
 class DDlydDALtchMPBttn: public DblActnLtchMPBttn{
 protected:
-   bool _isOn2{false};
-
    virtual void stDisabled_In();
    virtual void stOnStrtScndMod_In();
    virtual void stOnScndMod_Do();
@@ -1326,8 +1329,8 @@ public:
 /**
  * @brief Abstract class, base to implement Voidable DD-MPBs (**VDD-MPB**).
  *
- * **Voidable DD-MPBs** are MPBs whose distinctive characteristic is that implement non-latching switches that while being pressed their state might change from **On State** to a **Voided & Off state** due to different voiding conditions.
- * Those conditions include but are not limited to:
+ * **Voidable DD-MPBs** are MPBs whose distinctive characteristic is that implement non-latching switches that while being pressed their state might change from **On State** to a **Voided state** due to different voiding conditions. Depending on the classes the voided state might be **Voided & Off state**, **Voided & On state** or **Voided & Not enforced** states.
+ * Those conditions to change to a voided state include but are not limited to:
  * - pressing time
  * - external signals
  * - entering the **On state**
@@ -1365,6 +1368,9 @@ protected:
     bool _isVoided{false};
     bool _validVoidPend{false};
     bool _validUnvoidPend{false};
+
+    bool _frcOtptLvlWhnVdd {true};
+    bool _stOnWhnOtptFrcd{false};
 
     static void mpbPollCallback(TimerHandle_t mpbTmrCb);
     bool setVoided(const bool &newVoidValue);
@@ -1432,6 +1438,42 @@ public:
      * @return The new value of the isVoided attribute flag.
      */
     bool setIsVoided();
+    /**
+     * @brief Gets the value of the frcOtptLvlWhnVdd attribute.
+     *
+     * The frcOtptLvlWhnVdd (Force Output Level When Voided) attribute configures the object to either keep it's isOn attribute flag current value when entering the **voided state** (false) or forces a specific isOn value (true).
+     *
+     * @return the current value of the frcOtptLvlWhnVdd attribute.
+     */
+    bool getFrcOtptLvldWhnVdd();
+    /**
+     * @brief Gets the value of the stOnWhnOtptFrcd attribute.
+     *
+     * If the frcOtptLvlWhnVdd attribute flag is set to true, the instantiated object will force the isOn flag attribute value when entering the **voided state**, in which case the enforced value will be defined by the stOnWhnOtptFrcd (Set On When Output Forced) attribute. If this attribute value is true, the isOn attribute flag will be forced to true, if it is false the isOn  attribute flag will be forced to false. In both cases, if the isOn value is forced to change, the respective **turning on** or **turning off** actions will be executed.
+     *
+     * @return the current value of the stOnWhnOtptFrcd attribute.
+     */
+    bool getStOnWhnOtpFrcd();
+    /**
+     * @brief Sets the value of the frcOtptLvlWhnVdd attribute flag.
+     *
+     * See getFrcOtptLvldWhnVdd()
+     *
+     * @param newVal The new value for the frcOtptLvlWhnVdd attribute flag.
+     *
+     * @retval true
+     */
+    bool setFrcdOtptWhnVdd(const bool &newVal);
+    /**
+     * @brief Sets the value of the stOnWhnOtptFrcd attribute flag.
+     *
+     * See getStOnWhnOtpFrcd()
+     *
+     * @param newVal The new value for the stOnWhnOtptFrcd attribute flag.
+     *
+     * @retval true
+     */
+    bool setStOnWhnOtpFrcd(const bool &newVal);
 };
 
 //==========================================================>>
