@@ -1022,7 +1022,11 @@ protected:
 	unsigned long _scndModTmrStrt {0};
 	bool _validScndModPend{false};
 
-	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
+	void (*_fnWhnTrnOffScndry)() {nullptr};
+	void (*_fnWhnTrnOnScndry)() {nullptr};
+	TaskHandle_t _taskWhileOnScndryHndl{NULL};
+
+static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
    virtual void stDisabled_In(){};
 	virtual void stOnStrtScndMod_In(){};
    virtual void stOnScndMod_Do() = 0;
@@ -1078,6 +1082,15 @@ public:
 	 * @retval false: The new value is not in the valid range, the value was not updated.
 	 */
 	bool setScndModActvDly(const unsigned long &newVal);
+
+	fncPtrType getFnWhnTrnOffScndry();
+   fncPtrType getFnWhnTrnOnScndry();
+	const TaskHandle_t getTaskWhileOnScndry();
+
+	bool setFnWhnTrnOffScndryPtr(void(*newFnWhnTrnOff)());
+	bool setFnWhnTrnOnScndryPtr(void (*newFnWhnTrnOn)());
+	bool setTaskWhileOnScndry(const TaskHandle_t &newTaskHandle);
+
 };
 
 //==========================================================>>
@@ -1124,13 +1137,13 @@ public:
 	 */
    void clrStatus(bool clrIsOn = true);
    /**
-	 * @brief Gets the current value of the isOn2 flag
+	 * @brief Gets the current value of the isOnScndry attribute flag
 	 *
-	 * The isOn2 flag holds the **secondary On state**, when the MPB is pressed for the seted **long press** time from the Off-Off or the On-Off state as described in the DblActnLtchMPBttn class.
+	 * The isOnScndry attribute flag holds the **secondary On state**, when the MPB is pressed for the seted **long press** time from the Off-Off or the On-Off state as described in the DblActnLtchMPBttn class.
     *
-    * @return The current value of the isOn2 flag.
+    * @return The current value of the isOnScndry flag.
     */
-   bool getIsOn2();
+   bool getIsOnScndry();
 };
 
 //==========================================================>>
@@ -1345,6 +1358,9 @@ public:
  * @class VdblMPBttn
  */
 class VdblMPBttn: public DbncdDlydMPBttn{
+private:
+   bool setFrcdOtptWhnVdd(const bool &newVal);
+   bool setStOnWhnOtpFrcd(const bool &newVal);
 protected:
 	enum fdaVmpbStts{
  		stOffNotVPP,
@@ -1365,12 +1381,11 @@ protected:
  	};
  	fdaVmpbStts _mpbFdaState {stOffNotVPP};
 
-    bool _isVoided{false};
+ 	 bool _frcOtptLvlWhnVdd {true};
+ 	 bool _isVoided{false};
+    bool _stOnWhnOtptFrcd{false};
     bool _validVoidPend{false};
     bool _validUnvoidPend{false};
-
-    bool _frcOtptLvlWhnVdd {true};
-    bool _stOnWhnOtptFrcd{false};
 
     static void mpbPollCallback(TimerHandle_t mpbTmrCb);
     bool setVoided(const bool &newVoidValue);
@@ -1427,7 +1442,7 @@ public:
      * - The attribute flag value might return to it's natural value when the behavior imposes the change.
      * - The use of this method must be limited to certain states and conditions of the object, being the most suitable situation while the object is in **Disabled state**: If the application development requires the isVoided attribute flag to be in a specific value, this method and the setIsVoided() method are the required tools.
      *
-     * @return The new value of the isVoided attribute flag.
+     * @retval true
      */
     bool setIsNotVoided();
     /**
@@ -1435,15 +1450,17 @@ public:
      *
      * @warning See the Warnings for setIsNotVoided()
      *
-     * @return The new value of the isVoided attribute flag.
+     * @retval true
      */
     bool setIsVoided();
     /**
      * @brief Gets the value of the frcOtptLvlWhnVdd attribute.
      *
-     * The frcOtptLvlWhnVdd (Force Output Level When Voided) attribute configures the object to either keep it's isOn attribute flag current value when entering the **voided state** (false) or forces a specific isOn value (true).
+     * The frcOtptLvlWhnVdd (Force Output Level When Voided) attribute configures the object to either keep it's isOn attribute flag current value when entering the **voided state** (false) or to force it to a specific isOn value (true).
      *
      * @return the current value of the frcOtptLvlWhnVdd attribute.
+     *
+     * @note Until v2.0.0 no VdblMPBttn class or subclasses **make use of the frcOtptLvlWhnVdd attribute**, their inclusion is "New Features Requests" reception related.
      */
     bool getFrcOtptLvldWhnVdd();
     /**
@@ -1452,28 +1469,10 @@ public:
      * If the frcOtptLvlWhnVdd attribute flag is set to true, the instantiated object will force the isOn flag attribute value when entering the **voided state**, in which case the enforced value will be defined by the stOnWhnOtptFrcd (Set On When Output Forced) attribute. If this attribute value is true, the isOn attribute flag will be forced to true, if it is false the isOn  attribute flag will be forced to false. In both cases, if the isOn value is forced to change, the respective **turning on** or **turning off** actions will be executed.
      *
      * @return the current value of the stOnWhnOtptFrcd attribute.
+     *
+     * @note Until v2.0.0 no VdblMPBttn class or subclasses **make use of the stOnWhnOtptFrcd attribute**, their inclusion is "New Features Requests" reception related.
      */
     bool getStOnWhnOtpFrcd();
-    /**
-     * @brief Sets the value of the frcOtptLvlWhnVdd attribute flag.
-     *
-     * See getFrcOtptLvldWhnVdd()
-     *
-     * @param newVal The new value for the frcOtptLvlWhnVdd attribute flag.
-     *
-     * @retval true
-     */
-    bool setFrcdOtptWhnVdd(const bool &newVal);
-    /**
-     * @brief Sets the value of the stOnWhnOtptFrcd attribute flag.
-     *
-     * See getStOnWhnOtpFrcd()
-     *
-     * @param newVal The new value for the stOnWhnOtptFrcd attribute flag.
-     *
-     * @retval true
-     */
-    bool setStOnWhnOtpFrcd(const bool &newVal);
 };
 
 //==========================================================>>
@@ -1502,7 +1501,6 @@ public:
      * @param voidTime The time -in milliseconds- the MPB must be pressed to enter the **voided state**.
      *
      * @note For the rest of the parameters see VdblMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool , const unsigned long int, const unsigned long int, const bool)
-     *
      */
     TmVdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, unsigned long int voidTime, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0, const bool &isOnDisabled = false);
     /**
@@ -1538,12 +1536,11 @@ public:
      *
      * @note To ensure a safe and predictable behavior from the instantiated objects a minimum Void Time (equal to the minimum Service Time) setting guard is provided, ensuring data and signals processing are completed before voiding process is enforced by the timer. The guard is set by the defined _MinSrvcTime constant.
      *
-     * @retval: true if the newVoidTime parameter is different from the previous Void Time value, and is equal to or greater than the minimum setting guard.
-     * @reval: false otherwise.
+     * @retval: true if the newVoidTime parameter is equal to or greater than the minimum setting guard. The attribute value is changed.
+     * @retval: false otherwise. The attribute value is not changed.
      *
      */
     bool setVoidTime(const unsigned long int &newVoidTime);
-
     /**
      * @brief See DbncdMPBttn::begin(const unsigned long int)
      */

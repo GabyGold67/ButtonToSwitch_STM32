@@ -1693,9 +1693,24 @@ void DblActnLtchMPBttn::clrStatus(bool clrIsOn){
 	return;
 }
 
+fncPtrType DblActnLtchMPBttn::getFnWhnTrnOffScndry(){
+
+	return _fnWhnTrnOffScndry;
+}
+
+fncPtrType DblActnLtchMPBttn::getFnWhnTrnOnScndry(){
+
+	return _fnWhnTrnOnScndry;
+}
+
 unsigned long DblActnLtchMPBttn::getScndModActvDly(){
 
 	return _scndModActvDly;
+}
+
+const TaskHandle_t DblActnLtchMPBttn::getTaskWhileOnScndry(){
+
+	return _taskWhileOnScndryHndl;
 }
 
 bool DblActnLtchMPBttn::setScndModActvDly(const unsigned long &newVal){
@@ -1708,33 +1723,76 @@ bool DblActnLtchMPBttn::setScndModActvDly(const unsigned long &newVal){
 			result = true;
 		}
 	}
+	else{
+		result = true;
+	}
 	taskEXIT_CRITICAL();
 
 	return result;
 }
 
+bool DblActnLtchMPBttn::setFnWhnTrnOffScndryPtr(void (*newFnWhnTrnOff)()){
+	taskENTER_CRITICAL();
+	if (_fnWhnTrnOffScndry != newFnWhnTrnOff){
+		_fnWhnTrnOffScndry = newFnWhnTrnOff;
+	}
+	taskEXIT_CRITICAL();
+	return true;
+}
+
+bool DblActnLtchMPBttn::setFnWhnTrnOnScndryPtr(void (*newFnWhnTrnOn)()){
+	taskENTER_CRITICAL();
+	if (_fnWhnTrnOnScndry != newFnWhnTrnOn){
+		_fnWhnTrnOnScndry = newFnWhnTrnOn;
+	}
+	taskEXIT_CRITICAL();
+
+	return true;
+}
+
+bool DblActnLtchMPBttn::setTaskWhileOnScndry(const TaskHandle_t &newTaskHandle){
+	eTaskState taskWhileOnStts{};
+
+	taskENTER_CRITICAL();
+	if(_taskWhileOnScndryHndl != newTaskHandle){
+		if(_taskWhileOnScndryHndl != NULL){
+			taskWhileOnStts = eTaskGetState(_taskWhileOnScndryHndl);
+			if (taskWhileOnStts != eSuspended){
+				if(taskWhileOnStts != eDeleted){
+					vTaskSuspend(_taskWhileOnScndryHndl);
+					_taskWhileOnScndryHndl = NULL;
+				}
+			}
+		}
+		if (newTaskHandle != NULL){
+			_taskWhileOnScndryHndl = newTaskHandle;
+		}
+	}
+	taskEXIT_CRITICAL();
+
+	return true;
+}
+
 void DblActnLtchMPBttn::_turnOffScndry(){
 	if(_isOnScndry){
 		//---------------->> Tasks related actions
-		/*
-		if(_taskWhileOnHndl != NULL){
-			eTaskState taskWhileOnStts{eTaskGetState(_taskWhileOnHndl)};
-			if (taskWhileOnStts != eSuspended){
-				if(taskWhileOnStts != eDeleted){
-					vTaskSuspend(_taskWhileOnHndl);
+		if(_taskWhileOnScndryHndl != NULL){
+			eTaskState taskWhileOnScndryStts{eTaskGetState(_taskWhileOnScndryHndl)};
+			if (taskWhileOnScndryStts != eSuspended){
+				if(taskWhileOnScndryStts != eDeleted){
+					vTaskSuspend(_taskWhileOnScndryHndl);
 				}
 			}
-		}*/
+		}
 		//---------------->> Functions related actions
-		/*
-		if(_fnWhnTrnOff != nullptr){
-			_fnWhnTrnOff();
-		}*/
+		if(_fnWhnTrnOffScndry != nullptr){
+			_fnWhnTrnOffScndry();
+		}
 	}
 
 	taskENTER_CRITICAL();
+	//---------------->> Flags related actions
 	if(_isOnScndry){
-		//---------------->> Flags related actions
 		_isOnScndry = false;
 		_outputsChange = true;
 	}
@@ -1746,25 +1804,23 @@ void DblActnLtchMPBttn::_turnOffScndry(){
 void DblActnLtchMPBttn::_turnOnScndry(){
 	if(!_isOnScndry){
 		//---------------->> Tasks related actions
-		/*
-		if(_taskWhileOnHndl != NULL){
-			eTaskState taskWhileOnStts{eTaskGetState(_taskWhileOnHndl)};
-			if(taskWhileOnStts != eDeleted){
-				if (taskWhileOnStts == eSuspended){
-					vTaskResume(_taskWhileOnHndl);
+		if(_taskWhileOnScndryHndl != NULL){
+			eTaskState taskWhileOnScndryStts{eTaskGetState(_taskWhileOnScndryHndl)};
+			if(taskWhileOnScndryStts != eDeleted){
+				if (taskWhileOnScndryStts == eSuspended){
+					vTaskResume(_taskWhileOnScndryHndl);
 				}
 			}
-		}*/
+		}
 		//---------------->> Functions related actions
-		/*
-		if(_fnWhnTrnOn != nullptr){
-			_fnWhnTrnOn();
-		}*/
+		if(_fnWhnTrnOnScndry != nullptr){
+			_fnWhnTrnOnScndry();
+		}
 	}
 
 	taskENTER_CRITICAL();
+	//---------------->> Flags related actions
 	if(!_isOnScndry){
-		//---------------->> Flags related actions
 		_isOnScndry = true;
 		_outputsChange = true;
 	}
@@ -2031,7 +2087,7 @@ void DDlydDALtchMPBttn::clrStatus(bool clrIsOn){
 	return;
 }
 
-bool DDlydDALtchMPBttn::getIsOn2(){
+bool DDlydDALtchMPBttn::getIsOnScndry(){
 
 	return _isOnScndry;
 }
@@ -2330,8 +2386,6 @@ bool SldrDALtchMPBttn::swapSldrDir(){
 
 //=========================================================================> Class methods delimiter
 
-// v2.x.x integrity check up pending Gaby
-
 VdblMPBttn::VdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay, const bool &isOnDisabled)
 :DbncdDlydMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
 {
@@ -2348,8 +2402,13 @@ VdblMPBttn::~VdblMPBttn()
 }
 
 void VdblMPBttn::clrStatus(bool clrIsOn){
-	DbncdMPBttn::clrStatus(clrIsOn);	//This method might set the _outputsChange flag if the _isOn flag was set, as it will be changed to false if the parameter clrIsOn == true.
-	setIsNotVoided();
+	taskENTER_CRITICAL();
+	if(_isVoided){
+		setIsNotVoided();
+		_outputsChange = true;
+	}
+	DbncdMPBttn::clrStatus(clrIsOn);
+	taskEXIT_CRITICAL();
 
 	return;
 }
@@ -2362,6 +2421,7 @@ const bool VdblMPBttn::getIsVoided() const{
 void VdblMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	VdblMPBttn* mpbObj = (VdblMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
 
+	taskENTER_CRITICAL();
 	if(mpbObj->getIsEnabled()){
 		// Input/Output signals update
 		mpbObj->updIsPressed();
@@ -2371,6 +2431,7 @@ void VdblMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	}
  	// State machine state update
 	mpbObj->updFdaState();
+	taskEXIT_CRITICAL();
 
 	if (mpbObj->getOutputsChange()){
 	  if(mpbObj->getTaskToNotify() != NULL)
@@ -2392,12 +2453,14 @@ bool VdblMPBttn::setIsVoided(){
 }
 
 bool VdblMPBttn::setVoided(const bool &newVoidValue){
+	taskENTER_CRITICAL();
 	if(_isVoided != newVoidValue){
 		_isVoided = newVoidValue;
       _outputsChange = true;
 	}
+	taskEXIT_CRITICAL();
 
-	return _isVoided;
+	return true;
 }
 
 void VdblMPBttn::stDisabled_In(){
@@ -2424,6 +2487,7 @@ void VdblMPBttn::stDisabled_Out(){
 }
 
 void VdblMPBttn::updFdaState(){
+	taskENTER_CRITICAL();
 	switch(_mpbFdaState){
 		case stOffNotVPP:
 			//In: >>---------------------------------->>
@@ -2611,6 +2675,7 @@ void VdblMPBttn::updFdaState(){
 	default:
 		break;
 	}
+	taskEXIT_CRITICAL();
 
 	return;
 }
@@ -2646,11 +2711,11 @@ bool VdblMPBttn::setStOnWhnOtpFrcd(const bool &newVal){
 
 //=========================================================================> Class methods delimiter
 
-// v2.x.x integrity check up pending Gaby
-
 TmVdblMPBttn::TmVdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, unsigned long int voidTime, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay, const bool &isOnDisabled)
 :VdblMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay, isOnDisabled), _voidTime{voidTime}
 {
+   _frcOtptLvlWhnVdd = true;	//This attribute is subclass inherent characteristic, no setter will be provided for it
+   _stOnWhnOtptFrcd = false;	//This attribute is subclass inherent characteristic, no setter will be provided for it
 }
 
 TmVdblMPBttn::TmVdblMPBttn(gpioPinId_t mpbttnPinStrct, unsigned long int voidTime, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay, const bool &isOnDisabled)
@@ -2681,19 +2746,16 @@ bool TmVdblMPBttn::begin(const unsigned long int &pollDelayMs){
 			result = true;
 	}
 
-return result;
+   return result;
 }
 
 void TmVdblMPBttn::clrStatus(){
-    /*
-     To Resume operation after a pause() without risking generating false "Valid presses" and "On" situations,
-    several attributes must be reseted to "Start" values
-    */
+	taskENTER_CRITICAL();
+   _voidTmrStrt = 0;
+   VdblMPBttn::clrStatus();
+   taskEXIT_CRITICAL();
 
-    VdblMPBttn::clrStatus();
-    _voidTmrStrt = 0;
-
-    return;
+   return;
 }
 
 const unsigned long int TmVdblMPBttn::getVoidTime() const{
@@ -2702,12 +2764,16 @@ const unsigned long int TmVdblMPBttn::getVoidTime() const{
 }
 
 bool TmVdblMPBttn::setVoidTime(const unsigned long int &newVoidTime){
-    bool result{false};
+    bool result{true};
 
-    if((newVoidTime != _voidTime) && (newVoidTime > _MinSrvcTime)){
-        _voidTime = newVoidTime;
-        result = true;
+    taskENTER_CRITICAL();
+    if(newVoidTime != _voidTime){
+   	 if(newVoidTime >= _MinSrvcTime)
+   		 _voidTime = newVoidTime;
+   	 else
+   		 result = false;
     }
+    taskEXIT_CRITICAL();
 
     return result;
 }
