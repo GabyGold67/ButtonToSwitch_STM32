@@ -156,12 +156,12 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memitem:a3009725646aeb160884b8109d180b530" id="r_a3009725646aeb160884b8109d180b530"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3009725646aeb160884b8109d180b530">clrStatus</a> (bool clrIsOn=true)</td></tr>
 <tr class="memdesc:a3009725646aeb160884b8109d180b530"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears and resets flags, timers and counters modified through the object's signals processing.  <br /></td></tr>
 <tr class="separator:a3009725646aeb160884b8109d180b530"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d4b99f73ae49cee1b7977d0ddfbd6b4" id="r_a5d4b99f73ae49cee1b7977d0ddfbd6b4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5d4b99f73ae49cee1b7977d0ddfbd6b4">disable</a> ()</td></tr>
-<tr class="memdesc:a5d4b99f73ae49cee1b7977d0ddfbd6b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disables the input signal processing, ignoring the changes of its values.  <br /></td></tr>
-<tr class="separator:a5d4b99f73ae49cee1b7977d0ddfbd6b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b277e63f27cb18abf0c69783055cf53" id="r_a9b277e63f27cb18abf0c69783055cf53"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9b277e63f27cb18abf0c69783055cf53">enable</a> ()</td></tr>
-<tr class="memdesc:a9b277e63f27cb18abf0c69783055cf53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables the input signal processing.  <br /></td></tr>
-<tr class="separator:a9b277e63f27cb18abf0c69783055cf53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a881f9e15d1bf8da14edc77e2bcc63953" id="r_a881f9e15d1bf8da14edc77e2bcc63953"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a881f9e15d1bf8da14edc77e2bcc63953">disable</a> ()</td></tr>
+<tr class="memdesc:a881f9e15d1bf8da14edc77e2bcc63953"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disables the input signal processing, ignoring the changes of its values.  <br /></td></tr>
+<tr class="separator:a881f9e15d1bf8da14edc77e2bcc63953"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37d2120c99b476781ef0bced5a74f9a7" id="r_a37d2120c99b476781ef0bced5a74f9a7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a37d2120c99b476781ef0bced5a74f9a7">enable</a> ()</td></tr>
+<tr class="memdesc:a37d2120c99b476781ef0bced5a74f9a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables the input signal processing.  <br /></td></tr>
+<tr class="separator:a37d2120c99b476781ef0bced5a74f9a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58c55f2713734a81ef7ac01249973731" id="r_a58c55f2713734a81ef7ac01249973731"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a58c55f2713734a81ef7ac01249973731">end</a> ()</td></tr>
 <tr class="memdesc:a58c55f2713734a81ef7ac01249973731"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detaches the object from the timer that monitors the input pins, compute and updates the object's status. The timer daemon entry is deleted for the object.  <br /></td></tr>
 <tr class="separator:a58c55f2713734a81ef7ac01249973731"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -204,36 +204,36 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memitem:a3cf51be801e6024cc3ca6b984deb52c6" id="r_a3cf51be801e6024cc3ca6b984deb52c6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3cf51be801e6024cc3ca6b984deb52c6">pause</a> ()</td></tr>
 <tr class="memdesc:a3cf51be801e6024cc3ca6b984deb52c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pauses the software timer updating the computation of the object's internal flags value.  <br /></td></tr>
 <tr class="separator:a3cf51be801e6024cc3ca6b984deb52c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02fe9905a8a92b7fc605778b95da20ff" id="r_a02fe9905a8a92b7fc605778b95da20ff"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a02fe9905a8a92b7fc605778b95da20ff">resetDbncTime</a> ()</td></tr>
-<tr class="memdesc:a02fe9905a8a92b7fc605778b95da20ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets the debounce process time of the object to the value used at instantiation.  <br /></td></tr>
-<tr class="separator:a02fe9905a8a92b7fc605778b95da20ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2798815df62ffd1b4bcdf91dd7088931" id="r_a2798815df62ffd1b4bcdf91dd7088931"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2798815df62ffd1b4bcdf91dd7088931">resetFda</a> ()</td></tr>
-<tr class="memdesc:a2798815df62ffd1b4bcdf91dd7088931"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets the MPB behavior automaton to it's <b>Initial</b> or <b>Start State</b>  <br /></td></tr>
-<tr class="separator:a2798815df62ffd1b4bcdf91dd7088931"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b8cd9ec64370e6aafb62ecd94a82aef" id="r_a5b8cd9ec64370e6aafb62ecd94a82aef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5b8cd9ec64370e6aafb62ecd94a82aef">resetDbncTime</a> ()</td></tr>
+<tr class="memdesc:a5b8cd9ec64370e6aafb62ecd94a82aef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets the debounce process time of the object to the value used at instantiation.  <br /></td></tr>
+<tr class="separator:a5b8cd9ec64370e6aafb62ecd94a82aef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2df98cfb822df05bc232143f883e5c32" id="r_a2df98cfb822df05bc232143f883e5c32"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2df98cfb822df05bc232143f883e5c32">resetFda</a> ()</td></tr>
+<tr class="memdesc:a2df98cfb822df05bc232143f883e5c32"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets the MPB behavior automaton to it's <b>Initial</b> or <b>Start State</b>  <br /></td></tr>
+<tr class="separator:a2df98cfb822df05bc232143f883e5c32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9540a12554008a6705056b02fbafed38" id="r_a9540a12554008a6705056b02fbafed38"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9540a12554008a6705056b02fbafed38">resume</a> ()</td></tr>
 <tr class="memdesc:a9540a12554008a6705056b02fbafed38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restarts the software timer updating the calculation of the object internal flags.  <br /></td></tr>
 <tr class="separator:a9540a12554008a6705056b02fbafed38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa8a94396ee3fe8f9cc41c8ea9d8b8d3" id="r_afa8a94396ee3fe8f9cc41c8ea9d8b8d3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afa8a94396ee3fe8f9cc41c8ea9d8b8d3">setDbncTime</a> (const unsigned long int &amp;newDbncTime)</td></tr>
-<tr class="memdesc:afa8a94396ee3fe8f9cc41c8ea9d8b8d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a new debounce time.  <br /></td></tr>
+<tr class="memdesc:afa8a94396ee3fe8f9cc41c8ea9d8b8d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the debounce time.  <br /></td></tr>
 <tr class="separator:afa8a94396ee3fe8f9cc41c8ea9d8b8d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aecc1a4b485d2ca810c063b9d2e3e4cc5" id="r_aecc1a4b485d2ca810c063b9d2e3e4cc5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aecc1a4b485d2ca810c063b9d2e3e4cc5">setFnWhnTrnOffPtr</a> (void(*newFnWhnTrnOff)())</td></tr>
-<tr class="memdesc:aecc1a4b485d2ca810c063b9d2e3e4cc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the function that will be called to execute every time the object <b>enters</b> the <b>Off State</b>.  <br /></td></tr>
-<tr class="separator:aecc1a4b485d2ca810c063b9d2e3e4cc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f8d4b6fb7dd20c1feeb2d86cda61f2d" id="r_a8f8d4b6fb7dd20c1feeb2d86cda61f2d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8f8d4b6fb7dd20c1feeb2d86cda61f2d">setFnWhnTrnOnPtr</a> (void(*newFnWhnTrnOn)())</td></tr>
-<tr class="memdesc:a8f8d4b6fb7dd20c1feeb2d86cda61f2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the function that will be called to execute every time the object <b>enters</b> the <b>On State</b>.  <br /></td></tr>
-<tr class="separator:a8f8d4b6fb7dd20c1feeb2d86cda61f2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8543d49f49955678cdbc921510622796" id="r_a8543d49f49955678cdbc921510622796"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8543d49f49955678cdbc921510622796">setIsOnDisabled</a> (const bool &amp;newIsOnDisabled)</td></tr>
-<tr class="memdesc:a8543d49f49955678cdbc921510622796"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the <b>isOnDisabled</b> flag.  <br /></td></tr>
-<tr class="separator:a8543d49f49955678cdbc921510622796"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c78cfe36c96568225b3e8f3f60566eb" id="r_a8c78cfe36c96568225b3e8f3f60566eb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8c78cfe36c96568225b3e8f3f60566eb">setOutputsChange</a> (bool newOutputChange)</td></tr>
-<tr class="memdesc:a8c78cfe36c96568225b3e8f3f60566eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the flag indicating if a change took place in any of the output attribute flags (IsOn included).  <br /></td></tr>
-<tr class="separator:a8c78cfe36c96568225b3e8f3f60566eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7046c5b8462844954207f2851a85c5df" id="r_a7046c5b8462844954207f2851a85c5df"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7046c5b8462844954207f2851a85c5df">setTaskToNotify</a> (TaskHandle_t newHandle)</td></tr>
-<tr class="memdesc:a7046c5b8462844954207f2851a85c5df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the pointer to the task to be notified by the object when its output flags changes.  <br /></td></tr>
-<tr class="separator:a7046c5b8462844954207f2851a85c5df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48c551520cf30e15f24e384927e37552" id="r_a48c551520cf30e15f24e384927e37552"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a48c551520cf30e15f24e384927e37552">setTaskWhileOn</a> (const TaskHandle_t &amp;newTaskHandle)</td></tr>
-<tr class="memdesc:a48c551520cf30e15f24e384927e37552"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the task to be run while the object is in the <b>On state</b>.  <br /></td></tr>
-<tr class="separator:a48c551520cf30e15f24e384927e37552"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abbd65b9ad37a2de7d8108789178e73e5" id="r_abbd65b9ad37a2de7d8108789178e73e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abbd65b9ad37a2de7d8108789178e73e5">setFnWhnTrnOffPtr</a> (void(*newFnWhnTrnOff)())</td></tr>
+<tr class="memdesc:abbd65b9ad37a2de7d8108789178e73e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the function that will be called to execute every time the object <b>enters</b> the <b>Off State</b>.  <br /></td></tr>
+<tr class="separator:abbd65b9ad37a2de7d8108789178e73e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1e5decc11a29c7ac2417cde9b43fc4e" id="r_ad1e5decc11a29c7ac2417cde9b43fc4e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad1e5decc11a29c7ac2417cde9b43fc4e">setFnWhnTrnOnPtr</a> (void(*newFnWhnTrnOn)())</td></tr>
+<tr class="memdesc:ad1e5decc11a29c7ac2417cde9b43fc4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the function that will be called to execute every time the object <b>enters</b> the <b>On State</b>.  <br /></td></tr>
+<tr class="separator:ad1e5decc11a29c7ac2417cde9b43fc4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55644500cc3b52282c439ca4541a2351" id="r_a55644500cc3b52282c439ca4541a2351"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a55644500cc3b52282c439ca4541a2351">setIsOnDisabled</a> (const bool &amp;newIsOnDisabled)</td></tr>
+<tr class="memdesc:a55644500cc3b52282c439ca4541a2351"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the <b>isOnDisabled</b> flag.  <br /></td></tr>
+<tr class="separator:a55644500cc3b52282c439ca4541a2351"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1a23ebaf89ccfa36df1cd9c995c9ab5" id="r_ac1a23ebaf89ccfa36df1cd9c995c9ab5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac1a23ebaf89ccfa36df1cd9c995c9ab5">setOutputsChange</a> (bool newOutputChange)</td></tr>
+<tr class="memdesc:ac1a23ebaf89ccfa36df1cd9c995c9ab5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the attribute flag indicating if a change took place in any of the output attribute flags (IsOn included).  <br /></td></tr>
+<tr class="separator:ac1a23ebaf89ccfa36df1cd9c995c9ab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5d3ecd472c90f91c36eed3ce11cce7e" id="r_ab5d3ecd472c90f91c36eed3ce11cce7e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab5d3ecd472c90f91c36eed3ce11cce7e">setTaskToNotify</a> (const TaskHandle_t &amp;newTaskHandle)</td></tr>
+<tr class="memdesc:ab5d3ecd472c90f91c36eed3ce11cce7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the pointer to the task to be notified by the object when its output attribute flags changes.  <br /></td></tr>
+<tr class="separator:ab5d3ecd472c90f91c36eed3ce11cce7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a539d25d84a2e6c772000cff0bd0d279f" id="r_a539d25d84a2e6c772000cff0bd0d279f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a539d25d84a2e6c772000cff0bd0d279f">setTaskWhileOn</a> (const TaskHandle_t &amp;newTaskHandle)</td></tr>
+<tr class="memdesc:a539d25d84a2e6c772000cff0bd0d279f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the task to be run while the object is in the <b>On state</b>.  <br /></td></tr>
+<tr class="separator:a539d25d84a2e6c772000cff0bd0d279f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Base class, implements a Debounced Momentary Push Button (<b>D-MPB</b>). </p>
@@ -392,14 +392,14 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 
 </div>
 </div>
-<a id="a5d4b99f73ae49cee1b7977d0ddfbd6b4" name="a5d4b99f73ae49cee1b7977d0ddfbd6b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5d4b99f73ae49cee1b7977d0ddfbd6b4">&#9670;&#160;</a></span>disable()</h2>
+<a id="a881f9e15d1bf8da14edc77e2bcc63953" name="a881f9e15d1bf8da14edc77e2bcc63953"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a881f9e15d1bf8da14edc77e2bcc63953">&#9670;&#160;</a></span>disable()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool DbncdMPBttn::disable </td>
+          <td class="memname">void DbncdMPBttn::disable </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"></span></td><td>)</td>
           <td></td>
@@ -408,31 +408,24 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Disables the input signal processing, ignoring the changes of its values. </p>
-<p>Invoking the <a class="el" href="#a5d4b99f73ae49cee1b7977d0ddfbd6b4" title="Disables the input signal processing, ignoring the changes of its values.">disable()</a> method sends a message to the object requesting it to enter the <b>Disabled state</b>. Due to security and stability of the object's behavior the message will not be processed at every stage of the input signals detection and output computations, but in every safe and stable stage. When the message is processed the object will:</p><ul>
+<p>Invoking the <a class="el" href="#a881f9e15d1bf8da14edc77e2bcc63953" title="Disables the input signal processing, ignoring the changes of its values.">disable()</a> method sends a message to the object requesting it to enter the <b>Disabled state</b>. Due to security and stability of the object's behavior the message will not be processed at every stage of the input signals detection and output computations, but in every safe and stable stage. When the message is processed the object will:</p><ul>
 <li>Stop all input signal reading.</li>
 <li>Stop any new output flag computation.</li>
 <li>Reset all output flag values.</li>
 <li>Force the isOn flag according to the <b>isOnDisabled</b> flag setting.</li>
-<li>Keep this <b>Disabled state</b> behavior until an enabling message is received through an <b><a class="el" href="#a9b277e63f27cb18abf0c69783055cf53" title="Enables the input signal processing.">enable()</a></b> method.</li>
+<li>Keep this <b>Disabled state</b> behavior until an enabling message is received through an <b><a class="el" href="#a37d2120c99b476781ef0bced5a74f9a7" title="Enables the input signal processing.">enable()</a></b> method. </li>
 </ul>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">true</td><td>the disabling message was sent to the object. </td></tr>
-    <tr><td class="paramname">false</td><td>the disabling message couldn't be sent to the object due to an unexpected error. </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
-<a id="a9b277e63f27cb18abf0c69783055cf53" name="a9b277e63f27cb18abf0c69783055cf53"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9b277e63f27cb18abf0c69783055cf53">&#9670;&#160;</a></span>enable()</h2>
+<a id="a37d2120c99b476781ef0bced5a74f9a7" name="a37d2120c99b476781ef0bced5a74f9a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37d2120c99b476781ef0bced5a74f9a7">&#9670;&#160;</a></span>enable()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool DbncdMPBttn::enable </td>
+          <td class="memname">void DbncdMPBttn::enable </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"></span></td><td>)</td>
           <td></td>
@@ -441,18 +434,11 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Enables the input signal processing. </p>
-<p>Invoking the <a class="el" href="#a9b277e63f27cb18abf0c69783055cf53" title="Enables the input signal processing.">enable()</a> method on a object in <b>Disabled state</b> sends it a message requesting to resume it's normal operation. The execution of the re-enabling of the object implies:</p><ul>
+<p>Invoking the <a class="el" href="#a37d2120c99b476781ef0bced5a74f9a7" title="Enables the input signal processing.">enable()</a> method on a object in <b>Disabled state</b> sends it a message requesting to resume it's normal operation. The execution of the re-enabling of the object implies:</p><ul>
 <li>Resuming all input signals reading.</li>
 <li>Resuming all output flag computation from the "fresh startup" state, including clearing the <b>isOn state</b></li>
-<li>Due to strict security enforcement the object will not be allowed to enter the <b>Enabled state</b> if the MPB was pressed when the enable message was received and until a MPB release is efectively detected.</li>
+<li>Due to strict security enforcement the object will not be allowed to enter the <b>Enabled state</b> if the MPB was pressed when the enable message was received and until a MPB release is efectively detected. </li>
 </ul>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">true</td><td>the enabling message was sent to the object. </td></tr>
-    <tr><td class="paramname">false</td><td>the enabling message couldn't be sent to the object due to an unexpected error. </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
@@ -472,7 +458,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Detaches the object from the timer that monitors the input pins, compute and updates the object's status. The timer daemon entry is deleted for the object. </p>
-<p>The immediate detachment of the object from the timer that keeps it's state updated implies that the object's state will be kept, whatever that state is it. If a certain status is preferred some of the provided methods should be used for that including <a class="el" href="#a3009725646aeb160884b8109d180b530" title="Clears and resets flags, timers and counters modified through the object&#39;s signals processing.">clrStatus()</a>, <a class="el" href="#a2798815df62ffd1b4bcdf91dd7088931" title="Resets the MPB behavior automaton to it&#39;s Initial or Start State">resetFda()</a>, <a class="el" href="#a5d4b99f73ae49cee1b7977d0ddfbd6b4" title="Disables the input signal processing, ignoring the changes of its values.">disable()</a>, <a class="el" href="#a8543d49f49955678cdbc921510622796" title="Sets the value of the isOnDisabled flag.">setIsOnDisabled()</a>, etc. Also consider that if a task is set to be executed while the object is in <b>On state</b>, the <b><a class="el" href="#a58c55f2713734a81ef7ac01249973731" title="Detaches the object from the timer that monitors the input pins, compute and updates the object&#39;s sta...">end()</a></b> invocation wouldn't affect that task execution state.</p>
+<p>The immediate detachment of the object from the timer that keeps it's state updated implies that the object's state will be kept, whatever that state is it. If a certain status is preferred some of the provided methods should be used for that including <a class="el" href="#a3009725646aeb160884b8109d180b530" title="Clears and resets flags, timers and counters modified through the object&#39;s signals processing.">clrStatus()</a>, <a class="el" href="#a2df98cfb822df05bc232143f883e5c32" title="Resets the MPB behavior automaton to it&#39;s Initial or Start State">resetFda()</a>, <a class="el" href="#a881f9e15d1bf8da14edc77e2bcc63953" title="Disables the input signal processing, ignoring the changes of its values.">disable()</a>, <a class="el" href="#a55644500cc3b52282c439ca4541a2351" title="Sets the value of the isOnDisabled flag.">setIsOnDisabled()</a>, etc. Also consider that if a task is set to be executed while the object is in <b>On state</b>, the <b><a class="el" href="#a58c55f2713734a81ef7ac01249973731" title="Detaches the object from the timer that monitors the input pins, compute and updates the object&#39;s sta...">end()</a></b> invocation wouldn't affect that task execution state.</p>
 <dl class="section return"><dt>Returns</dt><dd>Boolean indicating the success of the operation </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
@@ -500,7 +486,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Gets the current debounce time set for the object. </p>
-<p>The original value for the debouncing process used at instantiation time might be changed with the <b>setDbncTime(const unsigned long int)</b> or with the <b><a class="el" href="#a02fe9905a8a92b7fc605778b95da20ff" title="Resets the debounce process time of the object to the value used at instantiation.">resetDbncTime()</a></b> methods. This method gets the current value of the attribute in use.</p>
+<p>The original value for the debouncing process used at instantiation time might be changed with the <b>setDbncTime(const unsigned long int)</b> or with the <b><a class="el" href="#a5b8cd9ec64370e6aafb62ecd94a82aef" title="Resets the debounce process time of the object to the value used at instantiation.">resetDbncTime()</a></b> methods. This method gets the current value of the attribute in use.</p>
 <dl class="section return"><dt>Returns</dt><dd>The current debounce time in milliseconds </dd></dl>
 
 </div>
@@ -521,7 +507,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Gets the function that is set to execute every time the object <b>enters</b> the <b>Off State</b>. </p>
-<p>The function to be executed is an attribute that might be modified by the <b><a class="el" href="#aecc1a4b485d2ca810c063b9d2e3e4cc5" title="Sets the function that will be called to execute every time the object enters the Off State.">setFnWhnTrnOffPtr()</a></b> method.</p>
+<p>The function to be executed is an attribute that might be modified by the <b><a class="el" href="#abbd65b9ad37a2de7d8108789178e73e5" title="Sets the function that will be called to execute every time the object enters the Off State.">setFnWhnTrnOffPtr()</a></b> method.</p>
 <dl class="section return"><dt>Returns</dt><dd>A function pointer to the function set to execute every time the object enters the <b>Off State</b>. </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
@@ -548,7 +534,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Gets the function that is set to execute every time the object <b>enters</b> the <b>On State</b>. </p>
-<p>The function to be executed is an attribute that might be modified by the <b><a class="el" href="#a8f8d4b6fb7dd20c1feeb2d86cda61f2d" title="Sets the function that will be called to execute every time the object enters the On State.">setFnWhnTrnOnPtr()</a></b> method.</p>
+<p>The function to be executed is an attribute that might be modified by the <b><a class="el" href="#ad1e5decc11a29c7ac2417cde9b43fc4e" title="Sets the function that will be called to execute every time the object enters the On State.">setFnWhnTrnOnPtr()</a></b> method.</p>
 <dl class="section return"><dt>Returns</dt><dd>A function pointer to the function set to execute every time the object enters the <b>On State</b>. </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
@@ -575,7 +561,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Gets the value of the isEnabled attribute flag, indicating the <b>Enabled</b> or <b>Disabled</b> status of the object. </p>
-<p>The isEnabled flag might be modified by the <a class="el" href="#a9b277e63f27cb18abf0c69783055cf53" title="Enables the input signal processing.">enable()</a> and the <a class="el" href="#a5d4b99f73ae49cee1b7977d0ddfbd6b4" title="Disables the input signal processing, ignoring the changes of its values.">disable()</a> methods.</p>
+<p>The isEnabled flag might be modified by the <a class="el" href="#a37d2120c99b476781ef0bced5a74f9a7" title="Enables the input signal processing.">enable()</a> and the <a class="el" href="#a881f9e15d1bf8da14edc77e2bcc63953" title="Disables the input signal processing, ignoring the changes of its values.">disable()</a> methods.</p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">true</td><td>the object is in <b>Enabled state</b>. </td></tr>
@@ -629,7 +615,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Gets the value of the <b>isOnDisabled</b> attribute flag. </p>
-<p>When instantiated the class, the object is created in <b>Enabled state</b>. That might be changed when needed. In the <b>Disabled state</b> the input signals for the MPB are not processed, and the output will be set to the <b>On state</b> or the <b>Off state</b> depending on this flag's value. The reasons to disable the ability to change the output, and keep it on either state until re-enabled are design and use dependent. The flag value might be changed by the use of the <a class="el" href="#a8543d49f49955678cdbc921510622796" title="Sets the value of the isOnDisabled flag.">setIsOnDisabled()</a> method.</p>
+<p>When instantiated the class, the object is created in <b>Enabled state</b>. That might be changed when needed. In the <b>Disabled state</b> the input signals for the MPB are not processed, and the output will be set to the <b>On state</b> or the <b>Off state</b> depending on this flag's value. The reasons to disable the ability to change the output, and keep it on either state until re-enabled are design and use dependent. The flag value might be changed by the use of the <a class="el" href="#a55644500cc3b52282c439ca4541a2351" title="Sets the value of the isOnDisabled flag.">setIsOnDisabled()</a> method.</p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">true</td><td>the object is configured to be set to the <b>On state</b> while it is in <b>Disabled state</b>. </td></tr>
@@ -656,7 +642,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Gets the value of the <b>outputsChange</b> attribute flag. </p>
-<p>The instantiated objects include attributes linked to their computed state, which represent the behavior expected from their respective electromechanical simulated counterparts. When any of those attributes values change, the <b>outputsChange</b> flag is set. The flag only signals changes have been done -not which flags, nor how many times changes have taken place- since the last <b>outputsChange</b> flag reset. The <b>outputsChange</b> flag must be reset (or set if desired) through the <a class="el" href="#a8c78cfe36c96568225b3e8f3f60566eb" title="Sets the value of the flag indicating if a change took place in any of the output attribute flags (Is...">setOutputsChange()</a> method.</p>
+<p>The instantiated objects include attributes linked to their computed state, which represent the behavior expected from their respective electromechanical simulated counterparts. When any of those attributes values change, the <b>outputsChange</b> flag is set. The flag only signals changes have been done -not which flags, nor how many times changes have taken place- since the last <b>outputsChange</b> flag reset. The <b>outputsChange</b> flag must be reset (or set if desired) through the <a class="el" href="#ac1a23ebaf89ccfa36df1cd9c995c9ab5" title="Sets the value of the attribute flag indicating if a change took place in any of the output attribute...">setOutputsChange()</a> method.</p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">true</td><td>any of the object's behavior flags have changed value since last time <b>outputsChange</b> flag was reseted. </td></tr>
@@ -705,7 +691,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Gets the task to be notified by the object when its output flags changes. </p>
-<p>The task handle of the task to be notified by the object when its <b>outputsChange</b> attribute flag is set (see <a class="el" href="#ac646101296a76321e855250ba044c8d7" title="Gets the value of the outputsChange attribute flag.">getOutputsChange()</a>) holds a <b>NULL</b> when the object is created. A valid task's TaskHandle_t value might be set by using the <a class="el" href="#a7046c5b8462844954207f2851a85c5df" title="Sets the pointer to the task to be notified by the object when its output flags changes.">setTaskToNotify()</a> method, and even set back to <b>NULL</b> to disable the task notification mechanism.</p>
+<p>The task handle of the task to be notified by the object when its <b>outputsChange</b> attribute flag is set (see <a class="el" href="#ac646101296a76321e855250ba044c8d7" title="Gets the value of the outputsChange attribute flag.">getOutputsChange()</a>) holds a <b>NULL</b> when the object is created. A valid task's TaskHandle_t value might be set by using the <a class="el" href="#ab5d3ecd472c90f91c36eed3ce11cce7e" title="Sets the pointer to the task to be notified by the object when its output attribute flags changes.">setTaskToNotify()</a> method, and even set back to <b>NULL</b> to disable the task notification mechanism.</p>
 <dl class="section return"><dt>Returns</dt><dd>TaskHandle_t value of the task to be notified of the outputs change. </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
@@ -741,7 +727,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
   </table>
   </dd>
 </dl>
-<dl class="section warning"><dt>Warning</dt><dd>Free-RTOS has no mechanism implemented to notify a task that it is about to be set in <b>paused</b> state, so there is no way to that task to ensure it will be set to pause in an orderly fashion. The task to be designated to be used by this mechanism has to be task that can withstand being interrupted at any point of it's execution, and be restarted from that same point next time the <b>isOn</b> flag is set. For tasks that might need attaching resources or other issues every time it is resumed and releasing resources of any kind before being <b>paused</b>, using the function attached by using <b><a class="el" href="#a8f8d4b6fb7dd20c1feeb2d86cda61f2d" title="Sets the function that will be called to execute every time the object enters the On State.">setFnWhnTrnOnPtr()</a></b> to gain control of the resources before resuming a task, and the function attached by using <b><a class="el" href="#aecc1a4b485d2ca810c063b9d2e3e4cc5" title="Sets the function that will be called to execute every time the object enters the Off State.">setFnWhnTrnOffPtr()</a></b> to release the resources and pause the task in an orderly fashion, or use those functions to manage a binary semaphore for managing the execution of a task. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Free-RTOS has no mechanism implemented to notify a task that it is about to be set in <b>paused</b> state, so there is no way to that task to ensure it will be set to pause in an orderly fashion. The task to be designated to be used by this mechanism has to be task that can withstand being interrupted at any point of it's execution, and be restarted from that same point next time the <b>isOn</b> flag is set. For tasks that might need attaching resources or other issues every time it is resumed and releasing resources of any kind before being <b>paused</b>, using the function attached by using <b><a class="el" href="#ad1e5decc11a29c7ac2417cde9b43fc4e" title="Sets the function that will be called to execute every time the object enters the On State.">setFnWhnTrnOnPtr()</a></b> to gain control of the resources before resuming a task, and the function attached by using <b><a class="el" href="#abbd65b9ad37a2de7d8108789178e73e5" title="Sets the function that will be called to execute every time the object enters the Off State.">setFnWhnTrnOffPtr()</a></b> to release the resources and pause the task in an orderly fashion, or use those functions to manage a binary semaphore for managing the execution of a task. </dd></dl>
 
 </div>
 </div>
@@ -845,14 +831,14 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 
 </div>
 </div>
-<a id="a02fe9905a8a92b7fc605778b95da20ff" name="a02fe9905a8a92b7fc605778b95da20ff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a02fe9905a8a92b7fc605778b95da20ff">&#9670;&#160;</a></span>resetDbncTime()</h2>
+<a id="a5b8cd9ec64370e6aafb62ecd94a82aef" name="a5b8cd9ec64370e6aafb62ecd94a82aef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b8cd9ec64370e6aafb62ecd94a82aef">&#9670;&#160;</a></span>resetDbncTime()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool DbncdMPBttn::resetDbncTime </td>
+          <td class="memname">void DbncdMPBttn::resetDbncTime </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"></span></td><td>)</td>
           <td></td>
@@ -861,25 +847,18 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Resets the debounce process time of the object to the value used at instantiation. </p>
-<p>The debounce process time used at instantiation might be changed with the <a class="el" href="#afa8a94396ee3fe8f9cc41c8ea9d8b8d3" title="Sets a new debounce time.">setDbncTime()</a> as needed, as many times as needed. This method reverts the value to the instantiation time value. In case the value was not specified at instantiation time the default debounce time value will be used.</p>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">true</td><td>the value could be reverted. </td></tr>
-    <tr><td class="paramname">false</td><td>the value couldn't be reverted due to unexpected situation. </td></tr>
-  </table>
-  </dd>
-</dl>
+<p>The debounce process time used at instantiation might be changed with the <a class="el" href="#afa8a94396ee3fe8f9cc41c8ea9d8b8d3" title="Sets the debounce time.">setDbncTime()</a> as needed, as many times as needed. This method reverts the value to the instantiation time value. In case the value was not specified at instantiation time the default debounce time value will be used. </p>
 
 </div>
 </div>
-<a id="a2798815df62ffd1b4bcdf91dd7088931" name="a2798815df62ffd1b4bcdf91dd7088931"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2798815df62ffd1b4bcdf91dd7088931">&#9670;&#160;</a></span>resetFda()</h2>
+<a id="a2df98cfb822df05bc232143f883e5c32" name="a2df98cfb822df05bc232143f883e5c32"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2df98cfb822df05bc232143f883e5c32">&#9670;&#160;</a></span>resetFda()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool DbncdMPBttn::resetFda </td>
+          <td class="memname">void DbncdMPBttn::resetFda </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"></span></td><td>)</td>
           <td></td>
@@ -888,13 +867,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Resets the MPB behavior automaton to it's <b>Initial</b> or <b>Start State</b> </p>
-<p>This method is provided for security and for error handling purposes, so that in case of unexpected situations detected, the driving <b>Deterministic Finite Automaton</b> used to compute the MPB objects states might be reset to it's initial state to safely restart it, usually as part of an <b>Error Handling</b> procedure.</p>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">true</td><td>always it is invoked. </td></tr>
-  </table>
-  </dd>
-</dl>
+<p>This method is provided for security and for error handling purposes, so that in case of unexpected situations detected, the driving <b>Deterministic Finite Automaton</b> used to compute the MPB objects states might be reset to it's initial state to safely restart it, usually as part of an <b>Error Handling</b> procedure. </p>
 
 </div>
 </div>
@@ -941,8 +914,8 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
       </table>
 </div><div class="memdoc">
 
-<p>Sets a new debounce time. </p>
-<p>Sets a new time for the debouncing period. The value must be equal or greater than the minimum empirical value set as a property for all the classes, 20 milliseconds. A long debounce time will produce a delay in the press event generation, making it less "responsive".</p>
+<p>Sets the debounce time. </p>
+<p>Sets a new time for the debouncing period. The value must be equal or greater than the minimum empirical value set as a property for all the classes, 20 milliseconds, that value is defined in the _HwMinDbncTime constant. A long debounce time will produce a delay in the press event generation, making it less "responsive".</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">newDbncTime</td><td>unsigned long integer, the new debounce value for the object.</td></tr>
@@ -960,14 +933,14 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 
 </div>
 </div>
-<a id="aecc1a4b485d2ca810c063b9d2e3e4cc5" name="aecc1a4b485d2ca810c063b9d2e3e4cc5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aecc1a4b485d2ca810c063b9d2e3e4cc5">&#9670;&#160;</a></span>setFnWhnTrnOffPtr()</h2>
+<a id="abbd65b9ad37a2de7d8108789178e73e5" name="abbd65b9ad37a2de7d8108789178e73e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abbd65b9ad37a2de7d8108789178e73e5">&#9670;&#160;</a></span>setFnWhnTrnOffPtr()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool DbncdMPBttn::setFnWhnTrnOffPtr </td>
+          <td class="memname">void DbncdMPBttn::setFnWhnTrnOffPtr </td>
           <td>(</td>
           <td class="paramtype">void(*)()</td>          <td class="paramname"><span class="paramname"><em>newFnWhnTrnOff</em></span></td><td>)</td>
           <td></td>
@@ -979,28 +952,21 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <p>The function to be executed must be of the form <b>void (*newFnWhnTrnOff)()</b>, meaning it must take no arguments and must return no value, it will be executed only once by the object (recursion must be handled with the usual precautions). When instantiated the attribute value is set to <b>nullptr</b>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">newFnWhnTrnOff</td><td>Function pointer to the function intended to be called when the object <b>enters</b> the <b>Off State</b>. Passing <b>nullptr</b> as parameter deactivates the function execution mechanism.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">true</td><td>the passed parameter was set. </td></tr>
-    <tr><td class="paramname">false</td><td>the passed parameter could not be set due to unexpected error. </td></tr>
+    <tr><td class="paramname">newFnWhnTrnOff</td><td>Function pointer to the function intended to be called when the object <b>enters</b> the <b>Off State</b>. Passing <b>nullptr</b> as parameter deactivates the function execution mechanism. </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a8f8d4b6fb7dd20c1feeb2d86cda61f2d" name="a8f8d4b6fb7dd20c1feeb2d86cda61f2d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f8d4b6fb7dd20c1feeb2d86cda61f2d">&#9670;&#160;</a></span>setFnWhnTrnOnPtr()</h2>
+<a id="ad1e5decc11a29c7ac2417cde9b43fc4e" name="ad1e5decc11a29c7ac2417cde9b43fc4e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1e5decc11a29c7ac2417cde9b43fc4e">&#9670;&#160;</a></span>setFnWhnTrnOnPtr()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool DbncdMPBttn::setFnWhnTrnOnPtr </td>
+          <td class="memname">void DbncdMPBttn::setFnWhnTrnOnPtr </td>
           <td>(</td>
           <td class="paramtype">void(*)()</td>          <td class="paramname"><span class="paramname"><em>newFnWhnTrnOn</em></span></td><td>)</td>
           <td></td>
@@ -1012,28 +978,21 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <p>The function to be executed must be of the form <b>void (*newFnWhnTrnOff)()</b>, meaning it must take no arguments and must return no value, it will be executed only once by the object (recursion must be handled with the usual precautions). When instantiated the attribute value is set to <b>nullptr</b>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">newFnWhnTrnOn</td><td>function pointer to the function intended to be called when the object <b>enters</b> the <b>On State</b>. Passing <b>nullptr</b> as parameter deactivates the function execution mechanism.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">true</td><td>the passed parameter was set. </td></tr>
-    <tr><td class="paramname">false</td><td>the passed parameter could not be set due to unexpected error. </td></tr>
+    <tr><td class="paramname">newFnWhnTrnOn</td><td>function pointer to the function intended to be called when the object <b>enters</b> the <b>On State</b>. Passing <b>nullptr</b> as parameter deactivates the function execution mechanism. </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a8543d49f49955678cdbc921510622796" name="a8543d49f49955678cdbc921510622796"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8543d49f49955678cdbc921510622796">&#9670;&#160;</a></span>setIsOnDisabled()</h2>
+<a id="a55644500cc3b52282c439ca4541a2351" name="a55644500cc3b52282c439ca4541a2351"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55644500cc3b52282c439ca4541a2351">&#9670;&#160;</a></span>setIsOnDisabled()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool DbncdMPBttn::setIsOnDisabled </td>
+          <td class="memname">void DbncdMPBttn::setIsOnDisabled </td>
           <td>(</td>
           <td class="paramtype">const bool &amp;</td>          <td class="paramname"><span class="paramname"><em>newIsOnDisabled</em></span></td><td>)</td>
           <td></td>
@@ -1044,25 +1003,18 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <p>Sets the value of the <b>isOnDisabled</b> flag. </p>
 <p>When instantiated the class, the object is created in <b>Enabled state</b>. That might be changed as needed. While in the <b>Disabled state</b> the input signals for the MPB are not processed, and the output will be set to the <b>On state</b> or the <b>Off state</b> depending on this flag value.</p>
 <dl class="section note"><dt>Note</dt><dd>The reasons to disable the ability to change the output, and keep it on either state until re-enabled are design and use dependent, being an obvious one security reasons, disabling the ability of the users to manipulate the switch while keeping the desired <b>On/Off state</b>. A simple example would be to keep a light on in a place where a meeting is taking place, disabling the lights switches and keeping the <b>On State</b>. Another obvious one would be to keep a machine off while servicing it's internal mechanisms, disabling the possibility of turning it on.</dd></dl>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">true</td><td>the object's isOnDisabled flag attribute was set to the selected value. </td></tr>
-    <tr><td class="paramname">false</td><td>the object's isOnDisabled flag attribute was not set to the selected value due to unexpected errors.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section warning"><dt>Warning</dt><dd>If the method is invoked while the object is disabled, and the <b>isOnDisabled</b> attribute flag is changed, then the <b>isOn</b> attribute flag will have to change accordingly. Changing the <b>isOn</b> flag value implies that all the implemented mechanisms related to the change of the <b>isOn</b> attribute flag value will be invoked. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>If the method is invoked while the object is disabled, and the <b>isOnDisabled</b> attribute flag is changed, then the <b>isOn</b> attribute flag will have to change accordingly. Changing the <b>isOn</b> flag value implies that <b>all</b> the implemented mechanisms related to the change of the <b>isOn</b> attribute flag value will be invoked. </dd></dl>
 
 </div>
 </div>
-<a id="a8c78cfe36c96568225b3e8f3f60566eb" name="a8c78cfe36c96568225b3e8f3f60566eb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8c78cfe36c96568225b3e8f3f60566eb">&#9670;&#160;</a></span>setOutputsChange()</h2>
+<a id="ac1a23ebaf89ccfa36df1cd9c995c9ab5" name="ac1a23ebaf89ccfa36df1cd9c995c9ab5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1a23ebaf89ccfa36df1cd9c995c9ab5">&#9670;&#160;</a></span>setOutputsChange()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool DbncdMPBttn::setOutputsChange </td>
+          <td class="memname">void DbncdMPBttn::setOutputsChange </td>
           <td>(</td>
           <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>newOutputChange</em></span></td><td>)</td>
           <td></td>
@@ -1070,63 +1022,51 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
       </table>
 </div><div class="memdoc">
 
-<p>Sets the value of the flag indicating if a change took place in any of the output attribute flags (IsOn included). </p>
-<p>The usual path for the <b>outputsChange</b> flag is to be set to true by any method changing an output flag, the callback function signaled to take care of the hardware actions because of this changes clears back <b>outputsChange</b> after taking care of them. In the unusual case the developer wants to "intercept" this sequence, this method is provided to set (true) or clear (false) outputsChange value.</p>
+<p>Sets the value of the attribute flag indicating if a change took place in any of the output attribute flags (IsOn included). </p>
+<p>The usual path for the <b>outputsChange</b> flag is to be set by any method changing an output attribute flag, the callback function signaled to take care of the hardware actions because of this changes clears back <b>outputsChange</b> after taking care of them. In the unusual case the developer wants to "intercept" this sequence, this method is provided to set (true) or clear (false) outputsChange value.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">newOutputChange</td><td>The new value to set the <b>outputsChange</b> flag to.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">true</td><td>The value of the <b>outputsChange</b> attribute flag is set to the parameter value. </td></tr>
+    <tr><td class="paramname">newOutputChange</td><td>The new value to set the <b>outputsChange</b> flag to. </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a7046c5b8462844954207f2851a85c5df" name="a7046c5b8462844954207f2851a85c5df"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7046c5b8462844954207f2851a85c5df">&#9670;&#160;</a></span>setTaskToNotify()</h2>
+<a id="ab5d3ecd472c90f91c36eed3ce11cce7e" name="ab5d3ecd472c90f91c36eed3ce11cce7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5d3ecd472c90f91c36eed3ce11cce7e">&#9670;&#160;</a></span>setTaskToNotify()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool DbncdMPBttn::setTaskToNotify </td>
+          <td class="memname">void DbncdMPBttn::setTaskToNotify </td>
           <td>(</td>
-          <td class="paramtype">TaskHandle_t</td>          <td class="paramname"><span class="paramname"><em>newHandle</em></span></td><td>)</td>
+          <td class="paramtype">const TaskHandle_t &amp;</td>          <td class="paramname"><span class="paramname"><em>newTaskHandle</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the pointer to the task to be notified by the object when its output flags changes. </p>
-<p>When the object is created, this value is set to <b>NULL</b>, and a valid TaskHandle_t value might be set by using this method. The task notifying mechanism will not be used while the task handle keeps the <b>NULL</b> value, in which case the solution implementation will have to use any of the other provided mechanisms to test the object status, and act accordingly. After the TaskHandle value is set it might be changed to point to other task.</p>
+<p>Sets the pointer to the task to be notified by the object when its output attribute flags changes. </p>
+<p>When the object is created, this value is set to <b>NULL</b>, and a valid TaskHandle_t value might be set by using this method. The task notifying mechanism will not be used while the task handle keeps the <b>NULL</b> value, in which case the solution implementation will have to use any of the other provided mechanisms to test the object status, and act accordingly. After the TaskHandle value is set it might be changed to point to other task. If at the point this method is invoked the attribute holding the pointer was not NULL, the method will suspend the pointed task before proceeding to change the attribute value. The method does not provide any verifcation mechanism to ensure the passed parameter is a valid task handle nor the state of the task the passed pointer might be.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">newHandle</td><td>A valid task handle of an actual existent task/thread running. There's no provided exception mechanism for dangling pointer errors caused by a pointed task being deleted and/or stopped.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">true</td><td>A TaskHandle_t type was passed to the object to be it's new pointer to the task to be messaged when a change in the output flags occur. There's no checking for the validity of the pointer, if it refers to an active task/thread whatsoever. </td></tr>
+    <tr><td class="paramname">newTaskHandle</td><td>A valid task handle of an actual existent task/thread running. </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a48c551520cf30e15f24e384927e37552" name="a48c551520cf30e15f24e384927e37552"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a48c551520cf30e15f24e384927e37552">&#9670;&#160;</a></span>setTaskWhileOn()</h2>
+<a id="a539d25d84a2e6c772000cff0bd0d279f" name="a539d25d84a2e6c772000cff0bd0d279f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a539d25d84a2e6c772000cff0bd0d279f">&#9670;&#160;</a></span>setTaskWhileOn()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool DbncdMPBttn::setTaskWhileOn </td>
+          <td class="memname">void DbncdMPBttn::setTaskWhileOn </td>
           <td>(</td>
           <td class="paramtype">const TaskHandle_t &amp;</td>          <td class="paramname"><span class="paramname"><em>newTaskHandle</em></span></td><td>)</td>
           <td></td>
@@ -1138,12 +1078,6 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <p>Sets the task handle of the task to be <b>resumed</b> when the object enters the <b>On state</b>, and will be <b>paused</b> when the object enters the <b>Off state</b>. This task execution mechanism dependent of the <b>On state</b> extends the concept of the <b>Switch object</b> far away of the simple turning On/Off a single hardware signal, attaching to it all the task execution capabilities of the MCU.</p>
 <p>If the existing value for the task handle was not NULL before the invocation, the method will verify the Task Handle was pointing to a deleted or suspended task, in which case will proceed to <b>suspend</b> that task before changing the Task Handle to the new provided value.</p>
 <p>Setting the value to NULL will disable the task execution mechanism.</p>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">true</td><td>the task indicated by the parameter was successfuly asigned to be executed while in isOn state, or the mechanism was deactivated by setting the task handle to NULL.</td></tr>
-  </table>
-  </dd>
-</dl>
 <dl class="section note"><dt>Note</dt><dd>The method does not implement any task handle validation for the new task handle, a valid handle to a valid task is assumed as parameter.</dd>
 <dd>
 Consider the implications of the task that's going to get suspended every time the MPB goes to the <b>Off state</b>, so that the the task to be run might be interrupted at any point of its execution. This implies that the task must be designed with that consideration in mind to avoid dangerous situations generated by a task not completely done when suspended.</dd></dl>

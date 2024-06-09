@@ -5,5 +5,5 @@ var class_tm_ltch_m_p_bttn =
     [ "clrStatus", "class_tm_ltch_m_p_bttn.html#a8c27b3a6f642a4c7bb4d27b56cc3abaf", null ],
     [ "getSrvcTime", "class_tm_ltch_m_p_bttn.html#a472a8d82fb9943f947ab7b97ecf8f544", null ],
     [ "setSrvcTime", "class_tm_ltch_m_p_bttn.html#a73012339097cd68bb6bb2451847abfb3", null ],
-    [ "setTmerRstbl", "class_tm_ltch_m_p_bttn.html#ad804130a686b57c5bf36990b62ede037", null ]
+    [ "setTmerRstbl", "class_tm_ltch_m_p_bttn.html#a60d303fd982536207a339bcff2569f4f", null ]
 ];

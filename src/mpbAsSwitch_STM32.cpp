@@ -165,12 +165,12 @@ void DbncdMPBttn::clrSttChng(){
 	return;
 }
 
-bool DbncdMPBttn::disable(){
+void DbncdMPBttn::disable(){
 
     return setIsEnabled(false);
 }
 
-bool DbncdMPBttn::enable(){
+void DbncdMPBttn::enable(){
 
     return setIsEnabled(true);
 }
@@ -350,7 +350,6 @@ void DbncdMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 		// Flags/Triggers calculation & update
 		mpbObj->updValidPressesStatus();
 	}
-
 	// State machine status update
 	mpbObj->updFdaState();
 	taskEXIT_CRITICAL();
@@ -382,19 +381,20 @@ bool DbncdMPBttn::pause(){
     return result;
 }
 
-bool DbncdMPBttn::resetDbncTime(){
+void DbncdMPBttn::resetDbncTime(){
+	setDbncTime(_dbncTimeOrigSett);
 
-    return setDbncTime(_dbncTimeOrigSett);
+    return;
 }
 
-bool DbncdMPBttn::resetFda(){
+void DbncdMPBttn::resetFda(){
 	taskENTER_CRITICAL();
 	clrStatus();
 	setSttChng();
 	_mpbFdaState = stOffNotVPP;
 	taskEXIT_CRITICAL();
 
-	return true;
+	return;
 }
 
 bool DbncdMPBttn::resume(){
@@ -415,50 +415,43 @@ bool DbncdMPBttn::resume(){
 }
 
 bool DbncdMPBttn::setDbncTime(const unsigned long int &newDbncTime){
-    bool result {false};
+    bool result {true};
 
     taskENTER_CRITICAL();
     if(_dbncTimeTempSett != newDbncTime){
 		 if (newDbncTime >= _stdMinDbncTime){
 			  _dbncTimeTempSett = newDbncTime;
-			  result = true;
 		 }
-    }
-    else{
-   	 result = true;
+		 else{
+			  result = false;
+		 }
     }
     taskEXIT_CRITICAL();
 
     return result;
 }
 
-bool DbncdMPBttn::setFnWhnTrnOffPtr(void (*newFnWhnTrnOff)()){
-	bool result{false};
-
+void DbncdMPBttn::setFnWhnTrnOffPtr(void (*newFnWhnTrnOff)()){
 	taskENTER_CRITICAL();
 	if (_fnWhnTrnOff != newFnWhnTrnOff){
 		_fnWhnTrnOff = newFnWhnTrnOff;
 	}
 	taskEXIT_CRITICAL();
-	result = true;
 
-	return result;
+	return;
 }
 
-bool DbncdMPBttn::setFnWhnTrnOnPtr(void (*newFnWhnTrnOn)()){
-	bool result{false};
-
+void DbncdMPBttn::setFnWhnTrnOnPtr(void (*newFnWhnTrnOn)()){
 	taskENTER_CRITICAL();
 	if (_fnWhnTrnOn != newFnWhnTrnOn){
 		_fnWhnTrnOn = newFnWhnTrnOn;
 	}
 	taskEXIT_CRITICAL();
-	result = true;
 
-	return result;
+	return;
 }
 
-bool DbncdMPBttn::setIsEnabled(const bool &newEnabledValue){
+void DbncdMPBttn::setIsEnabled(const bool &newEnabledValue){
 	taskENTER_CRITICAL();
 	if(_isEnabled != newEnabledValue){
 		if (newEnabledValue){  //Change to Enabled = true
@@ -474,12 +467,10 @@ bool DbncdMPBttn::setIsEnabled(const bool &newEnabledValue){
 	}
 	taskEXIT_CRITICAL();
 
-	return true;
+	return;
 }
 
-bool DbncdMPBttn::setIsOnDisabled(const bool &newIsOnDisabled){
-	bool result {false};
-
+void DbncdMPBttn::setIsOnDisabled(const bool &newIsOnDisabled){
 	taskENTER_CRITICAL();
 	if(_isOnDisabled != newIsOnDisabled){
 		_isOnDisabled = newIsOnDisabled;
@@ -494,22 +485,18 @@ bool DbncdMPBttn::setIsOnDisabled(const bool &newIsOnDisabled){
 			}
 		}
 	}
-	else{
-		result = true;
-	}
 	taskEXIT_CRITICAL();
 
-	return result;
+	return;
 }
 
-bool DbncdMPBttn::setOutputsChange(bool newOutputsChange){
-
+void DbncdMPBttn::setOutputsChange(bool newOutputsChange){
 	taskENTER_CRITICAL();
 	if(_outputsChange != newOutputsChange)
    	_outputsChange = newOutputsChange;
 	taskEXIT_CRITICAL();
 
-   return true;
+   return;
 }
 
 void DbncdMPBttn::setSttChng(){
@@ -518,16 +505,30 @@ void DbncdMPBttn::setSttChng(){
 	return;
 }
 
-bool DbncdMPBttn::setTaskToNotify(TaskHandle_t newHandle){
+void DbncdMPBttn::setTaskToNotify(const TaskHandle_t &newTaskHandle){
+	eTaskState taskWhileOnStts{};
+
 	 taskENTER_CRITICAL();
-    if(_taskToNotifyHndl != newHandle)
-		 _taskToNotifyHndl = newHandle;
+		if(_taskToNotifyHndl != newTaskHandle){
+			if(_taskToNotifyHndl != NULL){
+				taskWhileOnStts = eTaskGetState(_taskToNotifyHndl);
+				if (taskWhileOnStts != eSuspended){
+					if(taskWhileOnStts != eDeleted){
+						vTaskSuspend(_taskToNotifyHndl);
+						_taskToNotifyHndl = NULL;
+					}
+				}
+			}
+			if (newTaskHandle != NULL){
+				_taskToNotifyHndl = newTaskHandle;
+			}
+		}
     taskEXIT_CRITICAL();
 
-    return true;
+    return;
 }
 
-bool DbncdMPBttn::setTaskWhileOn(const TaskHandle_t &newTaskHandle){
+void DbncdMPBttn::setTaskWhileOn(const TaskHandle_t &newTaskHandle){
 	eTaskState taskWhileOnStts{};
 
 	taskENTER_CRITICAL();
@@ -547,7 +548,7 @@ bool DbncdMPBttn::setTaskWhileOn(const TaskHandle_t &newTaskHandle){
 	}
 	taskEXIT_CRITICAL();
 
-	return true;
+	return;
 }
 
 void DbncdMPBttn::_turnOff(){
@@ -819,7 +820,7 @@ bool DbncdDlydMPBttn::init(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, 
 
     result = DbncdMPBttn::init(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett);
     if (result)
-        result = setStrtDelay(strtDelay);
+        setStrtDelay(strtDelay);
 
     return result;
 }
@@ -829,14 +830,14 @@ bool DbncdDlydMPBttn::init(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, con
 	return init(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay);
 }
 
-bool DbncdDlydMPBttn::setStrtDelay(const unsigned long int &newStrtDelay){
+void DbncdDlydMPBttn::setStrtDelay(const unsigned long int &newStrtDelay){
    taskENTER_CRITICAL();
 	if(_strtDelay != newStrtDelay){
 		_strtDelay = newStrtDelay;
 	}
 	taskEXIT_CRITICAL();
 
-	return true;
+	return;
 }
 
 //=========================================================================> Class methods delimiter
@@ -901,32 +902,30 @@ const bool LtchMPBttn::getUnlatchPend() const{
 	return _validUnlatchPend;
 }
 
-bool LtchMPBttn::setTrnOffASAP(const bool &newVal){
+void LtchMPBttn::setTrnOffASAP(const bool &newVal){
 	taskENTER_CRITICAL();
 	if(_trnOffASAP != newVal){
 		_trnOffASAP = newVal;
 	}
 	taskEXIT_CRITICAL();
-
-	return true;
 }
 
-bool LtchMPBttn::setUnlatchPend(const bool &newVal){
+void LtchMPBttn::setUnlatchPend(const bool &newVal){
 	taskENTER_CRITICAL();
 	if(_validUnlatchPend != newVal)
 		_validUnlatchPend = newVal;
 	taskEXIT_CRITICAL();
 
-	return true;
+	return;
 }
 
-bool LtchMPBttn::setUnlatchRlsPend(const bool &newVal){
+void LtchMPBttn::setUnlatchRlsPend(const bool &newVal){
 	taskENTER_CRITICAL();
 	if(_validUnlatchRlsPend != newVal)
 		_validUnlatchRlsPend = newVal;
 	taskEXIT_CRITICAL();
 
-	return true;
+	return;
 }
 
 bool LtchMPBttn::unlatch(){
@@ -934,8 +933,8 @@ bool LtchMPBttn::unlatch(){
 
 	taskENTER_CRITICAL();
 	if(_isLatched){
-		_validUnlatchPend = true;
-		_validUnlatchRlsPend = true;
+		setUnlatchPend(true);
+		setUnlatchRlsPend(true);
 		result = true;
 	}
 	taskEXIT_CRITICAL();
@@ -1235,30 +1234,29 @@ const unsigned long int TmLtchMPBttn::getSrvcTime() const{
 }
 
 bool TmLtchMPBttn::setSrvcTime(const unsigned long int &newSrvcTime){
-	bool result {false};
+	bool result {true};
 
    taskENTER_CRITICAL();
 	if (_srvcTime != newSrvcTime){
 		if (newSrvcTime >= _MinSrvcTime){  //The minimum activation time is _minActTime milliseconds
 			_srvcTime = newSrvcTime;
-			result = true;
+		}
+		else{
+			result = false;
 		}
    }
-	else{
-		result = true;
-	}
 	taskEXIT_CRITICAL();
 
    return result;
 }
 
-bool TmLtchMPBttn::setTmerRstbl(const bool &newIsRstbl){
+void TmLtchMPBttn::setTmerRstbl(const bool &newIsRstbl){
    taskENTER_CRITICAL();
 	if(_tmRstbl != newIsRstbl)
         _tmRstbl = newIsRstbl;
 	taskEXIT_CRITICAL();
 
-    return true;
+    return;
 }
 
 void TmLtchMPBttn::stOffNotVPP_Out(){
@@ -1376,13 +1374,13 @@ void HntdTmLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	return;
 }
 
-bool HntdTmLtchMPBttn::setKeepPilot(const bool &newKeepPilot){
+void HntdTmLtchMPBttn::setKeepPilot(const bool &newKeepPilot){
 	taskENTER_CRITICAL();
 	if(_keepPilot != newKeepPilot)
 		_keepPilot = newKeepPilot;
 	taskEXIT_CRITICAL();
 
-	return true;
+	return;
 }
 
 bool HntdTmLtchMPBttn::setSrvcTime(const unsigned long int &newSrvcTime){
@@ -1713,44 +1711,43 @@ const TaskHandle_t DblActnLtchMPBttn::getTaskWhileOnScndry(){
 	return _taskWhileOnScndryHndl;
 }
 
-bool DblActnLtchMPBttn::setScndModActvDly(const unsigned long &newVal){
-	bool result {false};
-
-	taskENTER_CRITICAL();
-	if(newVal != _scndModActvDly){
-		if (newVal >= _MinSrvcTime){  //The minimum activation time is _minActTime
-			_scndModActvDly = newVal;
-			result = true;
-		}
-	}
-	else{
-		result = true;
-	}
-	taskEXIT_CRITICAL();
-
-	return result;
-}
-
-bool DblActnLtchMPBttn::setFnWhnTrnOffScndryPtr(void (*newFnWhnTrnOff)()){
+void DblActnLtchMPBttn::setFnWhnTrnOffScndryPtr(void (*newFnWhnTrnOff)()){
 	taskENTER_CRITICAL();
 	if (_fnWhnTrnOffScndry != newFnWhnTrnOff){
 		_fnWhnTrnOffScndry = newFnWhnTrnOff;
 	}
 	taskEXIT_CRITICAL();
-	return true;
+	return;
 }
 
-bool DblActnLtchMPBttn::setFnWhnTrnOnScndryPtr(void (*newFnWhnTrnOn)()){
+void DblActnLtchMPBttn::setFnWhnTrnOnScndryPtr(void (*newFnWhnTrnOn)()){
 	taskENTER_CRITICAL();
 	if (_fnWhnTrnOnScndry != newFnWhnTrnOn){
 		_fnWhnTrnOnScndry = newFnWhnTrnOn;
 	}
 	taskEXIT_CRITICAL();
 
-	return true;
+	return;
 }
 
-bool DblActnLtchMPBttn::setTaskWhileOnScndry(const TaskHandle_t &newTaskHandle){
+bool DblActnLtchMPBttn::setScndModActvDly(const unsigned long &newVal){
+	bool result {true};
+
+	taskENTER_CRITICAL();
+	if(newVal != _scndModActvDly){
+		if (newVal >= _MinSrvcTime){  //The minimum activation time is _minActTime
+			_scndModActvDly = newVal;
+		}
+		else{
+			result = false;
+		}
+	}
+	taskEXIT_CRITICAL();
+
+	return result;
+}
+
+void DblActnLtchMPBttn::setTaskWhileOnScndry(const TaskHandle_t &newTaskHandle){
 	eTaskState taskWhileOnStts{};
 
 	taskENTER_CRITICAL();
@@ -1770,11 +1767,18 @@ bool DblActnLtchMPBttn::setTaskWhileOnScndry(const TaskHandle_t &newTaskHandle){
 	}
 	taskEXIT_CRITICAL();
 
-	return true;
+	return;
 }
 
 void DblActnLtchMPBttn::_turnOffScndry(){
 	if(_isOnScndry){
+		taskENTER_CRITICAL();
+		//---------------->> Flags related actions
+		if(_isOnScndry){
+			_isOnScndry = false;
+			_outputsChange = true;
+		}
+		taskEXIT_CRITICAL();
 		//---------------->> Tasks related actions
 		if(_taskWhileOnScndryHndl != NULL){
 			eTaskState taskWhileOnScndryStts{eTaskGetState(_taskWhileOnScndryHndl)};
@@ -1790,19 +1794,18 @@ void DblActnLtchMPBttn::_turnOffScndry(){
 		}
 	}
 
-	taskENTER_CRITICAL();
-	//---------------->> Flags related actions
-	if(_isOnScndry){
-		_isOnScndry = false;
-		_outputsChange = true;
-	}
-	taskEXIT_CRITICAL();
-
 	return;
 }
 
 void DblActnLtchMPBttn::_turnOnScndry(){
 	if(!_isOnScndry){
+		taskENTER_CRITICAL();
+		//---------------->> Flags related actions
+		if(!_isOnScndry){
+			_isOnScndry = true;
+			_outputsChange = true;
+		}
+		taskEXIT_CRITICAL();
 		//---------------->> Tasks related actions
 		if(_taskWhileOnScndryHndl != NULL){
 			eTaskState taskWhileOnScndryStts{eTaskGetState(_taskWhileOnScndryHndl)};
@@ -1817,14 +1820,6 @@ void DblActnLtchMPBttn::_turnOnScndry(){
 			_fnWhnTrnOnScndry();
 		}
 	}
-
-	taskENTER_CRITICAL();
-	//---------------->> Flags related actions
-	if(!_isOnScndry){
-		_isOnScndry = true;
-		_outputsChange = true;
-	}
-	taskEXIT_CRITICAL();
 
 	return;
 }
@@ -2061,8 +2056,6 @@ void DblActnLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 
 //=========================================================================> Class methods delimiter
 
-// v2.x.x integrity check up pending Gaby
-
 DDlydDALtchMPBttn::DDlydDALtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
 :DblActnLtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
 {
@@ -2078,11 +2071,13 @@ DDlydDALtchMPBttn::~DDlydDALtchMPBttn()
 }
 
 void DDlydDALtchMPBttn::clrStatus(bool clrIsOn){
+	taskENTER_CRITICAL();
 	if(clrIsOn && _isOnScndry){
 		_turnOffScndry();
 		_outputsChange = true;
 	}
 	DblActnLtchMPBttn::clrStatus(clrIsOn);
+	taskEXIT_CRITICAL();
 
 	return;
 }
@@ -2129,8 +2124,6 @@ void DDlydDALtchMPBttn::stOnEndScndMod_Out(){
 
 //=========================================================================> Class methods delimiter
 
-// v2.x.x integrity check up pending Gaby
-
 SldrDALtchMPBttn::SldrDALtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long &dbncTimeOrigSett, const unsigned long int &strtDelay, const uint16_t initVal)
 :DblActnLtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay), _otptCurVal{initVal}
 {
@@ -2148,7 +2141,10 @@ SldrDALtchMPBttn::~SldrDALtchMPBttn()
 }
 
 void SldrDALtchMPBttn::clrStatus(bool clrIsOn){
+	taskENTER_CRITICAL();
+	// Might the option to return the _otpCurVal to the initVal? To one the extreme values?
 	DblActnLtchMPBttn::clrStatus(clrIsOn);
+	taskEXIT_CRITICAL();
 
 	return;
 }
@@ -2194,40 +2190,55 @@ bool SldrDALtchMPBttn::getSldrDirUp(){
 }
 
 bool SldrDALtchMPBttn::setOtptCurVal(const uint16_t &newVal){
-	bool result{false};
+	bool result{true};
 
+	taskENTER_CRITICAL();
 	if(_otptCurVal != newVal){
 		if(newVal >= _otptValMin && newVal <= _otptValMax){
 			_otptCurVal = newVal;
-			result = true;
+		}
+		else{
+			result = false;
 		}
 	}
+	taskEXIT_CRITICAL();
 
 	return result;
 }
 
 bool SldrDALtchMPBttn::setOtptSldrSpd(const uint16_t &newVal){
-	bool result{false};
+	bool result{true};
 
+	taskENTER_CRITICAL();
 	if(newVal != _otptSldrSpd){
-		if(newVal > 0){	//The "Change Value Speed" must be a positive number representing the time in milliseconds between "Output Values" change the size of a "Value Step Quantity" while the MPB is being kept pressed
+		if(newVal > 0){
 			_otptSldrSpd = newVal;
 			result = true;
 		}
+		else{
+			result = false;
+		}
 	}
+	taskEXIT_CRITICAL();
 
 	return result;
 }
 
-bool SldrDALtchMPBttn::setOtptSldrStpSize(const uint16_t &newVal){
-	bool result{false};
 
+// v2.x.x integrity check up pending Gaby
+bool SldrDALtchMPBttn::setOtptSldrStpSize(const uint16_t &newVal){
+	bool result{true};
+
+	taskENTER_CRITICAL();
 	if(newVal != _otptSldrStpSize){
-		if(newVal <= (_otptValMax - _otptValMin)){	//If newVal == (_otptValMax - _otptValMin) the slider will work as kind of an On/Off switch
+		if((newVal > 0) && (newVal <= (_otptValMax - _otptValMin))){	//If newVal == (_otptValMax - _otptValMin) the slider will work as kind of an On/Off switch
 			_otptSldrStpSize = newVal;
-			result = true;
+		}
+		else{
+			result = false;
 		}
 	}
+	taskEXIT_CRITICAL();
 
 	return result;
 }

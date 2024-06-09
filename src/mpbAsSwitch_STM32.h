@@ -132,7 +132,7 @@ protected:
 	void clrSttChng();
 	const bool getIsPressed() const;
 	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
-   bool setIsEnabled(const bool &newEnabledValue);
+   void setIsEnabled(const bool &newEnabledValue);
 	void setSttChng();
 	void _turnOff();
 	void _turnOn();
@@ -202,11 +202,8 @@ public:
 	 * - Reset all output flag values.
 	 * - Force the isOn flag according to the **isOnDisabled** flag setting.
 	 * - Keep this **Disabled state** behavior until an enabling message is received through an **enable()** method.
-    *
-    * @retval true: the disabling message was sent to the object.
-    * @retval false: the disabling message couldn't be sent to the object due to an unexpected error.
     */
-	bool disable();
+	void disable();
    /**
 	 * @brief Enables the input signal processing.
 	 *
@@ -214,11 +211,8 @@ public:
 	 * - Resuming all input signals reading.
 	 * - Resuming all output flag computation from the "fresh startup" state, including clearing the **isOn state**
 	 * - Due to strict security enforcement the object will not be allowed to enter the **Enabled state** if the MPB was pressed when the enable message was received and until a MPB release is efectively detected.
-    *
-    * @retval true: the enabling message was sent to the object.
-    * @retval false: the enabling message couldn't be sent to the object due to an unexpected error.
     */
-   bool enable();
+   void enable();
 	/**
 	 * @brief Detaches the object from the timer that monitors the input pins, compute and updates the object's status. The timer daemon entry is deleted for the object.
 	 *
@@ -353,19 +347,14 @@ public:
 	 * @brief Resets the debounce process time of the object to the value used at instantiation.
 	 *
 	 *  The debounce process time used at instantiation might be changed with the setDbncTime() as needed, as many times as needed. This method reverts the value to the instantiation time value. In case the value was not specified at instantiation time the default debounce time value will be used.
-	 *
-	 * @retval true: the value could be reverted.
-	 * @retval false: the value couldn't be reverted due to unexpected situation.
 	 */
-	bool resetDbncTime();
+	void resetDbncTime();
 	/**
 	 * @brief Resets the MPB behavior automaton to it's **Initial** or **Start State**
 	 *
 	 * This method is provided for security and for error handling purposes, so that in case of unexpected situations detected, the driving **Deterministic Finite Automaton** used to compute the MPB objects states might be reset to it's initial state to safely restart it, usually as part of an **Error Handling** procedure.
-	 *
-	 * @retval true always it is invoked.
 	 */
-	bool resetFda();
+	void resetFda();
 	/**
 	 * @brief Restarts the software timer updating the calculation of the object internal flags.
 	 *
@@ -378,9 +367,9 @@ public:
 	 */
 	bool resume();
 	/**
-	 * @brief Sets a new debounce time.
+	 * @brief Sets the debounce time.
 	 *
-	 *	Sets a new time for the debouncing period. The value must be equal or greater than the minimum empirical value set as a property for all the classes, 20 milliseconds. A long debounce time will produce a delay in the press event generation, making it less "responsive".
+	 *	Sets a new time for the debouncing period. The value must be equal or greater than the minimum empirical value set as a property for all the classes, 20 milliseconds, that value is defined in the _HwMinDbncTime constant. A long debounce time will produce a delay in the press event generation, making it less "responsive".
 	 *
 	 * @param newDbncTime unsigned long integer, the new debounce value for the object.
 	 *
@@ -395,22 +384,16 @@ public:
 	 * The function to be executed must be of the form **void (*newFnWhnTrnOff)()**, meaning it must take no arguments and must return no value, it will be executed only once by the object (recursion must be handled with the usual precautions). When instantiated the attribute value is set to **nullptr**.
 	 *
 	 * @param newFnWhnTrnOff Function pointer to the function intended to be called when the object **enters** the **Off State**. Passing **nullptr** as parameter deactivates the function execution mechanism.
-	 *
-	 * @retval true: the passed parameter was set.
-	 * @retval false: the passed parameter could not be set due to unexpected error.
 	 */
-	bool setFnWhnTrnOffPtr(void(*newFnWhnTrnOff)());
+	void setFnWhnTrnOffPtr(void(*newFnWhnTrnOff)());
 	/**
 	 * @brief Sets the function that will be called to execute every time the object **enters** the **On State**.
 	 *
 	 * The function to be executed must be of the form **void (*newFnWhnTrnOff)()**, meaning it must take no arguments and must return no value, it will be executed only once by the object (recursion must be handled with the usual precautions). When instantiated the attribute value is set to **nullptr**.
 	 *
 	 * @param newFnWhnTrnOn: function pointer to the function intended to be called when the object **enters** the **On State**. Passing **nullptr** as parameter deactivates the function execution mechanism.
-	 *
-	 * @retval true: the passed parameter was set.
-	 * @retval false: the passed parameter could not be set due to unexpected error.
 	 */
-	bool setFnWhnTrnOnPtr(void (*newFnWhnTrnOn)());
+	void setFnWhnTrnOnPtr(void (*newFnWhnTrnOn)());
    /**
 	 * @brief Sets the value of the **isOnDisabled** flag.
 	 *
@@ -419,32 +402,25 @@ public:
 	 *
 	 * @note The reasons to disable the ability to change the output, and keep it on either state until re-enabled are design and use dependent, being an obvious one security reasons, disabling the ability of the users to manipulate the switch while keeping the desired **On/Off state**. A simple example would be to keep a light on in a place where a meeting is taking place, disabling the lights switches and keeping the **On State**. Another obvious one would be to keep a machine off while servicing it's internal mechanisms, disabling the possibility of turning it on.
     *
-    * @retval true: the object's isOnDisabled flag attribute was set to the selected value.
-    * @retval false: the object's isOnDisabled flag attribute was not set to the selected value due to unexpected errors.
-    *
-    * @warning If the method is invoked while the object is disabled, and the **isOnDisabled** attribute flag is changed, then the **isOn** attribute flag will have to change accordingly. Changing the **isOn** flag value implies that all the implemented mechanisms related to the change of the **isOn** attribute flag value will be invoked.
+    * @warning If the method is invoked while the object is disabled, and the **isOnDisabled** attribute flag is changed, then the **isOn** attribute flag will have to change accordingly. Changing the **isOn** flag value implies that **all** the implemented mechanisms related to the change of the **isOn** attribute flag value will be invoked.
     */
-   bool setIsOnDisabled(const bool &newIsOnDisabled);
+   void setIsOnDisabled(const bool &newIsOnDisabled);
    /**
-	 * @brief Sets the value of the flag indicating if a change took place in any of the output attribute flags (IsOn included).
+	 * @brief Sets the value of the attribute flag indicating if a change took place in any of the output attribute flags (IsOn included).
 	 *
-	 * The usual path for the **outputsChange** flag is to be set to true by any method changing an output flag, the callback function signaled to take care of the hardware actions because of this changes clears back **outputsChange** after taking care of them. In the unusual case the developer wants to "intercept" this sequence, this method is provided to set (true) or clear (false) outputsChange value.
+	 * The usual path for the **outputsChange** flag is to be set by any method changing an output attribute flag, the callback function signaled to take care of the hardware actions because of this changes clears back **outputsChange** after taking care of them. In the unusual case the developer wants to "intercept" this sequence, this method is provided to set (true) or clear (false) outputsChange value.
     *
     * @param newOutputChange The new value to set the **outputsChange** flag to.
-    *
-    * @retval true: The value of the **outputsChange** attribute flag is set to the parameter value.
     */
-   bool setOutputsChange(bool newOutputChange);
+   void setOutputsChange(bool newOutputChange);
    /**
-	 * @brief Sets the pointer to the task to be notified by the object when its output flags changes.
+	 * @brief Sets the pointer to the task to be notified by the object when its output attribute flags changes.
 	 *
-	 * When the object is created, this value is set to **NULL**, and a valid TaskHandle_t value might be set by using this method. The task notifying mechanism will not be used while the task handle keeps the **NULL** value, in which case the solution implementation will have to use any of the other provided mechanisms to test the object status, and act accordingly. After the TaskHandle value is set it might be changed to point to other task.
+	 * When the object is created, this value is set to **NULL**, and a valid TaskHandle_t value might be set by using this method. The task notifying mechanism will not be used while the task handle keeps the **NULL** value, in which case the solution implementation will have to use any of the other provided mechanisms to test the object status, and act accordingly. After the TaskHandle value is set it might be changed to point to other task. If at the point this method is invoked the attribute holding the pointer was not NULL, the method will suspend the pointed task before proceeding to change the attribute value. The method does not provide any verifcation mechanism to ensure the passed parameter is a valid task handle nor the state of the task the passed pointer might be.
 	 *
-    * @param newHandle A valid task handle of an actual existent task/thread running. There's no provided exception mechanism for dangling pointer errors caused by a pointed task being deleted and/or stopped.
-    *
-    * @retval true: A TaskHandle_t type was passed to the object to be it's new pointer to the task to be messaged when a change in the output flags occur. There's no checking for the validity of the pointer, if it refers to an active task/thread whatsoever.
+    * @param newTaskHandle A valid task handle of an actual existent task/thread running.
     */
-	bool setTaskToNotify(TaskHandle_t newHandle);
+	void setTaskToNotify(const TaskHandle_t &newTaskHandle);
 	/**
 	 * @brief Sets the task to be run while the object is in the **On state**.
 	 *
@@ -453,8 +429,6 @@ public:
 	 * If the existing value for the task handle was not NULL before the invocation, the method will verify the Task Handle was pointing to a deleted or suspended task, in which case will proceed to **suspend** that task before changing the Task Handle to the new provided value.
 	 *
 	 * Setting the value to NULL will disable the task execution mechanism.
-	 *
-	 * @retval true: the task indicated by the parameter was successfuly asigned to be executed while in isOn state, or the mechanism was deactivated by setting the task handle to NULL.
     *
     *@note The method does not implement any task handle validation for the new task handle, a valid handle to a valid task is assumed as parameter.
     *
@@ -462,7 +436,7 @@ public:
     *
     * @warning Take special consideration about the implications of the execution **priority** of the task to be executed while the MPB is in **On state** and its relation to the priority of the calling task, as it might affect the normal execution of the application.
 	 */
-	bool setTaskWhileOn(const TaskHandle_t &newTaskHandle);
+	void setTaskWhileOn(const TaskHandle_t &newTaskHandle);
 };
 
 //==========================================================>>
@@ -518,12 +492,10 @@ public:
      *
      * @param newStrtDelay New value for the **delay** attribute in milliseconds.
      *
-     * @retval true: the strtDelay attribute was set to the parameter value.
-     *
      * @note Setting the delay attribute to 0 makes the instantiated object act exactly as a Debounced MPB (D-MPB)
      * @warning: Using very high **delay** values is valid but might make the system seem less responsive, be aware of how it will affect the user experience.
      */
-    bool setStrtDelay(const unsigned long int &newStrtDelay);
+    void setStrtDelay(const unsigned long int &newStrtDelay);
 };
 
 //==========================================================>>
@@ -643,30 +615,24 @@ public:
 	 * @brief Sets the value of the trnOffASAP attribute flag.
 	 *
 	 * @param newVal New value for the trnOffASAP attribute
-	 *
-	 * @retval true The value change was successful
 	 */
-	bool setTrnOffASAP(const bool &newVal);
+	void setTrnOffASAP(const bool &newVal);
 	/**
 	 * @brief Sets the value of the validUnlatchPending attribute
 	 *
 	 * By setting the value of the validUnlatchPending it's possible to modify the current MPB status by generating an unlatch signal or by canceling an existent unlatch signal.
 	 *
 	 * @param newVal New value for the validUnlatchPending attribute
-	 *
-	 * @retval true The value change was successful
 	 */
-	bool setUnlatchPend(const bool &newVal);
+	void setUnlatchPend(const bool &newVal);
 	/**
 	 * @brief Sets the value of the validUnlatchRlsPending attribute
 	 *
 	 * By setting the value of the validUnlatchPending and validUnlatchReleasePending flags it's possible to modify the current MPB status by generating an unlatch signal or by canceling an existent unlatch signal.
 	 *
 	 * @param newVal New value for the validUnlatchReleasePending attribute
-	 *
-	 * @retval true The value change was successful
 	 */
-	bool setUnlatchRlsPend(const bool &newVal);
+	void setUnlatchRlsPend(const bool &newVal);
 	/**
 	 * @brief Sets the values of the flags needed to unlatch a latched MPB
 	 *
@@ -765,7 +731,7 @@ public:
      * @note To ensure a safe and predictable behavior from the instantiated objects a minimum Service Time setting guard is provided, ensuring data and signals processing are completed before unlatching process is enforced by the timer. The guard is setted by the defined _MinSrvcTime constant.
      *
      * @retval true if the newSrvcTime parameter is equal to or greater than the minimum setting guard, the new value is set.
-     * @retval false if the newSrvcTime parameter is less than the minimum setting guard.
+     * @retval false The newSrvcTime parameter is less than the minimum setting guard, the srvcTime attribute was not changed.
      */
     bool setSrvcTime(const unsigned long int &newSrvcTime);
     /**
@@ -774,10 +740,8 @@ public:
      * If the isResetable attribute flag is cleared the MPB will return to **Off state** when the Service Time is reached no matter if the MPB was pressed again during the service period. If the attribute flag is set, pressing the MPB (debounce and delay times enforced) while on the **On state** resets the timer, starting back from 0. The reseting might be repeated as many times as desired.
      *
      * @param newIsRstbl The new setting for the isResetable flag.
-     *
-     * @retval true.
      */
-    bool setTmerRstbl(const bool &newIsRstbl);
+    void setTmerRstbl(const bool &newIsRstbl);
 };
 
 //==========================================================>>
@@ -869,10 +833,8 @@ public:
 	 * @brief Sets the configuration of the keepPilot service attribute flag.
 	 *
 	 * @param newKeepPilot The new setting for the keepPilot service flag
-	 *
-	 * @retval True
 	 */
-	bool setKeepPilot(const bool &newKeepPilot);
+	void setKeepPilot(const bool &newKeepPilot);
 	/**
 	 * @brief See TmLtchMPBttn::setSrvcTime(const unsigned long int)
 	 *
@@ -1064,6 +1026,24 @@ public:
 	 */
    void clrStatus(bool clrIsOn = true);
 	/**
+	 * @brief Gets the function that is set to execute every time the object **enters** the **Secondary Off State**.
+	 *
+	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnOffScndryPtr()** method.
+	 *
+	 * @return A function pointer to the function set to execute every time the object enters the **Secondary Off State**.
+	 * @retval nullptr if there is no function set to execute when the object enters the **Secondary Off State**.
+	 */
+	fncPtrType getFnWhnTrnOffScndry();
+	/**
+	 * @brief Gets the function that is set to execute every time the object **enters** the **Secondary On State**.
+	 *
+	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnOnScndryPtr()** method.
+	 *
+	 * @return A function pointer to the function set to execute every time the object enters the **Secondary On State**.
+	 * @retval nullptr if there is no function set to execute when the object enters the **Secondary On State**.
+	 */
+	fncPtrType getFnWhnTrnOnScndry();
+	/**
 	 * @brief Gets the current value of the scndModActvDly class attribute.
 	 *
 	 * The scndModActvDly attribute defines the time length a MPB must remain pressed to consider it a **long press**, needed to activate the **secondary mode**.
@@ -1071,6 +1051,33 @@ public:
 	 * @return The current scndModActvDly value, i.e. the delay in milliseconds.
 	 */
    unsigned long getScndModActvDly();
+	/**
+	 * @brief Gets the task to be run while the object is in the **Secondary On state**.
+	 *
+	 * Gets the task handle of the task to be **resumed** every time the object enters the **Secondary On state**, and will be **paused** when the  object enters the **Secondary Off state**. This task execution mechanism dependent of the **Secondary On state** extends the concept of the **Switch object** far away of the simple turning On/Off a single hardware signal, attaching to it all the task execution capabilities of the MCU.
+	 *
+	 * @return The TaskHandle_t value of the task to be resumed while the object is in **Secondary On state**.
+    * @retval NULL if there is no task configured to be resumed while the object is in **Secondary On state**.
+    *
+    * @warning Free-RTOS has no mechanism implemented to notify a task that it is about to be set in **paused** state, so there is no way to that task to ensure it will be set to pause in an orderly fashion. The task to be designated to be used by this mechanism has to be task that can withstand being interrupted at any point of it's execution, and be restarted from that same point next time the **isOnScndry** flag is set. For tasks that might need attaching resources or other issues every time it is resumed and releasing resources of any kind before being **paused**, using the function attached by using **setFnWhnTrnOnScndryPtr()** to gain control of the resources before resuming a task, and the function attached by using **setFnWhnTrnOffScndryPtr()** to release the resources and pause the task in an orderly fashion, or use those functions to manage a binary semaphore for managing the execution of a task.
+	 */
+	const TaskHandle_t getTaskWhileOnScndry();
+	/**
+	 * @brief Sets the function that will be called to execute every time the object **enters** the **Secondary Off State**.
+	 *
+	 * The function to be executed must be of the form **void (*newFnWhnTrnOff)()**, meaning it must take no arguments and must return no value, it will be executed only once by the object (recursion must be handled with the usual precautions). When instantiated the attribute value is set to **nullptr**.
+	 *
+	 * @param newFnWhnTrnOff Function pointer to the function intended to be called when the object **enters** the **Secondary Off State**. Passing **nullptr** as parameter deactivates the function execution mechanism.
+	 */
+	void setFnWhnTrnOffScndryPtr(void(*newFnWhnTrnOff)());
+	/**
+	 * @brief Sets the function that will be called to execute every time the object **enters** the **Secondary On State**.
+	 *
+	 * The function to be executed must be of the form **void (*newFnWhnTrnOff)()**, meaning it must take no arguments and must return no value, it will be executed only once by the object (recursion must be handled with the usual precautions). When instantiated the attribute value is set to **nullptr**.
+	 *
+	 * @param newFnWhnTrnOn: function pointer to the function intended to be called when the object **enters** the **Secondary On State**. Passing **nullptr** as parameter deactivates the function execution mechanism.
+	 */
+	void setFnWhnTrnOnScndryPtr(void (*newFnWhnTrnOn)());
 	/**
 	 * @brief Sets a new value for the scndModActvDly class attribute
 	 *
@@ -1082,14 +1089,24 @@ public:
 	 * @retval false: The new value is not in the valid range, the value was not updated.
 	 */
 	bool setScndModActvDly(const unsigned long &newVal);
-
-	fncPtrType getFnWhnTrnOffScndry();
-   fncPtrType getFnWhnTrnOnScndry();
-	const TaskHandle_t getTaskWhileOnScndry();
-
-	bool setFnWhnTrnOffScndryPtr(void(*newFnWhnTrnOff)());
-	bool setFnWhnTrnOnScndryPtr(void (*newFnWhnTrnOn)());
-	bool setTaskWhileOnScndry(const TaskHandle_t &newTaskHandle);
+	/**
+	 * @brief Sets the task to be run while the object is in the **On state**.
+	 *
+	 * Sets the task handle of the task to be **resumed** when the object enters the **On state**, and will be **paused** when the  object enters the **Off state**. This task execution mechanism dependent of the **On state** extends the concept of the **Switch object** far away of the simple turning On/Off a single hardware signal, attaching to it all the task execution capabilities of the MCU.
+	 *
+	 * If the existing value for the task handle was not NULL before the invocation, the method will verify the Task Handle was pointing to a deleted or suspended task, in which case will proceed to **suspend** that task before changing the Task Handle to the new provided value.
+	 *
+	 * Setting the value to NULL will disable the task execution mechanism.
+	 *
+	 * @retval true: the task indicated by the parameter was successfuly asigned to be executed while in isOn state, or the mechanism was deactivated by setting the task handle to NULL.
+    *
+    *@note The method does not implement any task handle validation for the new task handle, a valid handle to a valid task is assumed as parameter.
+    *
+    * @note Consider the implications of the task that's going to get suspended every time the MPB goes to the **Off state**, so that the the task to be run might be interrupted at any point of its execution. This implies that the task must be designed with that consideration in mind to avoid dangerous situations generated by a task not completely done when suspended.
+    *
+    * @warning Take special consideration about the implications of the execution **priority** of the task to be executed while the MPB is in **On state** and its relation to the priority of the calling task, as it might affect the normal execution of the application.
+	 */
+	void setTaskWhileOnScndry(const TaskHandle_t &newTaskHandle);
 
 };
 
@@ -1128,12 +1145,10 @@ public:
    DDlydDALtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
    /**
 	 * @brief Class virtual destructor
-    *
     */
    ~DDlydDALtchMPBttn();
 	/**
 	 * @brief See DbncddMPBttn::clrStatus(bool)
-	 *
 	 */
    void clrStatus(bool clrIsOn = true);
    /**
@@ -1284,11 +1299,37 @@ public:
 	 * @param newVal The new value for the output current value register.
 	 *
 	 * @return The success in the value change
-	 * @retval true The new value was within valid range, the output current value register change was made.
+	 * @retval true The new value was within valid range, the output current value register is set to the parameter passed.
 	 * @retval false The new value was outside valid range, the change was not made.
-	 *
 	 */
 	bool setOtptCurVal(const uint16_t &newVal);
+	/**
+	 * @brief Sets the output slider speed (**otptSldrSpd**) attribute.
+	 *
+	 * As described in the SldrDALtchMPBttn class definition, the **otptSldrSpd** value is the factor by which the time between two readings of the MPB in secondary mode is converted into "slider steps". At instantiation the value is set to 1, meaning 1 millisecond is equivalent to 1 step, the **slower** speed configuration. Rising the value will make each millisecond represent more steps, making the change of current value faster.
+	 *
+	 * @param newVal The new value for the **otptSldrSpd** attribute.
+	 *
+	 * @return The success in the value of the attribute
+	 * @retval true The parameter was a valid value, the attribute is set to the new value.
+	 * @retval false The parameter is an invalid value, the attribute is not changed.
+	 *
+	 * @note Making the **otptSldrSpd** equal to 0 will void the change of the slider value, so the range of acceptable values is 1<= newVal <= (2^16-1).
+	 * @warning A "wrong" combination of **otptSldrSpd** and **otptSldrStpSize** might result in value change between readings greater than the range set by the **otptValMin** and the **otpValMax** values. The relation between the four parameters must be kept in mind if the application developed gives the final user the hability to configure those values at runtime.
+	 */
+	bool setOtptSldrSpd(const uint16_t &newVal);
+	/**
+	 * @brief Sets the output slider step size (**otptSldrStpSize**) attribute value.
+	 *
+	 * @param newVal The new value for the outputSliderStepSize attribute.
+	 *
+	 * @note The new value for the step size must be smaller or equal than the size of the valid range of opCurVal attribute
+	 *
+	 * @retval true If newVal <= (otptValMax - otptValMin), the value of the outputSliderStepSize attribute is changed.
+	 * @retval false Otherwise, and the value of the outputSliderStepSize attribute is not changed.
+	 *
+	 */
+	bool setOtptSldrStpSize(const uint16_t &newVal);
 	/**
 	 * @brief Sets the output current value register maximum value.
 	 *
@@ -1317,19 +1358,6 @@ public:
 	 * @note If the otpValMin attribute intended change is to a greater value, the otpCurVal might be left outside the new valid range (newVal > otpCurVal). In this case the otpCurVal will be changed to be equal to newVal, and so otpCurVal will become equal to otpValMin.
 	 */
 	bool setOtptValMin(const uint16_t &newVal);
-	/**
-	 * @brief Sets the outputSliderStepSize attribute value.
-	 *
-	 * @param newVal The new value for the outputSliderStepSize attribute.
-	 *
-	 * @note The new value for the step size must be smaller or equal than the size of the valid range of opCurVal attribute
-	 *
-	 * @retval true If newVal <= (otptValMax - otptValMin), the value of the outputSliderStepSize attribute is changed.
-	 * @retval false Otherwise, and the value of the outputSliderStepSize attribute is not changed.
-	 *
-	 */
-	bool setOtptSldrStpSize(const uint16_t &newVal);
-	bool setOtptSldrSpd(const uint16_t &newVal);
 	bool setSldrDirDn();
 	bool setSldrDirUp();
 	bool setSwpDirOnEnd(const bool &newVal);

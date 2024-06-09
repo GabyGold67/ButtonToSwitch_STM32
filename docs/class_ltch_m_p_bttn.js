@@ -9,8 +9,8 @@ var class_ltch_m_p_bttn =
     [ "getUnlatchPend", "class_ltch_m_p_bttn.html#a4a640fee342b1e51983d0efb67ce9727", null ],
     [ "getUnlatchRlsPend", "class_ltch_m_p_bttn.html#a41d12e22aaa4af6b79908365ecf3788a", null ],
     [ "resetFda", "class_ltch_m_p_bttn.html#a402b034dca985f4f32a4842c94a8c5c2", null ],
-    [ "setTrnOffASAP", "class_ltch_m_p_bttn.html#a5a4aa64b8ec230cda2c8b09b1eacb63b", null ],
-    [ "setUnlatchPend", "class_ltch_m_p_bttn.html#a8097c54b97d9fbce616e1ccee51c71d8", null ],
-    [ "setUnlatchRlsPend", "class_ltch_m_p_bttn.html#af97fafb68bae2d33c141da4addddaa03", null ],
+    [ "setTrnOffASAP", "class_ltch_m_p_bttn.html#a6308ffa1b2c39372b09c0f4829648a59", null ],
+    [ "setUnlatchPend", "class_ltch_m_p_bttn.html#a552d37d773f5ea335abfd0557651800c", null ],
+    [ "setUnlatchRlsPend", "class_ltch_m_p_bttn.html#a94eea105ceb93bcb16a0ae8d973de72d", null ],
     [ "unlatch", "class_ltch_m_p_bttn.html#a25933288a98bd0a2efc406e7a009fbc1", null ]
 ];
