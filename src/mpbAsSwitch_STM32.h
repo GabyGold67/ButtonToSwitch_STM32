@@ -1166,24 +1166,27 @@ public:
 /**
  * @brief Implements a Slider Double Action LDD-MPB combo switch, a.k.a. off/on/dimmer, a.k.a. off/on/volume radio switch)(**S-DALDD-MPB**)
  *
- * This is a subclass of the **DALDD-MPB** whose **secondary behavior** is analog to that of a **Digital potentiometer (DigiPot)** or a **Discreet values incremental/decremental register** that means that when in the second mode, while the MPB remains pressed, an attribute set as a register changes its value -the **otpCurVal** register-.
- * When the timer callback function used to keep the MPB status updated is called -while in the secondary mode state- the time since the last call is registered and the time lapse in milliseconds is converted to **Steps**, using as configurable factor the **outputSliderSpeed** in a pre-scaler fashion. At instantiation the **outputSliderSpeed** is configured to 1 (step/millisecond).
+ * This is a subclass of the **DALDD-MPB** whose **secondary behavior** is analog to that of a **Digital potentiometer (DigiPot)** or a **Discreet values incremental/decremental register**. That means that when in the second mode, while the MPB remains pressed, an attribute set as a register changes its value -the **otpCurVal** register-.
+ * When the timer callback function used to keep the MPB status updated is called -while in the secondary mode state- the time since the last call is calculated and the time lapse in milliseconds is converted into **Steps**, using as configurable factor the **outputSliderSpeed** in a pre-scaler fashion. At instantiation the **outputSliderSpeed** is configured to 1 (step/millisecond, i.e. 1 step for each millisecond).
  * The resulting value in "steps" is then factored by the **outputSliderStepSize**, which holds the value that each step will  modify the **otpCurVal** register.
- * The implemented behavior mechanisms of the class determine how the modification of the otpCurVal register will be made, and the associated effects to the instantiated object's attribute, such as (but not limited to):
+ * The implemented embedded behavior mechanisms of the class determine how the modification of the otpCurVal register will be made, and the associated effects to the instantiated object's attribute, such as (but not limited to):
  * - Incrementing otpCurVal register (by the quantity of steps multiplied by the step size) up to the maximum value setting.
  * - Decrementing otpCurVal register (by that quantity) down to the minimum value setting.
  * - Changing the modification's direction (from incrementing to decrementing or vice versa).
- * The minimum and maximum values, the rate in steps/second, the size of each step and the variation direction (sign of the variation, incremental or decremental) are all configurable, as is the starting value and the mechanism to revert the "direction".
+ * The minimum and maximum values, the rate in steps/second, the size of each step and the variation direction (sign of the variation, incremental or decremental) are all configurable, as is the starting value and the mechanism to revert the "direction" that includes:
+ * - Revert directions in the next **secondary mode** entry.
+ * - Automatically revert direction when reaching the minimum and maximum values setting.
+ * _ Revert direction by methods invocation (see setSldrDirDn(), setSldrDirUp(), swapSldrDir()).
  *
  * class SldrDALtchMPBttn
  *
  */
 class SldrDALtchMPBttn: public DblActnLtchMPBttn{
-
 protected:
 	bool _autoSwpDirOnEnd{true};	// Changes slider direction automatically when reaches _otptValMax or _otptValMin
 	bool _autoSwpDirOnPrss{false};// Changes slider direction each time it enters slider mode
 	bool _curSldrDirUp{true};
+	uint16_t _initOtptCurVal{};
 	uint16_t _otptCurVal{};
 	unsigned long _otptSldrSpd{1};
 	uint16_t _otptSldrStpSize{0x01};
@@ -1197,7 +1200,7 @@ public:
    /**
 	 * @brief Class constructor
     *
-    * @param initVal (Optional) Initial value of the **wiper** (taking the analogy of a potentiomenter working parts), in this implementation the value corresponds to the **Output Current Value (otpCurVal)** attribute of the class. As the attribute type is uint16_t and the minimum and maximum limits are set to 0x0000 and 0xFFFF respectively, the initial value might be set to any value of the type. If no value is provided 0xFFFF will be the instantiation value.
+    * @param initVal (Optional) Initial value of the **wiper** (taking the analogy of a potentiometer working parts), in this implementation the value corresponds to the **Output Current Value (otpCurVal)** attribute of the class. As the attribute type is uint16_t and the minimum and maximum limits are set to 0x0000 and 0xFFFF respectively, the initial value might be set to any value of the type. If no value is provided 0xFFFF will be the instantiation value.
     *
     * @note For the remaining parameters see DbncdDlydMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int, const unsigned long int)
     *
@@ -1306,7 +1309,7 @@ public:
 	/**
 	 * @brief Sets the output slider speed (**otptSldrSpd**) attribute.
 	 *
-	 * As described in the SldrDALtchMPBttn class definition, the **otptSldrSpd** value is the factor by which the time between two readings of the MPB in secondary mode is converted into "slider steps". At instantiation the value is set to 1, meaning 1 millisecond is equivalent to 1 step, the **slower** speed configuration. Rising the value will make each millisecond represent more steps, making the change of current value faster.
+	 * As described in the SldrDALtchMPBttn class definition, the **otptSldrSpd** value is the factor by which the time between two readings of the MPB pressing state in secondary mode is converted into "slider steps". At instantiation the value is set to 1, meaning 1 millisecond is equivalent to 1 step, the "**slower**" speed configuration. Rising the value will make each millisecond represent more steps, making the change of current value faster.
 	 *
 	 * @param newVal The new value for the **otptSldrSpd** attribute.
 	 *
@@ -1314,8 +1317,8 @@ public:
 	 * @retval true The parameter was a valid value, the attribute is set to the new value.
 	 * @retval false The parameter is an invalid value, the attribute is not changed.
 	 *
-	 * @note Making the **otptSldrSpd** equal to 0 will void the change of the slider value, so the range of acceptable values is 1<= newVal <= (2^16-1).
-	 * @warning A "wrong" combination of **otptSldrSpd** and **otptSldrStpSize** might result in value change between readings greater than the range set by the **otptValMin** and the **otpValMax** values. The relation between the four parameters must be kept in mind if the application developed gives the final user the hability to configure those values at runtime.
+	 * @note Making the **otptSldrSpd** equal to 0 would void the ability to change the slider value, so the range of acceptable values is 1<= newVal <= (2^16-1).
+	 * @warning A "wrong" combination of **otptSldrSpd** and **otptSldrStpSize** might result in value change between readings greater than the range set by the **otptValMin** and the **otpValMax** values. The relation between the four parameters must be kept in mind if the application developed gives the final user the capability to configure those values at runtime.
 	 */
 	bool setOtptSldrSpd(const uint16_t &newVal);
 	/**
@@ -1328,12 +1331,17 @@ public:
 	 * @retval true If newVal <= (otptValMax - otptValMin), the value of the outputSliderStepSize attribute is changed.
 	 * @retval false Otherwise, and the value of the outputSliderStepSize attribute is not changed.
 	 *
+	 * @note For the secondary function to work like a slider, the condition (newVal < ((_otptValMax - _otptValMin) / _otptSldrSpd)) must be kept
+	 * @note For the secondary function to work like a slider or a toggle switch, the condition (newVal <= ((_otptValMax - _otptValMin) / _otptSldrSpd)) must be kept
+	 * @note For the secondary function to work like a toggle switch, the condition (newVal = ((_otptValMax - _otptValMin) / _otptSldrSpd)) must be kept.
+	 *
+	 * @warning As a consequence of the aforementioned notes, if both **otptSldrStpSize** and **otptSldrSpd** are being changed, the **otptSldrSpd** must be changed first to ensure the new **otptSldrStpSize** doesn't fail the range validation test included in this method.
 	 */
 	bool setOtptSldrStpSize(const uint16_t &newVal);
 	/**
-	 * @brief Sets the output current value register maximum value.
+	 * @brief Sets the output current value register maximum value attribute (otptValMax attribute).
 	 *
-	 * The new value for the output current value register maximum -otpValMax attribute- must be in the range otpValMin < newVal <= 0xFFFF
+	 * The new value for the otpValMax attribute must be in the range otpValMin < newVal <= 0xFFFF
 	 *
 	 * @param newVal The new value for the otpValMax attribute.
 	 *
@@ -1341,13 +1349,15 @@ public:
 	 * @retval true The new value was within valid range, the otpValMax attribute change was made.
 	 * @retval false The new value was outside valid range, the change was not made.
 	 *
-	 * @note If the otpValMax attribute intended change is to a smaller value, the otpCurVal might be left outside the new valid range (newVal < otpCurVal). In this case the otpCurVal will be changed to be equal to newVal, and so otpCurVal will become equal to otpValMax.
+	 * @note Due to type constrains, the failure in the value change must be consequence of the selected newVal <= otptValMin
+	 *
+	 * @warning If the otpValMax attribute intended change is to a smaller value, the otpCurVal might be left outside the new valid range (newVal < otpCurVal). In this case the otpCurVal will be changed to be equal to newVal, and so otpCurVal will become equal to otpValMax.
 	 */
 	bool setOtptValMax(const uint16_t &newVal);
 	/**
-	 * @brief Sets the output current value register minimum value.
+	 * @brief Sets the output current value register minimum value attribute (otptValMin attribute).
 	 *
-	 * The new value for the output current value register minimum -otpValMin attribute- must be in the range 0x0000<= newVal < optValMax.
+	 * The new value for the otpValMin attribute must be in the range 0x0000<= newVal < optValMax.
 	 *
 	 * @param newVal The new value for the otpValMin attribute.
 	 *
@@ -1355,13 +1365,63 @@ public:
 	 * @retval true The new value was within valid range, the otpValMin attribute change was made.
 	 * @retval false The new value was outside valid range, the change was not made.
 	 *
-	 * @note If the otpValMin attribute intended change is to a greater value, the otpCurVal might be left outside the new valid range (newVal > otpCurVal). In this case the otpCurVal will be changed to be equal to newVal, and so otpCurVal will become equal to otpValMin.
+	 * @note Due to type constrains, the failure in the value change must be consequence of the selected newVal >= otptValMax
+	 *
+	 * @warning If the otpValMin attribute intended change is to a greater value, the otpCurVal might be left outside the new valid range (newVal > otpCurVal). In this case the otpCurVal will be changed to be equal to newVal, and so otpCurVal will become equal to otpValMin.
 	 */
 	bool setOtptValMin(const uint16_t &newVal);
+	/**
+	 * @brief Sets the value of the curSldrDirUp attribute to false.
+	 *
+	 * The curSldrDirUp attribute dictates how the calculated output value change -resulting from the time lapse between checks, the otptSldrSpd and the otptSldrStpSize attributes- will be applied to the otptCurVal attribute.
+	 * - If curSldrDirUp = false, the output value change will be **subtracted** from otptCurVal, successively down to otptValMin.
+	 *
+	 * @note If the method intends to set the curSldrDirUp to false when the otptCurVal = otptValMin the method will fail, returning false as result.
+	 *
+	 * @return The success in changing the slider direction
+	 * @retval true The change of direction was successful
+	 * @retval true The change of direction failed as the otptCurVal was equal to the extreme value
+	 */
 	bool setSldrDirDn();
+	/**
+	 * @brief Sets the value of the curSldrDirUp attribute to true
+	 *
+	 * The curSldrDirUp attribute dictates how the calculated output value change -resulting from the time lapse between checks, the otptSldrSpd and the otptSldrStpSize attributes- will be applied to the otptCurVal attribute.
+	 * - If curSldrDirUp = true, the output value change will be **added** to otptCurVal, up to otptValMax.
+	 *
+	 * @note If the method intends to set curSldrDirUp to true when the otptCurVal = otptValMax the method will fail, returning false as result.
+	 *
+	 * @return The success in changing the slider direction
+	 * @retval true The change of direction was successful
+	 * @retval true The change of direction failed as the otptCurVal was equal to the extreme value
+	 */
 	bool setSldrDirUp();
-	bool setSwpDirOnEnd(const bool &newVal);
-	bool setSwpDirOnPrss(const bool &newVal);
+	/**
+	 * @brief Sets the value of the "Auto-Swap Direction on Ends" (**autoSwpDirOnEnd**) attribute.
+	 *
+	 * The autoSwpDirOnEnd is one of the attributes that configures the slider behavior, setting what the MPB must do when reaching one of the output values range limits.
+	 * If a limit -otptValMin or otptValMax- is reached while the MPBttn is kept pressed and in secondary mode, the otptCurVal register increment/decrement can be stopped until a change of direction is invoked through setSldrDirUp(), setSldrDirDn() or swpSldrDir() methods, or automatically through the "Auto-Swap Direction on Ends" (**autoSwpDirOnEnd**) and the "Swap Direction on MPB press" (**autoSwpDirOnPrss**).
+	 * If the **autoSwpDirOnEnd** attribute is set (true) the increment direction of the otptCurVal will be automatically inverted when it reaches otptValMax or otptValMin. If it's not set the otptCurVal will not change value until one of the described alternative methods is invoked, or the MPB is released and pushed back if the **autoSwpDirOnPrss** is set -see **setSwpDirOnPrss(const bool)**.
+	 *
+	 * @param newVal The new value for the autoSwpDirOnEnd attribute
+	 */
+	void setSwpDirOnEnd(const bool &newVal);
+	/**
+	 * @brief Sets the value of the "Auto-Swap Direction On Press" (**autoSwpDirOnPrss**) attribute.
+	 *
+	 * The **autoSwpDirOnPrss** is one of the attributes that configures the slider behavior, setting what the MPB must do when the MPB object enters in secondary mode, referring to the increment or decrement directions.
+	 * If the **autoSwpDirOnPrss** attribute is set (true) the increment direction of the otptCurVal will be automatically inverted every time the MPB is pressed back into secondary mode. If the otpCurVal was incrementing when the MPB was last released. the otpCurVal will start decrementing the next time is pressed to enter secondary mode, and vice versa. If it's not set the otptCurVal will not change direction until it reaches one the limit values, or until one of the described alternative methods is invoked, or the MPB's **autoSwpDirOnEnd** attribute is set -see **setSwpDirOnEnd(const bool)** for more details.
+	 *
+	 * @param newVal The new value for the autoSwpDirOnPrss attribute
+	 */
+	void setSwpDirOnPrss(const bool &newVal);
+	/**
+	 * @brief Inverts the current **curSldrDirUp** attribute value.
+	 *
+	 * Whatever the previous value of the **curSldrDirUp** flag, the method invocation inverts it's value, and as a consequence the inverts the direction of the otptCurVal update. If it was incrementing it will starte decrementing, and vice versa, considering all the other factors, attributes and attribute flags involved in the embedded object behavior (minimum and maximum settings, the direction changes if pressed, reaches limits, etc.)
+	 *
+	 * @return The new value of the curSldrDirUp attribute.
+	 */
 	bool swapSldrDir();
 };
 

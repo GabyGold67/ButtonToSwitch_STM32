@@ -16,5 +16,10 @@ var class_sldr_d_a_ltch_m_p_bttn =
     [ "setOtptSldrSpd", "class_sldr_d_a_ltch_m_p_bttn.html#a3d51e6c2da40b6b010a30cc67920ca0e", null ],
     [ "setOtptSldrStpSize", "class_sldr_d_a_ltch_m_p_bttn.html#acb96c52fc227b8787d2dbaa3c9d688bd", null ],
     [ "setOtptValMax", "class_sldr_d_a_ltch_m_p_bttn.html#a5e486e8b043fd98a480ba01edf4a2a1d", null ],
-    [ "setOtptValMin", "class_sldr_d_a_ltch_m_p_bttn.html#ade0bb26e0b683aed9665aed6c68772b8", null ]
+    [ "setOtptValMin", "class_sldr_d_a_ltch_m_p_bttn.html#ade0bb26e0b683aed9665aed6c68772b8", null ],
+    [ "setSldrDirDn", "class_sldr_d_a_ltch_m_p_bttn.html#a5c3f74728490aa41d8adb5130f4421e1", null ],
+    [ "setSldrDirUp", "class_sldr_d_a_ltch_m_p_bttn.html#a826321fa304f02fdd587407039b60ab5", null ],
+    [ "setSwpDirOnEnd", "class_sldr_d_a_ltch_m_p_bttn.html#af946867260eb4c8c5431a2c0cd9f4a91", null ],
+    [ "setSwpDirOnPrss", "class_sldr_d_a_ltch_m_p_bttn.html#ad4c83c3426708f3825c68d01ca2b3f0c", null ],
+    [ "swapSldrDir", "class_sldr_d_a_ltch_m_p_bttn.html#a5f61c963274f5496f9581f8ffa294974", null ]
 ];

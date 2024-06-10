@@ -2125,10 +2125,12 @@ void DDlydDALtchMPBttn::stOnEndScndMod_Out(){
 //=========================================================================> Class methods delimiter
 
 SldrDALtchMPBttn::SldrDALtchMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long &dbncTimeOrigSett, const unsigned long int &strtDelay, const uint16_t initVal)
-:DblActnLtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay), _otptCurVal{initVal}
+:DblActnLtchMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay), _initOtptCurVal{initVal}
 {
-	if(_otptCurVal < _otptValMin || _otptCurVal > _otptValMax)
-		_otptCurVal = _otptValMin;	// Original development setup makes this outside limits situation impossible, as the limits are set to the full range of the data type used
+//	if(_otptCurVal < _otptValMin || _otptCurVal > _otptValMax)
+//		_otptCurVal = _otptValMin;	// Original development setup makes this outside limits situation impossible, as the limits are set to the full range of the data type used
+
+	_otptCurVal = _initOtptCurVal;
 }
 
 SldrDALtchMPBttn::SldrDALtchMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const bool &typeNO, const unsigned long &dbncTimeOrigSett, const unsigned long int &strtDelay, const uint16_t initVal)
@@ -2213,7 +2215,6 @@ bool SldrDALtchMPBttn::setOtptSldrSpd(const uint16_t &newVal){
 	if(newVal != _otptSldrSpd){
 		if(newVal > 0){
 			_otptSldrSpd = newVal;
-			result = true;
 		}
 		else{
 			result = false;
@@ -2224,14 +2225,12 @@ bool SldrDALtchMPBttn::setOtptSldrSpd(const uint16_t &newVal){
 	return result;
 }
 
-
-// v2.x.x integrity check up pending Gaby
 bool SldrDALtchMPBttn::setOtptSldrStpSize(const uint16_t &newVal){
 	bool result{true};
 
 	taskENTER_CRITICAL();
 	if(newVal != _otptSldrStpSize){
-		if((newVal > 0) && (newVal <= (_otptValMax - _otptValMin))){	//If newVal == (_otptValMax - _otptValMin) the slider will work as kind of an On/Off switch
+		if((newVal > 0) && (newVal <= (_otptValMax - _otptValMin) / _otptSldrSpd)){	//If newVal == (_otptValMax - _otptValMin) the slider will work as kind of an On/Off switch
 			_otptSldrStpSize = newVal;
 		}
 		else{
@@ -2244,7 +2243,7 @@ bool SldrDALtchMPBttn::setOtptSldrStpSize(const uint16_t &newVal){
 }
 
 bool SldrDALtchMPBttn::setOtptValMax(const uint16_t &newVal){
-	bool result{false};
+	bool result{true};
 
 	if(newVal != _otptValMax){
 		if(newVal > _otptValMin){
@@ -2253,7 +2252,9 @@ bool SldrDALtchMPBttn::setOtptValMax(const uint16_t &newVal){
 				_otptCurVal = _otptValMax;
 				_outputsChange = true;
 			}
-			result = true;
+		}
+		else{
+			result = false;
 		}
 	}
 
@@ -2261,7 +2262,7 @@ bool SldrDALtchMPBttn::setOtptValMax(const uint16_t &newVal){
 }
 
 bool SldrDALtchMPBttn::setOtptValMin(const uint16_t &newVal){
-	bool result{false};
+	bool result{true};
 
 	if(newVal != _otptValMin){
 		if(newVal < _otptValMax){
@@ -2270,7 +2271,9 @@ bool SldrDALtchMPBttn::setOtptValMin(const uint16_t &newVal){
 				_otptCurVal = _otptValMin;
 				_outputsChange = true;
 			}
-			result = true;
+		}
+		else{
+			result = false;
 		}
 	}
 
@@ -2278,21 +2281,21 @@ bool SldrDALtchMPBttn::setOtptValMin(const uint16_t &newVal){
 }
 
 bool SldrDALtchMPBttn::_setSldrDir(const bool &newVal){
-	bool result{false};
+	bool result{true};
 
 	if(newVal != _curSldrDirUp){
 		if(newVal){	//Try to set new direction Up
 			if(_otptCurVal != _otptValMax){
 				_curSldrDirUp = true;
-				result = true;
 			}
 		}
 		else{		//Try to set new direction down
 			if(_otptCurVal != _otptValMin){
 				_curSldrDirUp = false;
-				result = true;
 			}
 		}
+		if(_curSldrDirUp != newVal)
+			result = false;
 	}
 
 	return result;
@@ -2308,20 +2311,18 @@ bool SldrDALtchMPBttn::setSldrDirUp(){
 	return _setSldrDir(true);
 }
 
-bool SldrDALtchMPBttn::setSwpDirOnEnd(const bool &newVal){
-
+void SldrDALtchMPBttn::setSwpDirOnEnd(const bool &newVal){
 	if(_autoSwpDirOnEnd != newVal)
 		_autoSwpDirOnEnd = newVal;
 
-	return _autoSwpDirOnEnd;
+	return;
 }
 
-bool SldrDALtchMPBttn::setSwpDirOnPrss(const bool &newVal){
-
+void SldrDALtchMPBttn::setSwpDirOnPrss(const bool &newVal){
 	if(_autoSwpDirOnPrss != newVal)
 		_autoSwpDirOnPrss = newVal;
 
-	return _autoSwpDirOnEnd;
+	return;
 }
 
 void SldrDALtchMPBttn::stOnScndMod_Do(){
