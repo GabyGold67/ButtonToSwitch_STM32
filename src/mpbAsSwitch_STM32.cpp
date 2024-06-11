@@ -1,11 +1,28 @@
 /**
- * @file		: mpbAsSwitch_STM32.cpp
- * @brief	: Source file for mpbAsSwitch_STM32 library classes methods
- *
- * @author	: Gabriel D. Goldman
- * @date		: Created on: 06/11/2023
- * @date		: Last modification: 05/05/2024
- */
+  ******************************************************************************
+  * @file	: mpbAsSwitch_STM32.cpp
+  * @brief	: Source file for mpbAsSwitch_STM32 library classes methods
+  *
+  * @details The library builds several switch mechanisms replacements out of simple push buttons
+  * or similar equivalent digital signal inputs.
+  * By using just a push button (a.k.a. momentary switches or momentary buttons, _**MPB**_
+  * for short from here on) the classes implemented in this library will manage,
+  * calculate and update different parameters to **generate the embedded behavior of standard
+  * electromechanical switches**.
+  *
+  * @author	: Gabriel D. Goldman
+  * @version v2.0.0
+  * @date	: Created on: 06/11/2023
+  * 			: Last modification:	05/05/2024
+  * @copyright GPL-3.0 license
+  *
+  ******************************************************************************
+  * @attention	This library was developed as part of the refactoring process for an industrial machines security enforcement and control (hardware & firmware update). As such every class included complies **AT LEAST** with the provision of the attributes and methods to make the hardware & firmware replacement transparent to the controlled machines. Generic use attribute and methods were added to extend the usability to other projects and application  environments, but no fitness nor completeness of those are given but for the intended refactoring project.
+  * **Use of this library is under your own responsibility**
+  *
+  ******************************************************************************
+  */
+
 
 #include "mpbAsSwitch_STM32.h"
 
@@ -2702,22 +2719,22 @@ bool VdblMPBttn::getStOnWhnOtpFrcd(){
 	return _stOnWhnOtptFrcd;
 }
 
-bool VdblMPBttn::setFrcdOtptWhnVdd(const bool &newVal){
+void VdblMPBttn::setFrcdOtptWhnVdd(const bool &newVal){
 	taskENTER_CRITICAL();
 	if(_frcOtptLvlWhnVdd != newVal)
 		_frcOtptLvlWhnVdd = newVal;
 	taskEXIT_CRITICAL();
 
-	return true;
+	return;
 }
 
-bool VdblMPBttn::setStOnWhnOtpFrcd(const bool &newVal){
+void VdblMPBttn::setStOnWhnOtpFrcd(const bool &newVal){
 	taskENTER_CRITICAL();
 	if(_stOnWhnOtptFrcd != newVal)
 		_stOnWhnOtptFrcd = newVal;
 	taskEXIT_CRITICAL();
 
-	return true;
+	return;
 }
 
 

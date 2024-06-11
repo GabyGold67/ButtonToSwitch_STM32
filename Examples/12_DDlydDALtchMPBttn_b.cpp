@@ -255,7 +255,7 @@ void tstDefTaskExec(void *pvParameters)
 		tmpBttnWasOn = tmpBttnIsOn;
 		tmpBttnIsOn = tstBttn.getIsOn();
 		tmpBttn2WasOn = tmpBttn2IsOn;
-		tmpBttn2IsOn = tstBttn.getIsOn2();
+		tmpBttn2IsOn = tstBttn.getIsOnScndry();
 		tmpBttnWasDisabled = tmpBttnIsDisabled;
 		tmpBttnIsDisabled = !tstBttn.getIsEnabled();
 

@@ -3,21 +3,22 @@
   * @file	: mpbAsSwitch_STM32.h
   * @brief	: Header file for the MpbAsSwitch_STM32 library classes
   *
-  * The library builds several switch mechanisms replacements out of simple push buttons
+  * @details The library builds several switch mechanisms replacements out of simple push buttons
   * or similar equivalent digital signal inputs.
   * By using just a push button (a.k.a. momentary switches or momentary buttons, _**MPB**_
   * for short from here on) the classes implemented in this library will manage,
-  * calculate and update different parameters to **generate the behavior of standard
+  * calculate and update different parameters to **generate the embedded behavior of standard
   * electromechanical switches**.
   *
   * @author	: Gabriel D. Goldman
-  *
+  * @version v2.0.0
   * @date	: Created on: 06/11/2023
   * 			: Last modification:	05/05/2024
+  * @copyright GPL-3.0 license
   *
   ******************************************************************************
-  * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
-  * library. All files needed are provided as part of the source code for the library.
+  * @attention	This library was developed as part of the refactoring process for an industrial machines security enforcement and control (hardware & firmware update). As such every class included complies **AT LEAST** with the provision of the attributes and methods to make the hardware & firmware replacement transparent to the controlled machines. Generic use attribute and methods were added to extend the usability to other projects and application environments, but no fitness nor completeness of those are given but for the intended refactoring project.
+  * **Use of this library is under your own responsibility**
   *
   ******************************************************************************
   */
@@ -1447,8 +1448,8 @@ public:
  */
 class VdblMPBttn: public DbncdDlydMPBttn{
 private:
-   bool setFrcdOtptWhnVdd(const bool &newVal);
-   bool setStOnWhnOtpFrcd(const bool &newVal);
+   void setFrcdOtptWhnVdd(const bool &newVal);
+   void setStOnWhnOtpFrcd(const bool &newVal);
 protected:
 	enum fdaVmpbStts{
  		stOffNotVPP,
