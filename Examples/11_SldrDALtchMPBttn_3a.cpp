@@ -81,7 +81,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM2_Init();
 
-  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);	//WPM output for PA05: on-board green LED
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);	//WPM output for PA05: on-board green LED ============>> Turns PWM generation On
 
   /* Create the thread(s) */
   /* USER CODE BEGIN RTOS_THREADS */

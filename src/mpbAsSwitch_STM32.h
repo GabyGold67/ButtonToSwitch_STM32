@@ -11,11 +11,12 @@
   * electromechanical switches**.
   *
   * @author	: Gabriel D. Goldman
-  * @version v2.0.0
+  * @version v2.1.0
   * @date	: Created on: 06/11/2023
-  * 			: Last modification:	05/05/2024
+  * 			: Last modification:	15/06/2024
   * @copyright GPL-3.0 license
   *
+  * @note FreeRTOS Kernel V10.3.1, some implementations have been limited to comply to the services provided by the version.
   ******************************************************************************
   * @attention	This library was developed as part of the refactoring process for an industrial machines security enforcement and control (hardware & firmware update). As such every class included complies **AT LEAST** with the provision of the attributes and methods to make the hardware & firmware replacement transparent to the controlled machines. Generic use attribute and methods were added to extend the usability to other projects and application environments, but no fitness nor completeness of those are given but for the intended refactoring project.
   * **Use of this library is under your own responsibility**
@@ -72,6 +73,118 @@ struct gpioPinId_t{	//
 	uint16_t pinNum;	/**< The number of the port pin represented as a single-bit mask with the set bit position indicating the pin number*/
 };
 #endif	//GPIOPINID_T
+
+const uint8_t _isOnBitPos {0};
+const uint8_t _isEnabledBitPos{1};
+const uint8_t _pilotOnBitPos {2};
+const uint8_t _wrnngOnBitPos{3};
+const uint8_t _isVoidedBitPos {4};
+const uint8_t _isOnScndryBitPos{5};
+const uint8_t _otptCurValBitPos {16};
+
+struct dMpbOtp_t{
+	bool isOn;
+	bool isEnabled;
+};
+struct htilddMpbOtpt_t: public dMpbOtp_t{
+	bool pilotOn;
+	bool wrnngOn;
+};
+struct vddMpbOtpt_t: public dMpbOtp_t{
+	bool isVoided;
+};
+struct sdalddMpbOtpt_t: public dMpbOtp_t{
+	uint16_t otptCurVal;
+};
+struct dddalddMpbOtpt_t: public dMpbOtp_t{
+	bool isOnScndry;
+};
+
+static void otptsSttsUnpkg(uint32_t pkgOtpts, dMpbOtp_t &retVal){
+	if(pkgOtpts & ((uint32_t)1 << _isOnBitPos))
+		retVal.isOn = true;
+	else
+		retVal.isOn = false;
+	if(pkgOtpts & ((uint32_t)1 << _isEnabledBitPos))
+		retVal.isEnabled = true;
+	else
+		retVal.isEnabled = false;
+
+	return;
+}
+
+static void otptsSttsUnpkg(uint32_t pkgOtpts, vddMpbOtpt_t &retVal){
+	if(pkgOtpts & ((uint32_t)1 << _isOnBitPos))
+		retVal.isOn = true;
+	else
+		retVal.isOn = false;
+
+	if(pkgOtpts & ((uint32_t)1 << _isEnabledBitPos))
+		retVal.isEnabled = true;
+	else
+		retVal.isEnabled = false;
+
+	if(pkgOtpts & ((uint32_t)1 << _isVoidedBitPos))
+		retVal.isVoided = true;
+	else
+		retVal.isVoided = false;
+
+	return;
+}
+
+static void otptsSttsUnpkg(uint32_t pkgOtpts, htilddMpbOtpt_t &retVal){
+	if(pkgOtpts & ((uint32_t)1 << _isOnBitPos))
+		retVal.isOn = true;
+	else
+		retVal.isOn = false;
+	if(pkgOtpts & ((uint32_t)1 << _isEnabledBitPos))
+		retVal.isEnabled = true;
+	else
+		retVal.isEnabled = false;
+	if(pkgOtpts & ((uint32_t)1 << _pilotOnBitPos))
+		retVal.pilotOn = true;
+	else
+		retVal.pilotOn = false;
+	if(pkgOtpts & ((uint32_t)1 << _wrnngOnBitPos))
+		retVal.wrnngOn = true;
+	else
+		retVal.wrnngOn = false;
+
+	return;
+}
+
+static void otptsSttsUnpkg(uint32_t pkgOtpts, dddalddMpbOtpt_t &retVal){
+	if(pkgOtpts & ((uint32_t)1 << _isOnBitPos))
+		retVal.isOn = true;
+	else
+		retVal.isOn = false;
+
+	if(pkgOtpts & ((uint32_t)1 << _isEnabledBitPos))
+		retVal.isEnabled = true;
+	else
+		retVal.isEnabled = false;
+
+	if(pkgOtpts & ((uint32_t)1 << _isOnScndryBitPos))
+		retVal.isOnScndry = true;
+	else
+		retVal.isOnScndry = false;
+
+	return;
+}
+
+static void otptsSttsUnpkg(uint32_t pkgOtpts, sdalddMpbOtpt_t &retVal){
+	if(pkgOtpts & ((uint32_t)1 << _isOnBitPos))
+		retVal.isOn = true;
+	else
+		retVal.isOn = false;
+	if(pkgOtpts & ((uint32_t)1 << _isEnabledBitPos))
+		retVal.isEnabled = true;
+	else
+		retVal.isEnabled = false;
+	retVal.otptCurVal = (pkgOtpts & 0xffff0000) >> _otptCurValBitPos;
+
+	return;
+}
 
 // Definition workaround to let a function/method return value to be a function pointer
 typedef void (*fncPtrType)();
@@ -134,7 +247,8 @@ protected:
 	const bool getIsPressed() const;
 	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
    void setIsEnabled(const bool &newEnabledValue);
-	void setSttChng();
+	uint32_t _otptsSttsPkg(uint32_t prevVal = 0);
+   void setSttChng();
 	void _turnOff();
 	void _turnOn();
 	virtual void updFdaState();
@@ -280,7 +394,15 @@ public:
     * @retval false: the object is configured to be set to the **Off state** while it is in **Disabled state**.
     */
    const bool getIsOnDisabled() const;
-	/**
+   /**
+	 * @brief Gets the relevant attribute flags values for the object state encoded as a 32 bits value, required to pass current state of the object to another thread/task managing the outputs
+    *
+    * The intertasks communication mechanisms implemented on the class includes a xTaskNotify() that works as a lightweigh mailbox, unblocking the receiving tasks and sending to it a 32_bit value argument. This function returns the relevant attribute flags values encoded in a 32 bit value, according the provided encoding described.
+    *
+    * @return A 32 bit unsigned value representing the attribute flags current values.
+    */
+   const uint32_t getOtptsSttsPkgd();
+   /**
 	 * @brief Gets the value of the **outputsChange** attribute flag.
 	 *
 	 * The instantiated objects include attributes linked to their computed state, which represent the behavior expected from their respective electromechanical simulated counterparts.
@@ -417,9 +539,11 @@ public:
    /**
 	 * @brief Sets the pointer to the task to be notified by the object when its output attribute flags changes.
 	 *
-	 * When the object is created, this value is set to **NULL**, and a valid TaskHandle_t value might be set by using this method. The task notifying mechanism will not be used while the task handle keeps the **NULL** value, in which case the solution implementation will have to use any of the other provided mechanisms to test the object status, and act accordingly. After the TaskHandle value is set it might be changed to point to other task. If at the point this method is invoked the attribute holding the pointer was not NULL, the method will suspend the pointed task before proceeding to change the attribute value. The method does not provide any verifcation mechanism to ensure the passed parameter is a valid task handle nor the state of the task the passed pointer might be.
+	 * When the object is created, this value is set to **NULL**, and a valid TaskHandle_t value might be set by using this method. The task notifying mechanism will not be used while the task handle keeps the **NULL** value, in which case the solution implementation will have to use any of the other provided mechanisms to test the object status, and act accordingly. After the TaskHandle value is set it might be changed to point to other task. If at the point this method is invoked the attribute holding the pointer was not NULL, the method will suspend the pointed task before proceeding to change the attribute value. The method does not provide any verification mechanism to ensure the passed parameter is a valid task handle nor the state of the task the passed pointer might be.
 	 *
     * @param newTaskHandle A valid task handle of an actual existent task/thread running.
+    *
+    * @note As simple as this mechanism is, it's an un-expensive effective solution in terms of resources involved. As a counterpart it's use must be limited to clearly defined implementations, as no value passing mechanism is provided, so global variables will be the easiest way to go, either for the instantiated MPB, or for the relevant attribute flags values copied to global variables, as the case of **isON**, **isEnabled** and others in the case of more complex subclasses.
     */
 	void setTaskToNotify(const TaskHandle_t &newTaskHandle);
 	/**
@@ -760,6 +884,8 @@ public:
 class HntdTmLtchMPBttn: public TmLtchMPBttn{
 
 protected:
+//	const uint8_t _pilotOnBitPos {2};
+//	const uint8_t _wrnngOnBitPos{3};
 	bool _keepPilot{false};
 	volatile bool _pilotOn{false};
 	unsigned long int _wrnngMs{0};
@@ -778,6 +904,7 @@ protected:
 	virtual void stDisabled_In();
 
    static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
+	uint32_t _otptsSttsPkg(uint32_t prevVal = 0);
 	bool updPilotOn();
 	bool updWrnngOn();
 public:
@@ -989,7 +1116,7 @@ protected:
 	void (*_fnWhnTrnOnScndry)() {nullptr};
 	TaskHandle_t _taskWhileOnScndryHndl{NULL};
 
-static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
+	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
    virtual void stDisabled_In(){};
 	virtual void stOnStrtScndMod_In(){};
    virtual void stOnScndMod_Do() = 0;
@@ -1183,7 +1310,9 @@ public:
  *
  */
 class SldrDALtchMPBttn: public DblActnLtchMPBttn{
+
 protected:
+//	const uint8_t _otptCurValBitPos {16};
 	bool _autoSwpDirOnEnd{true};	// Changes slider direction automatically when reaches _otptValMax or _otptValMin
 	bool _autoSwpDirOnPrss{false};// Changes slider direction each time it enters slider mode
 	bool _curSldrDirUp{true};
@@ -1194,7 +1323,8 @@ protected:
 	uint16_t _otptValMax{0xFFFF};
 	uint16_t _otptValMin{0x00};
 
-   void stOnStrtScndMod_In();
+	uint32_t _otptsSttsPkg(uint32_t prevVal = 0);
+	void stOnStrtScndMod_In();
    virtual void stOnScndMod_Do();
 	bool _setSldrDir(const bool &newVal);
 public:
@@ -1451,6 +1581,8 @@ private:
    void setFrcdOtptWhnVdd(const bool &newVal);
    void setStOnWhnOtpFrcd(const bool &newVal);
 protected:
+//	const uint8_t _isVoidedBitPos {4};
+
 	enum fdaVmpbStts{
  		stOffNotVPP,
  		stOffVPP,
@@ -1477,6 +1609,7 @@ protected:
     bool _validUnvoidPend{false};
 
     static void mpbPollCallback(TimerHandle_t mpbTmrCb);
+    uint32_t _otptsSttsPkg(uint32_t prevVal = 0);
     bool setVoided(const bool &newVoidValue);
     virtual void stDisabled_In();
     virtual void stDisabled_Out();

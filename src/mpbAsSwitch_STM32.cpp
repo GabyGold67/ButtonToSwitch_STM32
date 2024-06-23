@@ -11,9 +11,9 @@
   * electromechanical switches**.
   *
   * @author	: Gabriel D. Goldman
-  * @version v2.0.0
+  * @version v2.1.0
   * @date	: Created on: 06/11/2023
-  * 			: Last modification:	05/05/2024
+  * 			: Last modification:	15/06/2024
   * @copyright GPL-3.0 license
   *
   ******************************************************************************
@@ -247,6 +247,11 @@ const bool DbncdMPBttn::getIsPressed() const {
 	return _isPressed;
 }
 
+const uint32_t DbncdMPBttn::getOtptsSttsPkgd(){
+
+	return _otptsSttsPkg();
+}
+
 const bool DbncdMPBttn::getOutputsChange() const{
 
     return _outputsChange;
@@ -372,12 +377,33 @@ void DbncdMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	taskEXIT_CRITICAL();
 
 	if (mpbObj->getOutputsChange()){	//Output changes might happen as part of the updFdaState() execution
-		if(mpbObj->getTaskToNotify() != NULL)
-			xTaskNotifyGive(mpbObj->getTaskToNotify());
+		if(mpbObj->getTaskToNotify() != NULL){
+			xTaskNotify(mpbObj->getTaskToNotify(),
+					mpbObj->getOtptsSttsPkgd(),
+					eSetValueWithOverwrite
+			);
+		}
 		mpbObj->setOutputsChange(false);
 	 }
 
     return;
+}
+
+uint32_t DbncdMPBttn::_otptsSttsPkg(uint32_t prevVal){
+	if(_isOn){
+		prevVal |= (uint32_t)1 << _isOnBitPos;
+	}
+	else{
+		prevVal &= ~((uint32_t)1 << _isOnBitPos);
+	}
+	if(_isEnabled){
+		prevVal |= (uint32_t)1 << _isEnabledBitPos;
+	}
+	else{
+		prevVal &= ~((uint32_t)1 << _isEnabledBitPos);
+	}
+
+	return prevVal;
 }
 
 bool DbncdMPBttn::pause(){
@@ -1173,8 +1199,12 @@ void LtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 
 	//Outputs update based on outputsChange flag
 	if (mpbObj->getOutputsChange()){
-		if(mpbObj->getTaskToNotify() != NULL)
-			xTaskNotifyGive(mpbObj->getTaskToNotify());
+		if(mpbObj->getTaskToNotify() != NULL){
+			xTaskNotify(mpbObj->getTaskToNotify(),
+					mpbObj->getOtptsSttsPkgd(),
+					eSetValueWithOverwrite
+			);
+		}
 		mpbObj->setOutputsChange(false);
 	}
 
@@ -1342,6 +1372,24 @@ bool HntdTmLtchMPBttn::begin(const unsigned long int &pollDelayMs){
    return result;
 }
 
+uint32_t HntdTmLtchMPBttn::_otptsSttsPkg(uint32_t prevVal){
+	prevVal = DbncdMPBttn::_otptsSttsPkg(prevVal);
+	if(_pilotOn){
+		prevVal |= (uint32_t)1 << _pilotOnBitPos;
+	}
+	else{
+		prevVal &= ~((uint32_t)1 << _pilotOnBitPos);
+	}
+	if(_wrnngOn){
+		prevVal |= (uint32_t)1 << _wrnngOnBitPos;
+	}
+	else{
+		prevVal &= ~((uint32_t)1 << _wrnngOnBitPos);
+	}
+
+	return prevVal;
+}
+
 void HntdTmLtchMPBttn::clrStatus(bool clrIsOn){
 //	Put here class specific sets/resets, including pilot and warning
 	taskENTER_CRITICAL();
@@ -1383,8 +1431,12 @@ void HntdTmLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
  	taskEXIT_CRITICAL();
 
 	if (mpbObj->getOutputsChange()){
-		if(mpbObj->getTaskToNotify() != NULL)
-			xTaskNotifyGive(mpbObj->getTaskToNotify());
+		if(mpbObj->getTaskToNotify() != NULL){
+			xTaskNotify(mpbObj->getTaskToNotify(),
+					mpbObj->getOtptsSttsPkgd(),
+					eSetValueWithOverwrite
+			);
+		}
 		mpbObj->setOutputsChange(false);
 	}
 
@@ -2063,9 +2115,13 @@ void DblActnLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	taskEXIT_CRITICAL();
 
 	if (mpbObj->getOutputsChange()){
-	  if(mpbObj->getTaskToNotify() != NULL)
-			xTaskNotifyGive(mpbObj->getTaskToNotify());
-	  mpbObj->setOutputsChange(false);
+		if(mpbObj->getTaskToNotify() != NULL){
+			xTaskNotify(mpbObj->getTaskToNotify(),
+					mpbObj->getOtptsSttsPkgd(),
+					eSetValueWithOverwrite
+			);
+		}
+		mpbObj->setOutputsChange(false);
 	}
 
 	return;
@@ -2206,6 +2262,14 @@ uint16_t SldrDALtchMPBttn::getOtptValMin(){
 bool SldrDALtchMPBttn::getSldrDirUp(){
 
 	return _curSldrDirUp;
+}
+
+uint32_t SldrDALtchMPBttn::_otptsSttsPkg(uint32_t prevVal){
+	prevVal = DbncdMPBttn::_otptsSttsPkg(prevVal);
+
+	prevVal |= (uint32_t)_otptCurVal << _otptCurValBitPos;
+
+	return prevVal;
 }
 
 bool SldrDALtchMPBttn::setOtptCurVal(const uint16_t &newVal){
@@ -2463,12 +2527,28 @@ void VdblMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	taskEXIT_CRITICAL();
 
 	if (mpbObj->getOutputsChange()){
-	  if(mpbObj->getTaskToNotify() != NULL)
-			xTaskNotifyGive(mpbObj->getTaskToNotify());
-	  mpbObj->setOutputsChange(false);
+		if(mpbObj->getTaskToNotify() != NULL){
+			xTaskNotify(mpbObj->getTaskToNotify(),
+					mpbObj->getOtptsSttsPkgd(),
+					eSetValueWithOverwrite
+			);
+		}
+		mpbObj->setOutputsChange(false);
 	}
 
 	return;
+}
+
+uint32_t VdblMPBttn::_otptsSttsPkg(uint32_t prevVal){
+	prevVal = DbncdMPBttn::_otptsSttsPkg(prevVal);
+	if(_isVoided){
+		prevVal |= (uint32_t)1 << _isVoidedBitPos;
+	}
+	else{
+		prevVal &= ~((uint32_t)1 << _isVoidedBitPos);
+	}
+
+	return prevVal;
 }
 
 bool VdblMPBttn::setIsNotVoided(){
