@@ -1,17 +1,23 @@
 /**
   ******************************************************************************
-  * @file	: 02_DbncdDlydMPBttn_1a.cpp
+  * @file	: 02_DbncdDlydMPBttn_2b.cpp
   * @brief  : Example for the MpbAsSwitch_STM32 library DbncdDlydMPBttn class
   *
   * The test instantiates a DbncdDlydMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
   * 	- The Nucleo board user LED attached to GPIO_A05
+  * 	- A LED attached to GPIO_C00 to visualize the isEnabled attribute flag status
   *
-  * This simple example creates a single Task, instantiates the DbncdDlydMPBttn object
-  * in it and checks it's attribute flags locally through the getters methods.
-  * When a change in the outputs attribute flags values is detected, it manages the
-  *  loads and resources that the switch turns On and Off, in this example case are
-  *  the output of some GPIO pins.
+  * This example creates two Tasks.
+  * The first task instantiates the DbncdDlydMPBttn object in it and checks it's
+  * attribute flags locally through the getters methods.
+  * The second task is started and blocked, it's purpose it's to manage the loads and resources
+  * that the switch turns On and Off, in this example case are the output of some GPIO pins.
+  * When a change in the object's output attribute flags is detected the second task is unblocked
+  * to update the GPIO pins and blocks again until next notification.
+  *
+  * A software timer is created so that it periodically toggles the isEnabled attribute flag
+  * value, showing the behavior of the instantiated object when enabled and when disabled.
   *
   * 	@author	: Gabriel D. Goldman
   *
@@ -36,28 +42,56 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
+#include "semphr.h"
 //===========================>> Previous lines used to avoid CMSIS wrappers
 /* USER CODE BEGIN Includes */
 #include "../../mpbAsSwitch_STM32/src/mpbAsSwitch_STM32.h"
 /* USER CODE END Includes */
 
+/*---------------- xTaskNotify() mechanism related constants, argument structs, information packing and unpacking BEGIN -------*/
+const uint8_t _isOnBitPos {0};
+const uint8_t _isEnabledBitPos{1};
+const uint8_t _pilotOnBitPos {2};
+const uint8_t _wrnngOnBitPos{3};
+const uint8_t _isVoidedBitPos {4};
+const uint8_t _isOnScndryBitPos{5};
+const uint8_t _otptCurValBitPos {16};
+
+struct MpbOtp_t{
+	bool isOn;
+	bool isEnabled;
+	bool pilotOn;
+	bool wrnngOn;
+	bool isVoided;
+	bool isOnScndry;
+	uint16_t otptCurVal;
+};
+/*---------------- xTaskNotify() mechanism related constants, argument structs, information packing and unpacking END -------*/
+
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
 gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
+gpioPinId_t ledOnPC00{GPIOC, GPIO_PIN_0};	//Pin 0b 0000 0001
 
 TaskHandle_t mainCtrlTskHndl {NULL};
+TaskHandle_t dmpsOutputTskHdl;
 BaseType_t xReturned;
 /* USER CODE END PV */
 
-/* Private function prototypes -----------------------------------------------*/
+/* Private function prototypes BEGIN -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 void Error_Handler(void);
 
 /* USER CODE BEGIN FP */
 void mainCtrlTsk(void *pvParameters);
+void dmpsOutputTsk(void *pvParameters);
+void swpEnableCb(TimerHandle_t  pvParam);
+uint32_t otptsSttsPkg(MpbOtp_t dMpbCurStts);
+MpbOtp_t otptsSttsUnpkg(uint32_t pkgOtpts);
 /* USER CODE END FP */
+/* Private function prototypes END -----------------------------------------------*/
 
 /**
   * @brief  The application entry point.
@@ -87,9 +121,24 @@ int main(void)
 		  &mainCtrlTskHndl);
   if(xReturned != pdPASS)
 	  Error_Handler();
+
+  xReturned = xTaskCreate(
+		  dmpsOutputTsk,
+		  "DMpSwitchOutputUpd",
+		  256,
+		  NULL,
+		  configTIMER_TASK_PRIORITY,
+		  &dmpsOutputTskHdl
+		  );
+  if(xReturned != pdPASS)
+	  Error_Handler();
 /* USER CODE END RTOS_THREADS */
 
-  /* Start scheduler */
+  /* USER CODE BEGIN BEFORE STARTING SCHEDULER: SETUPS, OBJECTS CREATION, ETC. */
+	vTaskSuspend(dmpsOutputTskHdl);	//Holds the task to start them all in proper order
+  /* USER CODE END BEFORE STARTING SCHEDULER: SETUPS, OBJECTS CREATION, ETC. */
+
+/* Start scheduler */
   vTaskStartScheduler();
 
   /* We should never get here as control is now taken by the scheduler */
@@ -98,25 +147,180 @@ int main(void)
   {
   }
 }
-/* USER CODE BEGIN */
+
+/* USER CODE TASKS AND TIMERS BEGIN */
 void mainCtrlTsk(void *pvParameters)
 {
+	TimerHandle_t enableSwpTmrHndl{NULL};
+	BaseType_t tmrModRslt{pdFAIL};
+	MpbOtp_t tstBttnSttsDcdd{0};
+	uint32_t tstBttnSttsEncdd{0};
+
 	DbncdDlydMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, true, true, 50, 450);
+	DbncdMPBttn* tstBttnPtr {&tstBttn};
+
+	enableSwpTmrHndl = xTimerCreate(
+			"isEnabledSwapTimer",
+			10000,
+			pdTRUE,
+			tstBttnPtr,
+			swpEnableCb
+			);
+	if (enableSwpTmrHndl != NULL){
+      tmrModRslt = xTimerStart(enableSwpTmrHndl, portMAX_DELAY);
+   }
+	if(tmrModRslt == pdFAIL){
+	    Error_Handler();
+	}
+
+	tstBttn.setIsOnDisabled(false);
 	tstBttn.begin(20);
+
+	vTaskResume(dmpsOutputTskHdl);	//Resumes the task to start now in proper order
 
 	for(;;)
 	{
 		if(tstBttn.getOutputsChange()){
-			if(tstBttn.getIsOn())
-			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_SET);
-			else
-			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
+			tstBttnSttsDcdd.isOn = tstBttn.getIsOn();
+			tstBttnSttsDcdd.isEnabled = tstBttn.getIsEnabled();
+			tstBttnSttsEncdd = otptsSttsPkg(tstBttnSttsDcdd);
 			tstBttn.setOutputsChange(false);
+
+			xReturned = xTaskNotify(
+					dmpsOutputTskHdl,	//TaskHandle_t of the task receiving notification
+					static_cast<unsigned long>(tstBttnSttsEncdd),
+					eSetValueWithOverwrite
+					);
+			if (xReturned != pdPASS){
+				Error_Handler();
+			}
 		}
 	}
 }
-/* USER CODE END */
 
+void dmpsOutputTsk(void *pvParameters){
+	uint32_t mpbSttsRcvd{0};
+	MpbOtp_t mpbCurStateDcdd;
+
+	for(;;){
+		xReturned = xTaskNotifyWait(
+						0x00,	//uint32_t ulBitsToClearOnEntry
+		            0xFFFFFFFF,	//uint32_t ulBitsToClearOnExit,
+		            &mpbSttsRcvd,	// uint32_t *pulNotificationValue,
+						portMAX_DELAY//TickType_t xTicksToWait
+		);
+		 if (xReturned != pdPASS){
+			 Error_Handler();
+		 }
+		mpbCurStateDcdd = otptsSttsUnpkg(mpbSttsRcvd);
+		if(mpbCurStateDcdd.isOn)
+		  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_SET);
+		else
+		  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
+		if(mpbCurStateDcdd.isEnabled)
+			HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_RESET);
+		else
+			HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_SET);
+	}
+}
+
+void swpEnableCb(TimerHandle_t  pvParam){
+	DbncdMPBttn* bttnArg = (DbncdMPBttn*) pvTimerGetTimerID(pvParam);
+
+	bool curEnable = bttnArg->getIsEnabled();
+
+	if(curEnable)
+		bttnArg->disable();
+	else
+		bttnArg->enable();
+
+  return;
+}
+/* USER CODE TASKS AND TIMERS END */
+
+/* USER CODE FUNCTIONS BEGIN */
+uint32_t otptsSttsPkg(MpbOtp_t dMpbCurStts){
+	uint32_t mpbCurSttsEncdd{0};
+
+	if(dMpbCurStts.isOn){
+		mpbCurSttsEncdd |= ((uint32_t)1) << _isOnBitPos;
+	}
+	else{
+		mpbCurSttsEncdd &= ~(((uint32_t)1) << _isOnBitPos);
+	}
+	if(dMpbCurStts.isEnabled){
+		mpbCurSttsEncdd |= ((uint32_t)1) << _isEnabledBitPos;
+	}
+	else{
+		mpbCurSttsEncdd &= ~(((uint32_t)1) << _isEnabledBitPos);
+	}
+
+	/*
+	if(dMpbCurStts.pilotOn){
+		mpbCurSttsEncdd |= ((uint32_t)1) << _pilotOnBitPos;
+	}
+	else{
+		mpbCurSttsEncdd &= ~(((uint32_t)1) << _pilotOnBitPos);
+	}
+	if(dMpbCurStts.wrnngOn){
+		mpbCurSttsEncdd |= ((uint32_t)1) << _wrnngOnBitPos;
+	}
+	else{
+		mpbCurSttsEncdd &= ~(((uint32_t)1) << _wrnngOnBitPos);
+	}
+	if(dMpbCurStts.isVoided){
+		mpbCurSttsEncdd |= ((uint32_t)1) << _isVoidedBitPos;
+	}
+	else{
+		mpbCurSttsEncdd &= ~(((uint32_t)1) << _isVoidedBitPos);
+	}
+
+	mpbCurSttsEncdd |= ((uint32_t)_otptCurVal << _otptCurValBitPos);
+ */
+
+	return mpbCurSttsEncdd;
+}
+
+MpbOtp_t otptsSttsUnpkg(uint32_t pkgOtpts){
+	MpbOtp_t mpbCurSttsDcdd {0};
+
+	if(pkgOtpts & (((uint32_t)1) << _isOnBitPos))
+		mpbCurSttsDcdd.isOn = true;
+	else
+		mpbCurSttsDcdd.isOn = false;
+
+	if(pkgOtpts & (((uint32_t)1) << _isEnabledBitPos))
+		mpbCurSttsDcdd.isEnabled = true;
+	else
+		mpbCurSttsDcdd.isEnabled = false;
+
+	/*
+	if(pkgOtpts & (((uint32_t)1) << _pilotOnBitPos))
+		mpbCurSttsDcdd.pilotOn = true;
+	else
+		mpbCurSttsDcdd.pilotOn = false;
+
+	if(pkgOtpts & (((uint32_t)1) << _wrnngOnBitPos))
+		mpbCurSttsDcdd.wrnngOn = true;
+	else
+		mpbCurSttsDcdd.wrnngOn = false;
+
+	if(pkgOtpts & (((uint32_t)1) << _isVoidedBitPos))
+		mpbCurSttsDcdd.isVoided = true;
+	else
+		mpbCurSttsDcdd.isVoided = false;
+
+	if(pkgOtpts & (((uint32_t)1) << _isOnScndryBitPos))
+		mpbCurSttsDcdd.isOnScndry = true;
+	else
+		mpbCurSttsDcdd.isOnScndry = false;
+
+	mpbCurSttsDcdd.otptCurVal = (pkgOtpts & 0xffff0000) >> _otptCurValBitPos;
+*/
+
+	return mpbCurSttsDcdd;
+}
+/* USER CODE FUNCTIONS END */
 
 /**
   * @brief System Clock Configuration
@@ -194,6 +398,16 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(tstLedOnBoard.portId, &GPIO_InitStruct);
+
+  /*Configure GPIO pin Output Level for ledOnPC00))*/
+  HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : ledOnPC00_Pin */
+  GPIO_InitStruct.Pin = ledOnPC00.pinNum;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(ledOnPC00.portId, &GPIO_InitStruct);
 }
 
 /**

@@ -184,12 +184,12 @@ void DbncdMPBttn::clrSttChng(){
 
 void DbncdMPBttn::disable(){
 
-    return setIsEnabled(false);
+    return _setIsEnabled(false);
 }
 
 void DbncdMPBttn::enable(){
 
-    return setIsEnabled(true);
+    return _setIsEnabled(true);
 }
 
 bool DbncdMPBttn::end(){
@@ -364,6 +364,7 @@ bool DbncdMPBttn::init(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const b
 
 void DbncdMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	DbncdMPBttn *mpbObj = (DbncdMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
+	BaseType_t xReturned;
 
 	taskENTER_CRITICAL();
 	if(mpbObj->getIsEnabled()){
@@ -378,29 +379,33 @@ void DbncdMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 
 	if (mpbObj->getOutputsChange()){	//Output changes might happen as part of the updFdaState() execution
 		if(mpbObj->getTaskToNotify() != NULL){
-			xTaskNotify(mpbObj->getTaskToNotify(),
-					mpbObj->getOtptsSttsPkgd(),
-					eSetValueWithOverwrite
-			);
+			xReturned = xTaskNotify(
+					mpbObj->getTaskToNotify(),	//TaskHandle_t of the task receiving notification
+					static_cast<unsigned long>(mpbObj->getOtptsSttsPkgd()),
+					eSetValueWithOverwrite	//In this specific case using eSetBits is also a valid option
+					);
+			 if (xReturned != pdPASS){
+				 errorFlag = pdTRUE;
+			 }
+			 mpbObj->setOutputsChange(false);	//If the outputsChange triggers a task to treat it, here's  the flag reset, in other cases the mechanism reading the chganges must take care of the flag status
 		}
-		mpbObj->setOutputsChange(false);
-	 }
+	}
 
-    return;
+	return;
 }
 
 uint32_t DbncdMPBttn::_otptsSttsPkg(uint32_t prevVal){
 	if(_isOn){
-		prevVal |= (uint32_t)1 << _isOnBitPos;
+		prevVal |= ((uint32_t)1) << IsOnBitPos;
 	}
 	else{
-		prevVal &= ~((uint32_t)1 << _isOnBitPos);
+		prevVal &= ~(((uint32_t)1) << IsOnBitPos);
 	}
 	if(_isEnabled){
-		prevVal |= (uint32_t)1 << _isEnabledBitPos;
+		prevVal |= ((uint32_t)1) << IsEnabledBitPos;
 	}
 	else{
-		prevVal &= ~((uint32_t)1 << _isEnabledBitPos);
+		prevVal &= ~(((uint32_t)1) << IsEnabledBitPos);
 	}
 
 	return prevVal;
@@ -494,7 +499,7 @@ void DbncdMPBttn::setFnWhnTrnOnPtr(void (*newFnWhnTrnOn)()){
 	return;
 }
 
-void DbncdMPBttn::setIsEnabled(const bool &newEnabledValue){
+void DbncdMPBttn::_setIsEnabled(const bool &newEnabledValue){
 	taskENTER_CRITICAL();
 	if(_isEnabled != newEnabledValue){
 		if (newEnabledValue){  //Change to Enabled = true
@@ -1200,12 +1205,13 @@ void LtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	//Outputs update based on outputsChange flag
 	if (mpbObj->getOutputsChange()){
 		if(mpbObj->getTaskToNotify() != NULL){
-			xTaskNotify(mpbObj->getTaskToNotify(),
-					mpbObj->getOtptsSttsPkgd(),
+			xTaskNotify(
+					mpbObj->getTaskToNotify(),	//TaskHandle_t of the task receiving notification
+					static_cast<unsigned long>(mpbObj->getOtptsSttsPkgd()),
 					eSetValueWithOverwrite
 			);
+			mpbObj->setOutputsChange(false);
 		}
-		mpbObj->setOutputsChange(false);
 	}
 
 	return;
@@ -1375,16 +1381,16 @@ bool HntdTmLtchMPBttn::begin(const unsigned long int &pollDelayMs){
 uint32_t HntdTmLtchMPBttn::_otptsSttsPkg(uint32_t prevVal){
 	prevVal = DbncdMPBttn::_otptsSttsPkg(prevVal);
 	if(_pilotOn){
-		prevVal |= (uint32_t)1 << _pilotOnBitPos;
+		prevVal |= ((uint32_t)1) << PilotOnBitPos;
 	}
 	else{
-		prevVal &= ~((uint32_t)1 << _pilotOnBitPos);
+		prevVal &= ~(((uint32_t)1) << PilotOnBitPos);
 	}
-	if(_wrnngOn){
-		prevVal |= (uint32_t)1 << _wrnngOnBitPos;
+	if(_isEnabled){
+		prevVal |= ((uint32_t)1) << WrnngOnBitPos;
 	}
 	else{
-		prevVal &= ~((uint32_t)1 << _wrnngOnBitPos);
+		prevVal &= ~(((uint32_t)1) << WrnngOnBitPos);
 	}
 
 	return prevVal;
@@ -1432,12 +1438,13 @@ void HntdTmLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 
 	if (mpbObj->getOutputsChange()){
 		if(mpbObj->getTaskToNotify() != NULL){
-			xTaskNotify(mpbObj->getTaskToNotify(),
-					mpbObj->getOtptsSttsPkgd(),
+			xTaskNotify(
+					mpbObj->getTaskToNotify(),	//TaskHandle_t of the task receiving notification
+					static_cast<unsigned long>(mpbObj->getOtptsSttsPkgd()),
 					eSetValueWithOverwrite
 			);
+			mpbObj->setOutputsChange(false);
 		}
-		mpbObj->setOutputsChange(false);
 	}
 
 	return;
@@ -2116,12 +2123,13 @@ void DblActnLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 
 	if (mpbObj->getOutputsChange()){
 		if(mpbObj->getTaskToNotify() != NULL){
-			xTaskNotify(mpbObj->getTaskToNotify(),
-					mpbObj->getOtptsSttsPkgd(),
+			xTaskNotify(
+					mpbObj->getTaskToNotify(),	//TaskHandle_t of the task receiving notification
+					static_cast<unsigned long>(mpbObj->getOtptsSttsPkgd()),
 					eSetValueWithOverwrite
 			);
+			mpbObj->setOutputsChange(false);
 		}
-		mpbObj->setOutputsChange(false);
 	}
 
 	return;
@@ -2158,6 +2166,16 @@ void DDlydDALtchMPBttn::clrStatus(bool clrIsOn){
 bool DDlydDALtchMPBttn::getIsOnScndry(){
 
 	return _isOnScndry;
+}
+
+uint32_t DDlydDALtchMPBttn::_otptsSttsPkg(uint32_t prevVal){
+	prevVal = DbncdMPBttn::_otptsSttsPkg(prevVal);
+	if(_isOnScndry)
+		prevVal |= ((uint32_t)1) << IsOnScndryBitPos;
+	else
+		prevVal &= ~(((uint32_t)1) << IsOnScndryBitPos);
+
+	return prevVal;
 }
 
 void DDlydDALtchMPBttn::stDisabled_In(){
@@ -2266,8 +2284,7 @@ bool SldrDALtchMPBttn::getSldrDirUp(){
 
 uint32_t SldrDALtchMPBttn::_otptsSttsPkg(uint32_t prevVal){
 	prevVal = DbncdMPBttn::_otptsSttsPkg(prevVal);
-
-	prevVal |= (uint32_t)_otptCurVal << _otptCurValBitPos;
+	prevVal |= (((uint32_t)_otptCurVal) << OtptCurValBitPos);
 
 	return prevVal;
 }
@@ -2528,12 +2545,13 @@ void VdblMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 
 	if (mpbObj->getOutputsChange()){
 		if(mpbObj->getTaskToNotify() != NULL){
-			xTaskNotify(mpbObj->getTaskToNotify(),
-					mpbObj->getOtptsSttsPkgd(),
+			xTaskNotify(
+					mpbObj->getTaskToNotify(),	//TaskHandle_t of the task receiving notification
+					static_cast<unsigned long>(mpbObj->getOtptsSttsPkgd()),
 					eSetValueWithOverwrite
 			);
+			mpbObj->setOutputsChange(false);
 		}
-		mpbObj->setOutputsChange(false);
 	}
 
 	return;
@@ -2541,12 +2559,11 @@ void VdblMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 
 uint32_t VdblMPBttn::_otptsSttsPkg(uint32_t prevVal){
 	prevVal = DbncdMPBttn::_otptsSttsPkg(prevVal);
-	if(_isVoided){
-		prevVal |= (uint32_t)1 << _isVoidedBitPos;
-	}
-	else{
-		prevVal &= ~((uint32_t)1 << _isVoidedBitPos);
-	}
+
+	if(_isVoided)
+		prevVal |= ((uint32_t)1) << IsVoidedBitPos;
+	else
+		prevVal &= ~(((uint32_t)1) << IsVoidedBitPos);
 
 	return prevVal;
 }

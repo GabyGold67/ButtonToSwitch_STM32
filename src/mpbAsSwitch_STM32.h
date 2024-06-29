@@ -38,7 +38,7 @@
 	#endif
 
 //This depends on the existence of #define HAL_GPIO_MODULE_ENABLED in stm32f4xx_hal_conf.h which is included in stm32f4xx_hal.h
-#ifndef __STM32F4xx_HAL_GPIO_H
+	#ifndef __STM32F4xx_HAL_GPIO_H
 		#include "stm32f4xx_hal_gpio.h"
 	#endif
 #endif
@@ -49,7 +49,7 @@
 #include "task.h"
 #include "timers.h"
 //#include "queue.h"
-//#include "semphr.h"
+#include "semphr.h"
 //#include "event_groups.h"
 
 //===========================>> END libraries used to avoid CMSIS wrappers
@@ -59,132 +59,31 @@
 #define _MinSrvcTime 100	// Minimum valid time value for service/active time for Time Latched MPBs to avoid stability issues relating to debouncing, releasing and other timed events
 #define _InvalidPinNum 0xFFFF	// Value to give as "yet to be defined", the "Valid pin number" range and characteristics are development platform and environment dependable
 
+/*---------------- xTaskNotify() mechanism related constants, argument structs, information packing and unpacking BEGIN -------*/
+const uint8_t IsOnBitPos {0};
+const uint8_t IsEnabledBitPos{1};
+const uint8_t PilotOnBitPos{2};
+const uint8_t WrnngOnBitPos{3};
+const uint8_t IsVoidedBitPos{4};
+const uint8_t IsOnScndryBitPos{5};
+const uint8_t OtptCurValBitPos{16};
+
+/*---------------- xTaskNotify() mechanism related constants, argument structs, information packing and unpacking END -------*/
+
 #ifndef GPIOPINID_T
-#define GPIOPINID_T
-/**
- * @brief Type used to keep GPIO pin identification as a single parameter, independently of the platform requirements.
- *
- * GPIO pin identification is hardware and development environment framework dependents, for some platforms it needs one, some two, some more parameters, and each one of these parameters' type depends once again on the platform. This type is provided to define each pin referenced as a single parameter for class methods and attributes declarations, as platform independent as possible.
- *
- * @struct gpioPinId_t
- */
-struct gpioPinId_t{	//
-	GPIO_TypeDef* portId;	/**< The port identification as a pointer to a GPIO_TypeDef information structure*/
-	uint16_t pinNum;	/**< The number of the port pin represented as a single-bit mask with the set bit position indicating the pin number*/
-};
+	#define GPIOPINID_T
+	/**
+	 * @brief Type used to keep GPIO pin identification as a single parameter, independently of the platform requirements.
+	 *
+	 * GPIO pin identification is hardware and development environment framework dependents, for some platforms it needs one, some two, some more parameters, and each one of these parameters' type depends once again on the platform. This type is provided to define each pin referenced as a single parameter for class methods and attributes declarations, as platform independent as possible.
+	 *
+	 * @struct gpioPinId_t
+	 */
+	struct gpioPinId_t{	//
+		GPIO_TypeDef* portId;	/**< The port identification as a pointer to a GPIO_TypeDef information structure*/
+		uint16_t pinNum;	/**< The number of the port pin represented as a single-bit mask with the set bit position indicating the pin number*/
+	};
 #endif	//GPIOPINID_T
-
-const uint8_t _isOnBitPos {0};
-const uint8_t _isEnabledBitPos{1};
-const uint8_t _pilotOnBitPos {2};
-const uint8_t _wrnngOnBitPos{3};
-const uint8_t _isVoidedBitPos {4};
-const uint8_t _isOnScndryBitPos{5};
-const uint8_t _otptCurValBitPos {16};
-
-struct dMpbOtp_t{
-	bool isOn;
-	bool isEnabled;
-};
-struct htilddMpbOtpt_t: public dMpbOtp_t{
-	bool pilotOn;
-	bool wrnngOn;
-};
-struct vddMpbOtpt_t: public dMpbOtp_t{
-	bool isVoided;
-};
-struct sdalddMpbOtpt_t: public dMpbOtp_t{
-	uint16_t otptCurVal;
-};
-struct dddalddMpbOtpt_t: public dMpbOtp_t{
-	bool isOnScndry;
-};
-
-static void otptsSttsUnpkg(uint32_t pkgOtpts, dMpbOtp_t &retVal){
-	if(pkgOtpts & ((uint32_t)1 << _isOnBitPos))
-		retVal.isOn = true;
-	else
-		retVal.isOn = false;
-	if(pkgOtpts & ((uint32_t)1 << _isEnabledBitPos))
-		retVal.isEnabled = true;
-	else
-		retVal.isEnabled = false;
-
-	return;
-}
-
-static void otptsSttsUnpkg(uint32_t pkgOtpts, vddMpbOtpt_t &retVal){
-	if(pkgOtpts & ((uint32_t)1 << _isOnBitPos))
-		retVal.isOn = true;
-	else
-		retVal.isOn = false;
-
-	if(pkgOtpts & ((uint32_t)1 << _isEnabledBitPos))
-		retVal.isEnabled = true;
-	else
-		retVal.isEnabled = false;
-
-	if(pkgOtpts & ((uint32_t)1 << _isVoidedBitPos))
-		retVal.isVoided = true;
-	else
-		retVal.isVoided = false;
-
-	return;
-}
-
-static void otptsSttsUnpkg(uint32_t pkgOtpts, htilddMpbOtpt_t &retVal){
-	if(pkgOtpts & ((uint32_t)1 << _isOnBitPos))
-		retVal.isOn = true;
-	else
-		retVal.isOn = false;
-	if(pkgOtpts & ((uint32_t)1 << _isEnabledBitPos))
-		retVal.isEnabled = true;
-	else
-		retVal.isEnabled = false;
-	if(pkgOtpts & ((uint32_t)1 << _pilotOnBitPos))
-		retVal.pilotOn = true;
-	else
-		retVal.pilotOn = false;
-	if(pkgOtpts & ((uint32_t)1 << _wrnngOnBitPos))
-		retVal.wrnngOn = true;
-	else
-		retVal.wrnngOn = false;
-
-	return;
-}
-
-static void otptsSttsUnpkg(uint32_t pkgOtpts, dddalddMpbOtpt_t &retVal){
-	if(pkgOtpts & ((uint32_t)1 << _isOnBitPos))
-		retVal.isOn = true;
-	else
-		retVal.isOn = false;
-
-	if(pkgOtpts & ((uint32_t)1 << _isEnabledBitPos))
-		retVal.isEnabled = true;
-	else
-		retVal.isEnabled = false;
-
-	if(pkgOtpts & ((uint32_t)1 << _isOnScndryBitPos))
-		retVal.isOnScndry = true;
-	else
-		retVal.isOnScndry = false;
-
-	return;
-}
-
-static void otptsSttsUnpkg(uint32_t pkgOtpts, sdalddMpbOtpt_t &retVal){
-	if(pkgOtpts & ((uint32_t)1 << _isOnBitPos))
-		retVal.isOn = true;
-	else
-		retVal.isOn = false;
-	if(pkgOtpts & ((uint32_t)1 << _isEnabledBitPos))
-		retVal.isEnabled = true;
-	else
-		retVal.isEnabled = false;
-	retVal.otptCurVal = (pkgOtpts & 0xffff0000) >> _otptCurValBitPos;
-
-	return;
-}
 
 // Definition workaround to let a function/method return value to be a function pointer
 typedef void (*fncPtrType)();
@@ -194,8 +93,11 @@ typedef  fncPtrType (*ptrToTrnFnc)();
 uint8_t singleBitPosNum(uint16_t mask);
 //===========================>> END General use function prototypes
 
-//==========================================================>> BEGIN Classes declarations
+//===========================>> BEGIN General use Global variables
+static BaseType_t errorFlag {pdFALSE};
+//===========================>> END General use Global variables
 
+//==========================================================>> Classes declarations BEGIN
 /**
  * @brief Base class, implements a Debounced Momentary Push Button (**D-MPB**).
  *
@@ -246,7 +148,7 @@ protected:
 	void clrSttChng();
 	const bool getIsPressed() const;
 	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
-   void setIsEnabled(const bool &newEnabledValue);
+   void _setIsEnabled(const bool &newEnabledValue);
 	uint32_t _otptsSttsPkg(uint32_t prevVal = 0);
    void setSttChng();
 	void _turnOff();
@@ -884,8 +786,6 @@ public:
 class HntdTmLtchMPBttn: public TmLtchMPBttn{
 
 protected:
-//	const uint8_t _pilotOnBitPos {2};
-//	const uint8_t _wrnngOnBitPos{3};
 	bool _keepPilot{false};
 	volatile bool _pilotOn{false};
 	unsigned long int _wrnngMs{0};
@@ -1254,6 +1154,7 @@ public:
  */
 class DDlydDALtchMPBttn: public DblActnLtchMPBttn{
 protected:
+	uint32_t _otptsSttsPkg(uint32_t prevVal = 0);
    virtual void stDisabled_In();
    virtual void stOnStrtScndMod_In();
    virtual void stOnScndMod_Do();
