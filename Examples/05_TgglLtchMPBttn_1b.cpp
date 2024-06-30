@@ -109,7 +109,6 @@ void mainCtrlTsk(void *pvParameters)
 	BaseType_t tmrModRslt{pdFAIL};
 
 	TgglLtchMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, true, true, 50, 450);
-//	DbncdMPBttn* tstBttnPtr {&tstBttn};
 	LtchMPBttn* tstBttnPtr {&tstBttn};
 
 	tstBttn.setIsOnDisabled(false);

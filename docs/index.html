@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;2.0.0</span>
+   <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;3.0.0</span>
    </div>
    <div id="projectbrief">A library that provides elaborated switch mechanism simulation for digital signals inputs</div>
   </td>
@@ -102,6 +102,13 @@ An STM32-RTOS library that builds switch mechanisms replacements out of simple p
 </p>
 <h1><a class="anchor" id="the-main-output-flag-generated-for-each-and-every-class-is-the-ison-flag-which-defines-the-_off-state_-ison--false-and-the-_on-state_-ison--true-of-the-instantiated-objects"></a>
 The main output flag generated for each and every class is the <b>isOn</b> flag, which defines the <em><b>Off State</b></em> (isOn = false) and the <em><b>On State</b></em> (isOn = true) of the instantiated objects.</h1>
+<h1><a class="anchor" id="the-embedded-behavior-also-includes-logical-replacements-for-temporary-or-extraordinay-responses-that-usually-need-external-hardware-modifications-in-electromechanical-switches"></a>
+The embedded behavior also includes logical replacements for temporary or extraordinay responses that usually need external hardware modifications in electromechanical switches:</h1>
+<ul>
+<li>Switch disconnection.</li>
+<li>Switch bypassing</li>
+<li>Minimum pressing time for turning on/off.</li>
+</ul>
 <p>All classes provide several communication mechanisms to keep it's output states available by request and by having their value change automatically notified. <br  />
  Those mechanisms include: <br  />
 </p><ul>
@@ -109,7 +116,7 @@ The main output flag generated for each and every class is the <b>isOn</b> flag,
 </li>
 <li><b>General flags value change getter</b>: Returns a value indicating if <b>any</b> of the significant output flags' values has changed. <br  />
 </li>
-<li><b>Binary Semaphore</b>: Implementation of a <b>xTaskNotifyGive()</b> FreeRTOS macro to unblock a developer defined task, every time <b>any</b> of the output flags' values changes. <br  />
+<li><b>Lightweight Binary Semaphore</b>: Implementation of a <b>xTaskNotify()</b> FreeRTOS macro to unblock a developer defined task -every time <b>any</b> of the output flags' values changes- including a notification value indicating the state of the MPB. <br  />
 </li>
 <li><b>Task Resume/Suspend</b>: A mechanism is provided to run a developer defined task while the object is in <b>On State</b>. The designated task will be set to "Suspended State" while the object is in <b>Off State</b> and will be set to "Resume" while it is in <b>On State</b>, providing means to execute far more complex tasks than just "turning On &amp; turning Off" devices. <br  />
 </li>
@@ -118,8 +125,8 @@ The main output flag generated for each and every class is the <b>isOn</b> flag,
 </ul>
 <p>Those listed mechanisms are independent, so one or more might be simultaneously used depending on implementation convenience. <br  />
 </p>
-<h2><a class="anchor" id="the-library-implements-the-following-switches-behaviors"></a>
-The library implements the following switches behaviors:</h2>
+<h3><a class="anchor" id="the-library-implements-the-following-switches-behaviors"></a>
+The library implements the following switches behaviors:</h3>
 <ul>
 <li><b>Debounced Momentary Push Button</b> (a.k.a. Momentary switch, a.k.a. Pushbutton) <br  />
 </li>

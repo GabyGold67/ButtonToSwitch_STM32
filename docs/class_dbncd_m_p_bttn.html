@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;2.0.0</span>
+   <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;3.0.0</span>
    </div>
    <div id="projectbrief">A library that provides elaborated switch mechanism simulation for digital signals inputs</div>
   </td>
@@ -183,6 +183,9 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memitem:a9cee3ead20e3628c02975a9d0c8a4baa" id="r_a9cee3ead20e3628c02975a9d0c8a4baa"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9cee3ead20e3628c02975a9d0c8a4baa">getIsOnDisabled</a> () const</td></tr>
 <tr class="memdesc:a9cee3ead20e3628c02975a9d0c8a4baa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the <b>isOnDisabled</b> attribute flag.  <br /></td></tr>
 <tr class="separator:a9cee3ead20e3628c02975a9d0c8a4baa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad89b27d055137f6b27123050fd708aef" id="r_ad89b27d055137f6b27123050fd708aef"><td class="memItemLeft" align="right" valign="top">const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad89b27d055137f6b27123050fd708aef">getOtptsSttsPkgd</a> ()</td></tr>
+<tr class="memdesc:ad89b27d055137f6b27123050fd708aef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the relevant attribute flags values for the object state encoded as a 32 bits value, required to pass current state of the object to another thread/task managing the outputs.  <br /></td></tr>
+<tr class="separator:ad89b27d055137f6b27123050fd708aef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac646101296a76321e855250ba044c8d7" id="r_ac646101296a76321e855250ba044c8d7"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac646101296a76321e855250ba044c8d7">getOutputsChange</a> () const</td></tr>
 <tr class="memdesc:ac646101296a76321e855250ba044c8d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the <b>outputsChange</b> attribute flag.  <br /></td></tr>
 <tr class="separator:ac646101296a76321e855250ba044c8d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -626,6 +629,27 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 
 </div>
 </div>
+<a id="ad89b27d055137f6b27123050fd708aef" name="ad89b27d055137f6b27123050fd708aef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad89b27d055137f6b27123050fd708aef">&#9670;&#160;</a></span>getOtptsSttsPkgd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const uint32_t DbncdMPBttn::getOtptsSttsPkgd </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the relevant attribute flags values for the object state encoded as a 32 bits value, required to pass current state of the object to another thread/task managing the outputs. </p>
+<p>The intertasks communication mechanisms implemented on the class includes a xTaskNotify() that works as a lightweigh mailbox, unblocking the receiving tasks and sending to it a 32_bit value argument. This function returns the relevant attribute flags values encoded in a 32 bit value, according the provided encoding described.</p>
+<dl class="section return"><dt>Returns</dt><dd>A 32 bit unsigned value representing the attribute flags current values. </dd></dl>
+
+</div>
+</div>
 <a id="ac646101296a76321e855250ba044c8d7" name="ac646101296a76321e855250ba044c8d7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac646101296a76321e855250ba044c8d7">&#9670;&#160;</a></span>getOutputsChange()</h2>
 
@@ -1049,13 +1073,14 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Sets the pointer to the task to be notified by the object when its output attribute flags changes. </p>
-<p>When the object is created, this value is set to <b>NULL</b>, and a valid TaskHandle_t value might be set by using this method. The task notifying mechanism will not be used while the task handle keeps the <b>NULL</b> value, in which case the solution implementation will have to use any of the other provided mechanisms to test the object status, and act accordingly. After the TaskHandle value is set it might be changed to point to other task. If at the point this method is invoked the attribute holding the pointer was not NULL, the method will suspend the pointed task before proceeding to change the attribute value. The method does not provide any verifcation mechanism to ensure the passed parameter is a valid task handle nor the state of the task the passed pointer might be.</p>
+<p>When the object is created, this value is set to <b>NULL</b>, and a valid TaskHandle_t value might be set by using this method. The task notifying mechanism will not be used while the task handle keeps the <b>NULL</b> value, in which case the solution implementation will have to use any of the other provided mechanisms to test the object status, and act accordingly. After the TaskHandle value is set it might be changed to point to other task. If at the point this method is invoked the attribute holding the pointer was not NULL, the method will suspend the pointed task before proceeding to change the attribute value. The method does not provide any verification mechanism to ensure the passed parameter is a valid task handle nor the state of the task the passed pointer might be.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">newTaskHandle</td><td>A valid task handle of an actual existent task/thread running. </td></tr>
+    <tr><td class="paramname">newTaskHandle</td><td>A valid task handle of an actual existent task/thread running.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section note"><dt>Note</dt><dd>As simple as this mechanism is, it's an un-expensive effective solution in terms of resources involved. As a counterpart it's use must be limited to clearly defined implementations, as no value passing mechanism is provided, so global variables will be the easiest way to go, either for the instantiated MPB, or for the relevant attribute flags values copied to global variables, as the case of <b>isON</b>, <b>isEnabled</b> and others in the case of more complex subclasses. </dd></dl>
 
 </div>
 </div>

@@ -2717,6 +2717,7 @@ void VdblMPBttn::updFdaState(){
 			//Do: >>---------------------------------->>
 			_isVoided = false;
 			_validUnvoidPend = false;
+			_outputsChange = true;
 			_mpbFdaState = stOffUnVdd;
 			setSttChng();
 			//Out: >>---------------------------------->>
@@ -2779,6 +2780,7 @@ void VdblMPBttn::updFdaState(){
 				}
 				clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
 				_isEnabled = false;
+				setOutputsChange(true);
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>

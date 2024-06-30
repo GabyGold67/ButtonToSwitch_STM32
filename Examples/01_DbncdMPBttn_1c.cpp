@@ -1,15 +1,15 @@
 /**
   ******************************************************************************
-  * @file	: 05_TgglLtchMPBttn_2b.cpp
-  * @brief  : Example for the MpbAsSwitch_STM32 library TgglLtchMPBttn class
+  * @file	: 01_DbncdMPBttn_1c.cpp
+  * @brief  : Example for the MpbAsSwitch_STM32 library DbncdMPBttn class
   *
-  * The test instantiates a TgglLtchMPBttn object using:
+  * The test instantiates a DbncdMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
   * 	- The Nucleo board user LED attached to GPIO_A05
   * 	- A LED attached to GPIO_C00 to visualize the isEnabled attribute flag status
   *
   * This example creates two Tasks.
-  * The first task instantiates the TgglLtchMPBttn object in it and checks it's
+  * The first task instantiates the DbncdMPBttn object in it and checks it's
   * attribute flags locally through the getters methods.
   * The second task is started and blocked, it's purpose it's to manage the loads and resources
   * that the switch turns On and Off, in this example case are the output of some GPIO pins.
@@ -156,8 +156,8 @@ void mainCtrlTsk(void *pvParameters)
 	MpbOtp_t tstBttnSttsDcdd{0};
 	uint32_t tstBttnSttsEncdd{0};
 
-	TgglLtchMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, true, true, 50, 450);
-	LtchMPBttn* tstBttnPtr {&tstBttn};
+	DbncdMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, true, true, 50);
+	DbncdMPBttn* tstBttnPtr {&tstBttn};
 
 	enableSwpTmrHndl = xTimerCreate(
 			"isEnabledSwapTimer",

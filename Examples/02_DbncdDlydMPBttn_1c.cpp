@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file	: 02_DbncdDlydMPBttn_2b.cpp
+  * @file	: 02_DbncdDlydMPBttn_1c.cpp
   * @brief  : Example for the MpbAsSwitch_STM32 library DbncdDlydMPBttn class
   *
   * The test instantiates a DbncdDlydMPBttn object using:
