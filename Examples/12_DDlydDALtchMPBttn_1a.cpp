@@ -1,12 +1,12 @@
 /**
   ******************************************************************************
-  * @file	: 12_DDlydDALtchMPBttn_a.cpp
+  * @file	: 12_DDlydDALtchMPBttn_1a.cpp
   * @brief  : Test for the MpbAsSwitch_STM32 library DDlydDALtchMPBttn class
   *
   * 	The test instantiates a DDlydDALtchMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
   * 	- The Nucleo board user LED attached to GPIO_A05
-  * 	- A digital output to GPIO_PC00 to show the second level action.
+  * 	- A digital output to GPIO_PC01 to show the second level action.
   *
   * This simple example creates a single Task, instantiates the DDlydDALtchMPBttn object
   * in it and checks it's attribute flags locally through the getters methods.
@@ -46,8 +46,8 @@
 /* USER CODE BEGIN PV */
 gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
-gpioPinId_t ledOnPC00{GPIOC, GPIO_PIN_0};
-gpioPinId_t ledIsOnScndry = ledOnPC00;
+gpioPinId_t ledOnPC01{GPIOC, GPIO_PIN_1};			// Pin 0b 0000 0000 0000 0010
+gpioPinId_t ledIsOnScndry = ledOnPC01;
 
 TaskHandle_t mainCtrlTskHndl {NULL};
 BaseType_t xReturned;
@@ -196,8 +196,8 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level for tstLedOnBoard*/
   HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
-  /*Configure GPIO pin Output Level for tstLedOnBoard*/
-  HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_RESET);
+  /*Configure GPIO pin Output Level for ledIsOnScndry*/
+  HAL_GPIO_WritePin(ledIsOnScndry.portId, ledIsOnScndry.pinNum, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : tstLedOnBoard_Pin */
   GPIO_InitStruct.Pin = tstLedOnBoard.pinNum;
@@ -206,10 +206,9 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(tstLedOnBoard.portId, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : ledOnPC00 */
-  GPIO_InitStruct.Pin = ledOnPC00.pinNum;
-  HAL_GPIO_Init(ledOnPC00.portId, &GPIO_InitStruct);
-
+  /*Configure GPIO pin : ledIsOnScndry */
+  GPIO_InitStruct.Pin = ledIsOnScndry.pinNum;
+  HAL_GPIO_Init(ledIsOnScndry.portId, &GPIO_InitStruct);
 }
 
 /**

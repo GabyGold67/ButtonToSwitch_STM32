@@ -2037,12 +2037,14 @@ void DblActnLtchMPBttn::updFdaState(){
 				stDisabled_In();
 				_isEnabled = false;
 				_validDisablePend = false;
+				setOutputsChange(true);
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			if(_validEnablePend){
 				_isEnabled = true;
 				_validEnablePend = false;
+				setOutputsChange(true);
 			}
 			if(_isEnabled && !updIsPressed()){	//The stDisabled status will be kept until the MPB is released for security reasons
 				_mpbFdaState = stOffNotVPP;
