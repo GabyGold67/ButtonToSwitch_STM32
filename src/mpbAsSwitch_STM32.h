@@ -68,6 +68,25 @@ const uint8_t IsVoidedBitPos{4};
 const uint8_t IsOnScndryBitPos{5};
 const uint8_t OtptCurValBitPos{16};
 
+#ifndef MPBOTPTS_T
+	#define MPBOTPTS_T
+	/**
+	 * @brief Type to hold the complete set of output attribute flags from each and every DbncdMPBttn class and subclasses object.
+	 *
+	 * Only two members (isOn and isEnabled) are relevant to all classes, the rest of the members might be relevant for one or more of the classes.
+	 * The type is provided as a standard return value for the decoding of the 32-bit notification value provided by the use of the xTaskNotify() inter-task mechanism. See setTaskToNotify(const TaskHandle_t) for more information.
+	 *
+	 */
+	struct MpbOtpts_t{
+		bool isOn;
+		bool isEnabled;
+		bool pilotOn;
+		bool wrnngOn;
+		bool isVoided;
+		bool isOnScndry;
+		uint16_t otptCurVal;
+	};
+#endif
 /*---------------- xTaskNotify() mechanism related constants, argument structs, information packing and unpacking END -------*/
 
 #ifndef GPIOPINID_T
@@ -85,12 +104,14 @@ const uint8_t OtptCurValBitPos{16};
 	};
 #endif	//GPIOPINID_T
 
+
 // Definition workaround to let a function/method return value to be a function pointer
 typedef void (*fncPtrType)();
 typedef  fncPtrType (*ptrToTrnFnc)();
 
 //===========================>> BEGIN General use function prototypes
 uint8_t singleBitPosNum(uint16_t mask);
+MpbOtpts_t otptsSttsUnpkg(uint32_t pkgOtpts);
 //===========================>> END General use function prototypes
 
 //===========================>> BEGIN General use Global variables
@@ -299,7 +320,7 @@ public:
    /**
 	 * @brief Gets the relevant attribute flags values for the object state encoded as a 32 bits value, required to pass current state of the object to another thread/task managing the outputs
     *
-    * The intertasks communication mechanisms implemented on the class includes a xTaskNotify() that works as a lightweigh mailbox, unblocking the receiving tasks and sending to it a 32_bit value argument. This function returns the relevant attribute flags values encoded in a 32 bit value, according the provided encoding described.
+    * The inter-tasks communication mechanisms implemented on the class includes a xTaskNotify() that works as a light-weigh mailbox, unblocking the receiving tasks and sending to it a 32_bit value notification. This function returns the relevant attribute flags values encoded in a 32 bit value, according the provided encoding described.
     *
     * @return A 32 bit unsigned value representing the attribute flags current values.
     */

@@ -2971,3 +2971,41 @@ uint8_t singleBitPosNum(uint16_t mask){
 	return result;
 }
 
+MpbOtpts_t otptsSttsUnpkg(uint32_t pkgOtpts){
+	MpbOtpts_t mpbCurSttsDcdd {0};
+
+	if(pkgOtpts & (((uint32_t)1) << IsOnBitPos))
+		mpbCurSttsDcdd.isOn = true;
+	else
+		mpbCurSttsDcdd.isOn = false;
+
+	if(pkgOtpts & (((uint32_t)1) << IsEnabledBitPos))
+		mpbCurSttsDcdd.isEnabled = true;
+	else
+		mpbCurSttsDcdd.isEnabled = false;
+
+	// From here on the attribute flags are not present in every subclass!!
+	if(pkgOtpts & (((uint32_t)1) << PilotOnBitPos))
+		mpbCurSttsDcdd.pilotOn = true;
+	else
+		mpbCurSttsDcdd.pilotOn = false;
+
+	if(pkgOtpts & (((uint32_t)1) << WrnngOnBitPos))
+		mpbCurSttsDcdd.wrnngOn = true;
+	else
+		mpbCurSttsDcdd.wrnngOn = false;
+
+	if(pkgOtpts & (((uint32_t)1) << IsVoidedBitPos))
+		mpbCurSttsDcdd.isVoided = true;
+	else
+		mpbCurSttsDcdd.isVoided = false;
+
+	if(pkgOtpts & (((uint32_t)1) << IsOnScndryBitPos))
+		mpbCurSttsDcdd.isOnScndry = true;
+	else
+		mpbCurSttsDcdd.isOnScndry = false;
+
+	mpbCurSttsDcdd.otptCurVal = (pkgOtpts & 0xffff0000) >> OtptCurValBitPos;
+
+	return mpbCurSttsDcdd;
+}

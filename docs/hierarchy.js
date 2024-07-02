@@ -18,5 +18,6 @@ var hierarchy =
         ] ]
       ] ]
     ] ],
-    [ "gpioPinId_t", "structgpio_pin_id__t.html", null ]
+    [ "gpioPinId_t", "structgpio_pin_id__t.html", null ],
+    [ "MpbOtpts_t", "struct_mpb_otpts__t.html", null ]
 ];

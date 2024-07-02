@@ -14,7 +14,11 @@
   * The second task is started and blocked, it's purpose it's to manage the loads and resources
   * that the switch turns On and Off, in this example case are the output of some GPIO pins.
   * When a change in the object's output attribute flags is detected the second task is unblocked
-  * to update the GPIO pins and blocks again until next notification.
+  * through a xTaskNotify() to update the output GPIO pins and blocks again until next notification.
+  * The xTaskNotify() macro is limited to pass a 32 bit notifications value, the object instantiated
+  * takes care of encoding of the MPBttn state in a 32 bits value.
+  * A function -otptsSttsUnpkg()- is provided for the notified task to be able to decode the 32 bits
+  * notification value into flags values.
   *
   * A software timer is created so that it periodically toggles the isEnabled attribute flag
   * value, showing the behavior of the instantiated object when enabled and when disabled.
@@ -48,31 +52,12 @@
 #include "../../mpbAsSwitch_STM32/src/mpbAsSwitch_STM32.h"
 /* USER CODE END Includes */
 
-/*---------------- xTaskNotify() mechanism related constants, argument structs, information packing and unpacking BEGIN -------*/
-const uint8_t _isOnBitPos {0};
-const uint8_t _isEnabledBitPos{1};
-const uint8_t _pilotOnBitPos {2};
-const uint8_t _wrnngOnBitPos{3};
-const uint8_t _isVoidedBitPos {4};
-const uint8_t _isOnScndryBitPos{5};
-const uint8_t _otptCurValBitPos {16};
-
-struct MpbOtp_t{
-	bool isOn;
-	bool isEnabled;
-	bool pilotOn;
-	bool wrnngOn;
-	bool isVoided;
-	bool isOnScndry;
-	uint16_t otptCurVal;
-};
-/*---------------- xTaskNotify() mechanism related constants, argument structs, information packing and unpacking END -------*/
-
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0010 0000
+gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
-gpioPinId_t ledOnPC00{GPIOC, GPIO_PIN_0};	//Pin 0b 0000 0001
+gpioPinId_t ledOnPC00{GPIOC, GPIO_PIN_0};			// Pin 0b 0000 0000 0000 0001
+gpioPinId_t ledIsEnabled = ledOnPC00;
 
 TaskHandle_t mainCtrlTskHndl {NULL};
 TaskHandle_t dmpsOutputTskHdl;
@@ -88,8 +73,7 @@ void Error_Handler(void);
 void mainCtrlTsk(void *pvParameters);
 void dmpsOutputTsk(void *pvParameters);
 void swpEnableCb(TimerHandle_t  pvParam);
-uint32_t otptsSttsPkg(MpbOtp_t dMpbCurStts);
-MpbOtp_t otptsSttsUnpkg(uint32_t pkgOtpts);
+MpbOtpts_t otptsSttsUnpkg(uint32_t pkgOtpts);
 /* USER CODE END FP */
 /* Private function prototypes END -----------------------------------------------*/
 
@@ -153,8 +137,6 @@ void mainCtrlTsk(void *pvParameters)
 {
 	TimerHandle_t enableSwpTmrHndl{NULL};
 	BaseType_t tmrModRslt{pdFAIL};
-	MpbOtp_t tstBttnSttsDcdd{0};
-	uint32_t tstBttnSttsEncdd{0};
 
 	DbncdDlydMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, true, true, 50, 450);
 	DbncdMPBttn* tstBttnPtr {&tstBttn};
@@ -174,33 +156,18 @@ void mainCtrlTsk(void *pvParameters)
 	}
 
 	tstBttn.setIsOnDisabled(false);
-	tstBttn.begin(20);
-
 	vTaskResume(dmpsOutputTskHdl);	//Resumes the task to start now in proper order
+	tstBttn.setTaskToNotify(dmpsOutputTskHdl);
+	tstBttn.begin(20);
 
 	for(;;)
 	{
-		if(tstBttn.getOutputsChange()){
-			tstBttnSttsDcdd.isOn = tstBttn.getIsOn();
-			tstBttnSttsDcdd.isEnabled = tstBttn.getIsEnabled();
-			tstBttnSttsEncdd = otptsSttsPkg(tstBttnSttsDcdd);
-			tstBttn.setOutputsChange(false);
-
-			xReturned = xTaskNotify(
-					dmpsOutputTskHdl,	//TaskHandle_t of the task receiving notification
-					static_cast<unsigned long>(tstBttnSttsEncdd),
-					eSetValueWithOverwrite
-					);
-			if (xReturned != pdPASS){
-				Error_Handler();
-			}
-		}
 	}
 }
 
 void dmpsOutputTsk(void *pvParameters){
 	uint32_t mpbSttsRcvd{0};
-	MpbOtp_t mpbCurStateDcdd;
+	MpbOtpts_t mpbCurStateDcdd;
 
 	for(;;){
 		xReturned = xTaskNotifyWait(
@@ -218,9 +185,9 @@ void dmpsOutputTsk(void *pvParameters){
 		else
 		  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
 		if(mpbCurStateDcdd.isEnabled)
-			HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_RESET);
 		else
-			HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_SET);
 	}
 }
 
@@ -239,87 +206,6 @@ void swpEnableCb(TimerHandle_t  pvParam){
 /* USER CODE TASKS AND TIMERS END */
 
 /* USER CODE FUNCTIONS BEGIN */
-uint32_t otptsSttsPkg(MpbOtp_t dMpbCurStts){
-	uint32_t mpbCurSttsEncdd{0};
-
-	if(dMpbCurStts.isOn){
-		mpbCurSttsEncdd |= ((uint32_t)1) << _isOnBitPos;
-	}
-	else{
-		mpbCurSttsEncdd &= ~(((uint32_t)1) << _isOnBitPos);
-	}
-	if(dMpbCurStts.isEnabled){
-		mpbCurSttsEncdd |= ((uint32_t)1) << _isEnabledBitPos;
-	}
-	else{
-		mpbCurSttsEncdd &= ~(((uint32_t)1) << _isEnabledBitPos);
-	}
-
-	/*
-	if(dMpbCurStts.pilotOn){
-		mpbCurSttsEncdd |= ((uint32_t)1) << _pilotOnBitPos;
-	}
-	else{
-		mpbCurSttsEncdd &= ~(((uint32_t)1) << _pilotOnBitPos);
-	}
-	if(dMpbCurStts.wrnngOn){
-		mpbCurSttsEncdd |= ((uint32_t)1) << _wrnngOnBitPos;
-	}
-	else{
-		mpbCurSttsEncdd &= ~(((uint32_t)1) << _wrnngOnBitPos);
-	}
-	if(dMpbCurStts.isVoided){
-		mpbCurSttsEncdd |= ((uint32_t)1) << _isVoidedBitPos;
-	}
-	else{
-		mpbCurSttsEncdd &= ~(((uint32_t)1) << _isVoidedBitPos);
-	}
-
-	mpbCurSttsEncdd |= ((uint32_t)_otptCurVal << _otptCurValBitPos);
- */
-
-	return mpbCurSttsEncdd;
-}
-
-MpbOtp_t otptsSttsUnpkg(uint32_t pkgOtpts){
-	MpbOtp_t mpbCurSttsDcdd {0};
-
-	if(pkgOtpts & (((uint32_t)1) << _isOnBitPos))
-		mpbCurSttsDcdd.isOn = true;
-	else
-		mpbCurSttsDcdd.isOn = false;
-
-	if(pkgOtpts & (((uint32_t)1) << _isEnabledBitPos))
-		mpbCurSttsDcdd.isEnabled = true;
-	else
-		mpbCurSttsDcdd.isEnabled = false;
-
-	/*
-	if(pkgOtpts & (((uint32_t)1) << _pilotOnBitPos))
-		mpbCurSttsDcdd.pilotOn = true;
-	else
-		mpbCurSttsDcdd.pilotOn = false;
-
-	if(pkgOtpts & (((uint32_t)1) << _wrnngOnBitPos))
-		mpbCurSttsDcdd.wrnngOn = true;
-	else
-		mpbCurSttsDcdd.wrnngOn = false;
-
-	if(pkgOtpts & (((uint32_t)1) << _isVoidedBitPos))
-		mpbCurSttsDcdd.isVoided = true;
-	else
-		mpbCurSttsDcdd.isVoided = false;
-
-	if(pkgOtpts & (((uint32_t)1) << _isOnScndryBitPos))
-		mpbCurSttsDcdd.isOnScndry = true;
-	else
-		mpbCurSttsDcdd.isOnScndry = false;
-
-	mpbCurSttsDcdd.otptCurVal = (pkgOtpts & 0xffff0000) >> _otptCurValBitPos;
-*/
-
-	return mpbCurSttsDcdd;
-}
 /* USER CODE FUNCTIONS END */
 
 /**
@@ -400,14 +286,14 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(tstLedOnBoard.portId, &GPIO_InitStruct);
 
   /*Configure GPIO pin Output Level for ledOnPC00))*/
-  HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : ledOnPC00_Pin */
-  GPIO_InitStruct.Pin = ledOnPC00.pinNum;
+  /*Configure GPIO pin : ledIsEnabled_Pin */
+  GPIO_InitStruct.Pin = ledIsEnabled.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(ledOnPC00.portId, &GPIO_InitStruct);
+  HAL_GPIO_Init(ledIsEnabled.portId, &GPIO_InitStruct);
 }
 
 /**

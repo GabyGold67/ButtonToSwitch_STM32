@@ -645,7 +645,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Gets the relevant attribute flags values for the object state encoded as a 32 bits value, required to pass current state of the object to another thread/task managing the outputs. </p>
-<p>The intertasks communication mechanisms implemented on the class includes a xTaskNotify() that works as a lightweigh mailbox, unblocking the receiving tasks and sending to it a 32_bit value argument. This function returns the relevant attribute flags values encoded in a 32 bit value, according the provided encoding described.</p>
+<p>The inter-tasks communication mechanisms implemented on the class includes a xTaskNotify() that works as a light-weigh mailbox, unblocking the receiving tasks and sending to it a 32_bit value notification. This function returns the relevant attribute flags values encoded in a 32 bit value, according the provided encoding described.</p>
 <dl class="section return"><dt>Returns</dt><dd>A 32 bit unsigned value representing the attribute flags current values. </dd></dl>
 
 </div>
