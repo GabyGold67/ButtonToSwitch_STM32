@@ -119,7 +119,7 @@ Inheritance diagram for DbncdMPBttn:</div>
 <area shape="poly" title=" " alt="" coords="400,187,225,231,223,226,399,182"/>
 <area shape="rect" href="class_tggl_ltch_m_p_bttn.html" title="Implements a Toggle Latch DD&#45;MPB, a.k.a. a Toggle Switch (ToLDD&#45;MPB)." alt="" coords="267,229,381,256"/>
 <area shape="poly" title=" " alt="" coords="424,191,349,231,346,226,421,187"/>
-<area shape="rect" href="class_tm_ltch_m_p_bttn.html" title="Implements a Timer Latch DD&#45;MPB, a.k.a. a Timer Switch (TiLDD&#45;MPB)." alt="" coords="406,229,514,256"/>
+<area shape="rect" href="class_tm_ltch_m_p_bttn.html" title="Implements a Timer Latch DD&#45;MPB, a.k.a. Timer Switch (TiLDD&#45;MPB)." alt="" coords="406,229,514,256"/>
 <area shape="poly" title=" " alt="" coords="462,197,462,229,457,229,457,197"/>
 <area shape="rect" href="class_xtrn_unltch_m_p_bttn.html" title="Implements an External Unlatch LDD&#45;MPB, a.k.a. Emergency Latched Switch (XULDD&#45;MPB)" alt="" coords="538,229,662,256"/>
 <area shape="poly" title=" " alt="" coords="499,186,576,226,574,231,496,191"/>
@@ -196,7 +196,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memdesc:a3da781ff0ad5ec1064d62570fd005a3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be notified by the object when its output flags changes.  <br /></td></tr>
 <tr class="separator:a3da781ff0ad5ec1064d62570fd005a3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3728d2003365cbdaf81cccfca3604fe8" id="r_a3728d2003365cbdaf81cccfca3604fe8"><td class="memItemLeft" align="right" valign="top">const TaskHandle_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3728d2003365cbdaf81cccfca3604fe8">getTaskWhileOn</a> ()</td></tr>
-<tr class="memdesc:a3728d2003365cbdaf81cccfca3604fe8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be run while the object is in the <b>On state</b>.  <br /></td></tr>
+<tr class="memdesc:a3728d2003365cbdaf81cccfca3604fe8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be run (resumed) while the object is in the <b>On state</b>.  <br /></td></tr>
 <tr class="separator:a3728d2003365cbdaf81cccfca3604fe8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a748f95239413d4c9c0a5b5d0d6396e60" id="r_a748f95239413d4c9c0a5b5d0d6396e60"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a748f95239413d4c9c0a5b5d0d6396e60">init</a> (GPIO_TypeDef *mpbttnPort, const uint16_t &amp;mpbttnPin, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0)</td></tr>
 <tr class="memdesc:a748f95239413d4c9c0a5b5d0d6396e60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes an object instantiated by the default constructor.  <br /></td></tr>
@@ -240,7 +240,8 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Base class, implements a Debounced Momentary Push Button (<b>D-MPB</b>). </p>
-<p>This class provides the resources needed to process a momentary digital input signal -as the one provided by a MPB (momentary push button)- returning a clean signal to be used as a switch, implementing the needed services to replace a wide range of physical related switch characteristics: Debouncing, deglitching, disabling. </p>
+<p>This class provides the resources needed to process a momentary digital input signal -as the one provided by a MPB (Momentary Push Button)- returning a clean signal to be used as a switch, implementing the needed services to replace a wide range of physical related switch characteristics: Debouncing, deglitching, disabling.</p>
+<p>More physical switch situations can be emulated, like temporarily disconnecting it (isDisabled=true and isOnDisabled=false), short circuiting it (isDisabled=true and isOnDisabled=true) and others. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a46810d945e96b2b579f6fb8b59e99252" name="a46810d945e96b2b579f6fb8b59e99252"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a46810d945e96b2b579f6fb8b59e99252">&#9670;&#160;</a></span>DbncdMPBttn() <span class="overload">[1/2]</span></h2>
@@ -514,10 +515,11 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <dl class="section return"><dt>Returns</dt><dd>A function pointer to the function set to execute every time the object enters the <b>Off State</b>. </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">nullptr</td><td>if there is no function set to execute when the object enters the <b>Off State</b>. </td></tr>
+    <tr><td class="paramname">nullptr</td><td>if there is no function set to execute when the object enters the <b>Off State</b>.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section warning"><dt>Warning</dt><dd>The function code execution will become part of the list of procedures the object executes when it entering the <b>Off State</b>, including the modification of affected attribute flags, suspending the execution of the task running while in <b>On State</b> and others. Making the function code too time demanding must be handled with care, using alternative execution schemes, for example the function might resume a independent task that suspends itself at the end of its code, to let a new function calling event resume it once again. </dd></dl>
 
 </div>
 </div>
@@ -541,7 +543,8 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <dl class="section return"><dt>Returns</dt><dd>A function pointer to the function set to execute every time the object enters the <b>On State</b>. </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">nullptr</td><td>if there is no function set to execute when the object enters the <b>On State</b>. </td></tr>
+    <tr><td class="paramname">nullptr</td><td>if there is no function set to execute when the object enters the <b>On State</b>. <pre class="fragment"> * @warning The function code execution will become part of the list of procedures the object executes when it entering the **On State**, including the modification of affected attribute flags, suspending the execution of the task running while in **On State** and others. Making the function code too time demanding must be handled with care, using alternative execution schemes, for example the function might resume a independent task that suspends itself at the end of its code, to let a new function calling event resume it once again.
+</pre> </td></tr>
   </table>
   </dd>
 </dl>
@@ -646,7 +649,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 
 <p>Gets the relevant attribute flags values for the object state encoded as a 32 bits value, required to pass current state of the object to another thread/task managing the outputs. </p>
 <p>The inter-tasks communication mechanisms implemented on the class includes a xTaskNotify() that works as a light-weigh mailbox, unblocking the receiving tasks and sending to it a 32_bit value notification. This function returns the relevant attribute flags values encoded in a 32 bit value, according the provided encoding described.</p>
-<dl class="section return"><dt>Returns</dt><dd>A 32 bit unsigned value representing the attribute flags current values. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A 32-bit unsigned value representing the attribute flags current values. </dd></dl>
 
 </div>
 </div>
@@ -666,7 +669,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Gets the value of the <b>outputsChange</b> attribute flag. </p>
-<p>The instantiated objects include attributes linked to their computed state, which represent the behavior expected from their respective electromechanical simulated counterparts. When any of those attributes values change, the <b>outputsChange</b> flag is set. The flag only signals changes have been done -not which flags, nor how many times changes have taken place- since the last <b>outputsChange</b> flag reset. The <b>outputsChange</b> flag must be reset (or set if desired) through the <a class="el" href="#ac1a23ebaf89ccfa36df1cd9c995c9ab5" title="Sets the value of the attribute flag indicating if a change took place in any of the output attribute...">setOutputsChange()</a> method.</p>
+<p>The instantiated objects include attributes linked to their computed state, which represent the behavior expected from their respective electromechanical simulated counterparts. When any of those attributes values change, the <b>outputsChange</b> flag is set. The flag only signals changes have happened -not which flags, nor how many times changes have taken place- since the last <b>outputsChange</b> flag reset. The <b>outputsChange</b> flag must be reset (or set if desired) through the <a class="el" href="#ac1a23ebaf89ccfa36df1cd9c995c9ab5" title="Sets the value of the attribute flag indicating if a change took place in any of the output attribute...">setOutputsChange()</a> method.</p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">true</td><td>any of the object's behavior flags have changed value since last time <b>outputsChange</b> flag was reseted. </td></tr>
@@ -723,7 +726,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd>The notification is done through a <b>direct to task notification</b> using the <b>xTaskNotifyGive()</b> RTOS macro. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The notification is done through a <b>direct to task notification</b> using the <b>xTaskNotify()</b> RTOS macro, the notification includes passing the notified task a 32-bit notification value. </dd></dl>
 
 </div>
 </div>
@@ -742,7 +745,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
       </table>
 </div><div class="memdoc">
 
-<p>Gets the task to be run while the object is in the <b>On state</b>. </p>
+<p>Gets the task to be run (resumed) while the object is in the <b>On state</b>. </p>
 <p>Gets the task handle of the task to be <b>resumed</b> every time the object enters the <b>On state</b>, and will be <b>paused</b> when the object enters the <b>Off state</b>. This task execution mechanism dependent of the <b>On state</b> extends the concept of the <b>Switch object</b> far away of the simple turning On/Off a single hardware signal, attaching to it all the task execution capabilities of the MCU.</p>
 <dl class="section return"><dt>Returns</dt><dd>The TaskHandle_t value of the task to be resumed while the object is in <b>On state</b>. </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>

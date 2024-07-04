@@ -244,7 +244,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memdesc:a3da781ff0ad5ec1064d62570fd005a3a inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be notified by the object when its output flags changes.  <br /></td></tr>
 <tr class="separator:a3da781ff0ad5ec1064d62570fd005a3a inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn" id="r_a3728d2003365cbdaf81cccfca3604fe8"><td class="memItemLeft" align="right" valign="top">const TaskHandle_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#a3728d2003365cbdaf81cccfca3604fe8">getTaskWhileOn</a> ()</td></tr>
-<tr class="memdesc:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be run while the object is in the <b>On state</b>.  <br /></td></tr>
+<tr class="memdesc:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be run (resumed) while the object is in the <b>On state</b>.  <br /></td></tr>
 <tr class="separator:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a748f95239413d4c9c0a5b5d0d6396e60 inherit pub_methods_class_dbncd_m_p_bttn" id="r_a748f95239413d4c9c0a5b5d0d6396e60"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#a748f95239413d4c9c0a5b5d0d6396e60">init</a> (GPIO_TypeDef *mpbttnPort, const uint16_t &amp;mpbttnPin, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0)</td></tr>
 <tr class="memdesc:a748f95239413d4c9c0a5b5d0d6396e60 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes an object instantiated by the default constructor.  <br /></td></tr>
@@ -288,15 +288,15 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstract class, base to implement Voidable DD-MPBs (<b>VDD-MPB</b>). </p>
-<p><b>Voidable DD-MPBs</b> are MPBs whose distinctive characteristic is that implement non-latching switches that while being pressed their state might change from <b>On State</b> to a <b>Voided state</b> due to different voiding conditions. Depending on the classes the voided state might be <b>Voided &amp; Off state</b>, <b>Voided &amp; On state</b> or <b>Voided &amp; Not enforced</b> states. Those conditions to change to a voided state include but are not limited to:</p><ul>
+<p><b>Voidable DD-MPBs</b> are MPBs whose distinctive characteristic is that implement non-latching switches that while being pressed their state might change from <b>On State</b> to a <b>Voided state</b> due to different voiding conditions. Depending on the classes the voided state might be <b>Voided &amp; Off state</b>, <b>Voided &amp; On state</b> or <b>Voided &amp; Not enforced</b> states. Those conditions to change to a voided state include -but are not limited to- the following conditions:</p><ul>
 <li>pressing time</li>
 <li>external signals</li>
 <li>entering the <b>On state</b></li>
 </ul>
-<p>The mechanisms to "un-void" the MPB and return it to an operational state include but are not limited to:</p><ul>
+<p>The mechanisms to "un-void" the MPB and return it to an operational state include -but are not limited to- the following actions:</p><ul>
 <li>releasing the MPBs</li>
 <li>receiving an external signal</li>
-<li>the reading of the <b>isOn</b> flag</li>
+<li>the reading of the <b>isOn</b> attribute flag status</li>
 </ul>
 <p>The voiding conditions and the un-voiding mechanisms define the VDD-MPB subclasses. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>

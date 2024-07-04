@@ -113,7 +113,7 @@ Inheritance diagram for LtchMPBttn:</div>
 <area shape="poly" title=" " alt="" coords="340,189,213,231,212,226,339,184"/>
 <area shape="rect" href="class_tggl_ltch_m_p_bttn.html" title="Implements a Toggle Latch DD&#45;MPB, a.k.a. a Toggle Switch (ToLDD&#45;MPB)." alt="" coords="267,229,381,256"/>
 <area shape="poly" title=" " alt="" coords="371,195,337,231,333,227,367,191"/>
-<area shape="rect" href="class_tm_ltch_m_p_bttn.html" title="Implements a Timer Latch DD&#45;MPB, a.k.a. a Timer Switch (TiLDD&#45;MPB)." alt="" coords="406,229,514,256"/>
+<area shape="rect" href="class_tm_ltch_m_p_bttn.html" title="Implements a Timer Latch DD&#45;MPB, a.k.a. Timer Switch (TiLDD&#45;MPB)." alt="" coords="406,229,514,256"/>
 <area shape="poly" title=" " alt="" coords="416,191,450,227,446,231,412,195"/>
 <area shape="rect" href="class_xtrn_unltch_m_p_bttn.html" title="Implements an External Unlatch LDD&#45;MPB, a.k.a. Emergency Latched Switch (XULDD&#45;MPB)" alt="" coords="538,229,662,256"/>
 <area shape="poly" title=" " alt="" coords="443,184,564,226,562,231,441,189"/>
@@ -269,7 +269,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memdesc:a3da781ff0ad5ec1064d62570fd005a3a inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be notified by the object when its output flags changes.  <br /></td></tr>
 <tr class="separator:a3da781ff0ad5ec1064d62570fd005a3a inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn" id="r_a3728d2003365cbdaf81cccfca3604fe8"><td class="memItemLeft" align="right" valign="top">const TaskHandle_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#a3728d2003365cbdaf81cccfca3604fe8">getTaskWhileOn</a> ()</td></tr>
-<tr class="memdesc:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be run while the object is in the <b>On state</b>.  <br /></td></tr>
+<tr class="memdesc:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be run (resumed) while the object is in the <b>On state</b>.  <br /></td></tr>
 <tr class="separator:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a748f95239413d4c9c0a5b5d0d6396e60 inherit pub_methods_class_dbncd_m_p_bttn" id="r_a748f95239413d4c9c0a5b5d0d6396e60"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#a748f95239413d4c9c0a5b5d0d6396e60">init</a> (GPIO_TypeDef *mpbttnPort, const uint16_t &amp;mpbttnPin, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0)</td></tr>
 <tr class="memdesc:a748f95239413d4c9c0a5b5d0d6396e60 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes an object instantiated by the default constructor.  <br /></td></tr>
@@ -319,7 +319,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <li>Validated Unlatch Release signal (or Validated Unlatch signal end). The class provides methods to generate the signals independently of the designated signal sources to modify the instantiated object behavior if needed by the design requirements, Validated Unlatch signal (see LtchMPBttn::setUnlatchPend(const bool), Validated Unlatch Release signal (see LtchMPBttn::setUnlatchRlsPend(const bool), or to <b>set</b> both flags to generate an unlatch (see <a class="el" href="#a25933288a98bd0a2efc406e7a009fbc1" title="Sets the values of the flags needed to unlatch a latched MPB.">LtchMPBttn::unlatch()</a>.</li>
 </ol>
 </dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>Generating the unlatach related flags independently of the unlatch signals provided by the LDD-MPB subclasses might result in unexpected behavior which might result on the locking of the object with it's unexpected consequences </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Generating the unlatach related flags independently of the unlatch signals provided by the LDD-MPB subclasses might result in unexpected behavior, which might generate the locking of the object with it's unexpected consequences. </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8f6fbebb9d33e282cedbec115fe7cb98" name="a8f6fbebb9d33e282cedbec115fe7cb98"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8f6fbebb9d33e282cedbec115fe7cb98">&#9670;&#160;</a></span>LtchMPBttn() <span class="overload">[1/2]</span></h2>

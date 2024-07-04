@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.10.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>MpbAsSwitch Library for STM32: Momentary Push Buttons as Switches Library (&lt;em&gt;&lt;strong&gt;mpbAsSwitch&lt;/strong&gt;&lt;/em&gt;)</title>
+<title>MpbAsSwitch Library for STM32: Momentary Push Buttons as Switches Library (&lt;em&gt;&lt;strong&gt;MpbAsSwitch&lt;/strong&gt;&lt;/em&gt;)</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -92,7 +92,7 @@ $(function(){initNavTree('index.html',''); initResizable(); });
 </div>
 
 <div><div class="header">
-  <div class="headertitle"><div class="title">Momentary Push Buttons as Switches Library (<em><b>mpbAsSwitch</b></em>) </div></div>
+  <div class="headertitle"><div class="title">Momentary Push Buttons as Switches Library (<em><b>MpbAsSwitch</b></em>) </div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md__c_1_2_users_2_gabriel_01_d_8_01_goldman_2_documents_2_my_01_projects_2_training_01_projects_2_momentary_push_button_tester_s_t_m32_2mpb_as_switch___s_t_m32_2_r_e_a_d_m_e"></a> </p>
@@ -100,8 +100,8 @@ $(function(){initNavTree('index.html',''); initResizable(); });
 An STM32-RTOS library that builds switch mechanisms replacements out of simple push buttons.</h2>
 <p>By using just a push button (a.k.a. momentary switches or momentary buttons -_**MPB**_ for short from here on- the classes implemented in this library will manage, calculate and update different parameters to <b>generate the behavior of standard electromechanical switches</b>, including some well known industry specific switches. Those parameters include presses, releases, timings, counters or secondary inputs readings as needed, and corresponding primary and secondary outputs generated. <br  />
 </p>
-<h1><a class="anchor" id="the-main-output-flag-generated-for-each-and-every-class-is-the-ison-flag-which-defines-the-_off-state_-ison--false-and-the-_on-state_-ison--true-of-the-instantiated-objects"></a>
-The main output flag generated for each and every class is the <b>isOn</b> flag, which defines the <em><b>Off State</b></em> (isOn = false) and the <em><b>On State</b></em> (isOn = true) of the instantiated objects.</h1>
+<h2><a class="anchor" id="the-main-output-flag-generated-for-each-and-every-class-is-the-ison-flag-which-defines-the-_off-state_-isonfalse-and-the-_on-state_-isontrue-of-the-instantiated-objects"></a>
+The main output flag generated for each and every class is the <b>isOn</b> flag, which defines the <em><b>Off State</b></em> (isOn=false) and the <em><b>On State</b></em> (isOn=true) of the instantiated objects.</h2>
 <h1><a class="anchor" id="the-embedded-behavior-also-includes-logical-replacements-for-temporary-or-extraordinay-responses-that-usually-need-external-hardware-modifications-in-electromechanical-switches"></a>
 The embedded behavior also includes logical replacements for temporary or extraordinay responses that usually need external hardware modifications in electromechanical switches:</h1>
 <ul>
@@ -125,8 +125,8 @@ The embedded behavior also includes logical replacements for temporary or extrao
 </ul>
 <p>Those listed mechanisms are independent, so one or more might be simultaneously used depending on implementation convenience. <br  />
 </p>
-<h3><a class="anchor" id="the-library-implements-the-following-switches-behaviors"></a>
-The library implements the following switches behaviors:</h3>
+<h2><a class="anchor" id="the-library-implements-the-following-switches-behaviors"></a>
+The library implements the following switches behaviors:</h2>
 <ul>
 <li><b>Debounced Momentary Push Button</b> (a.k.a. Momentary switch, a.k.a. Pushbutton) <br  />
 </li>
@@ -144,8 +144,11 @@ The library implements the following switches behaviors:</h3>
 <li><b>Double action On/Off + Secondary Debounced Delayed MPB combo switch</b></li>
 </ul>
 <p>MpbAsSwitch Library Documentation available at <a href="https://GabyGold67.github.io/mpbAsSwitch_STM32/">Github Pages</a></p>
-<p><img src="./Extras/MomentaryPushButtonUMLClassesOnly.jpg" alt="MpbAsSwitch Library Classes Hierarchy" class="inline"/></p>
-<p>Each instantiated object returns a debounced, deglitched, clean "isOn" signal based on the expected behavior of the simulated switch mechanism.</p>
+<div class="image">
+<img src="MomentaryPushButtonUMLClassesOnly.jpg" alt=""/>
+<div class="caption">
+MpbAsSwitch Library Classes Hierarchy</div></div>
+    <p>Each instantiated object returns a debounced, deglitched, clean "isOn" signal based on the expected behavior of the simulated switch mechanism.</p>
 <p>The system timer will periodically check the input pins associated to the objects and compute the object's output flags, the timer period for that checking is a general parameter that can be changed. </p>
 </div></div><!-- PageDoc -->
 <a href="doxygen_crawl.html"/>
