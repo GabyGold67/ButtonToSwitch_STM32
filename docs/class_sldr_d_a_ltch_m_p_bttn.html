@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;2.0.0</span>
+   <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;3.0.0</span>
    </div>
    <div id="projectbrief">A library that provides elaborated switch mechanism simulation for digital signals inputs</div>
   </td>
@@ -360,6 +360,9 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memitem:a9cee3ead20e3628c02975a9d0c8a4baa inherit pub_methods_class_dbncd_m_p_bttn" id="r_a9cee3ead20e3628c02975a9d0c8a4baa"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#a9cee3ead20e3628c02975a9d0c8a4baa">getIsOnDisabled</a> () const</td></tr>
 <tr class="memdesc:a9cee3ead20e3628c02975a9d0c8a4baa inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the <b>isOnDisabled</b> attribute flag.  <br /></td></tr>
 <tr class="separator:a9cee3ead20e3628c02975a9d0c8a4baa inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad89b27d055137f6b27123050fd708aef inherit pub_methods_class_dbncd_m_p_bttn" id="r_ad89b27d055137f6b27123050fd708aef"><td class="memItemLeft" align="right" valign="top">const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#ad89b27d055137f6b27123050fd708aef">getOtptsSttsPkgd</a> ()</td></tr>
+<tr class="memdesc:ad89b27d055137f6b27123050fd708aef inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the relevant attribute flags values for the object state encoded as a 32 bits value, required to pass current state of the object to another thread/task managing the outputs.  <br /></td></tr>
+<tr class="separator:ad89b27d055137f6b27123050fd708aef inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac646101296a76321e855250ba044c8d7 inherit pub_methods_class_dbncd_m_p_bttn" id="r_ac646101296a76321e855250ba044c8d7"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#ac646101296a76321e855250ba044c8d7">getOutputsChange</a> () const</td></tr>
 <tr class="memdesc:ac646101296a76321e855250ba044c8d7 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the <b>outputsChange</b> attribute flag.  <br /></td></tr>
 <tr class="separator:ac646101296a76321e855250ba044c8d7 inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -370,7 +373,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memdesc:a3da781ff0ad5ec1064d62570fd005a3a inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be notified by the object when its output flags changes.  <br /></td></tr>
 <tr class="separator:a3da781ff0ad5ec1064d62570fd005a3a inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn" id="r_a3728d2003365cbdaf81cccfca3604fe8"><td class="memItemLeft" align="right" valign="top">const TaskHandle_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#a3728d2003365cbdaf81cccfca3604fe8">getTaskWhileOn</a> ()</td></tr>
-<tr class="memdesc:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be run while the object is in the <b>On state</b>.  <br /></td></tr>
+<tr class="memdesc:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be run (resumed) while the object is in the <b>On state</b>.  <br /></td></tr>
 <tr class="separator:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a748f95239413d4c9c0a5b5d0d6396e60 inherit pub_methods_class_dbncd_m_p_bttn" id="r_a748f95239413d4c9c0a5b5d0d6396e60"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#a748f95239413d4c9c0a5b5d0d6396e60">init</a> (GPIO_TypeDef *mpbttnPort, const uint16_t &amp;mpbttnPin, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0)</td></tr>
 <tr class="memdesc:a748f95239413d4c9c0a5b5d0d6396e60 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes an object instantiated by the default constructor.  <br /></td></tr>
@@ -414,12 +417,13 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Implements a Slider Double Action LDD-MPB combo switch, a.k.a. off/on/dimmer, a.k.a. off/on/volume radio switch)(<b>S-DALDD-MPB</b>) </p>
-<p>This is a subclass of the <b>DALDD-MPB</b> whose <b>secondary behavior</b> is analog to that of a <b>Digital potentiometer (DigiPot)</b> or a <b>Discreet values incremental/decremental register</b>. That means that when in the second mode, while the MPB remains pressed, an attribute set as a register changes its value -the <b>otpCurVal</b> register-. When the timer callback function used to keep the MPB status updated is called -while in the secondary mode state- the time since the last call is calculated and the time lapse in milliseconds is converted into <b>Steps</b>, using as configurable factor the <b>outputSliderSpeed</b> in a pre-scaler fashion. At instantiation the <b>outputSliderSpeed</b> is configured to 1 (step/millisecond, i.e. 1 step for each millisecond). The resulting value in "steps" is then factored by the <b>outputSliderStepSize</b>, which holds the value that each step will modify the <b>otpCurVal</b> register. The implemented embedded behavior mechanisms of the class determine how the modification of the otpCurVal register will be made, and the associated effects to the instantiated object's attribute, such as (but not limited to):</p><ul>
+<p>This is a subclass of the <b>DALDD-MPB</b> whose <b>secondary behavior</b> is analog to that of a <b>Digital potentiometer (DigiPot)</b> or a <b>Discreet values increment/decrement register</b>. That means that when in the second mode, while the MPB remains pressed, an attribute set as a register changes its value -the <b>otptCurVal</b> register-. When the timer callback function used to keep the MPB status updated is called -while in the secondary mode state- the time since the last call is calculated and the time lapse in milliseconds is converted into <b>Steps</b>, using as configurable factor the <b>outputSliderSpeed</b> in a pre-scaler fashion. At instantiation the <b>outputSliderSpeed</b> is configured to 1 (step/millisecond, i.e. 1 step for each millisecond). The resulting value in "steps" is then factored by the <b>outputSliderStepSize</b>, which holds the value that each step will modify the <b>otptCurVal</b> register. The implemented embedded behavior mechanisms of the class determine how the modification of the otpCurVal register will be made, and the associated effects to the instantiated object's attribute, such as (but not limited to):</p><ul>
 <li>Incrementing otpCurVal register (by the quantity of steps multiplied by the step size) up to the maximum value setting.</li>
 <li>Decrementing otpCurVal register (by that quantity) down to the minimum value setting.</li>
-<li>Changing the modification's direction (from incrementing to decrementing or vice versa). The minimum and maximum values, the rate in steps/second, the size of each step and the variation direction (sign of the variation, incremental or decremental) are all configurable, as is the starting value and the mechanism to revert the "direction" that includes:</li>
+<li>Changing the modification's direction (from incrementing to decrementing or vice versa). The minimum and maximum values, the rate in steps/millisecond, the size of each step and the variation direction (sign of the variation, incrementing or decrementing) are all configurable, as is the starting value and the mechanism to revert the "direction" that includes:</li>
 <li>Revert directions in the next <b>secondary mode</b> entry.</li>
-<li>Automatically revert direction when reaching the minimum and maximum values setting. _ Revert direction by methods invocation (see <a class="el" href="#a5c3f74728490aa41d8adb5130f4421e1" title="Sets the value of the curSldrDirUp attribute to false.">setSldrDirDn()</a>, <a class="el" href="#a826321fa304f02fdd587407039b60ab5" title="Sets the value of the curSldrDirUp attribute to true.">setSldrDirUp()</a>, <a class="el" href="#a5f61c963274f5496f9581f8ffa294974" title="Inverts the current curSldrDirUp attribute value.">swapSldrDir()</a>).</li>
+<li>Automatically revert direction when reaching the minimum and maximum values setting.</li>
+<li>Revert direction by methods invocation (see <a class="el" href="#a5c3f74728490aa41d8adb5130f4421e1" title="Sets the value of the curSldrDirUp attribute to false.">setSldrDirDn()</a>, <a class="el" href="#a826321fa304f02fdd587407039b60ab5" title="Sets the value of the curSldrDirUp attribute to true.">setSldrDirUp()</a>, <a class="el" href="#a5f61c963274f5496f9581f8ffa294974" title="Inverts the current curSldrDirUp attribute value.">swapSldrDir()</a>).</li>
 </ul>
 <p>class <a class="el" href="class_sldr_d_a_ltch_m_p_bttn.html" title="Implements a Slider Double Action LDD-MPB combo switch, a.k.a. off/on/dimmer, a.k....">SldrDALtchMPBttn</a> </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -681,7 +685,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Gets the top <b>output current value</b> register setting. </p>
-<dl class="section return"><dt>Returns</dt><dd>the maximum <b>output current value</b> set. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The maximum <b>output current value</b> set. </dd></dl>
 
 </div>
 </div>
@@ -701,7 +705,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Gets the bottom <b>output current value</b> register setting. </p>
-<dl class="section return"><dt>Returns</dt><dd>the minimum <b>output current value</b> set. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The minimum <b>output current value</b> set. </dd></dl>
 
 </div>
 </div>
@@ -749,7 +753,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Sets the output current value register. </p>
-<p>The new value for the output current value register must be in the range otpValMin &lt;= newVal &lt;= otpValMax</p>
+<p>The new value for the output current value register must be in the range otptValMin &lt;= newVal &lt;= otptValMax</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">newVal</td><td>The new value for the output current value register.</td></tr>
@@ -783,7 +787,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Sets the output slider speed (<b>otptSldrSpd</b>) attribute. </p>
-<p>As described in the <a class="el" href="class_sldr_d_a_ltch_m_p_bttn.html" title="Implements a Slider Double Action LDD-MPB combo switch, a.k.a. off/on/dimmer, a.k....">SldrDALtchMPBttn</a> class definition, the <b>otptSldrSpd</b> value is the factor by which the time between two readings of the MPB pressing state in secondary mode is converted into "slider steps". At instantiation the value is set to 1, meaning 1 millisecond is equivalent to 1 step, the "**slower**" speed configuration. Rising the value will make each millisecond represent more steps, making the change of current value faster.</p>
+<p>As described in the <a class="el" href="class_sldr_d_a_ltch_m_p_bttn.html" title="Implements a Slider Double Action LDD-MPB combo switch, a.k.a. off/on/dimmer, a.k....">SldrDALtchMPBttn</a> class definition, the <b>otptSldrSpd</b> value is the factor by which the time between two readings of the MPB pressing state in secondary mode is converted into "slider steps". At instantiation the value is set to 1, meaning 1 millisecond is equivalent to 1 step, the "**slowest**" speed configuration. Rising the value will make each millisecond represent more steps, making the change of current value faster.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">newVal</td><td>The new value for the <b>otptSldrSpd</b> attribute.</td></tr>
@@ -799,7 +803,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
   </dd>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>Making the <b>otptSldrSpd</b> equal to 0 would void the ability to change the slider value, so the range of acceptable values is 1&lt;= newVal &lt;= (2^16-1). </dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>A "wrong" combination of <b>otptSldrSpd</b> and <b>otptSldrStpSize</b> might result in value change between readings greater than the range set by the <b>otptValMin</b> and the <b>otpValMax</b> values. The relation between the four parameters must be kept in mind if the application developed gives the final user the capability to configure those values at runtime. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>A "wrong" combination of <b>otptSldrSpd</b> and <b>otptSldrStpSize</b> might result in value change between readings greater than the range set by the <b>otptValMin</b> and the <b>otptValMax</b> values. The relation between the four parameters must be kept in mind if the application developed gives the final user the capability to configure those values at runtime. </dd></dl>
 
 </div>
 </div>
@@ -825,7 +829,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd>The new value for the step size must be smaller or equal than the size of the valid range of opCurVal attribute</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The new value for the step size must be smaller or equal than the size of the valid range of otptCurVal attribute</dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">true</td><td>If newVal &lt;= (otptValMax - otptValMin), the value of the outputSliderStepSize attribute is changed. </td></tr>
@@ -858,23 +862,23 @@ For the secondary function to work like a toggle switch, the condition (newVal =
 </div><div class="memdoc">
 
 <p>Sets the output current value register maximum value attribute (otptValMax attribute). </p>
-<p>The new value for the otpValMax attribute must be in the range otpValMin &lt; newVal &lt;= 0xFFFF</p>
+<p>The new value for the otptValMax attribute must be in the range otptValMin &lt; newVal &lt;= 0xFFFF</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">newVal</td><td>The new value for the otpValMax attribute.</td></tr>
+    <tr><td class="paramname">newVal</td><td>The new value for the otptValMax attribute.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The success in the value change </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">true</td><td>The new value was within valid range, the otpValMax attribute change was made. </td></tr>
+    <tr><td class="paramname">true</td><td>The new value was within valid range, the otptValMax attribute change was made. </td></tr>
     <tr><td class="paramname">false</td><td>The new value was outside valid range, the change was not made.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>Due to type constrains, the failure in the value change must be consequence of the selected newVal &lt;= otptValMin</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>If the otpValMax attribute intended change is to a smaller value, the otpCurVal might be left outside the new valid range (newVal &lt; otpCurVal). In this case the otpCurVal will be changed to be equal to newVal, and so otpCurVal will become equal to otpValMax. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>If the otpValMax attribute intended change is to a smaller value, the otpCurVal might be left outside the new valid range (newVal &lt; otpCurVal). In this case the otptCurVal will be changed to be equal to newVal, and so otptCurVal will become equal to otptValMax. </dd></dl>
 
 </div>
 </div>
@@ -894,23 +898,23 @@ For the secondary function to work like a toggle switch, the condition (newVal =
 </div><div class="memdoc">
 
 <p>Sets the output current value register minimum value attribute (otptValMin attribute). </p>
-<p>The new value for the otpValMin attribute must be in the range 0x0000&lt;= newVal &lt; optValMax.</p>
+<p>The new value for the otptValMin attribute must be in the range 0x0000&lt;= newVal &lt; otptValMax.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">newVal</td><td>The new value for the otpValMin attribute.</td></tr>
+    <tr><td class="paramname">newVal</td><td>The new value for the otptValMin attribute.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The success in the value change </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">true</td><td>The new value was within valid range, the otpValMin attribute change was made. </td></tr>
+    <tr><td class="paramname">true</td><td>The new value was within valid range, the otptValMin attribute change was made. </td></tr>
     <tr><td class="paramname">false</td><td>The new value was outside valid range, the change was not made.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>Due to type constrains, the failure in the value change must be consequence of the selected newVal &gt;= otptValMax</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>If the otpValMin attribute intended change is to a greater value, the otpCurVal might be left outside the new valid range (newVal &gt; otpCurVal). In this case the otpCurVal will be changed to be equal to newVal, and so otpCurVal will become equal to otpValMin. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>If the otptValMin attribute intended change is to a greater value, the otptCurVal might be left outside the new valid range (newVal &gt; otptCurVal). In this case the otptCurVal will be changed to be equal to newVal, and so otptCurVal will become equal to otptValMin. </dd></dl>
 
 </div>
 </div>
@@ -1018,7 +1022,7 @@ For the secondary function to work like a toggle switch, the condition (newVal =
 </div><div class="memdoc">
 
 <p>Sets the value of the "Auto-Swap Direction On Press" (<b>autoSwpDirOnPrss</b>) attribute. </p>
-<p>The <b>autoSwpDirOnPrss</b> is one of the attributes that configures the slider behavior, setting what the MPB must do when the MPB object enters in secondary mode, referring to the increment or decrement directions. If the <b>autoSwpDirOnPrss</b> attribute is set (true) the increment direction of the otptCurVal will be automatically inverted every time the MPB is pressed back into secondary mode. If the otpCurVal was incrementing when the MPB was last released. the otpCurVal will start decrementing the next time is pressed to enter secondary mode, and vice versa. If it's not set the otptCurVal will not change direction until it reaches one the limit values, or until one of the described alternative methods is invoked, or the MPB's <b>autoSwpDirOnEnd</b> attribute is set -see <b>setSwpDirOnEnd(const bool)</b> for more details.</p>
+<p>The <b>autoSwpDirOnPrss</b> is one of the attributes that configures the slider behavior, setting what the MPB must do when the MPB object enters in secondary mode, referring to the increment or decrement directions. If the <b>autoSwpDirOnPrss</b> attribute is set (true) the increment direction of the otptCurVal will be automatically inverted every time the MPB is pressed back into secondary mode. If the otptCurVal was incrementing when the MPB was last released. the otptCurVal will start decrementing the next time is pressed to enter secondary mode, and vice versa. If it's not set the otptCurVal will not change direction until it reaches one the limit values, or until one of the described alternative methods is invoked, or the MPB's <b>autoSwpDirOnEnd</b> attribute is set -see <b>setSwpDirOnEnd(const bool)</b> for more details.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">newVal</td><td>The new value for the autoSwpDirOnPrss attribute </td></tr>
@@ -1044,7 +1048,7 @@ For the secondary function to work like a toggle switch, the condition (newVal =
 </div><div class="memdoc">
 
 <p>Inverts the current <b>curSldrDirUp</b> attribute value. </p>
-<p>Whatever the previous value of the <b>curSldrDirUp</b> flag, the method invocation inverts it's value, and as a consequence the inverts the direction of the otptCurVal update. If it was incrementing it will starte decrementing, and vice versa, considering all the other factors, attributes and attribute flags involved in the embedded object behavior (minimum and maximum settings, the direction changes if pressed, reaches limits, etc.)</p>
+<p>Whatever the previous value of the <b>curSldrDirUp</b> flag, the method invocation inverts it's value, and as a consequence the inverts the direction of the otptCurVal update. If it was incrementing it will start decrementing, and vice versa, considering all the other factors, attributes and attribute flags involved in the embedded object behavior (minimum and maximum settings, the direction changes if pressed, reaches limits, etc.)</p>
 <dl class="section return"><dt>Returns</dt><dd>The new value of the curSldrDirUp attribute. </dd></dl>
 
 </div>

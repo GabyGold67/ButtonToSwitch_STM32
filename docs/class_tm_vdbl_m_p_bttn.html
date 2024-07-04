@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;2.0.0</span>
+   <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;3.0.0</span>
    </div>
    <div id="projectbrief">A library that provides elaborated switch mechanism simulation for digital signals inputs</div>
   </td>
@@ -258,6 +258,9 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memitem:a9cee3ead20e3628c02975a9d0c8a4baa inherit pub_methods_class_dbncd_m_p_bttn" id="r_a9cee3ead20e3628c02975a9d0c8a4baa"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#a9cee3ead20e3628c02975a9d0c8a4baa">getIsOnDisabled</a> () const</td></tr>
 <tr class="memdesc:a9cee3ead20e3628c02975a9d0c8a4baa inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the <b>isOnDisabled</b> attribute flag.  <br /></td></tr>
 <tr class="separator:a9cee3ead20e3628c02975a9d0c8a4baa inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad89b27d055137f6b27123050fd708aef inherit pub_methods_class_dbncd_m_p_bttn" id="r_ad89b27d055137f6b27123050fd708aef"><td class="memItemLeft" align="right" valign="top">const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#ad89b27d055137f6b27123050fd708aef">getOtptsSttsPkgd</a> ()</td></tr>
+<tr class="memdesc:ad89b27d055137f6b27123050fd708aef inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the relevant attribute flags values for the object state encoded as a 32 bits value, required to pass current state of the object to another thread/task managing the outputs.  <br /></td></tr>
+<tr class="separator:ad89b27d055137f6b27123050fd708aef inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac646101296a76321e855250ba044c8d7 inherit pub_methods_class_dbncd_m_p_bttn" id="r_ac646101296a76321e855250ba044c8d7"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#ac646101296a76321e855250ba044c8d7">getOutputsChange</a> () const</td></tr>
 <tr class="memdesc:ac646101296a76321e855250ba044c8d7 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the <b>outputsChange</b> attribute flag.  <br /></td></tr>
 <tr class="separator:ac646101296a76321e855250ba044c8d7 inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -268,7 +271,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memdesc:a3da781ff0ad5ec1064d62570fd005a3a inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be notified by the object when its output flags changes.  <br /></td></tr>
 <tr class="separator:a3da781ff0ad5ec1064d62570fd005a3a inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn" id="r_a3728d2003365cbdaf81cccfca3604fe8"><td class="memItemLeft" align="right" valign="top">const TaskHandle_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#a3728d2003365cbdaf81cccfca3604fe8">getTaskWhileOn</a> ()</td></tr>
-<tr class="memdesc:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be run while the object is in the <b>On state</b>.  <br /></td></tr>
+<tr class="memdesc:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be run (resumed) while the object is in the <b>On state</b>.  <br /></td></tr>
 <tr class="separator:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a748f95239413d4c9c0a5b5d0d6396e60 inherit pub_methods_class_dbncd_m_p_bttn" id="r_a748f95239413d4c9c0a5b5d0d6396e60"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#a748f95239413d4c9c0a5b5d0d6396e60">init</a> (GPIO_TypeDef *mpbttnPort, const uint16_t &amp;mpbttnPin, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0)</td></tr>
 <tr class="memdesc:a748f95239413d4c9c0a5b5d0d6396e60 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes an object instantiated by the default constructor.  <br /></td></tr>
@@ -312,7 +315,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Implements a Time Voidable DD-MPB, a.k.a. Anti-tampering switch (<b>TVDD-MPB</b>) </p>
-<p>The <b>Time Voidable Momentary Push Button</b>, keeps the ON state since the moment the signal is stable (debounce &amp; delay process) and until the moment the push button is released, or until a preset time in the ON state is reached. Then the switch will return to the Off position until the push button is released and pushed back. This kind of switches are used to activate limited resources related management or physical safety devices, and the possibility of a physical blocking of the switch to extend the ON signal forcibly beyond designer's plans is highly undesired. Water valves, door unlocking mechanisms, hands-off security mechanisms, high power heating devices are some of the usual uses for these type of switches.</p>
+<p>The <b>Time Voidable Momentary Push Button</b>, keeps the <b>On state</b> since the moment the signal is stable (debounce &amp; delay process) and until the moment the push button is released, or until a preset time in the <b>On state</b> is reached. Then the switch will return to the Off position until the push button is released and pushed back. This kind of switches are used to activate limited resources related management or physical safety devices, and the possibility of a physical blocking of the switch to extend the ON signal forcibly beyond designer's plans is highly undesired. Water valves, door unlocking mechanisms, hands-off security mechanisms, high power heating devices are some of the usual uses for these type of switches.</p>
 <p>class <a class="el" href="class_tm_vdbl_m_p_bttn.html" title="Implements a Time Voidable DD-MPB, a.k.a. Anti-tampering switch (TVDD-MPB)">TmVdblMPBttn</a> </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a0292805fd1e15e6acc17eb8d56cc18d3" name="a0292805fd1e15e6acc17eb8d56cc18d3"></a>

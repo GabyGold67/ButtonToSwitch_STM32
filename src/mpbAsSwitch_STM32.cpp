@@ -11,9 +11,9 @@
   * electromechanical switches**.
   *
   * @author	: Gabriel D. Goldman
-  * @version v2.0.0
+  * @version v2.1.0
   * @date	: Created on: 06/11/2023
-  * 			: Last modification:	05/05/2024
+  * 			: Last modification:	15/06/2024
   * @copyright GPL-3.0 license
   *
   ******************************************************************************
@@ -184,12 +184,12 @@ void DbncdMPBttn::clrSttChng(){
 
 void DbncdMPBttn::disable(){
 
-    return setIsEnabled(false);
+    return _setIsEnabled(false);
 }
 
 void DbncdMPBttn::enable(){
 
-    return setIsEnabled(true);
+    return _setIsEnabled(true);
 }
 
 bool DbncdMPBttn::end(){
@@ -245,6 +245,11 @@ const bool DbncdMPBttn::getIsOnDisabled() const{
 const bool DbncdMPBttn::getIsPressed() const {
 
 	return _isPressed;
+}
+
+const uint32_t DbncdMPBttn::getOtptsSttsPkgd(){
+
+	return _otptsSttsPkg();
 }
 
 const bool DbncdMPBttn::getOutputsChange() const{
@@ -359,6 +364,7 @@ bool DbncdMPBttn::init(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const b
 
 void DbncdMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	DbncdMPBttn *mpbObj = (DbncdMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
+	BaseType_t xReturned;
 
 	taskENTER_CRITICAL();
 	if(mpbObj->getIsEnabled()){
@@ -372,12 +378,37 @@ void DbncdMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	taskEXIT_CRITICAL();
 
 	if (mpbObj->getOutputsChange()){	//Output changes might happen as part of the updFdaState() execution
-		if(mpbObj->getTaskToNotify() != NULL)
-			xTaskNotifyGive(mpbObj->getTaskToNotify());
-		mpbObj->setOutputsChange(false);
-	 }
+		if(mpbObj->getTaskToNotify() != NULL){
+			xReturned = xTaskNotify(
+					mpbObj->getTaskToNotify(),	//TaskHandle_t of the task receiving notification
+					static_cast<unsigned long>(mpbObj->getOtptsSttsPkgd()),
+					eSetValueWithOverwrite	//In this specific case using eSetBits is also a valid option
+					);
+			 if (xReturned != pdPASS){
+				 errorFlag = pdTRUE;
+			 }
+			 mpbObj->setOutputsChange(false);	//If the outputsChange triggers a task to treat it, here's  the flag reset, in other cases the mechanism reading the chganges must take care of the flag status
+		}
+	}
 
-    return;
+	return;
+}
+
+uint32_t DbncdMPBttn::_otptsSttsPkg(uint32_t prevVal){
+	if(_isOn){
+		prevVal |= ((uint32_t)1) << IsOnBitPos;
+	}
+	else{
+		prevVal &= ~(((uint32_t)1) << IsOnBitPos);
+	}
+	if(_isEnabled){
+		prevVal |= ((uint32_t)1) << IsEnabledBitPos;
+	}
+	else{
+		prevVal &= ~(((uint32_t)1) << IsEnabledBitPos);
+	}
+
+	return prevVal;
 }
 
 bool DbncdMPBttn::pause(){
@@ -468,7 +499,7 @@ void DbncdMPBttn::setFnWhnTrnOnPtr(void (*newFnWhnTrnOn)()){
 	return;
 }
 
-void DbncdMPBttn::setIsEnabled(const bool &newEnabledValue){
+void DbncdMPBttn::_setIsEnabled(const bool &newEnabledValue){
 	taskENTER_CRITICAL();
 	if(_isEnabled != newEnabledValue){
 		if (newEnabledValue){  //Change to Enabled = true
@@ -1173,9 +1204,14 @@ void LtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 
 	//Outputs update based on outputsChange flag
 	if (mpbObj->getOutputsChange()){
-		if(mpbObj->getTaskToNotify() != NULL)
-			xTaskNotifyGive(mpbObj->getTaskToNotify());
-		mpbObj->setOutputsChange(false);
+		if(mpbObj->getTaskToNotify() != NULL){
+			xTaskNotify(
+					mpbObj->getTaskToNotify(),	//TaskHandle_t of the task receiving notification
+					static_cast<unsigned long>(mpbObj->getOtptsSttsPkgd()),
+					eSetValueWithOverwrite
+			);
+			mpbObj->setOutputsChange(false);
+		}
 	}
 
 	return;
@@ -1342,6 +1378,24 @@ bool HntdTmLtchMPBttn::begin(const unsigned long int &pollDelayMs){
    return result;
 }
 
+uint32_t HntdTmLtchMPBttn::_otptsSttsPkg(uint32_t prevVal){
+	prevVal = DbncdMPBttn::_otptsSttsPkg(prevVal);
+	if(_pilotOn){
+		prevVal |= ((uint32_t)1) << PilotOnBitPos;
+	}
+	else{
+		prevVal &= ~(((uint32_t)1) << PilotOnBitPos);
+	}
+	if(_isEnabled){
+		prevVal |= ((uint32_t)1) << WrnngOnBitPos;
+	}
+	else{
+		prevVal &= ~(((uint32_t)1) << WrnngOnBitPos);
+	}
+
+	return prevVal;
+}
+
 void HntdTmLtchMPBttn::clrStatus(bool clrIsOn){
 //	Put here class specific sets/resets, including pilot and warning
 	taskENTER_CRITICAL();
@@ -1383,9 +1437,14 @@ void HntdTmLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
  	taskEXIT_CRITICAL();
 
 	if (mpbObj->getOutputsChange()){
-		if(mpbObj->getTaskToNotify() != NULL)
-			xTaskNotifyGive(mpbObj->getTaskToNotify());
-		mpbObj->setOutputsChange(false);
+		if(mpbObj->getTaskToNotify() != NULL){
+			xTaskNotify(
+					mpbObj->getTaskToNotify(),	//TaskHandle_t of the task receiving notification
+					static_cast<unsigned long>(mpbObj->getOtptsSttsPkgd()),
+					eSetValueWithOverwrite
+			);
+			mpbObj->setOutputsChange(false);
+		}
 	}
 
 	return;
@@ -1978,12 +2037,14 @@ void DblActnLtchMPBttn::updFdaState(){
 				stDisabled_In();
 				_isEnabled = false;
 				_validDisablePend = false;
+				setOutputsChange(true);
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			if(_validEnablePend){
 				_isEnabled = true;
 				_validEnablePend = false;
+				setOutputsChange(true);
 			}
 			if(_isEnabled && !updIsPressed()){	//The stDisabled status will be kept until the MPB is released for security reasons
 				_mpbFdaState = stOffNotVPP;
@@ -2063,9 +2124,14 @@ void DblActnLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	taskEXIT_CRITICAL();
 
 	if (mpbObj->getOutputsChange()){
-	  if(mpbObj->getTaskToNotify() != NULL)
-			xTaskNotifyGive(mpbObj->getTaskToNotify());
-	  mpbObj->setOutputsChange(false);
+		if(mpbObj->getTaskToNotify() != NULL){
+			xTaskNotify(
+					mpbObj->getTaskToNotify(),	//TaskHandle_t of the task receiving notification
+					static_cast<unsigned long>(mpbObj->getOtptsSttsPkgd()),
+					eSetValueWithOverwrite
+			);
+			mpbObj->setOutputsChange(false);
+		}
 	}
 
 	return;
@@ -2102,6 +2168,16 @@ void DDlydDALtchMPBttn::clrStatus(bool clrIsOn){
 bool DDlydDALtchMPBttn::getIsOnScndry(){
 
 	return _isOnScndry;
+}
+
+uint32_t DDlydDALtchMPBttn::_otptsSttsPkg(uint32_t prevVal){
+	prevVal = DbncdMPBttn::_otptsSttsPkg(prevVal);
+	if(_isOnScndry)
+		prevVal |= ((uint32_t)1) << IsOnScndryBitPos;
+	else
+		prevVal &= ~(((uint32_t)1) << IsOnScndryBitPos);
+
+	return prevVal;
 }
 
 void DDlydDALtchMPBttn::stDisabled_In(){
@@ -2206,6 +2282,13 @@ uint16_t SldrDALtchMPBttn::getOtptValMin(){
 bool SldrDALtchMPBttn::getSldrDirUp(){
 
 	return _curSldrDirUp;
+}
+
+uint32_t SldrDALtchMPBttn::_otptsSttsPkg(uint32_t prevVal){
+	prevVal = DbncdMPBttn::_otptsSttsPkg(prevVal);
+	prevVal |= (((uint32_t)_otptCurVal) << OtptCurValBitPos);
+
+	return prevVal;
 }
 
 bool SldrDALtchMPBttn::setOtptCurVal(const uint16_t &newVal){
@@ -2463,12 +2546,28 @@ void VdblMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	taskEXIT_CRITICAL();
 
 	if (mpbObj->getOutputsChange()){
-	  if(mpbObj->getTaskToNotify() != NULL)
-			xTaskNotifyGive(mpbObj->getTaskToNotify());
-	  mpbObj->setOutputsChange(false);
+		if(mpbObj->getTaskToNotify() != NULL){
+			xTaskNotify(
+					mpbObj->getTaskToNotify(),	//TaskHandle_t of the task receiving notification
+					static_cast<unsigned long>(mpbObj->getOtptsSttsPkgd()),
+					eSetValueWithOverwrite
+			);
+			mpbObj->setOutputsChange(false);
+		}
 	}
 
 	return;
+}
+
+uint32_t VdblMPBttn::_otptsSttsPkg(uint32_t prevVal){
+	prevVal = DbncdMPBttn::_otptsSttsPkg(prevVal);
+
+	if(_isVoided)
+		prevVal |= ((uint32_t)1) << IsVoidedBitPos;
+	else
+		prevVal &= ~(((uint32_t)1) << IsVoidedBitPos);
+
+	return prevVal;
 }
 
 bool VdblMPBttn::setIsNotVoided(){
@@ -2620,6 +2719,7 @@ void VdblMPBttn::updFdaState(){
 			//Do: >>---------------------------------->>
 			_isVoided = false;
 			_validUnvoidPend = false;
+			_outputsChange = true;
 			_mpbFdaState = stOffUnVdd;
 			setSttChng();
 			//Out: >>---------------------------------->>
@@ -2682,6 +2782,7 @@ void VdblMPBttn::updFdaState(){
 				}
 				clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
 				_isEnabled = false;
+				setOutputsChange(true);
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
@@ -2870,3 +2971,41 @@ uint8_t singleBitPosNum(uint16_t mask){
 	return result;
 }
 
+MpbOtpts_t otptsSttsUnpkg(uint32_t pkgOtpts){
+	MpbOtpts_t mpbCurSttsDcdd {0};
+
+	if(pkgOtpts & (((uint32_t)1) << IsOnBitPos))
+		mpbCurSttsDcdd.isOn = true;
+	else
+		mpbCurSttsDcdd.isOn = false;
+
+	if(pkgOtpts & (((uint32_t)1) << IsEnabledBitPos))
+		mpbCurSttsDcdd.isEnabled = true;
+	else
+		mpbCurSttsDcdd.isEnabled = false;
+
+	// From here on the attribute flags are not present in every subclass!!
+	if(pkgOtpts & (((uint32_t)1) << PilotOnBitPos))
+		mpbCurSttsDcdd.pilotOn = true;
+	else
+		mpbCurSttsDcdd.pilotOn = false;
+
+	if(pkgOtpts & (((uint32_t)1) << WrnngOnBitPos))
+		mpbCurSttsDcdd.wrnngOn = true;
+	else
+		mpbCurSttsDcdd.wrnngOn = false;
+
+	if(pkgOtpts & (((uint32_t)1) << IsVoidedBitPos))
+		mpbCurSttsDcdd.isVoided = true;
+	else
+		mpbCurSttsDcdd.isVoided = false;
+
+	if(pkgOtpts & (((uint32_t)1) << IsOnScndryBitPos))
+		mpbCurSttsDcdd.isOnScndry = true;
+	else
+		mpbCurSttsDcdd.isOnScndry = false;
+
+	mpbCurSttsDcdd.otptCurVal = (pkgOtpts & 0xffff0000) >> OtptCurValBitPos;
+
+	return mpbCurSttsDcdd;
+}

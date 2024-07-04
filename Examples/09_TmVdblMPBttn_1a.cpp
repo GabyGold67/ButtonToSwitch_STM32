@@ -4,13 +4,20 @@
   * @brief  : Example for the MpbAsSwitch_STM32 library TmVdblMPBttn class
   *
   * 	The example instantiates a TmVdblMPBttn object using:
-  * 		- The Nucleo board user pushbutton attached to GPIO_B00
-  * 		- The Nucleo board user LED attached to GPIO_A05
+  * 	- The Nucleo board user pushbutton attached to GPIO_B00
+  * 	- The Nucleo board user LED attached to GPIO_A05
+  * 	- A LED attached to GPIO_A0 to visualize the isVoided attribute flag status
+  *
+  * This simple example creates a single Task, instantiates the TmVdblMPBttn object
+  * in it and checks it's attribute flags locally through the getters methods.
+  * When a change in the outputs attribute flags values is detected, it manages the
+  *  loads and resources that the switch turns On and Off, in this example case are
+  *  the output of some GPIO pins.
   *
   * 	@author	: Gabriel D. Goldman
   *
   * 	@date	: 	01/01/2024 First release
-  * 				24/04/2024 Last update
+  * 				21/04/2024 Last update
   *
   ******************************************************************************
   * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
@@ -30,33 +37,29 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
-#include "event_groups.h"
 //===========================>> Previous lines used to avoid CMSIS wrappers
-
 /* USER CODE BEGIN Includes */
 #include "../../mpbAsSwitch_STM32/src/mpbAsSwitch_STM32.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
-UART_HandleTypeDef huart2;
-
 /* USER CODE BEGIN PV */
 gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
+gpioPinId_t ledOnPA04{GPIOA, GPIO_PIN_4};	//Pin 0b 0000 0000 0001 0000
 
-gpioPinId_t ledOnPC01{GPIOC, GPIO_PIN_1};	// Pin 0b 0000 0000 0000 0010
-TaskHandle_t tstDefTaskHandle {NULL};
+TaskHandle_t mainCtrlTskHndl {NULL};
 BaseType_t xReturned;
 /* USER CODE END PV */
 
-/* System generated function prototypes -----------------------------------------------*/
+/* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_USART2_UART_Init(void);
 void Error_Handler(void);
 
-/* Private function prototypes -----------------------------------------------*/
-void tstDefTaskExec(void *pvParameters);
+/* USER CODE BEGIN FP */
+void mainCtrlTsk(void *pvParameters);
+/* USER CODE END FP */
 
 /**
   * @brief  The application entry point.
@@ -74,27 +77,55 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USART2_UART_Init();
 
   /* Create the thread(s) */
   /* USER CODE BEGIN RTOS_THREADS */
-  	  xReturned = xTaskCreate(
-		  tstDefTaskExec, //taskFunction
-		  "TstMainTask", //Task function legible name
+  xReturned = xTaskCreate(
+		  mainCtrlTsk, //taskFunction
+		  "MainControlTask", //Task function legible name
 		  256, // Stack depth in words
 		  NULL,	//Parameters to pass as arguments to the taskFunction
 		  configTIMER_TASK_PRIORITY,	//Set to the same priority level as the software timers
-		  &tstDefTaskHandle
-		  );
-  /* USER CODE END RTOS_THREADS */
+		  &mainCtrlTskHndl);
+  if(xReturned != pdPASS)
+	  Error_Handler();
+/* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
   vTaskStartScheduler();
 
+  /* We should never get here as control is now taken by the scheduler */
+  /* Infinite loop */
   while (1)
   {
   }
 }
+/* USER CODE BEGIN */
+void mainCtrlTsk(void *pvParameters)
+{
+	TmVdblMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, 3000,true, true, 50, 150);
+
+	tstBttn.begin(20);
+
+	for(;;)
+	{
+		if(tstBttn.getOutputsChange()){
+			if(tstBttn.getIsOn())
+			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_SET);
+			else
+			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
+
+			if(tstBttn.getIsVoided())
+			  HAL_GPIO_WritePin(ledOnPA04.portId, ledOnPA04.pinNum, GPIO_PIN_SET);
+			else
+			  HAL_GPIO_WritePin(ledOnPA04.portId, ledOnPA04.pinNum, GPIO_PIN_RESET);
+
+			tstBttn.setOutputsChange(false);
+		}
+	}
+}
+/* USER CODE END */
+
 
 /**
   * @brief System Clock Configuration
@@ -143,28 +174,6 @@ void SystemClock_Config(void)
 }
 
 /**
-  * @brief USART2 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_USART2_UART_Init(void)
-{
-
-  huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
-  huart2.Init.WordLength = UART_WORDLENGTH_8B;
-  huart2.Init.StopBits = UART_STOPBITS_1;
-  huart2.Init.Parity = UART_PARITY_NONE;
-  huart2.Init.Mode = UART_MODE_TX_RX;
-  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-}
-
-/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -179,16 +188,14 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  /*Configure GPIO pin Output Level for tstLedOnBoard*/
-  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
-  /*Configure GPIO pin Output Level for ledOnPC01*/
-  HAL_GPIO_WritePin(ledOnPC01.portId, ledOnPC01.pinNum, GPIO_PIN_RESET);
-
   /*Configure GPIO pin : tstMpbOnBoard_Pin */
   GPIO_InitStruct.Pin = tstMpbOnBoard.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(tstMpbOnBoard.portId, &GPIO_InitStruct);
+
+  /*Configure GPIO pin Output Level for tstLedOnBoard*/
+  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : tstLedOnBoard_Pin */
   GPIO_InitStruct.Pin = tstLedOnBoard.pinNum;
@@ -197,55 +204,17 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(tstLedOnBoard.portId, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : ledOnPC01 */
-  GPIO_InitStruct.Pin = ledOnPC01.pinNum;
+  /*Configure GPIO pin Output Level for ledOnPA04*/
+  HAL_GPIO_WritePin(ledOnPA04.portId, ledOnPA04.pinNum, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : ledOnPA04_Pin */
+  GPIO_InitStruct.Pin = ledOnPA04.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(ledOnPC01.portId, &GPIO_InitStruct);
+  HAL_GPIO_Init(ledOnPA04.portId, &GPIO_InitStruct);
+
 }
-
-/* USER CODE BEGIN 4 */
-void tstDefTaskExec(void *pvParameters)
-{
-	bool tmpBttnWasOn{false};
-	bool tmpBttnIsOn{false};
-
-	bool tmpBttnWasVoided{false};
-	bool tmpBttnIsVoided{false};
-
-	TmVdblMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, 3000,true, true, 50, 150);
-	tstBttn.setIsOnDisabled(true);
-
-	tstBttn.begin(5);
-
-	for(;;)
-	{
-		tmpBttnWasOn = tmpBttnIsOn;
-		tmpBttnIsOn = tstBttn.getIsOn();
-		tmpBttnWasVoided = tmpBttnIsVoided;
-		tmpBttnIsVoided = tstBttn.getIsVoided();
-
-		if(tmpBttnWasOn != tmpBttnIsOn){
-			if(tmpBttnIsOn){
-				HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_SET);
-			}
-			else{
-				HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
-			}
-		}
-
-		if(tmpBttnWasVoided != tmpBttnIsVoided){
-			if(tmpBttnIsVoided){
-				HAL_GPIO_WritePin(ledOnPC01.portId, ledOnPC01.pinNum, GPIO_PIN_SET);
-			}
-			else{
-				HAL_GPIO_WritePin(ledOnPC01.portId, ledOnPC01.pinNum, GPIO_PIN_RESET);
-			}
-		}
-	}
-}
-	/* USER CODE END 4 */
 
 /**
   * @brief  Period elapsed callback in non blocking mode
@@ -255,7 +224,6 @@ void tstDefTaskExec(void *pvParameters)
   * @param  htim : TIM handle
   * @retval None
   */
-
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if (htim->Instance == TIM9) {

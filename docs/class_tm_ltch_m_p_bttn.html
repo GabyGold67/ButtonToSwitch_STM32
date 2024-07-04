@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;2.0.0</span>
+   <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;3.0.0</span>
    </div>
    <div id="projectbrief">A library that provides elaborated switch mechanism simulation for digital signals inputs</div>
   </td>
@@ -99,7 +99,7 @@ $(function(){initNavTree('class_tm_ltch_m_p_bttn.html',''); initResizable(); });
 </div><!--header-->
 <div class="contents">
 
-<p>Implements a Timer Latch DD-MPB, a.k.a. a Timer Switch (<b>TiLDD-MPB</b>).  
+<p>Implements a Timer Latch DD-MPB, a.k.a. Timer Switch (<b>TiLDD-MPB</b>).  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="mpb_as_switch___s_t_m32_8h_source.html">mpbAsSwitch_STM32.h</a>&gt;</code></p>
@@ -108,7 +108,7 @@ Inheritance diagram for TmLtchMPBttn:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_tm_ltch_m_p_bttn__inherit__graph.png" border="0" usemap="#a_tm_ltch_m_p_bttn_inherit__map" alt="Inheritance graph"/></div>
 <map name="a_tm_ltch_m_p_bttn_inherit__map" id="a_tm_ltch_m_p_bttn_inherit__map">
-<area shape="rect" title="Implements a Timer Latch DD&#45;MPB, a.k.a. a Timer Switch (TiLDD&#45;MPB)." alt="" coords="19,229,127,256"/>
+<area shape="rect" title="Implements a Timer Latch DD&#45;MPB, a.k.a. Timer Switch (TiLDD&#45;MPB)." alt="" coords="19,229,127,256"/>
 <area shape="rect" href="class_hntd_tm_ltch_m_p_bttn.html" title="Implements a Hinted Timer Latch DD&#45;MPB, a.k.a. Staircase Switch (HTiLDD&#45;MPB)." alt="" coords="5,304,141,331"/>
 <area shape="poly" title=" " alt="" coords="76,272,76,304,70,304,70,272"/>
 <area shape="rect" href="class_ltch_m_p_bttn.html" title="Abstract class, base to implement Latched Debounced Delayed MPBs (LDD&#45;MPB)." alt="" coords="28,155,118,181"/>
@@ -124,7 +124,7 @@ Collaboration diagram for TmLtchMPBttn:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_tm_ltch_m_p_bttn__coll__graph.png" border="0" usemap="#a_tm_ltch_m_p_bttn_coll__map" alt="Collaboration graph"/></div>
 <map name="a_tm_ltch_m_p_bttn_coll__map" id="a_tm_ltch_m_p_bttn_coll__map">
-<area shape="rect" title="Implements a Timer Latch DD&#45;MPB, a.k.a. a Timer Switch (TiLDD&#45;MPB)." alt="" coords="15,229,124,256"/>
+<area shape="rect" title="Implements a Timer Latch DD&#45;MPB, a.k.a. Timer Switch (TiLDD&#45;MPB)." alt="" coords="15,229,124,256"/>
 <area shape="rect" href="class_ltch_m_p_bttn.html" title="Abstract class, base to implement Latched Debounced Delayed MPBs (LDD&#45;MPB)." alt="" coords="24,155,115,181"/>
 <area shape="poly" title=" " alt="" coords="72,197,72,229,67,229,67,197"/>
 <area shape="rect" href="class_dbncd_dlyd_m_p_bttn.html" title="Implements a Debounced Delayed MPB (DD&#45;MPB)." alt="" coords="5,80,134,107"/>
@@ -268,6 +268,9 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memitem:a9cee3ead20e3628c02975a9d0c8a4baa inherit pub_methods_class_dbncd_m_p_bttn" id="r_a9cee3ead20e3628c02975a9d0c8a4baa"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#a9cee3ead20e3628c02975a9d0c8a4baa">getIsOnDisabled</a> () const</td></tr>
 <tr class="memdesc:a9cee3ead20e3628c02975a9d0c8a4baa inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the <b>isOnDisabled</b> attribute flag.  <br /></td></tr>
 <tr class="separator:a9cee3ead20e3628c02975a9d0c8a4baa inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad89b27d055137f6b27123050fd708aef inherit pub_methods_class_dbncd_m_p_bttn" id="r_ad89b27d055137f6b27123050fd708aef"><td class="memItemLeft" align="right" valign="top">const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#ad89b27d055137f6b27123050fd708aef">getOtptsSttsPkgd</a> ()</td></tr>
+<tr class="memdesc:ad89b27d055137f6b27123050fd708aef inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the relevant attribute flags values for the object state encoded as a 32 bits value, required to pass current state of the object to another thread/task managing the outputs.  <br /></td></tr>
+<tr class="separator:ad89b27d055137f6b27123050fd708aef inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac646101296a76321e855250ba044c8d7 inherit pub_methods_class_dbncd_m_p_bttn" id="r_ac646101296a76321e855250ba044c8d7"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#ac646101296a76321e855250ba044c8d7">getOutputsChange</a> () const</td></tr>
 <tr class="memdesc:ac646101296a76321e855250ba044c8d7 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the <b>outputsChange</b> attribute flag.  <br /></td></tr>
 <tr class="separator:ac646101296a76321e855250ba044c8d7 inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -278,7 +281,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memdesc:a3da781ff0ad5ec1064d62570fd005a3a inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be notified by the object when its output flags changes.  <br /></td></tr>
 <tr class="separator:a3da781ff0ad5ec1064d62570fd005a3a inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn" id="r_a3728d2003365cbdaf81cccfca3604fe8"><td class="memItemLeft" align="right" valign="top">const TaskHandle_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#a3728d2003365cbdaf81cccfca3604fe8">getTaskWhileOn</a> ()</td></tr>
-<tr class="memdesc:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be run while the object is in the <b>On state</b>.  <br /></td></tr>
+<tr class="memdesc:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the task to be run (resumed) while the object is in the <b>On state</b>.  <br /></td></tr>
 <tr class="separator:a3728d2003365cbdaf81cccfca3604fe8 inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a748f95239413d4c9c0a5b5d0d6396e60 inherit pub_methods_class_dbncd_m_p_bttn" id="r_a748f95239413d4c9c0a5b5d0d6396e60"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#a748f95239413d4c9c0a5b5d0d6396e60">init</a> (GPIO_TypeDef *mpbttnPort, const uint16_t &amp;mpbttnPin, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0)</td></tr>
 <tr class="memdesc:a748f95239413d4c9c0a5b5d0d6396e60 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes an object instantiated by the default constructor.  <br /></td></tr>
@@ -321,9 +324,9 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="separator:a539d25d84a2e6c772000cff0bd0d279f inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Implements a Timer Latch DD-MPB, a.k.a. a Timer Switch (<b>TiLDD-MPB</b>). </p>
-<p>The <b>Timer switch</b> keeps the <b>On state</b> since the moment the signal is stable (debouncing + delay process), and until the unlatch signal is provided by a preseted timer <b>started immediately after</b> the MPB has passed the debounce &amp; delay process. The time count down might be reseted by pressing the MPB before the timer expires by optionally configuring the object to do so with the provided method. The total count-down time might be changed by using a provided method.</p>
-<p>class <a class="el" href="class_tm_ltch_m_p_bttn.html" title="Implements a Timer Latch DD-MPB, a.k.a. a Timer Switch (TiLDD-MPB).">TmLtchMPBttn</a> </p>
+<div class="textblock"><p>Implements a Timer Latch DD-MPB, a.k.a. Timer Switch (<b>TiLDD-MPB</b>). </p>
+<p>The <b>Timer switch</b> keeps the <b>On state</b> since the moment the signal is stable (debouncing + delay process), and until the unlatch signal is provided by a preset timer <b>started immediately after</b> the MPB has passed the debounce &amp; delay process. The time count down might be reseted by pressing the MPB before the timer expires by optionally configuring the object to do so with the provided method. The total count-down time might be changed by using a provided method.</p>
+<p>class <a class="el" href="class_tm_ltch_m_p_bttn.html" title="Implements a Timer Latch DD-MPB, a.k.a. Timer Switch (TiLDD-MPB).">TmLtchMPBttn</a> </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="add5e6f999ada3b21c25b44c9966edc3e" name="add5e6f999ada3b21c25b44c9966edc3e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#add5e6f999ada3b21c25b44c9966edc3e">&#9670;&#160;</a></span>TmLtchMPBttn() <span class="overload">[1/2]</span></h2>
@@ -474,7 +477,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd>To ensure a safe and predictable behavior from the instantiated objects a minimum Service Time setting guard is provided, ensuring data and signals processing are completed before unlatching process is enforced by the timer. The guard is setted by the defined _MinSrvcTime constant.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>To ensure a safe and predictable behavior from the instantiated objects a minimum Service Time setting guard is provided, ensuring data and signals processing are completed before unlatching process is enforced by the timer. The guard is set by the defined _MinSrvcTime constant.</dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">true</td><td>if the newSrvcTime parameter is equal to or greater than the minimum setting guard, the new value is set. </td></tr>
@@ -501,7 +504,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Configures the timer for the Service Time to be reseted before it reaches unlatching time. </p>
-<p>If the isResetable attribute flag is cleared the MPB will return to <b>Off state</b> when the Service Time is reached no matter if the MPB was pressed again during the service period. If the attribute flag is set, pressing the MPB (debounce and delay times enforced) while on the <b>On state</b> resets the timer, starting back from 0. The reseting might be repeated as many times as desired.</p>
+<p>If the isResetable attribute flag is cleared the MPB will return to <b>Off state</b> when the Service Time is reached no matter if the MPB was pressed again during the service time period. If the attribute flag is set, pressing the MPB (debounce and delay times enforced) while on the <b>On state</b> resets the timer, starting back from 0. The reseting might be repeated as many times as desired.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">newIsRstbl</td><td>The new setting for the isResetable flag. </td></tr>
