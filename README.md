@@ -22,17 +22,18 @@ Those mechanisms include:
 Those listed mechanisms are independent, so one or more might be simultaneously used depending on implementation convenience.    
 
 ### The library implements the following switches behaviors: ###  
-* **Debounced Momentary Push Button** (a.k.a. Momentary switch, a.k.a. Pushbutton)  
-* **Debounced Delayed Momentary Push Button**  
-* **Toggle Switch** (a.k.a. alternate, a.k.a. latched)  
-* **Timer Toggled** (a.k.a. timer switch)  
-* **Hinted Timer Toggled** (a.k.a. staircase timer switch)
-* **External unlatched toggle** (a.k.a. Emergency latched)
-* **Time Voidable Momentary Button**  (a.k.a. anti-tampering switch)  
-* **Double action On/Off + Slider combo switch**  (a.k.a. off/on/dimmer, a.k.a. off/on/volume radio switch)
-* **Double action On/Off + Secondary Debounced Delayed MPB combo switch**
+* **Debounced Momentary Push Button** (a.k.a. Momentary switch, a.k.a. **Pushbutton**)  
+* **Debounced Delayed Momentary Push Button** (**Delayed Pushbutton**)  
+* **Toggle Switch Momentary Push Button** (a.k.a. alternate, a.k.a. **Latched Pushbutton**)  
+* **Timer Toggled Momentary Push Button** (a.k.a. **Timer Switch**)  
+* **Hinted Timer Toggled** (a.k.a. **Staircase Timer Switch**)
+* **External unlatched toggle** (a.k.a. **Emergency Latched Switch**)
+* **Time Voidable Momentary Push Button**  (a.k.a. **Anti-Tampering Switch**)
+* **Single Service Voidable Momentary Push Button**  (a.k.a. **Trigger Switch**) 
+* **Short press/Long Press Double action On/Off + Slider combo switch**  (a.k.a. off/on/dimmer, a.k.a. **Off/On/Volume radio switch**)
+* **Short press/Long Press Double action On/Off + Secondary output MPB combo switch**
 
-MpbAsSwitch Library Documentation available at [Github Pages](https://GabyGold67.github.io/mpbAsSwitch_STM32/)
+MpbAsSwitch Library Documentation available at **[Github Pages](https://GabyGold67.github.io/mpbAsSwitch_STM32/)**
 
 ![MpbAsSwitch Library Classes Hierarchy](./Extras/MomentaryPushButtonUMLClassesOnly.jpg)
 

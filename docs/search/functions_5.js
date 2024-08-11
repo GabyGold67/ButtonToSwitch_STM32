@@ -1,4 +1,0 @@
-var searchData=
-[
-  ['hntdtmltchmpbttn_0',['HntdTmLtchMPBttn',['../class_hntd_tm_ltch_m_p_bttn.html#a12650387916df246244fa5a02247b62d',1,'HntdTmLtchMPBttn::HntdTmLtchMPBttn(GPIO_TypeDef *mpbttnPort, const uint16_t &amp;mpbttnPin, const unsigned long int &amp;actTime, const unsigned int &amp;wrnngPrctg=0, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0, const unsigned long int &amp;strtDelay=0)'],['../class_hntd_tm_ltch_m_p_bttn.html#ae97b8045649611d6a385778c96a46544',1,'HntdTmLtchMPBttn::HntdTmLtchMPBttn(gpioPinId_t mpbttnPinStrct, const unsigned long int &amp;actTime, const unsigned int &amp;wrnngPrctg=0, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0, const unsigned long int &amp;strtDelay=0)']]]
-];
