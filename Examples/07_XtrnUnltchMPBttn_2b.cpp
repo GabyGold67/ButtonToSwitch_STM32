@@ -6,16 +6,28 @@
   * 	The example instantiates a XtrnUnltchMPBttn object using:
   * 		- The Nucleo board user pushbutton attached to GPIO_B00
   * 		- The Nucleo board user LED attached to GPIO_A05
-  * 		- The external unlatch pushbutton attached to GPIO_PB00
+  * 		- The external unlatch pushbutton attached to GPIO_B00
   * 		- A LED attached to GPIO_C00 to visualize the isEnabled attribute flag status
   *
-  * 	This example includes a timer that periodically toggle the isEnabled attribute flag value
-  * 	showing the behavior of the instantiated object when enabled and when disabled.
+  * This simple example creates a single Task, instantiates the XtrnUnltchMPBttn object
+  * and a DbncdDlydMPBttn in it and checks both's attribute flags locally through
+  * the getters methods.
+  * When a change in the outputs attribute flags values is detected, it manages the
+  * loads and resources that the switch turns On and Off, in this example case are
+  * the output of some GPIO pins.
+  *
+  * In this example the unlatch signal originates in a DbncdDlydMPBttn whose attribute
+  * flags are checked along with the XtrnUnltchMPBttn object attribute flags. When the isOn
+  * attribute flag is set at the DbncdDlydMPBttn, an unlatch() method is invoked in the
+  * XtrnUnltchMPBttn object.
+  *
+  * A software timer is created so that it periodically toggles the isEnabled attribute flag
+  * value, showing the behavior of the instantiated object when enabled and when disabled.
   *
   * 	@author	: Gabriel D. Goldman
   *
   * 	@date	: 	01/01/2024 First release
-  * 				23/04/2024 Last update
+  * 				21/04/2024 Last update
   *
   ******************************************************************************
   * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
@@ -35,34 +47,31 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
-#include "event_groups.h"
 //===========================>> Previous lines used to avoid CMSIS wrappers
-
 /* USER CODE BEGIN Includes */
 #include "../../mpbAsSwitch_STM32/src/mpbAsSwitch_STM32.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
-UART_HandleTypeDef huart2;
-
 /* USER CODE BEGIN PV */
-gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0010 0000
+gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
+gpioPinId_t ledOnPC00{GPIOC, GPIO_PIN_0};			// Pin 0b 0000 0000 0000 0001
+gpioPinId_t mpbttnOnPB00{GPIOB, GPIO_PIN_0};		// Pin 0b 0000 0000 0000 0001
 
-gpioPinId_t ledOnPC00{GPIOC, GPIO_PIN_0};	//Pin 0b 0000 0001
-gpioPinId_t mpbttnOnPB00{GPIOB, GPIO_PIN_0};	//Pin 0b 0000 0001
-TaskHandle_t tstDefTaskHandle {NULL};
+TaskHandle_t mainCtrlTskHndl {NULL};
 BaseType_t xReturned;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_USART2_UART_Init(void);
 void Error_Handler(void);
 
-void tstDefTaskExec(void *pvParameters);
+/* USER CODE BEGIN FP */
+void mainCtrlTsk(void *pvParameters);
 void swpEnableCb(TimerHandle_t  pvParam);
+/* USER CODE END FP */
 
 /**
   * @brief  The application entry point.
@@ -80,19 +89,19 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USART2_UART_Init();
 
   /* Create the thread(s) */
   /* USER CODE BEGIN RTOS_THREADS */
   xReturned = xTaskCreate(
-		  tstDefTaskExec, //taskFunction
-		  "TstMainTask", //Task function legible name
+		  mainCtrlTsk, //taskFunction
+		  "MainControlTask", //Task function legible name
 		  256, // Stack depth in words
 		  NULL,	//Parameters to pass as arguments to the taskFunction
 		  configTIMER_TASK_PRIORITY,	//Set to the same priority level as the software timers
-		  &tstDefTaskHandle
-		  );
-  /* USER CODE END RTOS_THREADS */
+		  &mainCtrlTskHndl);
+  if(xReturned != pdPASS)
+	  Error_Handler();
+/* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
   vTaskStartScheduler();
@@ -103,6 +112,69 @@ int main(void)
   {
   }
 }
+/* USER CODE BEGIN */
+void mainCtrlTsk(void *pvParameters)
+{
+	TimerHandle_t enableSwpTmrHndl{NULL};
+	BaseType_t tmrModRslt{pdFAIL};
+	DbncdDlydMPBttn unLtchTstBttnObj(mpbttnOnPB00.portId, mpbttnOnPB00.pinNum, true, true, 0, 200);
+	XtrnUnltchMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, true, true, 0, 50);
+	XtrnUnltchMPBttn* tstBttnPtr {&tstBttn};
+
+	enableSwpTmrHndl = xTimerCreate(
+			"EnableSwapTimer",
+			10000,
+			pdTRUE,
+			tstBttnPtr,
+			swpEnableCb
+			);
+	if (enableSwpTmrHndl != NULL){
+      tmrModRslt = xTimerStart(enableSwpTmrHndl, portMAX_DELAY);
+      if(tmrModRslt == pdFAIL)
+         Error_Handler();
+	}
+
+	unLtchTstBttnObj.begin(20);
+	tstBttn.setIsOnDisabled(false);
+	tstBttn.setTrnOffASAP(true);
+	tstBttn.begin(20);
+
+	for(;;)
+	{
+		if(tstBttn.getOutputsChange()){
+			if(tstBttn.getIsOn())
+			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_SET);
+			else
+			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
+			tstBttn.setOutputsChange(false);
+		}
+		if(tstBttn.getIsOn()){
+			if(unLtchTstBttnObj.getOutputsChange())
+				if(unLtchTstBttnObj.getIsOn())
+					tstBttn.unlatch();
+			unLtchTstBttnObj.setOutputsChange(false);
+		}
+		if(!(tstBttn.getIsEnabled()))
+			HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_SET);
+		else
+			HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_RESET);
+	}
+}
+
+void swpEnableCb(TimerHandle_t  pvParam){
+	LtchMPBttn* bttnArg = (LtchMPBttn*) pvTimerGetTimerID(pvParam);
+
+	bool curEnable = bttnArg->getIsEnabled();
+
+	if(curEnable)
+		bttnArg->disable();
+	else
+		bttnArg->enable();
+
+  return;
+}
+/* USER CODE END */
+
 
 /**
   * @brief System Clock Configuration
@@ -151,27 +223,6 @@ void SystemClock_Config(void)
 }
 
 /**
-  * @brief USART2 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_USART2_UART_Init(void)
-{
-  huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
-  huart2.Init.WordLength = UART_WORDLENGTH_8B;
-  huart2.Init.StopBits = UART_STOPBITS_1;
-  huart2.Init.Parity = UART_PARITY_NONE;
-  huart2.Init.Mode = UART_MODE_TX_RX;
-  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-}
-
-/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -186,16 +237,20 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  /*Configure GPIO pin Output Level for tstLedOnBoard*/
-  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
-  /*Configure GPIO pin Output Level for ledOnPC00))*/
-  HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_RESET);
-
   /*Configure GPIO pin : tstMpbOnBoard_Pin */
   GPIO_InitStruct.Pin = tstMpbOnBoard.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(tstMpbOnBoard.portId, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : mpbttnOnPB00_Pin */
+  GPIO_InitStruct.Pin = mpbttnOnPB00.pinNum;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(mpbttnOnPB00.portId, &GPIO_InitStruct);
+
+  /*Configure GPIO pin Output Level for tstLedOnBoard*/
+  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : tstLedOnBoard_Pin */
   GPIO_InitStruct.Pin = tstLedOnBoard.pinNum;
@@ -204,93 +259,16 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(tstLedOnBoard.portId, &GPIO_InitStruct);
 
-/*Configure GPIO pin : ledOnPC00_Pin */
+  /*Configure GPIO pin Output Level for ledOnPC00))*/
+  HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : ledOnPC00_Pin */
   GPIO_InitStruct.Pin = ledOnPC00.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(ledOnPC00.portId, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : mpbttnOnPB00_Pin */
-  GPIO_InitStruct.Pin = mpbttnOnPB00.pinNum;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(mpbttnOnPB00.portId, &GPIO_InitStruct);
 }
-
-/* USER CODE BEGIN 4 */
-void tstDefTaskExec(void *pvParameters)
-{
-	TimerHandle_t enableSwpTmrHndl{NULL};
-	BaseType_t tmrModRslt{pdFAIL};
-
-	bool tmpBttnWasOn{false};
-	bool tmpBttnIsOn{false};
-	bool unLtchBttnWasOn{false};
-	bool unLtchBttnIsOn{false};
-
-	DbncdDlydMPBttn unLtchTstBttnObj(mpbttnOnPB00.portId, mpbttnOnPB00.pinNum, true, true, 0, 200);
-	DbncdDlydMPBttn* unLtchTstBttnPtr {&unLtchTstBttnObj};
-	XtrnUnltchMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, unLtchTstBttnPtr, true, true, 0, 50);
-	XtrnUnltchMPBttn* tstBttnPtr {&tstBttn};
-
-	enableSwpTmrHndl = xTimerCreate(
-			"EnableSwapTimer",
-			10000,
-			pdTRUE,
-			tstBttnPtr,
-			swpEnableCb
-			);
-	if (enableSwpTmrHndl != NULL){
-      tmrModRslt = xTimerStart(enableSwpTmrHndl, portMAX_DELAY);
-      if(tmrModRslt == pdFAIL)
-         Error_Handler();
-	}
-
-	unLtchTstBttnObj.begin(20);
-	tstBttn.setIsOnDisabled(false);
-	tstBttn.setTrnOffASAP(false);
-	tstBttn.begin(20);
-
-	for(;;)
-	{
-		tmpBttnWasOn = tmpBttnIsOn;
-		tmpBttnIsOn = tstBttn.getIsOn();
-		if(tmpBttnWasOn != tmpBttnIsOn){
-			if(tmpBttnIsOn)
-			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_SET);
-			else
-			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
-		}
-
-		unLtchBttnWasOn = unLtchBttnIsOn;
-		unLtchBttnIsOn = unLtchTstBttnObj.getIsOn();
-		if(unLtchBttnWasOn != unLtchBttnIsOn)
-			if(unLtchBttnIsOn)
-				tstBttn.unlatch();
-
-		if(!(tstBttnPtr->getIsEnabled())){
-			HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_SET);
-		}
-		else{
-			HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_RESET);
-		}
-	}
-}
-
-void swpEnableCb(TimerHandle_t  pvParam){
-	TgglLtchMPBttn* bttnArg = (TgglLtchMPBttn*) pvTimerGetTimerID(pvParam);
-
-	bool curEnable = bttnArg->getIsEnabled();
-
-	if(curEnable)
-		bttnArg->disable();
-	else
-		bttnArg->enable();
-
-  return;
-}
-/* USER CODE END 4 */
 
 /**
   * @brief  Period elapsed callback in non blocking mode

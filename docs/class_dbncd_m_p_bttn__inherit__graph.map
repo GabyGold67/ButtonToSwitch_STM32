@@ -10,7 +10,7 @@
 <area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="400,187,225,231,223,226,399,182"/>
 <area shape="rect" id="Node000007" href="$class_tggl_ltch_m_p_bttn.html" title="Implements a Toggle Latch DD&#45;MPB, a.k.a. a Toggle Switch (ToLDD&#45;MPB)." alt="" coords="267,229,381,256"/>
 <area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="424,191,349,231,346,226,421,187"/>
-<area shape="rect" id="Node000008" href="$class_tm_ltch_m_p_bttn.html" title="Implements a Timer Latch DD&#45;MPB, a.k.a. a Timer Switch (TiLDD&#45;MPB)." alt="" coords="406,229,514,256"/>
+<area shape="rect" id="Node000008" href="$class_tm_ltch_m_p_bttn.html" title="Implements a Timer Latch DD&#45;MPB, a.k.a. Timer Switch (TiLDD&#45;MPB)." alt="" coords="406,229,514,256"/>
 <area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="462,197,462,229,457,229,457,197"/>
 <area shape="rect" id="Node000010" href="$class_xtrn_unltch_m_p_bttn.html" title="Implements an External Unlatch LDD&#45;MPB, a.k.a. Emergency Latched Switch (XULDD&#45;MPB)" alt="" coords="538,229,662,256"/>
 <area shape="poly" id="edge9_Node000003_Node000010" title=" " alt="" coords="499,186,576,226,574,231,496,191"/>
