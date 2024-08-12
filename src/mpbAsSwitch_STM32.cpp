@@ -2592,7 +2592,6 @@ bool VdblMPBttn::setVoided(const bool &newVoidValue){
 
 void VdblMPBttn::stDisabled_In(){
 	if(_isOn != _isOnDisabled){
-		_isOn = _isOnDisabled;
 		if(_isOn){
 			_turnOff();
 		}
@@ -2826,7 +2825,6 @@ void VdblMPBttn::setStOnWhnOtpFrcd(const bool &newVal){
 
 	return;
 }
-
 
 //=========================================================================> Class methods delimiter
 

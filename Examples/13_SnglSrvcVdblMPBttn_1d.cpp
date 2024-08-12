@@ -5,27 +5,32 @@
   *
   * 	The example instantiates a SnglSrvcVdblMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
-  * 	- The Nucleo board user LED attached to GPIO_A05
+  * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
   * 	- A LED attached to GPIO_C00 to visualize the isEnabled attribute flag status
   * 	- A LED attached to GPIO_A10 to visualize the isVoided attribute flag status
-  * 	- A LED attached to GPIO_A02 to visualize the "Task While MPB is On" activity
+  * 	- A LED attached to GPIO_B13 to visualize the "Task While MPB is On" activity
   *
-  * This example creates three Tasks.
-  * The first task instantiates the TgglLtchMPBttn object in it and checks it's
+  * ### This example creates three Tasks and a timer:
+  *
+  * - The first task instantiates the SnglSrvcVdblMPBttn object in it and checks it's
   * attribute flags locally through the getters methods.
   *
-  * The second task is started and blocked, it's purpose it's to manage the loads and resources
-  * that the switch turns On and Off, in this example case are the output of some GPIO pins.
+  * - The second task is created and blocked before the scheduler is started. It's purpose it's to
+  * manage the loads and resources that the switch turns On and Off, in this example case are the
+  * output level of some GPIO pins.
   * When a change in the object's output attribute flags is detected the second task is unblocked
   * through a xTaskNotify() to update the output GPIO pins and blocks again until next notification.
-  * The xTaskNotify() macro is limited to pass a 32 bit notifications value, the object instantiated
-  * takes care of encoding of the MPBttn state in a 32 bits value.
-  * A function -otptsSttsUnpkg()- is provided for the notified task to be able to decode the 32 bits
-  * notification value into flags values.
+  * The xTaskNotify() macro is limited to pass a 32 bit notifications value, the object takes care
+  * of encoding of the MPBttn state in a 32 bits value.
+  * A function, **otptsSttsUnpkg()**, is provided for the notified task to be able to decode the 32 bits
+  * notification value into flag values.
   *
-  * The third task is started and blocked, like the second, it's purpose is to execute while the MPB
-  * is in "isOn state". Please read the library documentation regarding the consequences of executing
-  * a task that is resumed and paused externally and without previous alert!!
+  * - The third task is created and blocked before the scheduler is started, like the second. This task will
+  * **NEVER** be Resumed as the **time** since the the object enters the **On State** (the **isOn** flag is set)
+  * and it enters the **Voided State** (the **isOn** flag is reset) is not only negligible -and that's the time
+  * that will be given to the task to run, but mostly because it's length in unpredictable without affecting the
+  * main purpose of the class existence. Accordingly to this, the `setTaskWhileOn(const TaskHandle_t)` method
+  * will discard the passed argument and keep the TaskHandle_t value of **NULL**
   *
   * A software timer is created so that it periodically toggles the isEnabled attribute flag
   * value, showing the behavior of the instantiated object when enabled and when disabled.
@@ -64,7 +69,7 @@ gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
 gpioPinId_t ledIsEnabled{GPIOC, GPIO_PIN_0};			// ledOnPC00, Pin 0b 0000 0000 0000 0001
 gpioPinId_t ledIsVoided{GPIOA, GPIO_PIN_10};			// ledOnPA10, Pin 0b 0000 0100 0000 0000
-gpioPinId_t ledTskWhlOn{GPIOA, GPIO_PIN_2};			// ledOnPA02, Pin 0b 0000 0000 0000 0100
+gpioPinId_t ledTskWhlOn{GPIOB, GPIO_PIN_13};			// ledOnPB13, Pin 0b 0010 0000 0000 0000
 
 TaskHandle_t mainCtrlTskHndl {NULL};
 TaskHandle_t dmpsOutputTskHdl;

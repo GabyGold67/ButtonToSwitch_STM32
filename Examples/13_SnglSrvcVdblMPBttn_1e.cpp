@@ -11,25 +11,44 @@
   * 	- A LED attached to GPIO_B13 to visualize the "Task While MPB is On" activity
   * 	- A LED attached to GPIO_B14 to visualize the FnWhnTrnOn() and FnWhnTrnOff() activity
   *
-  * This example creates three Tasks and two specific functions.
-  * The first task instantiates the SnglSrvcVdblMPBttn object in it and checks it's
+  * ### This example creates three Tasks, a timer, and two dedicated functions:
+  *
+  * - The first task instantiates the SnglSrvcVdblMPBttn object in it and checks it's
   * attribute flags locally through the getters methods.
   *
-  * The second task is started and blocked, it's purpose it's to manage the loads and resources
-  * that the switch turns On and Off, in this example case are the output of some GPIO pins.
+  * - The second task is created and blocked before the scheduler is started. It's purpose it's to
+  * manage the loads and resources that the switch turns On and Off, in this example case are the
+  * output level of some GPIO pins.
   * When a change in the object's output attribute flags is detected the second task is unblocked
   * through a xTaskNotify() to update the output GPIO pins and blocks again until next notification.
-  * The xTaskNotify() macro is limited to pass a 32 bit notifications value, the object instantiated
-  * takes care of encoding of the MPBttn state in a 32 bits value.
-  * A function -otptsSttsUnpkg()- is provided for the notified task to be able to decode the 32 bits
-  * notification value into flags values.
+  * The xTaskNotify() macro is limited to pass a 32 bit notifications value, the object takes care
+  * of encoding of the MPBttn state in a 32 bits value.
+  * A function, **otptsSttsUnpkg()**, is provided for the notified task to be able to decode the 32 bits
+  * notification value into flag values.
   *
-  * The third task is started and blocked, like the second, it's purpose is to execute while the MPB
-  * is in "isOn state". Please read the library documentation regarding the consequences of executing
-  * a task that is resumed and paused externally and without previous alert!!
+  * - The third task is created and blocked before the scheduler is started, like the second. This task will
+  * **NEVER** be Resumed as the **time** since the the object enters the **On State** (the **isOn** flag is set)
+  * and it enters the **Voided State** (the **isOn** flag is reset) is not only negligible -and that's the time
+  * that will be given to the task to run, but mostly because it's length in unpredictable without affecting the
+  * main purpose of the class existence. Accordingly to this, the `setTaskWhileOn(const TaskHandle_t)` method
+  * will discard the passed argument and keep the TaskHandle_t value of **NULL**
   *
-  * A software timer is created so that it periodically toggles the isEnabled attribute flag
+  * - A software timer is created so that it periodically toggles the isEnabled attribute flag
   * value, showing the behavior of the instantiated object when enabled and when disabled.
+  *
+  * - The first functions is to be executed when the MPB enters the "isOn state", please refer to the
+  * **setFnWhnTrnOnPtr()** method for details.
+  *
+  * - The second functions is to be executed when the MPB enters the "isOff state", please refer to the
+  * **setFnWhnTrnOffPtr()** method for details.
+  *
+  * In this specific example both **setFnWhnTrnOnPtr()** and **setFnWhnTrnOfPtr()** use the same function as argument,
+  * once again due to the lack of execution time available since the object enters the **On State** and exits the
+  * state. As these examples are expected to use visual hints in the form of leds connected to the corresponding GPIO
+  * pins, the short time would make the visual hint too short to appreciate, so a single function toggling the pin level
+  * was preferred. For standard code execution functions each function might be different, just consider the fact that
+  * the time between the call to the fnWhnTrnOnPtr pointed function and the fnWhnTrnOffPtr pointed function will be
+  * short and execution may overlap.
   *
   * 	@author	: Gabriel D. Goldman
   *
@@ -63,10 +82,10 @@
 /* USER CODE BEGIN PV */
 gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
-gpioPinId_t ledIsEnabled{GPIOC, GPIO_PIN_0};			// ledOnPC00, Pin 0b 0000 0000 0000 0001
-gpioPinId_t ledIsVoided{GPIOA, GPIO_PIN_10};			// ledOnPA10, Pin 0b 0000 0100 0000 0000
-gpioPinId_t ledTskWhlOn{GPIOB, GPIO_PIN_13};			// ledOnPB13, Pin 0b 0010 0000 0000 0000
-gpioPinId_t ledFnTrnOnOff{GPIOB, GPIO_PIN_14};		// ledOnPB14, Pin 0b 0100 0000 0000 0000
+gpioPinId_t ledIsEnabled{GPIOC, GPIO_PIN_0};		// ledOnPC00, Pin 0b 0000 0000 0000 0001
+gpioPinId_t ledIsVoided{GPIOA, GPIO_PIN_10};		// ledOnPA10, Pin 0b 0000 0100 0000 0000
+gpioPinId_t ledTskWhlOn{GPIOB, GPIO_PIN_13};		// ledOnPB13, Pin 0b 0010 0000 0000 0000
+gpioPinId_t ledFnTrnOnOff{GPIOB, GPIO_PIN_14};	// ledOnPB14, Pin 0b 0100 0000 0000 0000
 
 TaskHandle_t mainCtrlTskHndl {NULL};
 TaskHandle_t dmpsOutputTskHdl;
@@ -230,7 +249,7 @@ void dmpsOutputTsk(void *pvParameters){
 }
 
 void dmpsActWhlOnTsk(void *pvParameters){
-	const unsigned long int swapTimeMs{100};
+	const unsigned long int swapTimeMs{50};
 	unsigned long int strtTime{0};
 	unsigned long int curTime{0};
 	unsigned long int elapTime{0};

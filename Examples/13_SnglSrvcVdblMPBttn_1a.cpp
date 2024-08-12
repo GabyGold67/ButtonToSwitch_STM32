@@ -5,14 +5,16 @@
   *
   * 	The example instantiates a SnglSrvcVdblMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
-  * 	- The Nucleo board user LED attached to GPIO_A05
+  * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
   * 	- A LED attached to GPIO_A10 to visualize the isVoided attribute flag status
+  *
+  * ### This example creates one Task:
   *
   * This simple example creates a single Task, instantiates the SnglSrvcVdblMPBttn object
   * in it and checks it's attribute flags locally through the getters methods.
-  * When a change in the outputs attribute flags values is detected, it manages the
-  *  loads and resources that the switch turns On and Off, in this example case are
-  *  the output of some GPIO pins.
+  * When a change in the object's outputs attribute flags values is detected, it manages the
+  * loads and resources that the switch turns On and Off, in this example case are
+  * the output level of some GPIO pins.
   *
   * 	@author	: Gabriel D. Goldman
   *
@@ -46,7 +48,7 @@
 /* USER CODE BEGIN PV */
 gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
-gpioPinId_t ledIsVoided{GPIOA, GPIO_PIN_10};		// ledOnPA10, Pin 0b 0000 0100 0000 0000
+gpioPinId_t ledIsVoided{GPIOA, GPIO_PIN_10};		// Pin 0b 0000 0100 0000 0000
 
 TaskHandle_t mainCtrlTskHndl {NULL};
 BaseType_t xReturned;

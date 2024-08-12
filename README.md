@@ -19,15 +19,15 @@ Those mechanisms include:
 	- **Task Resume/Suspend**: A mechanism is provided to run a developer defined task while the object is in **On State**. The designated task will be set to "Suspended State" while the object is in **Off State** and will be set to "Resume" while it is in **On State**, providing means to execute far more complex tasks than just "turning On & turning Off" devices.  
 	- **Functions execution**: A developer defined function might be set to be executed every time the instantiated object enters the **On State**, and a function might be set to be executed every time the instantiated object enters the **Off State**. The functions are to be independently defined, so one, the other or both might be defined, and even the same function might be used for both events.  
 
-Those listed mechanisms are independent, so one or more might be simultaneously used depending on implementation convenience.    
+Those listed mechanisms are **independent**, so one or more might be simultaneously used depending on implementation needs and convenience.    
 
 ### The library implements the following switches behaviors: ###  
 * **Debounced Momentary Push Button** (a.k.a. Momentary switch, a.k.a. **Pushbutton**)  
-* **Debounced Delayed Momentary Push Button** (**Delayed Pushbutton**)  
-* **Toggle Switch Momentary Push Button** (a.k.a. alternate, a.k.a. **Latched Pushbutton**)  
+* **Debounced Delayed Momentary Push Button** (a.k.a. **Delayed Pushbutton**)  
+* **Toggle Switch Momentary Push Button** (a.k.a. Alternate Pushbutton, a.k.a. **Latched Switch**)  
 * **Timer Toggled Momentary Push Button** (a.k.a. **Timer Switch**)  
 * **Hinted Timer Toggled** (a.k.a. **Staircase Timer Switch**)
-* **External unlatched toggle** (a.k.a. **Emergency Latched Switch**)
+* **External Unlatch toggle** (a.k.a. **Emergency Latched Switch**)
 * **Time Voidable Momentary Push Button**  (a.k.a. **Anti-Tampering Switch**)
 * **Single Service Voidable Momentary Push Button**  (a.k.a. **Trigger Switch**) 
 * **Short press/Long Press Double action On/Off + Slider combo switch**  (a.k.a. off/on/dimmer, a.k.a. **Off/On/Volume radio switch**)
@@ -39,4 +39,4 @@ MpbAsSwitch Library Documentation available at **[Github Pages](https://GabyGold
 
 Each instantiated object returns a debounced, deglitched, clean "isOn" signal based on the expected behavior of the simulated switch mechanism. 
 
-The system timer will periodically check the input pins associated to the objects and compute the object's output flags, the timer period for that checking is a general parameter that can be changed. 
+The system timer will periodically check the input pins associated to the objects and compute the object's internal state and output flags, the timer period for that checking is a general parameter that can be changed. 
