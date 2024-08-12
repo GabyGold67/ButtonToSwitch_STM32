@@ -1,14 +1,15 @@
 /**
   ******************************************************************************
-  * @file	: 02_DbncdDlydMPBttn_1c.cpp
-  * @brief  : Example for the MpbAsSwitch_STM32 library DbncdMPBttn class
+  * @file	: 02_DbncdDlydMPBttn_1d.cpp
+  * @brief  : Example for the MpbAsSwitch_STM32 library DbncdDlydMPBttn class
   *
   * The test instantiates a DbncdDlydMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
   * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
   * 	- A LED attached to GPIO_C00 to visualize the isEnabled attribute flag status
+  * 	- A LED attached to GPIO_B13 to visualize the "Task While MPB is On" activity
   *
-  * ### This example creates two Tasks and a timer:
+  * ### This example creates three Tasks and a timer:
   *
   * - The first task instantiates the DbncdDlydMPBttn object in it and checks it's
   * attribute flags locally through the getters methods.
@@ -22,6 +23,10 @@
   * of encoding of the MPBttn state in a 32 bits value.
   * A function, **otptsSttsUnpkg()**, is provided for the notified task to be able to decode the 32 bits
   * notification value into flag values.
+  *
+  * - The third task is started and blocked, like the second, it's purpose is to execute while the MPB
+  * is in "isOn state". Please read the library documentation regarding the consequences of executing
+  * a task that is resumed and paused externally and without previous alert!!
   *
   * - A software timer is created so that it periodically toggles the isEnabled attribute flag
   * value, showing the behavior of the instantiated object when enabled and when disabled.
@@ -59,10 +64,12 @@
 /* USER CODE BEGIN PV */
 gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
-gpioPinId_t ledIsEnabled{GPIOC, GPIO_PIN_0};			// Pin 0b 0000 0000 0000 0001
+gpioPinId_t ledIsEnabled{GPIOC, GPIO_PIN_0};		// Pin 0b 0000 0000 0000 0001
+gpioPinId_t ledTskWhlOn{GPIOB, GPIO_PIN_13};		// Pin 0b 0010 0000 0000 0000
 
 TaskHandle_t mainCtrlTskHndl {NULL};
 TaskHandle_t dmpsOutputTskHdl;
+TaskHandle_t dmpsActWhlOnTskHndl;
 BaseType_t xReturned;
 /* USER CODE END PV */
 
@@ -74,6 +81,7 @@ void Error_Handler(void);
 /* USER CODE BEGIN FP */
 void mainCtrlTsk(void *pvParameters);
 void dmpsOutputTsk(void *pvParameters);
+void dmpsActWhlOnTsk(void *pvParameters);
 void swpEnableCb(TimerHandle_t  pvParam);
 MpbOtpts_t otptsSttsUnpkg(uint32_t pkgOtpts);
 /* USER CODE END FP */
@@ -118,11 +126,24 @@ int main(void)
 		  );
   if(xReturned != pdPASS)
 	  Error_Handler();
+
+  xReturned = xTaskCreate(
+		  dmpsActWhlOnTsk,
+		  "ExecWhileOnTask",
+		  256,
+		  NULL,
+		  configTIMER_TASK_PRIORITY,
+		  &dmpsActWhlOnTskHndl
+		  );
+  if(xReturned != pdPASS)
+	  Error_Handler();
+
 /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN BEFORE STARTING SCHEDULER: SETUPS, OBJECTS CREATION, ETC. */
 	vTaskSuspend(dmpsOutputTskHdl);	//Holds the task to start them all in proper order
-  /* USER CODE END BEFORE STARTING SCHEDULER: SETUPS, OBJECTS CREATION, ETC. */
+	vTaskSuspend(dmpsActWhlOnTskHndl);
+	/* USER CODE END BEFORE STARTING SCHEDULER: SETUPS, OBJECTS CREATION, ETC. */
 
 /* Start scheduler */
   vTaskStartScheduler();
@@ -160,6 +181,7 @@ void mainCtrlTsk(void *pvParameters)
 	tstBttn.setIsOnDisabled(false);
 	vTaskResume(dmpsOutputTskHdl);	//Resumes the task to start now in proper order
 	tstBttn.setTaskToNotify(dmpsOutputTskHdl);
+	tstBttn.setTaskWhileOn(dmpsActWhlOnTskHndl);
 	tstBttn.begin(20);
 
 	for(;;)
@@ -204,6 +226,29 @@ void swpEnableCb(TimerHandle_t  pvParam){
 		bttnArg->enable();
 
   return;
+}
+
+void dmpsActWhlOnTsk(void *pvParameters){
+	const unsigned long int swapTimeMs{250};
+	unsigned long int strtTime{0};
+	unsigned long int curTime{0};
+	unsigned long int elapTime{0};
+	bool blinkOn {false};
+
+	strtTime = xTaskGetTickCount() / portTICK_RATE_MS;
+	for(;;){
+		curTime = (xTaskGetTickCount() / portTICK_RATE_MS);
+		elapTime = curTime - strtTime;
+		if (elapTime > swapTimeMs){
+			blinkOn = !blinkOn;
+			if(blinkOn)
+				HAL_GPIO_WritePin(ledTskWhlOn.portId, ledTskWhlOn.pinNum, GPIO_PIN_SET);
+			else
+				HAL_GPIO_WritePin(ledTskWhlOn.portId, ledTskWhlOn.pinNum, GPIO_PIN_RESET);
+			strtTime = curTime;
+		}
+	}
+
 }
 /* USER CODE TASKS AND TIMERS END */
 
@@ -296,6 +341,16 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(ledIsEnabled.portId, &GPIO_InitStruct);
+
+  /*Configure GPIO pin Output Level for ledOnPA04))*/
+  HAL_GPIO_WritePin(ledTskWhlOn.portId, ledTskWhlOn.pinNum, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : ledIsEnabled_Pin */
+  GPIO_InitStruct.Pin = ledTskWhlOn.pinNum;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(ledTskWhlOn.portId, &GPIO_InitStruct);
 }
 
 /**

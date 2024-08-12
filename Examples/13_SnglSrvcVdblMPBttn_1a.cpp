@@ -106,7 +106,6 @@ int main(void)
 void mainCtrlTsk(void *pvParameters)
 {
 	SnglSrvcVdblMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, true, true, 20, 0);
-
 	tstBttn.begin(10);
 
 	for(;;)

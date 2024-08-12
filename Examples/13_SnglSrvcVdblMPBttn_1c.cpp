@@ -24,7 +24,7 @@
   * A function, **otptsSttsUnpkg()**, is provided for the notified task to be able to decode the 32 bits
   * notification value into flag values.
   *
-  * A software timer is created so that it periodically toggles the isEnabled attribute flag
+  * - A software timer is created so that it periodically toggles the isEnabled attribute flag
   * value, showing the behavior of the instantiated object when enabled and when disabled.
   *
   * 	@author	: Gabriel D. Goldman

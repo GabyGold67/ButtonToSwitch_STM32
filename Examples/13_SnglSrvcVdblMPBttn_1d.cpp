@@ -32,7 +32,7 @@
   * main purpose of the class existence. Accordingly to this, the `setTaskWhileOn(const TaskHandle_t)` method
   * will discard the passed argument and keep the TaskHandle_t value of **NULL**
   *
-  * A software timer is created so that it periodically toggles the isEnabled attribute flag
+  * - A software timer is created so that it periodically toggles the isEnabled attribute flag
   * value, showing the behavior of the instantiated object when enabled and when disabled.
   *
   * 	@author	: Gabriel D. Goldman
