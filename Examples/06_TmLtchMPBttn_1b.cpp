@@ -1,16 +1,16 @@
 /**
   ******************************************************************************
-  * @file	: 05_TgglLtchMPBttn_1b.cpp
-  * @brief  : Example for the MpbAsSwitch_STM32 library TgglLtchMPBttn class
+  * @file	: 06_TmLtchMPBttn_1b.cpp
+  * @brief  : Example for the MpbAsSwitch_STM32 library TmLtchMPBttn class
   *
-  * The test instantiates a TgglLtchMPBttn object using:
+  * The test instantiates a TmLtchMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
   * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
   * 	- A LED attached to GPIO_C00 to visualize the isEnabled attribute flag status
   *
   * ### This example creates one Task and a timer:
   *
-  * This simple example creates a single Task, instantiates the TgglLtchMPBttn object
+  * This simple example creates a single Task, instantiates the TmLtchMPBttn object
   * in it and checks it's attribute flags locally through the getters methods.
   * When a change in the object's outputs attribute flags values is detected, it manages the
   * loads and resources that the switch turns On and Off, in this example case are
@@ -113,10 +113,12 @@ void mainCtrlTsk(void *pvParameters)
 	TimerHandle_t enableSwpTmrHndl{NULL};
 	BaseType_t tmrModRslt{pdFAIL};
 
-	TgglLtchMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, true, true, 50, 250);
+	TmLtchMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, 3000, true, true, 0, 200);
 	LtchMPBttn* tstBttnPtr {&tstBttn};
 
-	tstBttn.setIsOnDisabled(true);
+	tstBttn.setTmerRstbl(true);
+	tstBttn.setIsOnDisabled(false);
+	tstBttn.setTrnOffASAP(true);
 	tstBttn.begin(20);
 
 	enableSwpTmrHndl = xTimerCreate(
