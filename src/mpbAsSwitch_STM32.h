@@ -355,7 +355,7 @@ public:
     * @return TaskHandle_t value of the task to be notified of the outputs change.
     * @retval NULL: there is no task configured to be notified of the outputs change.
     *
-    *@note The notification is done through a **direct to task notification** using the **xTaskNotify()** RTOS macro, the notification includes passing the notified task a 32-bit notification value.
+    * @note The notification is done through a **direct to task notification** using the **xTaskNotify()** RTOS macro, the notification includes passing the notified task a 32-bit notification value.
     */
 	const TaskHandle_t getTaskToNotify() const;
 	/**
