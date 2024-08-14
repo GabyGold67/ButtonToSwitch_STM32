@@ -63,7 +63,9 @@ static void MX_GPIO_Init(void);
 void Error_Handler(void);
 
 /* USER CODE BEGIN FP */
+// Tasks
 void mainCtrlTsk(void *pvParameters);
+// Timers
 void swpEnableCb(TimerHandle_t  pvParam);
 /* USER CODE END FP */
 
@@ -237,7 +239,6 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level for tstLedOnBoard*/
   HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
-
   /*Configure GPIO pin : tstLedOnBoard_Pin */
   GPIO_InitStruct.Pin = tstLedOnBoard.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -245,10 +246,9 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(tstLedOnBoard.portId, &GPIO_InitStruct);
 
-  /*Configure GPIO pin Output Level for ledOnPC00))*/
+  /*Configure GPIO pin Output Level for ledIsEnabled))*/
   HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin : ledOnPC00_Pin */
+  /*Configure GPIO pin : ledIsEnabled_Pin */
   GPIO_InitStruct.Pin = ledIsEnabled.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;

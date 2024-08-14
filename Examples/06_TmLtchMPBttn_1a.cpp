@@ -117,7 +117,6 @@ void mainCtrlTsk(void *pvParameters)
 			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_SET);
 			else
 			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
-			tstBttn.setOutputsChange(false);
 		}
 	}
 }

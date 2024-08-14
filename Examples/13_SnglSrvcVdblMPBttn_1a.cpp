@@ -197,7 +197,6 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level for tstLedOnBoard*/
   HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
-
   /*Configure GPIO pin : tstLedOnBoard_Pin */
   GPIO_InitStruct.Pin = tstLedOnBoard.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -205,10 +204,9 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(tstLedOnBoard.portId, &GPIO_InitStruct);
 
-  /*Configure GPIO pin Output Level for ledOnPA04*/
+  /*Configure GPIO pin Output Level for ledIsVoided*/
   HAL_GPIO_WritePin(ledIsVoided.portId, ledIsVoided.pinNum, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin : ledOnPA04_Pin */
+  /*Configure GPIO pin : ledIsVoided_Pin */
   GPIO_InitStruct.Pin = ledIsVoided.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
