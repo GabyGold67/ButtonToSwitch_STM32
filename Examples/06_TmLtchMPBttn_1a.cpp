@@ -10,7 +10,6 @@
   * ### This example creates one Task:
   *
   * This simple example creates a single Task, instantiates the TmlLtchMPBttn object
-  * and a DbncdDllydMPBttn object to act as the external unlatch signal provider
   * in it and checks it's attribute flags locally through the getters methods.
   * When a change in the object's outputs attribute flags values is detected, it manages the
   * loads and resources that the switch turns On and Off, in this example case are

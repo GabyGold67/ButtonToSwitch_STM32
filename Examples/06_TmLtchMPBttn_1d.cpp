@@ -211,6 +211,7 @@ void dmpsOutputTsk(void *pvParameters){
 		  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_SET);
 		else
 		  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
+
 		if(mpbCurStateDcdd.isEnabled)
 			HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_RESET);
 		else

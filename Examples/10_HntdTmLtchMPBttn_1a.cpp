@@ -6,19 +6,21 @@
   * The test instantiates a HntdTmLtchMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
   * 	- The Nucleo board user LED attached to GPIO_A05
-  * 	- A digital output to GPIO_PA04 to show _wrnngOn attribute flag state
+  * 	- A digital output to GPIO_PA05 to show _wrnngOn attribute flag state
   * 	- A digital output to GPIO_PC01 to show _pilotOn attribute flag state
+  *
+  * ### This example creates one Task:
   *
   * This simple example creates a single Task, instantiates the HntdTmLtchMPBttn object
   * in it and checks it's attribute flags locally through the getters methods.
-  * When a change in the outputs attribute flags values is detected, it manages the
+  * When a change in the object's outputs attribute flags values is detected, it manages the
   * loads and resources that the switch turns On and Off, in this example case are
   * the output of some GPIO pins.
   *
   * 	@author	: Gabriel D. Goldman
   *
   * 	@date	: 	01/01/2024 First release
-  * 				21/04/2024 Last update
+  * 				11/06/2024 Last update
   *
   ******************************************************************************
   * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
@@ -47,10 +49,8 @@
 /* USER CODE BEGIN PV */
 gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
-gpioPinId_t ledOnPA04{GPIOA, GPIO_PIN_4};	//Pin 0b 0000 0000 0001 0000
-gpioPinId_t ledOnPC01{GPIOC, GPIO_PIN_1};	//Pin 0b 0000 0000 0000 0010
-gpioPinId_t ledWrnngOn = ledOnPA04;
-gpioPinId_t ledPltOn = ledOnPC01;
+gpioPinId_t ledWrnngOn{GPIOA, GPIO_PIN_4};		// Pin 0b 0000 0000 0001 0000
+gpioPinId_t ledPltOn{GPIOC, GPIO_PIN_1};			// Pin 0b 0000 0000 0000 0010
 
 TaskHandle_t mainCtrlTskHndl {NULL};
 BaseType_t xReturned;
@@ -112,7 +112,7 @@ void mainCtrlTsk(void *pvParameters)
 	tstBttn.setWrnngPrctg(50);
 	tstBttn.setTmerRstbl(true);
 
-	tstBttn.begin(10);
+	tstBttn.begin(20);
 
 	for(;;)
 	{
@@ -132,7 +132,7 @@ void mainCtrlTsk(void *pvParameters)
 			else
 			  HAL_GPIO_WritePin(ledPltOn.portId, ledPltOn.pinNum, GPIO_PIN_RESET);
 
-			tstBttn.setOutputsChange(false);
+//			tstBttn.setOutputsChange(false);
 		}
 	}
 }

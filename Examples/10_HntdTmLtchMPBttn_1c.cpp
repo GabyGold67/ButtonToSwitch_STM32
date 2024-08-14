@@ -1,30 +1,37 @@
 /**
   ******************************************************************************
-  * @file	: 10_HntdTmLtchMPBttn_1b.cpp
+  * @file	: 10_HntdTmLtchMPBttn_1c.cpp
   * @brief  : Example for the MpbAsSwitch_STM32 library HntdTmLtchMPBttn class
   *
   * The test instantiates a HntdTmLtchMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
-  * 	- The Nucleo board user LED attached to GPIO_A05
-  * 	- A digital output to GPIO_PA05 to show _wrnngOn attribute flag state
-  * 	- A digital output to GPIO_PC01 to show _pilotOn attribute flag state
-  * 	- A digital output to GPIO_PC00 to show _isEnabled attribute flag state
+  * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
+  * 	- A digital output to GPIO_PA05 to visualize the _wrnngOn attribute flag state
+  * 	- A digital output to GPIO_PC01 to visualize the _pilotOn attribute flag state
+  * 	- A digital output to GPIO_PC00 to visualize the _isEnabled attribute flag status
   *
-  * ### This example creates one Task and a timer:
+  * ### This example creates two Tasks and a timer:
   *
-  * This simple example creates a single Task, instantiates the HntdTmLtchMPBttn object
-  * in it and checks it's attribute flags locally through the getters methods.
-  * When a change in the object's outputs attribute flags values is detected, it manages the
-  * loads and resources that the switch turns On and Off, in this example case are
-  * the output level of some GPIO pins.
+  * - The first task instantiates the HntdTmLtchMPBttn object in it and checks it's
+  * attribute flags locally through the getters methods.
   *
-  * A software timer is created so that it periodically toggles the isEnabled attribute flag
+  * - The second task is created and blocked before the scheduler is started. It's purpose it's to
+  * manage the loads and resources that the switch turns On and Off, in this example case are the
+  * output level of some GPIO pins.
+  * When a change in the object's output attribute flags is detected the second task is unblocked
+  * through a xTaskNotify() to update the output GPIO pins and blocks again until next notification.
+  * The xTaskNotify() macro is limited to pass a 32 bit notifications value, the object takes care
+  * of encoding of the MPBttn state in a 32 bits value.
+  * A function, **otptsSttsUnpkg()**, is provided for the notified task to be able to decode the 32 bits
+  * notification value into flag values.
+  *
+  * - A software timer is created so that it periodically toggles the isEnabled attribute flag
   * value, showing the behavior of the instantiated object when enabled and when disabled.
   *
   * 	@author	: Gabriel D. Goldman
   *
   * 	@date	: 	01/01/2024 First release
-  * 				11/06/2024 Last update
+  * 				07/07/2024 Last update
   *
   ******************************************************************************
   * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
@@ -58,10 +65,11 @@ gpioPinId_t ledPltOn{GPIOC, GPIO_PIN_1};			// Pin 0b 0000 0000 0000 0010
 gpioPinId_t ledIsEnabled{GPIOC, GPIO_PIN_0};		// Pin 0b 0000 0000 0000 0001
 
 TaskHandle_t mainCtrlTskHndl {NULL};
+TaskHandle_t dmpsOutputTskHdl;
 BaseType_t xReturned;
 /* USER CODE END PV */
 
-/* Private function prototypes -----------------------------------------------*/
+/* Private function prototypes BEGIN -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 void Error_Handler(void);
@@ -69,9 +77,13 @@ void Error_Handler(void);
 /* USER CODE BEGIN FP */
 // Tasks
 void mainCtrlTsk(void *pvParameters);
-// SW Timers
+void dmpsOutputTsk(void *pvParameters);
+// SW Timers Callbacks
 void swpEnableCb(TimerHandle_t  pvParam);
+// Functions
+MpbOtpts_t otptsSttsUnpkg(uint32_t pkgOtpts);
 /* USER CODE END FP */
+/* Private function prototypes END -----------------------------------------------*/
 
 /**
   * @brief  The application entry point.
@@ -101,9 +113,24 @@ int main(void)
 		  &mainCtrlTskHndl);
   if(xReturned != pdPASS)
 	  Error_Handler();
+
+  xReturned = xTaskCreate(
+		  dmpsOutputTsk,
+		  "DMpSwitchOutputUpd",
+		  256,
+		  NULL,
+		  configTIMER_TASK_PRIORITY,
+		  &dmpsOutputTskHdl
+		  );
+  if(xReturned != pdPASS)
+	  Error_Handler();
 /* USER CODE END RTOS_THREADS */
 
-  /* Start scheduler */
+  /* USER CODE BEGIN BEFORE STARTING SCHEDULER: SETUPS, OBJECTS CREATION, ETC. */
+	vTaskSuspend(dmpsOutputTskHdl);	//Holds the task to start them all in proper order
+  /* USER CODE END BEFORE STARTING SCHEDULER: SETUPS, OBJECTS CREATION, ETC. */
+
+/* Start scheduler */
   vTaskStartScheduler();
 
   /* We should never get here as control is now taken by the scheduler */
@@ -112,14 +139,15 @@ int main(void)
   {
   }
 }
-/* USER CODE BEGIN */
+
+/* USER CODE TASKS AND TIMERS BEGIN */
 void mainCtrlTsk(void *pvParameters)
 {
 	TimerHandle_t enableSwpTmrHndl{NULL};
 	BaseType_t tmrModRslt{pdFAIL};
 
 	HntdTmLtchMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, 4000, 33,true, true, 0, 250);
-	HntdTmLtchMPBttn* tstBttnPtr {&tstBttn};
+	LtchMPBttn* tstBttnPtr {&tstBttn};
 
 	tstBttn.setIsOnDisabled(false);
 	tstBttn.setKeepPilot(true);
@@ -127,50 +155,68 @@ void mainCtrlTsk(void *pvParameters)
 	tstBttn.setTmerRstbl(true);
 
 	enableSwpTmrHndl = xTimerCreate(
-			"EnableSwapTimer",
-			20000,
+			"isEnabledSwapTimer",
+			10000,
 			pdTRUE,
 			tstBttnPtr,
 			swpEnableCb
 			);
-
-	tstBttn.begin(20);
-
 	if (enableSwpTmrHndl != NULL){
       tmrModRslt = xTimerStart(enableSwpTmrHndl, portMAX_DELAY);
-      if(tmrModRslt == pdFAIL)
-         Error_Handler();
+   }
+	if(tmrModRslt == pdFAIL){
+	    Error_Handler();
 	}
+
+	vTaskResume(dmpsOutputTskHdl);	//Resumes the task to start now in proper order
+	tstBttn.setTaskToNotify(dmpsOutputTskHdl);
+	tstBttn.begin(20);
 
 	for(;;)
 	{
-		if(tstBttn.getOutputsChange()){
-			if(tstBttn.getIsOn())
-			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_SET);
-			else
-			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
-
-			if(tstBttn.getWrnngOn())
-			  HAL_GPIO_WritePin(ledWrnngOn.portId, ledWrnngOn.pinNum, GPIO_PIN_SET);
-			else
-			  HAL_GPIO_WritePin(ledWrnngOn.portId, ledWrnngOn.pinNum, GPIO_PIN_RESET);
-
-			if(tstBttn.getPilotOn())
-			  HAL_GPIO_WritePin(ledPltOn.portId, ledPltOn.pinNum, GPIO_PIN_SET);
-			else
-			  HAL_GPIO_WritePin(ledPltOn.portId, ledPltOn.pinNum, GPIO_PIN_RESET);
-
-			if(!(tstBttn.getIsEnabled()))
-			  HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_SET);
-			else
-			  HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_RESET);
-		}
 	}
 }
 
+void dmpsOutputTsk(void *pvParameters){
+	uint32_t mpbSttsRcvd{0};
+	MpbOtpts_t mpbCurStateDcdd;
+
+	for(;;){
+		xReturned = xTaskNotifyWait(
+						0x00,	//uint32_t ulBitsToClearOnEntry
+		            0xFFFFFFFF,	//uint32_t ulBitsToClearOnExit,
+		            &mpbSttsRcvd,	// uint32_t *pulNotificationValue,
+						portMAX_DELAY//TickType_t xTicksToWait
+		);
+		 if (xReturned != pdPASS){
+			 Error_Handler();
+		 }
+		mpbCurStateDcdd = otptsSttsUnpkg(mpbSttsRcvd);
+		if(mpbCurStateDcdd.isOn)
+		  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_SET);
+		else
+		  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
+
+		if(mpbCurStateDcdd.isEnabled)
+			HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_RESET);
+		else
+			HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_SET);
+
+		if(mpbCurStateDcdd.wrnngOn)
+		  HAL_GPIO_WritePin(ledWrnngOn.portId, ledWrnngOn.pinNum, GPIO_PIN_SET);
+		else
+		  HAL_GPIO_WritePin(ledWrnngOn.portId, ledWrnngOn.pinNum, GPIO_PIN_RESET);
+
+		if(mpbCurStateDcdd.pilotOn)
+		  HAL_GPIO_WritePin(ledPltOn.portId, ledPltOn.pinNum, GPIO_PIN_SET);
+		else
+		  HAL_GPIO_WritePin(ledPltOn.portId, ledPltOn.pinNum, GPIO_PIN_RESET);
+
+	}
+}
 
 void swpEnableCb(TimerHandle_t  pvParam){
-	TgglLtchMPBttn* bttnArg = (TgglLtchMPBttn*) pvTimerGetTimerID(pvParam);
+	DbncdMPBttn* bttnArg = (LtchMPBttn*) pvTimerGetTimerID(pvParam);
 
 	bool curEnable = bttnArg->getIsEnabled();
 
@@ -181,8 +227,10 @@ void swpEnableCb(TimerHandle_t  pvParam){
 
   return;
 }
-/* USER CODE END */
+/* USER CODE TASKS AND TIMERS END */
 
+/* USER CODE FUNCTIONS BEGIN */
+/* USER CODE FUNCTIONS END */
 
 /**
   * @brief System Clock Configuration

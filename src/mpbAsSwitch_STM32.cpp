@@ -1385,7 +1385,7 @@ uint32_t HntdTmLtchMPBttn::_otptsSttsPkg(uint32_t prevVal){
 	else{
 		prevVal &= ~(((uint32_t)1) << PilotOnBitPos);
 	}
-	if(_isEnabled){
+	if(_wrnngOn){
 		prevVal |= ((uint32_t)1) << WrnngOnBitPos;
 	}
 	else{
