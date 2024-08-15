@@ -1,24 +1,33 @@
 /**
   ******************************************************************************
-  * @file	: 06_TmLtchdMPBttn_1a.cpp
-  * @brief  : Example for the MpbAsSwitch_STM32 library TmlLtchMPBttn class
+  * @file	: 11_SldrDALtchMPBttn_1b.cpp
+  * @brief  : Example for the MpbAsSwitch_STM32 library SldrDALtchMPBttn class
   *
-  * The example instantiates a TmlLtchMPBttn object using:
+  * The test instantiates a SldrDALtchMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
   * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
+  * 	- A digital output to GPIO_PC00 to visualize the _isEnabled attribute flag status
   *
-  * ### This example creates one Task:
+  * ### This example creates one Task and a timer:
   *
-  * This simple example creates a single Task, instantiates the TmlLtchMPBttn object
+  * This simple example creates a single Task, instantiates the SldrDALtchMPBttn object
   * in it and checks it's attribute flags locally through the getters methods.
-  * When a change in the object's outputs attribute flags values is detected, it manages the
+  * When a change in the outputs attribute flags values is detected, it manages the
   * loads and resources that the switch turns On and Off, in this example case are
   * the output of some GPIO pins.
+  *
+  * In this example the "Secondary Mode" that simulates the behavior of a slider potentiometer
+  * produces a variation in the PWM output of a GPIO pin, showing as a change of intensity of
+  * the on-board led. The isOn attribute flag status enables the pin output, while the curOtpVal
+  * attribute will set the PWM parameters of that same pin.
+  *
+  * A software timer is created so that it periodically toggles the isEnabled attribute flag
+  * value, showing the behavior of the instantiated object when enabled and when disabled.
   *
   * 	@author	: Gabriel D. Goldman
   *
   * 	@date	: 	01/01/2024 First release
-  * 				07/07/2024 Last update
+  * 				11/06/2024 Last update
   *
   ******************************************************************************
   * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
@@ -45,8 +54,10 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
+TIM_HandleTypeDef htim2;
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
 gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
+gpioPinId_t ledIsEnabled{GPIOC, GPIO_PIN_0};		// Pin 0b 0000 0000 0000 0001
 
 TaskHandle_t mainCtrlTskHndl {NULL};
 BaseType_t xReturned;
@@ -56,10 +67,15 @@ BaseType_t xReturned;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 void Error_Handler(void);
+// Init functions related to PWM timer
+static void MX_TIM2_Init(void);
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* USER CODE BEGIN FP */
 // Tasks
 void mainCtrlTsk(void *pvParameters);
+// Timers
+void swpEnableCb(TimerHandle_t  pvParam);
 /* USER CODE END FP */
 
 /**
@@ -78,6 +94,9 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_TIM2_Init();
+
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);	//WPM output for PA05: on-board green LED ============>> Turns PWM generation On
 
   /* Create the thread(s) */
   /* USER CODE BEGIN RTOS_THREADS */
@@ -104,24 +123,65 @@ int main(void)
 /* USER CODE BEGIN */
 void mainCtrlTsk(void *pvParameters)
 {
-	TmLtchMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, 3000, true, true, 0, 200);
+	TimerHandle_t enableSwpTmrHndl{NULL};
+	BaseType_t tmrModRslt{pdFAIL};
 
-	tstBttn.setTmerRstbl(true);
-	tstBttn.setTrnOffASAP(true);
-	tstBttn.begin(20);
+	SldrDALtchMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, true, true, 50, 100);
+	DblActnLtchMPBttn* tstBttnPtr {&tstBttn};
+
+	tstBttn.setScndModActvDly(2000);
+	tstBttn.setSldrDirDn();
+	tstBttn.setSwpDirOnPrss(true);
+	tstBttn.setOtptValMin(0);
+	tstBttn.setOtptValMax(2000);
+	tstBttn.setOtptSldrStpSize(1);
+	tstBttn.setOtptCurVal(1000);
+
+	enableSwpTmrHndl = xTimerCreate(
+			"isEnabledSwapTimer",
+			10000,
+			pdTRUE,
+			tstBttnPtr,
+			swpEnableCb
+			);
+	if (enableSwpTmrHndl != NULL){
+      tmrModRslt = xTimerStart(enableSwpTmrHndl, portMAX_DELAY);
+   }
+	if(tmrModRslt == pdFAIL){
+	    Error_Handler();
+	}
+
+	tstBttn.begin(5);
 
 	for(;;)
 	{
 		if(tstBttn.getOutputsChange()){
 			if(tstBttn.getIsOn())
-			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_SET);
+				__HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_1, tstBttn.getOtptCurVal());
 			else
-			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
+				__HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_1, 0);
+
+			if(!(tstBttn.getIsEnabled()))
+				HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_SET);
+			else
+				HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_RESET);
 		}
 	}
 }
-/* USER CODE END */
 
+void swpEnableCb(TimerHandle_t  pvParam){
+	DbncdMPBttn* bttnArg = (LtchMPBttn*) pvTimerGetTimerID(pvParam);
+
+	bool curEnable = bttnArg->getIsEnabled();
+
+	if(curEnable)
+		bttnArg->disable();
+	else
+		bttnArg->enable();
+
+  return;
+}
+/* USER CODE END */
 
 /**
   * @brief System Clock Configuration
@@ -170,6 +230,60 @@ void SystemClock_Config(void)
 }
 
 /**
+  * @brief TIM2 Initialization Function
+  *
+  * Needed to generate PWM output for PA05: on-board green, Timmer2, Channel1
+  *
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)	//myProjectResource
+{
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
+
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 840-1;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 2000-1;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+  HAL_TIM_Base_Start(&htim2);
+  /* USER CODE END TIM2_Init 2 */
+
+  HAL_TIM_MspPostInit(&htim2);
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -190,14 +304,56 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(tstMpbOnBoard.portId, &GPIO_InitStruct);
 
-  /*Configure GPIO pin Output Level for tstLedOnBoard*/
-  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
-  /*Configure GPIO pin : tstLedOnBoard_Pin */
-  GPIO_InitStruct.Pin = tstLedOnBoard.pinNum;
+  /*Configure GPIO pin Output Level for ledIsEnabled))*/
+  HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_RESET);
+  /*Configure GPIO pin : ledIsEnabled_Pin */
+  GPIO_InitStruct.Pin = ledIsEnabled.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(tstLedOnBoard.portId, &GPIO_InitStruct);
+  HAL_GPIO_Init(ledIsEnabled.portId, &GPIO_InitStruct);
+}
+
+/**
+* @brief TIM_Base MSP Initialization
+* This function configures the hardware resources used in this example
+* @param htim_base: TIM_Base handle pointer
+* @retval None
+*/
+void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
+{
+	if(htim_base->Instance==TIM2)	//myProjectResource
+	{
+		/* USER CODE BEGIN TIM2_MspInit 0 */
+		/* USER CODE END TIM2_MspInit 0 */
+
+		/* Peripheral clock enable */
+		__HAL_RCC_TIM2_CLK_ENABLE();
+	  /* USER CODE BEGIN TIM2_MspInit 1 */
+	  /* USER CODE END TIM2_MspInit 1 */
+	}
+}
+
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+	if(htim->Instance==TIM2)
+  {
+  /* USER CODE BEGIN TIM2_MspPostInit 0 */
+  /* USER CODE END TIM2_MspPostInit 0 */
+
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    /**TIM2 GPIO Configuration
+    PA5     ------> TIM2_CH1
+    */
+    GPIO_InitStruct.Pin = tstLedOnBoard.pinNum;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF1_TIM2;
+    HAL_GPIO_Init(tstLedOnBoard.portId, &GPIO_InitStruct);
+  }
 }
 
 /**

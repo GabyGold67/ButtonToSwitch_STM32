@@ -6,9 +6,9 @@
   * The test instantiates a TmLtchMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
   * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
-  * 	- A LED attached to GPIO_C00 to visualize the isEnabled attribute flag status
-  * 	- A LED attached to GPIO_B13 to visualize the "Task While MPB is On" activity
-  * 	- A LED attached to GPIO_B14 to visualize the FnWhnTrnOn() and FnWhnTrnOff() activity
+  * 	- A digital output to GPIO_C00 to visualize the isEnabled attribute flag status
+  * 	- A digital output to GPIO_B13 to visualize the "Task While MPB is On" activity
+  * 	- A digital output to GPIO_B14 to visualize the FnWhnTrnOn() and FnWhnTrnOff() activity
   *
   * ### This example creates three Tasks, a timer, and two dedicated functions:
   *
@@ -61,7 +61,6 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
-#include "semphr.h"
 //===========================>> Previous lines used to avoid CMSIS wrappers
 /* USER CODE BEGIN Includes */
 #include "../../mpbAsSwitch_STM32/src/mpbAsSwitch_STM32.h"

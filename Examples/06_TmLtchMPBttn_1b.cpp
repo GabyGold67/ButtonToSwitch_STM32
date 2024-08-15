@@ -6,7 +6,7 @@
   * The test instantiates a TmLtchMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
   * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
-  * 	- A LED attached to GPIO_C00 to visualize the isEnabled attribute flag status
+  * 	- A digital output to GPIO_PC00 to visualize the _isEnabled attribute flag status
   *
   * ### This example creates one Task and a timer:
   *
@@ -149,8 +149,6 @@ void mainCtrlTsk(void *pvParameters)
 				HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_SET);
 			else
 				HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_RESET);
-
-			tstBttn.setOutputsChange(false);
 		}
 	}
 }

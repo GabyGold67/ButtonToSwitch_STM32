@@ -54,7 +54,6 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
-#include "semphr.h"
 //===========================>> Previous lines used to avoid CMSIS wrappers
 /* USER CODE BEGIN Includes */
 #include "../../mpbAsSwitch_STM32/src/mpbAsSwitch_STM32.h"
@@ -335,7 +334,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(tstLedOnBoard.portId, &GPIO_InitStruct);
 
-  /*Configure GPIO pin Output Level for ledOnPC00))*/
+  /*Configure GPIO pin Output Level for ledIsEnabled*/
   HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_RESET);
   /*Configure GPIO pin : ledIsEnabled_Pin */
   GPIO_InitStruct.Pin = ledIsEnabled.pinNum;
@@ -344,7 +343,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(ledIsEnabled.portId, &GPIO_InitStruct);
 
-  /*Configure GPIO pin Output Level for ledOnPA04))*/
+  /*Configure GPIO pin Output Level for ledTskWhlOn*/
   HAL_GPIO_WritePin(ledTskWhlOn.portId, ledTskWhlOn.pinNum, GPIO_PIN_RESET);
   /*Configure GPIO pin : ledIsEnabled_Pin */
   GPIO_InitStruct.Pin = ledTskWhlOn.pinNum;

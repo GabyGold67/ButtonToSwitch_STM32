@@ -11,8 +11,8 @@
   * This simple example creates a single Task, instantiates the DDlydDALtchMPBttn object
   * in it and checks it's attribute flags locally through the getters methods.
   * When a change in the outputs attribute flags values is detected, it manages the
-  *  loads and resources that the switch turns On and Off, in this example case are
-  *  the output of some GPIO pins.
+  * loads and resources that the switch turns On and Off, in this example case are
+  * the output of some GPIO pins.
   *
   * 	@author	: Gabriel D. Goldman
   *
