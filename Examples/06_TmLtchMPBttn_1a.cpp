@@ -23,7 +23,6 @@
   ******************************************************************************
   * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
   * library. All files needed are provided as part of the source code for the library.
-  *
   ******************************************************************************
   */
 //----------------------- BEGIN Specific to use STM32F4xxyy testing platform

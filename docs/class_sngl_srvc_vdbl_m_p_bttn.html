@@ -26,6 +26,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="Various_Switches_3.jpeg"/></td>
   <td id="projectalign">
    <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;3.1.0</span>
    </div>
@@ -99,6 +100,7 @@ $(function(){initNavTree('class_sngl_srvc_vdbl_m_p_bttn.html',''); initResizable
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="class_sngl_srvc_vdbl_m_p_bttn-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">SnglSrvcVdblMPBttn Class Reference</div></div>
 </div><!--header-->
@@ -153,9 +155,6 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~SnglSrvcVdblMPBtt
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>begin</b> (const unsigned long int &amp;pollDelayMs=_StdPollDelay)</td></tr>
 <tr class="memdesc:a0962f2abece8fef8a1584914c0de187a"><td class="mdescLeft">&#160;</td><td class="mdescRight">See DbncdMPBttn::begin(const unsigned long int) <br /></td></tr>
 <tr class="separator:a0962f2abece8fef8a1584914c0de187a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a01e08b07893395fece2cd192dee185ef" id="r_a01e08b07893395fece2cd192dee185ef"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a01e08b07893395fece2cd192dee185ef">setTaskWhileOn</a> (const TaskHandle_t &amp;newTaskHandle)</td></tr>
-<tr class="memdesc:a01e08b07893395fece2cd192dee185ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the task to be run while the object is in the <b>On state</b>.  <br /></td></tr>
-<tr class="separator:a01e08b07893395fece2cd192dee185ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_vdbl_m_p_bttn"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_class_vdbl_m_p_bttn')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_vdbl_m_p_bttn.html">VdblMPBttn</a></td></tr>
 <tr class="memitem:a513da8ca7527e3a50f632ebb33448d40 inherit pub_methods_class_vdbl_m_p_bttn" id="r_a513da8ca7527e3a50f632ebb33448d40"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_vdbl_m_p_bttn.html#a513da8ca7527e3a50f632ebb33448d40">VdblMPBttn</a> (GPIO_TypeDef *mpbttnPort, const uint16_t &amp;mpbttnPin, const bool &amp;pulledUp=true, const bool &amp;typeNO=true, const unsigned long int &amp;dbncTimeOrigSett=0, const unsigned long int &amp;strtDelay=0, const bool &amp;isOnDisabled=false)</td></tr>
 <tr class="memdesc:a513da8ca7527e3a50f632ebb33448d40 inherit pub_methods_class_vdbl_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class constructor.  <br /></td></tr>
@@ -307,12 +306,20 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memitem:ab5d3ecd472c90f91c36eed3ce11cce7e inherit pub_methods_class_dbncd_m_p_bttn" id="r_ab5d3ecd472c90f91c36eed3ce11cce7e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#ab5d3ecd472c90f91c36eed3ce11cce7e">setTaskToNotify</a> (const TaskHandle_t &amp;newTaskHandle)</td></tr>
 <tr class="memdesc:ab5d3ecd472c90f91c36eed3ce11cce7e inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the pointer to the task to be notified by the object when its output attribute flags changes.  <br /></td></tr>
 <tr class="separator:ab5d3ecd472c90f91c36eed3ce11cce7e inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a01e08b07893395fece2cd192dee185ef" id="r_a01e08b07893395fece2cd192dee185ef"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a01e08b07893395fece2cd192dee185ef">setTaskWhileOn</a> (const TaskHandle_t &amp;newTaskHandle)</td></tr>
+<tr class="memdesc:a01e08b07893395fece2cd192dee185ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the task to be run while the object is in the <b>On state</b>.  <br /></td></tr>
+<tr class="separator:a01e08b07893395fece2cd192dee185ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_class_vdbl_m_p_bttn"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_methods_class_vdbl_m_p_bttn')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_vdbl_m_p_bttn.html">VdblMPBttn</a></td></tr>
+<tr class="inherit_header pro_methods_class_dbncd_m_p_bttn"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_methods_class_dbncd_m_p_bttn')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_dbncd_m_p_bttn.html">DbncdMPBttn</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Models a Single Service Voidable DD-MPB a.k.a. Trigger switch (<b>SSVDD-MPB</b>) </p>
 <p>The <b>Single Service Voidable Momentary Push Button</b> keeps the <b>On state</b> since the moment the signal is stable (debounce &amp; delay process) and until the moment the provided mechanisms implemented to be executed when the switch enters the <b>On State</b> are started, that means calling the <b>fnWhnTrnOn</b> function, notifying the <b>taskToNotify</b> task and setting the <b>isOn</b> attribute flag. After the configured mechanisms are triggered and the attribute flag is set to <b>true</b> (the only mandatory action is the attribute flag setting, all the others are configurable to execute or not) the MPB will enter the <b>Voided State</b>, forcing the MPB into the <b>Off State</b>. The <a class="el" href="class_sngl_srvc_vdbl_m_p_bttn.html" title="Models a Single Service Voidable DD-MPB a.k.a. Trigger switch (SSVDD-MPB)">SnglSrvcVdblMPBttn</a> class objects requires the MPB to be released to exit the <b>Voided State</b>, restarting the cycle. This kind of switches are used to handle "Single Shot Trigger" style signals, ensuring one single signal per push.</p>
-<dl class="section attention"><dt>Attention</dt><dd>Depending on checking the <b>isOn</b> flag reading trough the <a class="el" href="class_dbncd_m_p_bttn.html#ac78bb12cb1d9bdb43b4e4e593812b300" title="Gets the value of the isOn attribute flag.">getIsOn()</a> method might surely fail due to the high risk of missing the short time the flag will be raised before is again taken down by the voidance of the MPB. The use of the non-polling facilities ensures no loss of signals and enough time to execute the code depending on the "trigger activation", including the <b>fnWhnTrnOn</b> function, and the <b>taskToNotify</b> task.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>Due to the short time the <b>isOn</b> flag will be raised, as described above, the resuming of the <b>taskWhileOn</b> activation mechanism is disabled in this class. For that purpose the setTaskWhileOn(const TaskHandle_t) is modified, check the method description for details.</dd>
+<dl class="section attention"><dt>Attention</dt><dd>Depending on checking the <b>isOn</b> flag reading trough the <a class="el" href="class_dbncd_m_p_bttn.html#ac78bb12cb1d9bdb43b4e4e593812b300" title="Gets the value of the isOn attribute flag.">getIsOn()</a> method might surely fail due to the high risk of missing the short time the flag will be raised before it is again taken down by the voidance of the MPB. The use of the non-polling facilities ensures no loss of signals and enough time to execute the code depending on the "trigger activation", including the <b>fnWhnTrnOn</b> function, and the <b>taskToNotify</b> task.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Due to the short time the <b>isOn</b> flag will be raised, as described above, the resuming of the <b>taskWhileOn</b> activation mechanism is disabled in this class. For that purpose the setTaskWhileOn(const TaskHandle_t) is made not accessible by setting it's accessibility to <b>protected</b>.</dd>
 <dd>
 Due to the short time the <b>isOn</b> flag will be raised, as described above, the short time between the <b>fnWhnTrnOn</b> function and the <b>fnWhnTrnOff</b> function callings must also need to be evaluated. </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -418,7 +425,7 @@ Due to the short time the <b>isOn</b> flag will be raised, as described above, t
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

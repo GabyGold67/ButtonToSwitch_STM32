@@ -3,7 +3,7 @@
   * @file	: 06_TmLtchMPBttn_1b.cpp
   * @brief  : Example for the MpbAsSwitch_STM32 library TmLtchMPBttn class
   *
-  * The test instantiates a TmLtchMPBttn object using:
+  * The example instantiates a TmLtchMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
   * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
   * 	- A digital output to GPIO_PC00 to visualize the _isEnabled attribute flag status
@@ -27,7 +27,6 @@
   ******************************************************************************
   * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
   * library. All files needed are provided as part of the source code for the library.
-  *
   ******************************************************************************
   */
 //----------------------- BEGIN Specific to use STM32F4xxyy testing platform
@@ -65,7 +64,7 @@ void Error_Handler(void);
 /* USER CODE BEGIN FP */
 // Tasks
 void mainCtrlTsk(void *pvParameters);
-// Timers
+// SW Timers
 void swpEnableCb(TimerHandle_t  pvParam);
 /* USER CODE END FP */
 

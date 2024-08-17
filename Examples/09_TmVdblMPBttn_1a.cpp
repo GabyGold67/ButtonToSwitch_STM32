@@ -6,7 +6,7 @@
   * The example instantiates a TmVdblMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
   * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
-  * 	- A LED attached to GPIO_A10 to visualize the isVoided attribute flag status
+  * 	- A digital outputched to GPIO_A10 to visualize the isVoided attribute flag status
   *
   * ### This example creates one Task:
   *
@@ -24,7 +24,6 @@
   ******************************************************************************
   * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
   * library. All files needed are provided as part of the source code for the library.
-  *
   ******************************************************************************
   */
 //----------------------- BEGIN Specific to use STM32F4xxyy testing platform
