@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @file	: 01_DbncdMPBttn_1c.cpp
-  * @brief  : Example for the MpbAsSwitch_STM32 library DbncdMPBttn class
+  * @brief  : Example for the ButtonToSwitch for STM32 library DbncdMPBttn class
   *
   * The test instantiates a DbncdMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
@@ -32,7 +32,7 @@
   * 				07/07/2024 Last update
   *
   ******************************************************************************
-  * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
+  * @attention	This file is part of the Examples folder for the ButtonToSwitch for STM32
   * library. All files needed are provided as part of the source code for the library.
   *
   ******************************************************************************

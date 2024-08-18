@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @file	: 06_TmLtchMPBttn_1b.cpp
-  * @brief  : Example for the MpbAsSwitch_STM32 library TmLtchMPBttn class
+  * @brief  : Example for the ButtonToSwitch for STM32 library TmLtchMPBttn class
   *
   * The example instantiates a TmLtchMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
@@ -25,7 +25,7 @@
   * 				11/06/2024 Last update
   *
   ******************************************************************************
-  * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
+  * @attention	This file is part of the Examples folder for the ButtonToSwitch for STM32
   * library. All files needed are provided as part of the source code for the library.
   ******************************************************************************
   */

@@ -1,8 +1,8 @@
-# Momentary Push Buttons as Switches Library (_**MpbAsSwitch**_)
+# Buttons to Switches Library for STM32 (_**ButtonToSwitch**_)
 
 ### An STM32-RTOS library that builds switch mechanisms replacements out of simple push buttons.  
-By using just a push button (a.k.a. momentary switches or momentary buttons -_**MPB**_ for short from here on- the classes implemented in this library will manage, calculate and update different parameters to **generate the behavior of standard electromechanical switches**, including some well known industry specific switches. 
-Those parameters include presses, releases, timings, counters or secondary inputs readings as needed, and corresponding primary and secondary outputs generated.  
+By using just a button (a.k.a. push button, momentary switches or momentary buttons -_**MPB**_ for short from here on- the classes implemented in this library will manage, calculate and update different parameters to **generate the behavior of standard electromechanical switches**, including some well known industry specific switches. 
+Those parameters include presses, releases, timings, counters or secondary inputs readings as needed, and corresponding primary and auxiliary outputs generated.  
 
 ### The main output flag generated for each and every class is the **isOn** flag, which defines the _**Off State**_ (isOn=false) and the _**On State**_ (isOn=true) of the instantiated objects.  
 
@@ -13,7 +13,7 @@ Those parameters include presses, releases, timings, counters or secondary input
 
 All classes provide several communication mechanisms to keep it's output states available by request and by having their value change automatically notified.  
 Those mechanisms include:    
-	- **Flags value getters**: Return the value of each significant output flag.  
+	- **Flags value getters**: Return the value of each significant attribute flag.  
 	- **General flags value change getter**: Returns a value indicating if **any** of the significant output flags' values has changed.  
 	- **Lightweight Binary Semaphore**: Implementation of a **xTaskNotify()** FreeRTOS macro to unblock a developer defined task -every time **any** of the output flags' values changes- including a notification value indicating the state of the MPB.  
 	- **Task Resume/Suspend**: A mechanism is provided to run a developer defined task while the object is in **On State**. The designated task will be set to "Suspended State" while the object is in **Off State** and will be set to "Resume" while it is in **On State**, providing means to execute far more complex tasks than just "turning On & turning Off" devices.  
@@ -33,9 +33,10 @@ Those listed mechanisms are **independent**, so one or more might be simultaneou
 * **Short press/Long Press Double action On/Off + Slider combo switch**  (a.k.a. off/on/dimmer, a.k.a. **Off/On/Volume radio switch**)
 * **Short press/Long Press Double action On/Off + Secondary output MPB combo switch**
 
-MpbAsSwitch Library Documentation available at **[Github Pages](https://GabyGold67.github.io/mpbAsSwitch_STM32/)**
+ButtonToSwitch Library Documentation available **[HERE](https://GabyGold67.github.io/mpbAsSwitch_STM32/)**
 
-![MpbAsSwitch Library Classes Hierarchy](./Extras/MomentaryPushButtonUMLClassesOnly.jpg)
+
+![ButtonToSwitch Library Classes Hierarchy](./Extras/MomentaryPushButtonUMLClassesOnly.jpg)
 
 Each instantiated object returns a debounced, deglitched, clean "isOn" signal based on the expected behavior of the simulated switch mechanism. 
 

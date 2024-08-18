@@ -5,5 +5,6 @@ var searchData=
   ['behaviors_3a_2',['The library implements the following switches behaviors:',['../index.html#the-library-implements-the-following-switches-behaviors',1,'']]],
   ['builds_20switch_20mechanisms_20replacements_20out_20of_20simple_20push_20buttons_3',['An STM32-RTOS library that builds switch mechanisms replacements out of simple push buttons.',['../index.html#an-stm32-rtos-library-that-builds-switch-mechanisms-replacements-out-of-simple-push-buttons',1,'']]],
   ['buttons_4',['An STM32-RTOS library that builds switch mechanisms replacements out of simple push buttons.',['../index.html#an-stm32-rtos-library-that-builds-switch-mechanisms-replacements-out-of-simple-push-buttons',1,'']]],
-  ['buttons_20as_20switches_20library_20em_20strong_20mpbasswitch_20strong_20em_5',['Momentary Push Buttons as Switches Library (&lt;em&gt;&lt;strong&gt;MpbAsSwitch&lt;/strong&gt;&lt;/em&gt;)',['../index.html',1,'']]]
+  ['buttons_20to_20switches_20library_20for_20stm32_20em_20strong_20buttontoswitch_20strong_20em_5',['Buttons to Switches Library for STM32 (&lt;em&gt;&lt;strong&gt;ButtonToSwitch&lt;/strong&gt;&lt;/em&gt;)',['../index.html',1,'']]],
+  ['buttontoswitch_20strong_20em_6',['Buttons to Switches Library for STM32 (&lt;em&gt;&lt;strong&gt;ButtonToSwitch&lt;/strong&gt;&lt;/em&gt;)',['../index.html',1,'']]]
 ];

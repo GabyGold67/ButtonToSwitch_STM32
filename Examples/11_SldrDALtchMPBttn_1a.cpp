@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @file	: 11_SldrDALtchMPBttn_1a.cpp
-  * @brief  : Example for the MpbAsSwitch_STM32 library SldrDALtchMPBttn class
+  * @brief  : Example for the ButtonToSwitch for STM32 library SldrDALtchMPBttn class
   *
   * The test instantiates a SldrDALtchMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
@@ -26,9 +26,8 @@
   * 				11/06/2024 Last update
   *
   ******************************************************************************
-  * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
+  * @attention	This file is part of the Examples folder for the ButtonToSwitch for STM32
   * library. All files needed are provided as part of the source code for the library.
-  *
   ******************************************************************************
   */
 //----------------------- BEGIN Specific to use STM32F4xxyy testing platform

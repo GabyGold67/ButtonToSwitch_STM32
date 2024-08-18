@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>MpbAsSwitch Library for STM32: Momentary Push Buttons as Switches Library (&lt;em&gt;&lt;strong&gt;MpbAsSwitch&lt;/strong&gt;&lt;/em&gt;)</title>
+<title>ButtonToSwitch Library for STM32: Buttons to Switches Library for STM32 (&lt;em&gt;&lt;strong&gt;ButtonToSwitch&lt;/strong&gt;&lt;/em&gt;)</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,9 +26,9 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
-  <td id="projectlogo"><img alt="Logo" src="Various_Switches_3.jpeg"/></td>
+  <td id="projectlogo"><img alt="Logo" src="Complex_Switch_Sq_Sm.jpeg"/></td>
   <td id="projectalign">
-   <div id="projectname">MpbAsSwitch Library for STM32<span id="projectnumber">&#160;3.1.0</span>
+   <div id="projectname">ButtonToSwitch Library for STM32<span id="projectnumber">&#160;v3.1.0</span>
    </div>
    <div id="projectbrief">A library that provides elaborated switch mechanism simulation for digital signals inputs</div>
   </td>
@@ -98,13 +98,13 @@ $(function(){initNavTree('index.html',''); initResizable(true); });
 </div>
 
 <div><div class="header">
-  <div class="headertitle"><div class="title">Momentary Push Buttons as Switches Library (<em><b>MpbAsSwitch</b></em>) </div></div>
+  <div class="headertitle"><div class="title">Buttons to Switches Library for STM32 (<em><b>ButtonToSwitch</b></em>) </div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md__c_1_2_users_2_gabriel_01_d_8_01_goldman_2_documents_2_my_01_projects_2_training_01_projects_2_momentary_push_button_tester_s_t_m32_2mpb_as_switch___s_t_m32_2_r_e_a_d_m_e"></a></p>
 <h2><a class="anchor" id="an-stm32-rtos-library-that-builds-switch-mechanisms-replacements-out-of-simple-push-buttons"></a>
 An STM32-RTOS library that builds switch mechanisms replacements out of simple push buttons.</h2>
-<p>By using just a push button (a.k.a. momentary switches or momentary buttons -_**MPB**_ for short from here on- the classes implemented in this library will manage, calculate and update different parameters to <b>generate the behavior of standard electromechanical switches</b>, including some well known industry specific switches. Those parameters include presses, releases, timings, counters or secondary inputs readings as needed, and corresponding primary and secondary outputs generated. <br  />
+<p>By using just a button (a.k.a. push button, momentary switches or momentary buttons -_**MPB**_ for short from here on- the classes implemented in this library will manage, calculate and update different parameters to <b>generate the behavior of standard electromechanical switches</b>, including some well known industry specific switches. Those parameters include presses, releases, timings, counters or secondary inputs readings as needed, and corresponding primary and auxiliary outputs generated. <br  />
 </p>
 <h2><a class="anchor" id="the-main-output-flag-generated-for-each-and-every-class-is-the-ison-flag-which-defines-the-_off-state_-isonfalse-and-the-_on-state_-isontrue-of-the-instantiated-objects"></a>
 The main output flag generated for each and every class is the <b>isOn</b> flag, which defines the <em><b>Off State</b></em> (isOn=false) and the <em><b>On State</b></em> (isOn=true) of the instantiated objects.</h2>
@@ -118,7 +118,7 @@ The embedded behavior also includes logical replacements for temporary or extrao
 <p>All classes provide several communication mechanisms to keep it's output states available by request and by having their value change automatically notified. <br  />
  Those mechanisms include: <br  />
 </p><ul>
-<li><b>Flags value getters</b>: Return the value of each significant output flag. <br  />
+<li><b>Flags value getters</b>: Return the value of each significant attribute flag. <br  />
 </li>
 <li><b>General flags value change getter</b>: Returns a value indicating if <b>any</b> of the significant output flags' values has changed. <br  />
 </li>
@@ -149,11 +149,11 @@ The library implements the following switches behaviors:</h2>
 <li><b>Short press/Long Press Double action On/Off + Slider combo switch</b> (a.k.a. off/on/dimmer, a.k.a. <b>Off/On/Volume radio switch</b>)</li>
 <li><b>Short press/Long Press Double action On/Off + Secondary output MPB combo switch</b></li>
 </ul>
-<p>MpbAsSwitch Library Documentation available at <b><a href="https://GabyGold67.github.io/mpbAsSwitch_STM32/">Github Pages</a></b></p>
+<p>ButtonToSwitch Library Documentation available <b><a href="https://GabyGold67.github.io/mpbAsSwitch_STM32/">HERE</a></b></p>
 <div class="image">
 <img src="MomentaryPushButtonUMLClassesOnly.jpg" alt=""/>
 <div class="caption">
-MpbAsSwitch Library Classes Hierarchy</div></div>
+ButtonToSwitch Library Classes Hierarchy</div></div>
     <p>Each instantiated object returns a debounced, deglitched, clean "isOn" signal based on the expected behavior of the simulated switch mechanism.</p>
 <p>The system timer will periodically check the input pins associated to the objects and compute the object's internal state and output flags, the timer period for that checking is a general parameter that can be changed. </p>
 </div></div><!-- PageDoc -->
