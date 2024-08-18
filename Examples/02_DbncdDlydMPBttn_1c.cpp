@@ -1,37 +1,39 @@
 /**
   ******************************************************************************
   * @file	: 02_DbncdDlydMPBttn_1c.cpp
-  * @brief  : Example for the MpbAsSwitch_STM32 library DbncdDlydMPBttn class
+  * @brief  : Example for the ButtonToSwitch for STM32 library DbncdMPBttn class
   *
   * The test instantiates a DbncdDlydMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
-  * 	- The Nucleo board user LED attached to GPIO_A05
+  * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
   * 	- A LED attached to GPIO_C00 to visualize the isEnabled attribute flag status
   *
-  * This example creates two Tasks.
-  * The first task instantiates the DbncdDlydMPBttn object in it and checks it's
+  * ### This example creates two Tasks and a timer:
+  *
+  * - The first task instantiates the DbncdDlydMPBttn object in it and checks it's
   * attribute flags locally through the getters methods.
-  * The second task is started and blocked, it's purpose it's to manage the loads and resources
-  * that the switch turns On and Off, in this example case are the output of some GPIO pins.
+  *
+  * - The second task is created and blocked before the scheduler is started. It's purpose it's to
+  * manage the loads and resources that the switch turns On and Off, in this example case are the
+  * output level of some GPIO pins.
   * When a change in the object's output attribute flags is detected the second task is unblocked
   * through a xTaskNotify() to update the output GPIO pins and blocks again until next notification.
-  * The xTaskNotify() macro is limited to pass a 32 bit notifications value, the object instantiated
-  * takes care of encoding of the MPBttn state in a 32 bits value.
-  * A function -otptsSttsUnpkg()- is provided for the notified task to be able to decode the 32 bits
-  * notification value into flags values.
+  * The xTaskNotify() macro is limited to pass a 32 bit notifications value, the object takes care
+  * of encoding of the MPBttn state in a 32 bits value.
+  * A function, **otptsSttsUnpkg()**, is provided for the notified task to be able to decode the 32 bits
+  * notification value into flag values.
   *
-  * A software timer is created so that it periodically toggles the isEnabled attribute flag
+  * - A software timer is created so that it periodically toggles the isEnabled attribute flag
   * value, showing the behavior of the instantiated object when enabled and when disabled.
   *
   * 	@author	: Gabriel D. Goldman
   *
   * 	@date	: 	01/01/2024 First release
-  * 				21/04/2024 Last update
+  * 				07/07/2024 Last update
   *
   ******************************************************************************
-  * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
+  * @attention	This file is part of the Examples folder for the ButtonToSwitch for STM32
   * library. All files needed are provided as part of the source code for the library.
-  *
   ******************************************************************************
   */
 //----------------------- BEGIN Specific to use STM32F4xxyy testing platform
@@ -56,8 +58,7 @@
 /* USER CODE BEGIN PV */
 gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
-gpioPinId_t ledOnPC00{GPIOC, GPIO_PIN_0};			// Pin 0b 0000 0000 0000 0001
-gpioPinId_t ledIsEnabled = ledOnPC00;
+gpioPinId_t ledIsEnabled{GPIOC, GPIO_PIN_0};			// Pin 0b 0000 0000 0000 0001
 
 TaskHandle_t mainCtrlTskHndl {NULL};
 TaskHandle_t dmpsOutputTskHdl;
@@ -192,7 +193,7 @@ void dmpsOutputTsk(void *pvParameters){
 }
 
 void swpEnableCb(TimerHandle_t  pvParam){
-	DbncdMPBttn* bttnArg = (DbncdMPBttn*) pvTimerGetTimerID(pvParam);
+	DbncdMPBttn* bttnArg = (DbncdDlydMPBttn*) pvTimerGetTimerID(pvParam);
 
 	bool curEnable = bttnArg->getIsEnabled();
 

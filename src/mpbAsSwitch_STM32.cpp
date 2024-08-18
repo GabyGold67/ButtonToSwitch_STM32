@@ -11,9 +11,9 @@
   * electromechanical switches**.
   *
   * @author	: Gabriel D. Goldman
-  * @version v2.1.0
+  * @version v2.2.0
   * @date	: Created on: 06/11/2023
-  * 			: Last modification:	15/06/2024
+  * 			: Last modification:	07/07/2024
   * @copyright GPL-3.0 license
   *
   ******************************************************************************
@@ -22,7 +22,6 @@
   *
   ******************************************************************************
   */
-
 
 #include "mpbAsSwitch_STM32.h"
 
@@ -363,7 +362,7 @@ bool DbncdMPBttn::init(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const b
 }
 
 void DbncdMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
-	DbncdMPBttn *mpbObj = (DbncdMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
+	DbncdMPBttn* mpbObj = (DbncdMPBttn*)pvTimerGetTimerID(mpbTmrCbArg);
 	BaseType_t xReturned;
 
 	taskENTER_CRITICAL();
@@ -1386,7 +1385,7 @@ uint32_t HntdTmLtchMPBttn::_otptsSttsPkg(uint32_t prevVal){
 	else{
 		prevVal &= ~(((uint32_t)1) << PilotOnBitPos);
 	}
-	if(_isEnabled){
+	if(_wrnngOn){
 		prevVal |= ((uint32_t)1) << WrnngOnBitPos;
 	}
 	else{
@@ -2505,7 +2504,7 @@ VdblMPBttn::VdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, cons
 }
 
 VdblMPBttn::VdblMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay, const bool &isOnDisabled)
-:VdblMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
+:VdblMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay, isOnDisabled)
 {
 }
 
@@ -2592,11 +2591,7 @@ bool VdblMPBttn::setVoided(const bool &newVoidValue){
 }
 
 void VdblMPBttn::stDisabled_In(){
-	pause();    //It's pausing the timer that keeps the inputs updated and calculates and updates the output flags... Flags must be updated for the disabled condition
-	clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
-
 	if(_isOn != _isOnDisabled){
-		_isOn = _isOnDisabled;
 		if(_isOn){
 			_turnOff();
 		}
@@ -2604,6 +2599,7 @@ void VdblMPBttn::stDisabled_In(){
 			_turnOn();
 		}
 	}
+	clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
 
 	return;
 }
@@ -2772,15 +2768,7 @@ void VdblMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){
 				_validDisablePend = false;
-				if(_isOn != _isOnDisabled){
-					if(_isOn){
-						_turnOff();
-					}
-					else{
-						_turnOn();
-					}
-				}
-				clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
+				stDisabled_In();
 				_isEnabled = false;
 				setOutputsChange(true);
 				clrSttChng();
@@ -2838,14 +2826,11 @@ void VdblMPBttn::setStOnWhnOtpFrcd(const bool &newVal){
 	return;
 }
 
-
 //=========================================================================> Class methods delimiter
 
 TmVdblMPBttn::TmVdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, unsigned long int voidTime, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay, const bool &isOnDisabled)
 :VdblMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay, isOnDisabled), _voidTime{voidTime}
 {
-   _frcOtptLvlWhnVdd = true;	//This attribute is subclass inherent characteristic, no setter will be provided for it
-   _stOnWhnOtptFrcd = false;	//This attribute is subclass inherent characteristic, no setter will be provided for it
 }
 
 TmVdblMPBttn::TmVdblMPBttn(gpioPinId_t mpbttnPinStrct, unsigned long int voidTime, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay, const bool &isOnDisabled)
@@ -2948,8 +2933,73 @@ bool TmVdblMPBttn::updVoidStatus(){
 
 //=========================================================================> Class methods delimiter
 
+SnglSrvcVdblMPBttn::SnglSrvcVdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
+:VdblMPBttn(mpbttnPort, mpbttnPin, pulledUp, typeNO, dbncTimeOrigSett, strtDelay, false)
+{
+	_isOnDisabled = false;
+   _frcOtptLvlWhnVdd = true;	//This attribute is subclass inherent characteristic, no setter will be provided for it
+   _stOnWhnOtptFrcd = false;	//This attribute is subclass inherent characteristic, no setter will be provided for it
+}
+
+SnglSrvcVdblMPBttn::SnglSrvcVdblMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp, const bool &typeNO, const unsigned long int &dbncTimeOrigSett, const unsigned long int &strtDelay)
+:SnglSrvcVdblMPBttn(mpbttnPinStrct.portId, mpbttnPinStrct.pinNum, pulledUp, typeNO, dbncTimeOrigSett, strtDelay)
+{
+}
+
+SnglSrvcVdblMPBttn::~SnglSrvcVdblMPBttn()
+{
+}
+
+bool SnglSrvcVdblMPBttn::begin(const unsigned long int &pollDelayMs){
+   bool result {false};
+   BaseType_t tmrModResult {pdFAIL};
+
+   if (!_mpbPollTmrHndl){
+		_mpbPollTmrHndl = xTimerCreate(
+				_mpbPollTmrName.c_str(),  //Timer name
+			pdMS_TO_TICKS(pollDelayMs),  //Timer period in ticks
+			pdTRUE,     //Autoreload true
+			this,       //TimerID: data passed to the callback funtion to work
+			mpbPollCallback
+		);
+	}
+   if (_mpbPollTmrHndl != NULL){
+   	tmrModResult = xTimerStart(_mpbPollTmrHndl, portMAX_DELAY);
+		if (tmrModResult == pdPASS)
+			result = true;
+	}
+
+   return result;
+}
+
+void SnglSrvcVdblMPBttn::setTaskWhileOn(const TaskHandle_t &newTaskHandle){
+
+	return;
+}
+
+void SnglSrvcVdblMPBttn::stOffVddNVUP_Do(){
+	if(_validReleasePend){
+		_validReleasePend = false;
+		_validUnvoidPend = true;
+	}
+
+	return;
+}
+
+bool SnglSrvcVdblMPBttn::updVoidStatus(){
+	bool result {false};
+
+	if(_isOn)
+		result = true;
+	_validVoidPend = result;
+
+	return _validVoidPend;
+}
+
+//=========================================================================> Class methods delimiter
+
 /**
- * @brief Returns the position of the single set bit on an unsigned 16 bits integer value
+ * @brief Returns the position of the single set bit on an unsigned 16 bits integer value.
  *
  * @param mask A 16 bits single bit set unsigned integer
  * @return The position of the single bit set on the parameter value

@@ -3,27 +3,29 @@
   * @file	: 07_XtrnUnltchMPBttn_2a.cpp
   * @brief  : Example for the MpbAsSwitch_STM32 library XtrnUnltchMPBttn class
   *
-  * 	The example instantiates a XtrnUnltchMPBttn object using:
-  * 		- The Nucleo board user pushbutton attached to GPIO_B00
-  * 		- The Nucleo board user LED attached to GPIO_A05
-  * 		- The external unlatch pushbutton attached to GPIO_B00
+  * The example instantiates a XtrnUnltchMPBttn object using:
+  * 	- The Nucleo board user pushbutton attached to GPIO_B00
+  * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
+  * 	- The external unlatch pushbutton attached to GPIO_B00
+  *
+  * ### This example creates one Task:
   *
   * This simple example creates a single Task, instantiates the XtrnUnltchMPBttn object
   * and a DbncdDlydMPBttn in it and checks both's attribute flags locally through
   * the getters methods.
-  * When a change in the outputs attribute flags values is detected, it manages the
+  * When a change in the object's outputs attribute flags values is detected, it manages the
   * loads and resources that the switch turns On and Off, in this example case are
   * the output of some GPIO pins.
   *
   * In this example the unlatch signal originates in a DbncdDlydMPBttn whose attribute
   * flags are checked along with the XtrnUnltchMPBttn object attribute flags. When the isOn
-  * attribute flag is set at the DbncdDlydMPBttn, an unlatch() method is invoked in the
+  * attribute flag is set at the DbncdDlydMPBttn an unlatch() method is invoked in the
   * XtrnUnltchMPBttn object.
   *
   * 	@author	: Gabriel D. Goldman
   *
   * 	@date	: 	01/01/2024 First release
-  * 				21/04/2024 Last update
+  * 				07/07/2024 Last update
   *
   ******************************************************************************
   * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
@@ -50,9 +52,9 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
-gpioPinId_t mpbttnOnPB00{GPIOB, GPIO_PIN_0};	//Pin 0b 0000 0001
+gpioPinId_t mpbUnlatch{GPIOB, GPIO_PIN_0};		// Pin 0b 0000 0000 0000 0001
+gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
 
 TaskHandle_t mainCtrlTskHndl {NULL};
 BaseType_t xReturned;
@@ -109,11 +111,12 @@ int main(void)
 /* USER CODE BEGIN */
 void mainCtrlTsk(void *pvParameters)
 {
-	DbncdDlydMPBttn unLtchTstBttnObj(mpbttnOnPB00.portId, mpbttnOnPB00.pinNum, true, true, 0, 200);
+	DbncdDlydMPBttn unLtchTstBttnObj(mpbUnlatch.portId, mpbUnlatch.pinNum, true, true, 0, 200);
 	XtrnUnltchMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, true, true, 0, 50);
 
+
 	unLtchTstBttnObj.begin(20);
-	tstBttn.setTrnOffASAP(true);
+	tstBttn.setTrnOffASAP(false);
 	tstBttn.begin(20);
 
 	for(;;)
@@ -203,14 +206,13 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(tstMpbOnBoard.portId, &GPIO_InitStruct);
 
   /*Configure GPIO pin : mpbttnOnPB00_Pin */
-  GPIO_InitStruct.Pin = mpbttnOnPB00.pinNum;
+  GPIO_InitStruct.Pin = mpbUnlatch.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(mpbttnOnPB00.portId, &GPIO_InitStruct);
+  HAL_GPIO_Init(mpbUnlatch.portId, &GPIO_InitStruct);
 
   /*Configure GPIO pin Output Level for tstLedOnBoard*/
   HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
-
   /*Configure GPIO pin : tstLedOnBoard_Pin */
   GPIO_InitStruct.Pin = tstLedOnBoard.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;

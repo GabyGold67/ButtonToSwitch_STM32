@@ -1,20 +1,22 @@
 /**
   ******************************************************************************
   * @file	: 10_HntdTmLtchMPBttn_1b.cpp
-  * @brief  : Example for the MpbAsSwitch_STM32 library HntdTmLtchMPBttn class
+  * @brief  : Example for the ButtonToSwitch for STM32 library HntdTmLtchMPBttn class
   *
   * The test instantiates a HntdTmLtchMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
   * 	- The Nucleo board user LED attached to GPIO_A05
-  * 	- A digital output to GPIO_PA04 to show _wrnngOn attribute flag state
+  * 	- A digital output to GPIO_PA05 to show _wrnngOn attribute flag state
   * 	- A digital output to GPIO_PC01 to show _pilotOn attribute flag state
   * 	- A digital output to GPIO_PC00 to show _isEnabled attribute flag state
   *
+  * ### This example creates one Task and a timer:
+  *
   * This simple example creates a single Task, instantiates the HntdTmLtchMPBttn object
   * in it and checks it's attribute flags locally through the getters methods.
-  * When a change in the outputs attribute flags values is detected, it manages the
+  * When a change in the object's outputs attribute flags values is detected, it manages the
   * loads and resources that the switch turns On and Off, in this example case are
-  * the output of some GPIO pins.
+  * the output level of some GPIO pins.
   *
   * A software timer is created so that it periodically toggles the isEnabled attribute flag
   * value, showing the behavior of the instantiated object when enabled and when disabled.
@@ -25,9 +27,8 @@
   * 				11/06/2024 Last update
   *
   ******************************************************************************
-  * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
+  * @attention	This file is part of the Examples folder for the ButtonToSwitch for STM32
   * library. All files needed are provided as part of the source code for the library.
-  *
   ******************************************************************************
   */
 //----------------------- BEGIN Specific to use STM32F4xxyy testing platform
@@ -49,14 +50,11 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
-gpioPinId_t ledOnPA04{GPIOA, GPIO_PIN_4};	//Pin 0b 0000 0000 0001 0000
-gpioPinId_t ledOnPC00{GPIOC, GPIO_PIN_0};	//Pin 0b 0000 0000 0000 0001
-gpioPinId_t ledOnPC01{GPIOC, GPIO_PIN_1};	//Pin 0b 0000 0000 0000 0010
-gpioPinId_t ledWrnngOn = ledOnPA04;
-gpioPinId_t ledPltOn = ledOnPC01;
-gpioPinId_t ledIsEnabled = ledOnPC00;
+gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
+gpioPinId_t ledWrnngOn{GPIOA, GPIO_PIN_4};		// Pin 0b 0000 0000 0001 0000
+gpioPinId_t ledPltOn{GPIOC, GPIO_PIN_1};			// Pin 0b 0000 0000 0000 0010
+gpioPinId_t ledIsEnabled{GPIOC, GPIO_PIN_0};		// Pin 0b 0000 0000 0000 0001
 
 TaskHandle_t mainCtrlTskHndl {NULL};
 BaseType_t xReturned;
@@ -68,7 +66,9 @@ static void MX_GPIO_Init(void);
 void Error_Handler(void);
 
 /* USER CODE BEGIN FP */
+// Tasks
 void mainCtrlTsk(void *pvParameters);
+// SW Timers
 void swpEnableCb(TimerHandle_t  pvParam);
 /* USER CODE END FP */
 
@@ -163,11 +163,10 @@ void mainCtrlTsk(void *pvParameters)
 			  HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_SET);
 			else
 			  HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_RESET);
-
-			tstBttn.setOutputsChange(false);
 		}
 	}
 }
+
 
 void swpEnableCb(TimerHandle_t  pvParam){
 	TgglLtchMPBttn* bttnArg = (TgglLtchMPBttn*) pvTimerGetTimerID(pvParam);
@@ -260,6 +259,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(tstLedOnBoard.portId, &GPIO_InitStruct);
 
+  /*Configure GPIO pin Output Level for ledIsEnabled*/
+  HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_RESET);
+  /*Configure GPIO pin : ledIsEnabled_Pin */
+  GPIO_InitStruct.Pin = ledIsEnabled.pinNum;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(ledIsEnabled.portId, &GPIO_InitStruct);
+
   /*Configure GPIO pin Output Level for ledWrnngOn*/
   HAL_GPIO_WritePin(ledWrnngOn.portId, ledWrnngOn.pinNum, GPIO_PIN_RESET);
   /*Configure GPIO pin : ledWrnngOn_Pin */
@@ -277,15 +285,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(ledPltOn.portId, &GPIO_InitStruct);
-
-  /*Configure GPIO pin Output Level for ledIsEnabled*/
-  HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_RESET);
-  /*Configure GPIO pin : ledIsEnabled_Pin */
-  GPIO_InitStruct.Pin = ledIsEnabled.pinNum;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(ledIsEnabled.portId, &GPIO_InitStruct);
 }
 
 /**

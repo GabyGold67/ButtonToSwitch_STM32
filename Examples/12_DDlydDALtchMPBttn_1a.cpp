@@ -1,18 +1,20 @@
 /**
   ******************************************************************************
   * @file	: 12_DDlydDALtchMPBttn_1a.cpp
-  * @brief  : Test for the MpbAsSwitch_STM32 library DDlydDALtchMPBttn class
+  * @brief  : Example for the ButtonToSwitch for STM32 library DDlydDALtchMPBttn class
   *
-  * 	The test instantiates a DDlydDALtchMPBttn object using:
+  * 	The Example instantiates a DDlydDALtchMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
-  * 	- The Nucleo board user LED attached to GPIO_A05
+  * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
   * 	- A digital output to GPIO_PC01 to show the second level action.
   *
-  * This simple example creates a single Task, instantiates the DDlydDALtchMPBttn object
+  * ### This example creates one Task:
+  *
+  * This simple example creates a single Task, instantiates the TmVdblMPBttn object
   * in it and checks it's attribute flags locally through the getters methods.
-  * When a change in the outputs attribute flags values is detected, it manages the
-  *  loads and resources that the switch turns On and Off, in this example case are
-  *  the output of some GPIO pins.
+  * When a change in the object's outputs attribute flags values is detected, it manages the
+  * loads and resources that the switch turns On and Off, in this example case are
+  * the output of some GPIO pins.
   *
   * 	@author	: Gabriel D. Goldman
   *
@@ -20,9 +22,8 @@
   * 				11/06/2024 Last update
   *
   ******************************************************************************
-  * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
+  * @attention	This file is part of the Examples folder for the ButtonToSwitch for STM32
   * library. All files needed are provided as part of the source code for the library.
-  *
   ******************************************************************************
   */
 //----------------------- BEGIN Specific to use STM32F4xxyy testing platform
@@ -44,10 +45,9 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
-gpioPinId_t ledOnPC01{GPIOC, GPIO_PIN_1};			// Pin 0b 0000 0000 0000 0010
-gpioPinId_t ledIsOnScndry = ledOnPC01;
+gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
+gpioPinId_t ledIsOnScndry{GPIOC, GPIO_PIN_1};	// Pin 0b 0000 0000 0000 0010
 
 TaskHandle_t mainCtrlTskHndl {NULL};
 BaseType_t xReturned;
@@ -116,11 +116,11 @@ void mainCtrlTsk(void *pvParameters)
 			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_SET);
 			else
 			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
+
 			if(tstBttn.getIsOnScndry())
 			  HAL_GPIO_WritePin(ledIsOnScndry.portId, ledIsOnScndry.pinNum, GPIO_PIN_SET);
 			else
 			  HAL_GPIO_WritePin(ledIsOnScndry.portId, ledIsOnScndry.pinNum, GPIO_PIN_RESET);
-			tstBttn.setOutputsChange(false);
 		}
 	}
 }
@@ -196,9 +196,6 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level for tstLedOnBoard*/
   HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
-  /*Configure GPIO pin Output Level for ledIsOnScndry*/
-  HAL_GPIO_WritePin(ledIsOnScndry.portId, ledIsOnScndry.pinNum, GPIO_PIN_RESET);
-
   /*Configure GPIO pin : tstLedOnBoard_Pin */
   GPIO_InitStruct.Pin = tstLedOnBoard.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -206,6 +203,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(tstLedOnBoard.portId, &GPIO_InitStruct);
 
+  /*Configure GPIO pin Output Level for ledIsOnScndry*/
+  HAL_GPIO_WritePin(ledIsOnScndry.portId, ledIsOnScndry.pinNum, GPIO_PIN_RESET);
   /*Configure GPIO pin : ledIsOnScndry */
   GPIO_InitStruct.Pin = ledIsOnScndry.pinNum;
   HAL_GPIO_Init(ledIsOnScndry.portId, &GPIO_InitStruct);

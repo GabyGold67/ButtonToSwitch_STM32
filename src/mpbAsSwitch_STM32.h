@@ -11,9 +11,9 @@
   * electromechanical switches**.
   *
   * @author	: Gabriel D. Goldman
-  * @version v2.1.0
+  * @version v2.2.0
   * @date	: Created on: 06/11/2023
-  * 			: Last modification:	15/06/2024
+  * 			: Last modification:	07/07/2024
   * @copyright GPL-3.0 license
   *
   * @note FreeRTOS Kernel V10.3.1, some implementations have been limited to comply to the services provided by the version.
@@ -115,7 +115,7 @@ static BaseType_t errorFlag {pdFALSE};
 
 //==========================================================>> Classes declarations BEGIN
 /**
- * @brief Base class, implements a Debounced Momentary Push Button (**D-MPB**).
+ * @brief Base class, models a Debounced Momentary Push Button (**D-MPB**).
  *
  * This class provides the resources needed to process a momentary digital input signal -as the one provided by a MPB (Momentary Push Button)- returning a clean signal to be used as a switch, implementing the needed services to replace a wide range of physical related switch characteristics: Debouncing, deglitching, disabling.
  *
@@ -167,7 +167,7 @@ protected:
 	const bool getIsPressed() const;
 	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
    void _setIsEnabled(const bool &newEnabledValue);
-	uint32_t _otptsSttsPkg(uint32_t prevVal = 0);
+	virtual uint32_t _otptsSttsPkg(uint32_t prevVal = 0);
    void setSttChng();
 	void _turnOff();
 	void _turnOn();
@@ -355,7 +355,7 @@ public:
     * @return TaskHandle_t value of the task to be notified of the outputs change.
     * @retval NULL: there is no task configured to be notified of the outputs change.
     *
-    *@note The notification is done through a **direct to task notification** using the **xTaskNotify()** RTOS macro, the notification includes passing the notified task a 32-bit notification value.
+    * @note The notification is done through a **direct to task notification** using the **xTaskNotify()** RTOS macro, the notification includes passing the notified task a 32-bit notification value.
     */
 	const TaskHandle_t getTaskToNotify() const;
 	/**
@@ -485,13 +485,13 @@ public:
     *
     * @warning Take special consideration about the implications of the execution **priority** of the task to be executed while the MPB is in **On state** and its relation to the priority of the calling task, as it might affect the normal execution of the application.
 	 */
-	void setTaskWhileOn(const TaskHandle_t &newTaskHandle);
+	virtual void setTaskWhileOn(const TaskHandle_t &newTaskHandle);
 };
 
 //==========================================================>>
 
 /**
- * @brief Implements a Debounced Delayed MPB (**DD-MPB**).
+ * @brief Models a Debounced Delayed MPB (**DD-MPB**).
  *
  * The **Debounced Delayed Momentary Button**, keeps the ON state since the moment the signal is stable (debouncing process), plus a delay added, and until the moment the push button is released. The reasons to add the delay are design related and are usually used to avoid unintentional presses, or to give some equipment (load) that needs time between repeated activations the benefit of the pause. If the push button is released before the debounce and delay times configured are reached, no press is registered at all. The delay time in this class as in the other that implement it, might be zero (0), defined by the developer and/or modified in runtime.
  *
@@ -550,7 +550,7 @@ public:
 //==========================================================>>
 
 /**
- * @brief Abstract class, base to implement Latched Debounced Delayed MPBs (**LDD-MPB**).
+ * @brief Abstract class, base to model Latched Debounced Delayed MPBs (**LDD-MPB**).
  *
  * **Latched DD-MPB** are MPBs whose distinctive characteristic is that implement switches that keep the ON state since the moment the input signal is stable (debouncing + Delay process), and keeps the ON state after the MPB is released and until an event un-latches them, setting them free to move to the **Off State**.
  * The un-latching mechanisms include but are not limited to: same MPB presses, timers, other MPB presses, other GPIO external un-latch signals or the use of the public method unlatch().
@@ -697,7 +697,7 @@ public:
 //==========================================================>>
 
 /**
- * @brief Implements a Toggle Latch DD-MPB, a.k.a. a Toggle Switch (**ToLDD-MPB**).
+ * @brief Models a Toggle Latch DD-MPB, a.k.a. a Toggle Switch (**ToLDD-MPB**).
  *
  * The **Toggle switch** keeps the ON state since the moment the signal is stable (debouncing + delay process), and keeps the ON state after the push button is released and until it is pressed once again. So this simulates a simple On-Off switch like the one used to turn on/off a room light. The included methods lets the designer define the unlatch event as the instant the MPB is started to be pressed for the second time or when the MPB is released from that second press.
  *
@@ -726,7 +726,7 @@ public:
 //==========================================================>>
 
 /**
- * @brief Implements a Timer Latch DD-MPB, a.k.a. Timer Switch (**TiLDD-MPB**).
+ * @brief Models a Timer Latch DD-MPB, a.k.a. Timer Switch (**TiLDD-MPB**).
  *
  * The **Timer switch** keeps the **On state** since the moment the signal is stable (debouncing + delay process), and until the unlatch signal is provided by a preset timer **started immediately after** the MPB has passed the debounce & delay process.
  * The time count down might be reseted by pressing the MPB before the timer expires by optionally configuring the object to do so with the provided method.
@@ -740,9 +740,9 @@ protected:
     unsigned long int _srvcTime {};
     unsigned long int _srvcTimerStrt{0};
 
-    virtual void updValidUnlatchStatus();
     virtual void stOffNotVPP_Out();
     virtual void stOffVPP_Out();
+    virtual void updValidUnlatchStatus();
 public:
  	/**
  	 * @brief Class constructor
@@ -795,7 +795,7 @@ public:
 //==========================================================>>
 
 /**
- * @brief Implements a Hinted Timer Latch DD-MPB, a.k.a. Staircase Switch (**HTiLDD-MPB**).
+ * @brief Models a Hinted Timer Latch DD-MPB, a.k.a. Staircase Switch (**HTiLDD-MPB**).
  *
  * The **Staircase switch** keeps the ON state since the moment the signal is stable (debouncing + delay process), and until the unlatch signal is provided by a preset timer **started immediately after** the MPB has passed the debounce & delay process.
  * A warning flag might be configured to raise when the time left to keep the ON signal is close to expiration, based on a configurable percentage of the total Service Time.
@@ -904,7 +904,7 @@ public:
 //==========================================================>>
 
 /**
- * @brief Implements an External Unlatch LDD-MPB, a.k.a. Emergency Latched Switch (**XULDD-MPB**)
+ * @brief Models an External Unlatch LDD-MPB, a.k.a. Emergency Latched Switch (**XULDD-MPB**)
  *
  * The **External released toggle switch** (a.k.a. Emergency latched), keeps the On state since the moment the signal is stable (debounced & delayed), and until an external signal is received. This kind of switch is used when an "abnormal situation" demands the push of the switch On, but a higher authority is needed to reset it to Off from a different signal source. The **On State** will then not only start a response to the exception arisen, but will be kept to flag the triggering event.
  *  Smoke, flood, intrusion alarms and "last man locks" are some examples of the use of this switch. As the external release signal can be physical or logical generated it can be implemented to be received from a switch or a remote signal of any usual kind.
@@ -985,7 +985,7 @@ public:
 //==========================================================>>
 
 /**
- * @brief Abstract class, base to implement Double Action LDD-MPBs (**DALDD-MPBs**).
+ * @brief Abstract class, base to model Double Action LDD-MPBs (**DALDD-MPBs**).
  *
  * **Double Action Latched DD-MPB** are MPBs whose distinctive characteristic is that implement switches that present two different behaviors based on the time length of the presses detected.
  * The pattern selected for this class is the following:
@@ -1158,7 +1158,7 @@ public:
 //==========================================================>>
 
 /**
- * @brief Implements a Debounced Delayed DALDD-MPB combo switch (Debounced Delayed Double Action Latched MPB combo switch - **DD-DALDD-MPB**)
+ * @brief Models a Debounced Delayed Double Action Latched MPB combo switch (Debounced Delayed DALDD-MPB - **DD-DALDD-MPB**)
  *
  * This is a subclass of the **DALDD-MPB** whose **secondary behavior** is that of a DbncdDlydMPBttn (DD-MPB), that implies that:
  * - While on the 1.state (Off-Off), a short press will activate only the regular **main On state** 2. (On-Off).
@@ -1210,7 +1210,7 @@ public:
 //==========================================================>>
 
 /**
- * @brief Implements a Slider Double Action LDD-MPB combo switch, a.k.a. off/on/dimmer, a.k.a. off/on/volume radio switch)(**S-DALDD-MPB**)
+ * @brief Models a Slider Double Action LDD-MPB combo switch, a.k.a. off/on/dimmer, a.k.a. off/on/volume radio switch)(**S-DALDD-MPB**)
  *
  * This is a subclass of the **DALDD-MPB** whose **secondary behavior** is analog to that of a **Digital potentiometer (DigiPot)** or a **Discreet values increment/decrement register**. That means that when in the second mode, while the MPB remains pressed, an attribute set as a register changes its value -the **otptCurVal** register-.
  * When the timer callback function used to keep the MPB status updated is called -while in the secondary mode state- the time since the last call is calculated and the time lapse in milliseconds is converted into **Steps**, using as configurable factor the **outputSliderSpeed** in a pre-scaler fashion. At instantiation the **outputSliderSpeed** is configured to 1 (step/millisecond, i.e. 1 step for each millisecond).
@@ -1467,7 +1467,7 @@ public:
 //==========================================================>>
 
 /**
- * @brief Abstract class, base to implement Voidable DD-MPBs (**VDD-MPB**).
+ * @brief Abstract class, base to model Voidable DD-MPBs (**VDD-MPB**).
  *
  * **Voidable DD-MPBs** are MPBs whose distinctive characteristic is that implement non-latching switches that while being pressed their state might change from **On State** to a **Voided state** due to different voiding conditions. Depending on the classes the voided state might be **Voided & Off state**, **Voided & On state** or **Voided & Not enforced** states.
  * Those conditions to change to a voided state include -but are not limited to- the following conditions:
@@ -1570,7 +1570,7 @@ public:
      */
     bool setIsNotVoided();
     /**
-     * @brief Sets the value of the isVoided attribute flag to false
+     * @brief Sets the value of the isVoided attribute flag to true.
      *
      * @warning See the Warnings for setIsNotVoided()
      *
@@ -1602,9 +1602,10 @@ public:
 //==========================================================>>
 
 /**
- * @brief Implements a Time Voidable DD-MPB, a.k.a. Anti-tampering switch (**TVDD-MPB**)
+ * @brief Models a Time Voidable DD-MPB, a.k.a. Anti-tampering switch (**TVDD-MPB**)
  *
- * The **Time Voidable Momentary Push Button**, keeps the **On state** since the moment the signal is stable (debounce & delay process) and until the moment the push button is released, or until a preset time in the **On state** is reached. Then the switch will return to the Off position until the push button is released and pushed back. This kind of switches are used to activate limited resources related management or physical safety devices, and the possibility of a physical blocking of the switch to extend the ON signal forcibly beyond designer's plans is highly undesired. Water valves, door unlocking mechanisms, hands-off security mechanisms, high power heating devices are some of the usual uses for these type of switches.
+ * The **Time Voidable Momentary Push Button** keeps the **On state** since the moment the signal is stable (debounce & delay process) and until the moment the push button is released, or until a preset time in the **On state** is reached. Then the switch will return to the Off position until the push button is released and pushed back.
+ * This kind of switches are used to activate limited resources related management or physical safety devices, and the possibility of a physical blocking of the switch to extend the ON signal forcibly beyond designer's plans is highly undesired. Water valves, door unlocking mechanisms, hands-off security mechanisms, high power heating devices are some of the usual uses for these type of switches.
  *
  * class TmVdblMPBttn
  */
@@ -1667,5 +1668,52 @@ public:
      */
     bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
+
+//==========================================================>>
+
+/**
+ * @brief Models a Single Service Voidable DD-MPB a.k.a. Trigger switch (**SSVDD-MPB**)
+ *
+ * The **Single Service Voidable Momentary Push Button** keeps the **On state** since the moment the signal is stable (debounce & delay process) and until the moment the provided mechanisms implemented to be executed when the switch enters the **On State** are started, that means calling the **fnWhnTrnOn** function, notifying the **taskToNotify** task and setting the **isOn** attribute flag.
+ * After the configured mechanisms are triggered and the attribute flag is set to **true** (the only mandatory action is the attribute flag setting, all the others are configurable to execute or not) the MPB will enter the **Voided State**, forcing the MPB into the **Off State**. The SnglSrvcVdblMPBttn class objects requires the MPB to be released to exit the **Voided State**, restarting the cycle.
+ * This kind of switches are used to handle "Single Shot Trigger" style signals, ensuring one single signal per push.
+ *
+ * @attention Depending on checking the **isOn** flag reading trough the getIsOn() method might surely fail due to the high risk of missing the short time the flag will be raised before it is again taken down by the voidance of the MPB. The use of the non-polling facilities ensures no loss of signals and enough time to execute the code depending on the "trigger activation", including the **fnWhnTrnOn** function, and the **taskToNotify** task.
+ *
+ * @note Due to the short time the **isOn** flag will be raised, as described above, the  resuming of the **taskWhileOn** activation mechanism is disabled in this class. For that purpose the setTaskWhileOn(const TaskHandle_t) is made not accessible by setting it's accessibility to **protected**.
+ *
+ *@note Due to the short time the **isOn** flag will be raised, as described above, the short time between the **fnWhnTrnOn** function and the **fnWhnTrnOff** function callings must also need to be evaluated.
+ *
+ * @class SnglSrvcVdblMPBttn
+ */
+class SnglSrvcVdblMPBttn: public VdblMPBttn{
+protected:
+	virtual void setTaskWhileOn(const TaskHandle_t &newTaskHandle);
+   virtual void stOffVddNVUP_Do();	//This provides the calculation for the _validUnvoidPend
+   virtual bool updVoidStatus();
+public:
+   /**
+	 * @brief Class constructor
+    *
+    * @note For the parameters see DbncdDlydMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int, const unsigned long int)
+    */
+	SnglSrvcVdblMPBttn(GPIO_TypeDef* mpbttnPort, const uint16_t &mpbttnPin, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+   /**
+	 * @brief Class constructor
+    *
+    * @note For the parameters see DbncdDlydMPBttn(gpioPinId_t, const bool, const bool, const unsigned long int, const unsigned long int)
+    */
+	SnglSrvcVdblMPBttn(gpioPinId_t mpbttnPinStrct, const bool &pulledUp = true, const bool &typeNO = true, const unsigned long int &dbncTimeOrigSett = 0, const unsigned long int &strtDelay = 0);
+   /**
+    * @brief Class virtual destructor
+    */
+   virtual ~SnglSrvcVdblMPBttn();
+   /**
+    * @brief See DbncdMPBttn::begin(const unsigned long int)
+    */
+   bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
+};
+
+//==========================================================>>
 
 #endif /* MPBASSWITCH_STM32_H_ */

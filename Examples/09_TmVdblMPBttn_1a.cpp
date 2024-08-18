@@ -1,28 +1,29 @@
 /**
   ******************************************************************************
   * @file	: 09_TmVdblMPBttn_1a.cpp
-  * @brief  : Example for the MpbAsSwitch_STM32 library TmVdblMPBttn class
+  * @brief  : Example for the ButtonToSwitch for STM32 library TmVdblMPBttn class
   *
-  * 	The example instantiates a TmVdblMPBttn object using:
+  * The example instantiates a TmVdblMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
-  * 	- The Nucleo board user LED attached to GPIO_A05
-  * 	- A LED attached to GPIO_A0 to visualize the isVoided attribute flag status
+  * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
+  * 	- A digital outputched to GPIO_A10 to visualize the isVoided attribute flag status
+  *
+  * ### This example creates one Task:
   *
   * This simple example creates a single Task, instantiates the TmVdblMPBttn object
   * in it and checks it's attribute flags locally through the getters methods.
-  * When a change in the outputs attribute flags values is detected, it manages the
-  *  loads and resources that the switch turns On and Off, in this example case are
-  *  the output of some GPIO pins.
+  * When a change in the object's outputs attribute flags values is detected, it manages the
+  * loads and resources that the switch turns On and Off, in this example case are
+  * the output of some GPIO pins.
   *
   * 	@author	: Gabriel D. Goldman
   *
   * 	@date	: 	01/01/2024 First release
-  * 				21/04/2024 Last update
+  * 				07/07/2024 Last update
   *
   ******************************************************************************
-  * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
+  * @attention	This file is part of the Examples folder for the ButtonToSwitch for STM32
   * library. All files needed are provided as part of the source code for the library.
-  *
   ******************************************************************************
   */
 //----------------------- BEGIN Specific to use STM32F4xxyy testing platform
@@ -44,9 +45,9 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
-gpioPinId_t ledOnPA04{GPIOA, GPIO_PIN_4};	//Pin 0b 0000 0000 0001 0000
+gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
+gpioPinId_t ledIsVoided{GPIOA, GPIO_PIN_10};		// Pin 0b 0000 0100 0000 0000
 
 TaskHandle_t mainCtrlTskHndl {NULL};
 BaseType_t xReturned;
@@ -114,14 +115,13 @@ void mainCtrlTsk(void *pvParameters)
 			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_SET);
 			else
 			  HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
-
-			if(tstBttn.getIsVoided())
-			  HAL_GPIO_WritePin(ledOnPA04.portId, ledOnPA04.pinNum, GPIO_PIN_SET);
-			else
-			  HAL_GPIO_WritePin(ledOnPA04.portId, ledOnPA04.pinNum, GPIO_PIN_RESET);
-
 			tstBttn.setOutputsChange(false);
 		}
+		if(tstBttn.getIsVoided())
+		  HAL_GPIO_WritePin(ledIsVoided.portId, ledIsVoided.pinNum, GPIO_PIN_SET);
+		else
+		  HAL_GPIO_WritePin(ledIsVoided.portId, ledIsVoided.pinNum, GPIO_PIN_RESET);
+
 	}
 }
 /* USER CODE END */
@@ -196,7 +196,6 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level for tstLedOnBoard*/
   HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
-
   /*Configure GPIO pin : tstLedOnBoard_Pin */
   GPIO_InitStruct.Pin = tstLedOnBoard.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -204,16 +203,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(tstLedOnBoard.portId, &GPIO_InitStruct);
 
-  /*Configure GPIO pin Output Level for ledOnPA04*/
-  HAL_GPIO_WritePin(ledOnPA04.portId, ledOnPA04.pinNum, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin : ledOnPA04_Pin */
-  GPIO_InitStruct.Pin = ledOnPA04.pinNum;
+  /*Configure GPIO pin Output Level for ledIsVoided*/
+  HAL_GPIO_WritePin(ledIsVoided.portId, ledIsVoided.pinNum, GPIO_PIN_RESET);
+  /*Configure GPIO pin : ledIsVoided_Pin */
+  GPIO_InitStruct.Pin = ledIsVoided.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(ledOnPA04.portId, &GPIO_InitStruct);
-
+  HAL_GPIO_Init(ledIsVoided.portId, &GPIO_InitStruct);
 }
 
 /**

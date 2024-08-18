@@ -1,11 +1,11 @@
 <map id="DDlydDALtchMPBttn" name="DDlydDALtchMPBttn">
-<area shape="rect" id="Node000001" title="Implements a Debounced Delayed DALDD&#45;MPB combo switch (Debounced Delayed Double Action Latched MPB co..." alt="" coords="5,304,149,331"/>
-<area shape="rect" id="Node000002" href="$class_dbl_actn_ltch_m_p_bttn.html" title="Abstract class, base to implement Double Action LDD&#45;MPBs (DALDD&#45;MPBs)." alt="" coords="9,229,145,256"/>
+<area shape="rect" id="Node000001" title="Models a Debounced Delayed Double Action Latched MPB combo switch (Debounced Delayed DALDD&#45;MPB &#45; DD&#45;D..." alt="" coords="5,304,149,331"/>
+<area shape="rect" id="Node000002" href="$class_dbl_actn_ltch_m_p_bttn.html" title="Abstract class, base to model Double Action LDD&#45;MPBs (DALDD&#45;MPBs)." alt="" coords="9,229,145,256"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="80,272,80,304,74,304,74,272"/>
-<area shape="rect" id="Node000003" href="$class_ltch_m_p_bttn.html" title="Abstract class, base to implement Latched Debounced Delayed MPBs (LDD&#45;MPB)." alt="" coords="32,155,122,181"/>
+<area shape="rect" id="Node000003" href="$class_ltch_m_p_bttn.html" title="Abstract class, base to model Latched Debounced Delayed MPBs (LDD&#45;MPB)." alt="" coords="32,155,122,181"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="80,197,80,229,74,229,74,197"/>
-<area shape="rect" id="Node000004" href="$class_dbncd_dlyd_m_p_bttn.html" title="Implements a Debounced Delayed MPB (DD&#45;MPB)." alt="" coords="13,80,141,107"/>
+<area shape="rect" id="Node000004" href="$class_dbncd_dlyd_m_p_bttn.html" title="Models a Debounced Delayed MPB (DD&#45;MPB)." alt="" coords="13,80,141,107"/>
 <area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="80,122,80,154,74,154,74,122"/>
-<area shape="rect" id="Node000005" href="$class_dbncd_m_p_bttn.html" title="Base class, implements a Debounced Momentary Push Button (D&#45;MPB)." alt="" coords="26,5,128,32"/>
+<area shape="rect" id="Node000005" href="$class_dbncd_m_p_bttn.html" title="Base class, models a Debounced Momentary Push Button (D&#45;MPB)." alt="" coords="26,5,128,32"/>
 <area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="80,48,80,80,74,80,74,48"/>
 </map>

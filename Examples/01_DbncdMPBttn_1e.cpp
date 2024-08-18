@@ -1,40 +1,43 @@
 /**
   ******************************************************************************
   * @file	: 01_DbncdMPBttn_1e.cpp
-  * @brief  : Example for the MpbAsSwitch_STM32 library DbncdMPBttn class
+  * @brief  : Example for the ButtonToSwitch for STM32 library DbncdMPBttn class
   *
   * The test instantiates a DbncdMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
-  * 	- The Nucleo board user LED attached to GPIO_A05
+  * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
   * 	- A LED attached to GPIO_C00 to visualize the isEnabled attribute flag status
-  * 	- A LED attached to GPIO_A04 to visualize the "Task While MPB is On" activity
-  * 	- A LED attached to GPIO_C01 to visualize the FnWhnTrnOn() and FnWhnTrnOff() activity
+  * 	- A LED attached to GPIO_B13 to visualize the "Task While MPB is On" activity
+  * 	- A LED attached to GPIO_B14 to visualize the FnWhnTrnOn() and FnWhnTrnOff() activity
   *
-  * This example creates three Tasks and two specific functions.
-  * The first task instantiates the DbncdMPBttn object in it and checks it's
+  * ### This example creates three Tasks, a timer, and two dedicated functions:
+  *
+  * - The first task instantiates the DbncdMPBttn object in it and checks it's
   * attribute flags locally through the getters methods.
   *
-  * The second task is started and blocked, it's purpose it's to manage the loads and resources
-  * that the switch turns On and Off, in this example case are the output of some GPIO pins.
+  * - The second task is created and blocked before the scheduler is started. It's purpose it's to
+  * manage the loads and resources that the switch turns On and Off, in this example case are the
+  * output level of some GPIO pins.
   * When a change in the object's output attribute flags is detected the second task is unblocked
   * through a xTaskNotify() to update the output GPIO pins and blocks again until next notification.
-  * The xTaskNotify() macro is limited to pass a 32 bit notifications value, the object instantiated
-  * takes care of encoding of the MPBttn state in a 32 bits value.
-  * A function -otptsSttsUnpkg()- is provided for the notified task to be able to decode the 32 bits
-  * notification value into flags values.
+  * The xTaskNotify() macro is limited to pass a 32 bit notifications value, the object takes care
+  * of encoding of the MPBttn state in a 32 bits value.
+  * A function, **otptsSttsUnpkg()**, is provided for the notified task to be able to decode the 32 bits
+  * notification value into flag values.
   *
-  * The third task is started and blocked, like the second, it's purpose is to execute while the MPB
+  * - The third task is started and blocked, like the second, it's purpose is to execute while the MPB
   * is in "isOn state". Please read the library documentation regarding the consequences of executing
   * a task that is resumed and paused externally and without previous alert!!
   *
-  * The first functions is to be executed when the MPB enters the "isOn state", please refer to the
-  * setFnWhnTrnOnPtr() method for details.
-  *
-  * The second functions is to be executed when the MPB enters the "isOff state", please refer to the
-  * setFnWhnTrnOfPtr() method for details.
-  *
-  * A software timer is created so that it periodically toggles the isEnabled attribute flag
+  * - A software timer is created so that it periodically toggles the isEnabled attribute flag
   * value, showing the behavior of the instantiated object when enabled and when disabled.
+  *
+  * - The first functions is to be executed when the MPB enters the "isOn state", please refer to the
+  * **setFnWhnTrnOnPtr()** method for details.
+  *
+  * - The second functions is to be executed when the MPB enters the "isOff state", please refer to the
+  * **setFnWhnTrnOffPtr()** method for details.
+  *
   *
   * 	@author	: Gabriel D. Goldman
   *
@@ -42,9 +45,8 @@
   * 				11/06/2024 Last update
   *
   ******************************************************************************
-  * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
+  * @attention	This file is part of the Examples folder for the ButtonToSwitch for STM32
   * library. All files needed are provided as part of the source code for the library.
-  *
   ******************************************************************************
   */
 //----------------------- BEGIN Specific to use STM32F4xxyy testing platform
@@ -65,26 +67,14 @@
 #include "../../mpbAsSwitch_STM32/src/mpbAsSwitch_STM32.h"
 /* USER CODE END Includes */
 
-/*---------------- xTaskNotify() mechanism related constants, argument structs, information packing and unpacking BEGIN -------*/
-const uint8_t _isOnBitPos {0};
-const uint8_t _isEnabledBitPos{1};
-const uint8_t _pilotOnBitPos {2};
-const uint8_t _wrnngOnBitPos{3};
-const uint8_t _isVoidedBitPos {4};
-const uint8_t _isOnScndryBitPos{5};
-const uint8_t _otptCurValBitPos {16};
-/*---------------- xTaskNotify() mechanism related constants, argument structs, information packing and unpacking END -------*/
-
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
-gpioPinId_t ledOnPC00{GPIOC, GPIO_PIN_0};			// Pin 0b 0000 0000 0000 0001
-gpioPinId_t ledOnPA04{GPIOA, GPIO_PIN_4};			// Pin 0b 0000 0000 0001 0000
-gpioPinId_t ledOnPC01{GPIOC, GPIO_PIN_1};			// Pin 0b 0000 0000 0000 0010
-gpioPinId_t ledIsEnabled = ledOnPC00;
-gpioPinId_t ledTskWhlOn = ledOnPA04;
-gpioPinId_t ledFnTrnOnOff = ledOnPC01;
+gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
+gpioPinId_t ledIsEnabled{GPIOC, GPIO_PIN_0};		// Pin 0b 0000 0000 0000 0001
+gpioPinId_t ledIsVoided{GPIOA, GPIO_PIN_10};		// Pin 0b 0000 0100 0000 0000
+gpioPinId_t ledTskWhlOn{GPIOB, GPIO_PIN_13};		// Pin 0b 0010 0000 0000 0000
+gpioPinId_t ledFnTrnOnOff{GPIOB, GPIO_PIN_14};	// Pin 0b 0100 0000 0000 0000
 
 TaskHandle_t mainCtrlTskHndl {NULL};
 TaskHandle_t dmpsOutputTskHdl;
@@ -207,7 +197,7 @@ void mainCtrlTsk(void *pvParameters)
 	tstBttn.setTaskWhileOn(dmpsActWhlOnTskHndl);
 	tstBttn.setFnWhnTrnOnPtr(&fnExecTrnOn);
 	tstBttn.setFnWhnTrnOffPtr(&fnExecTrnOff);
-	tstBttn.begin(30);
+	tstBttn.begin(20);
 
 	for(;;)
 	{
@@ -367,7 +357,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(tstLedOnBoard.portId, &GPIO_InitStruct);
 
-  /*Configure GPIO pin Output Level for ledOnPC00))*/
+  /*Configure GPIO pin Output Level for ledIsEnabled*/
   HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_RESET);
   /*Configure GPIO pin : ledIsEnabled_Pin */
   GPIO_InitStruct.Pin = ledIsEnabled.pinNum;
@@ -376,18 +366,18 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(ledIsEnabled.portId, &GPIO_InitStruct);
 
-  /*Configure GPIO pin Output Level for ledOnPA04))*/
+  /*Configure GPIO pin Output Level for ledTskWhlOn*/
   HAL_GPIO_WritePin(ledTskWhlOn.portId, ledTskWhlOn.pinNum, GPIO_PIN_RESET);
-  /*Configure GPIO pin : ledIsEnabled_Pin */
+  /*Configure GPIO pin : ledTskWhlOn*/
   GPIO_InitStruct.Pin = ledTskWhlOn.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(ledTskWhlOn.portId, &GPIO_InitStruct);
 
-  /*Configure GPIO pin Output Level for ledOnPC01))*/
+  /*Configure GPIO pin Output Level for ledFnTrnOnOff*/
   HAL_GPIO_WritePin(ledFnTrnOnOff.portId, ledFnTrnOnOff.pinNum, GPIO_PIN_RESET);
-  /*Configure GPIO pin : ledIsEnabled_Pin */
+  /*Configure GPIO pin : ledFnTrnOnOff*/
   GPIO_InitStruct.Pin = ledFnTrnOnOff.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;

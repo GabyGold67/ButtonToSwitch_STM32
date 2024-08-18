@@ -1,18 +1,24 @@
 /**
   ******************************************************************************
   * @file	: 11_SldrDALtchMPBttn_1a.cpp
-  * @brief  : Example for the MpbAsSwitch_STM32 library SldrDALtchMPBttn class
+  * @brief  : Example for the ButtonToSwitch for STM32 library SldrDALtchMPBttn class
   *
   * The test instantiates a SldrDALtchMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
-  * 	- The Nucleo board user LED attached to GPIO_A05
+  * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
+  *
+  * ### This example creates one Task:
   *
   * This simple example creates a single Task, instantiates the SldrDALtchMPBttn object
   * in it and checks it's attribute flags locally through the getters methods.
   * When a change in the outputs attribute flags values is detected, it manages the
   * loads and resources that the switch turns On and Off, in this example case are
-  * the output of some GPIO pins. In this example the "Secondary Mode" produces a variation
-  * in the intensity of the on board led.
+  * the output of some GPIO pins.
+  *
+  * In this example the "Secondary Mode" that simulates the behavior of a slider potentiometer
+  * produces a variation in the PWM output of a GPIO pin, showing as a change of intensity of
+  * the on-board led. The isOn attribute flag status enables the pin output, while the curOtpVal
+  * attribute will set the PWM parameters of that same pin.
   *
   * 	@author	: Gabriel D. Goldman
   *
@@ -20,9 +26,8 @@
   * 				11/06/2024 Last update
   *
   ******************************************************************************
-  * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
+  * @attention	This file is part of the Examples folder for the ButtonToSwitch for STM32
   * library. All files needed are provided as part of the source code for the library.
-  *
   ******************************************************************************
   */
 //----------------------- BEGIN Specific to use STM32F4xxyy testing platform
@@ -45,8 +50,8 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
 TIM_HandleTypeDef htim2;
-gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
+gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
 
 TaskHandle_t mainCtrlTskHndl {NULL};
 BaseType_t xReturned;
@@ -60,6 +65,7 @@ static void MX_TIM2_Init(void);
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* USER CODE BEGIN FP */
+// Tasks
 void mainCtrlTsk(void *pvParameters);
 /* USER CODE END FP */
 
@@ -108,7 +114,8 @@ int main(void)
 /* USER CODE BEGIN */
 void mainCtrlTsk(void *pvParameters)
 {
-	SldrDALtchMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, true, true, 50, 150);
+	SldrDALtchMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, true, true, 50, 100);
+
 	tstBttn.setScndModActvDly(2000);
 	tstBttn.setSldrDirDn();
 	tstBttn.setSwpDirOnPrss(true);
@@ -127,8 +134,6 @@ void mainCtrlTsk(void *pvParameters)
 			else
 				__HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_1, 0);
 
-
-			tstBttn.setOutputsChange(false);
 		}
 	}
 }

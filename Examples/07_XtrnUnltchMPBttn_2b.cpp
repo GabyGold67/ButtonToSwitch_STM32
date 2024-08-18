@@ -3,18 +3,20 @@
   * @file	: 07_XtrnUnltchMPBttn_2b.cpp
   * @brief  : Example for the MpbAsSwitch_STM32 library XtrnUnltchMPBttn class
   *
-  * 	The example instantiates a XtrnUnltchMPBttn object using:
-  * 		- The Nucleo board user pushbutton attached to GPIO_B00
-  * 		- The Nucleo board user LED attached to GPIO_A05
-  * 		- The external unlatch pushbutton attached to GPIO_B00
-  * 		- A LED attached to GPIO_C00 to visualize the isEnabled attribute flag status
+  * The test instantiates a XtrnUnltchMPBttn object using:
+  * 	- The Nucleo board user pushbutton attached to GPIO_B00
+  * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
+  * 	- The external unlatch pushbutton attached to GPIO_B00
+  * 	- A LED attached to GPIO_C00 to visualize the isEnabled attribute flag status
+  *
+  * ### This example creates one Task and a timer:
   *
   * This simple example creates a single Task, instantiates the XtrnUnltchMPBttn object
-  * and a DbncdDlydMPBttn in it and checks both's attribute flags locally through
-  * the getters methods.
-  * When a change in the outputs attribute flags values is detected, it manages the
+  * and a DbncdDlydMPBttn object to act as the external unlatch signal provider
+  * in it and checks it's attribute flags locally through the getters methods.
+  * When a change in the object's outputs attribute flags values is detected, it manages the
   * loads and resources that the switch turns On and Off, in this example case are
-  * the output of some GPIO pins.
+  * the output level of some GPIO pins.
   *
   * In this example the unlatch signal originates in a DbncdDlydMPBttn whose attribute
   * flags are checked along with the XtrnUnltchMPBttn object attribute flags. When the isOn
@@ -27,7 +29,7 @@
   * 	@author	: Gabriel D. Goldman
   *
   * 	@date	: 	01/01/2024 First release
-  * 				21/04/2024 Last update
+  * 				11/06/2024 Last update
   *
   ******************************************************************************
   * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
@@ -54,10 +56,10 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
-gpioPinId_t ledOnPC00{GPIOC, GPIO_PIN_0};			// Pin 0b 0000 0000 0000 0001
-gpioPinId_t mpbttnOnPB00{GPIOB, GPIO_PIN_0};		// Pin 0b 0000 0000 0000 0001
+gpioPinId_t mpbUnlatch{GPIOB, GPIO_PIN_0};	//Pin 0b 0000 0001
+gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
+gpioPinId_t ledIsEnabled{GPIOC, GPIO_PIN_0};		// Pin 0b 0000 0000 0000 0001
 
 TaskHandle_t mainCtrlTskHndl {NULL};
 BaseType_t xReturned;
@@ -112,17 +114,24 @@ int main(void)
   {
   }
 }
+
 /* USER CODE BEGIN */
 void mainCtrlTsk(void *pvParameters)
 {
 	TimerHandle_t enableSwpTmrHndl{NULL};
 	BaseType_t tmrModRslt{pdFAIL};
-	DbncdDlydMPBttn unLtchTstBttnObj(mpbttnOnPB00.portId, mpbttnOnPB00.pinNum, true, true, 0, 200);
+
+	DbncdDlydMPBttn unLtchTstBttnObj(mpbUnlatch.portId, mpbUnlatch.pinNum, true, true, 0, 200);
 	XtrnUnltchMPBttn tstBttn(tstMpbOnBoard.portId, tstMpbOnBoard.pinNum, true, true, 0, 50);
-	XtrnUnltchMPBttn* tstBttnPtr {&tstBttn};
+	LtchMPBttn* tstBttnPtr {&tstBttn};
+
+	unLtchTstBttnObj.begin(20);
+	tstBttn.setIsOnDisabled(false);
+	tstBttn.setTrnOffASAP(false);
+	tstBttn.begin(20);
 
 	enableSwpTmrHndl = xTimerCreate(
-			"EnableSwapTimer",
+			"isEnabledSwapTimer",
 			10000,
 			pdTRUE,
 			tstBttnPtr,
@@ -130,14 +139,10 @@ void mainCtrlTsk(void *pvParameters)
 			);
 	if (enableSwpTmrHndl != NULL){
       tmrModRslt = xTimerStart(enableSwpTmrHndl, portMAX_DELAY);
-      if(tmrModRslt == pdFAIL)
-         Error_Handler();
+   }
+	if(tmrModRslt == pdFAIL){
+	    Error_Handler();
 	}
-
-	unLtchTstBttnObj.begin(20);
-	tstBttn.setIsOnDisabled(false);
-	tstBttn.setTrnOffASAP(true);
-	tstBttn.begin(20);
 
 	for(;;)
 	{
@@ -155,14 +160,14 @@ void mainCtrlTsk(void *pvParameters)
 			unLtchTstBttnObj.setOutputsChange(false);
 		}
 		if(!(tstBttn.getIsEnabled()))
-			HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_SET);
 		else
-			HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_RESET);
 	}
 }
 
 void swpEnableCb(TimerHandle_t  pvParam){
-	LtchMPBttn* bttnArg = (LtchMPBttn*) pvTimerGetTimerID(pvParam);
+	DbncdMPBttn* bttnArg = (LtchMPBttn*) pvTimerGetTimerID(pvParam);
 
 	bool curEnable = bttnArg->getIsEnabled();
 
@@ -173,8 +178,8 @@ void swpEnableCb(TimerHandle_t  pvParam){
 
   return;
 }
-/* USER CODE END */
 
+/* USER CODE END */
 
 /**
   * @brief System Clock Configuration
@@ -243,15 +248,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(tstMpbOnBoard.portId, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : mpbttnOnPB00_Pin */
-  GPIO_InitStruct.Pin = mpbttnOnPB00.pinNum;
+  /*Configure GPIO pin : mpbUnlatch */
+  GPIO_InitStruct.Pin = mpbUnlatch.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(mpbttnOnPB00.portId, &GPIO_InitStruct);
+  HAL_GPIO_Init(mpbUnlatch.portId, &GPIO_InitStruct);
 
   /*Configure GPIO pin Output Level for tstLedOnBoard*/
   HAL_GPIO_WritePin(tstLedOnBoard.portId, tstLedOnBoard.pinNum, GPIO_PIN_RESET);
-
   /*Configure GPIO pin : tstLedOnBoard_Pin */
   GPIO_InitStruct.Pin = tstLedOnBoard.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -260,15 +264,15 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(tstLedOnBoard.portId, &GPIO_InitStruct);
 
   /*Configure GPIO pin Output Level for ledOnPC00))*/
-  HAL_GPIO_WritePin(ledOnPC00.portId, ledOnPC00.pinNum, GPIO_PIN_RESET);
-
+  HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_RESET);
   /*Configure GPIO pin : ledOnPC00_Pin */
-  GPIO_InitStruct.Pin = ledOnPC00.pinNum;
+  GPIO_InitStruct.Pin = ledIsEnabled.pinNum;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(ledOnPC00.portId, &GPIO_InitStruct);
+  HAL_GPIO_Init(ledIsEnabled.portId, &GPIO_InitStruct);
 }
+
 
 /**
   * @brief  Period elapsed callback in non blocking mode

@@ -1,27 +1,28 @@
 /**
   ******************************************************************************
   * @file	: 05_TgglLtchMPBttn_1a.cpp
-  * @brief  : Example for the MpbAsSwitch_STM32 library TgglLtchMPBttn class
+  * @brief  : Example for the ButtonToSwitch for STM32 library TgglLtchMPBttn class
   *
-  * The test instantiates a TgglLtchMPBttn object using:
+  * The example instantiates a TgglLtchMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
-  * 	- The Nucleo board user LED attached to GPIO_A05
+  * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
+  *
+  * ### This example creates one Task:
   *
   * This simple example creates a single Task, instantiates the TgglLtchMPBttn object
   * in it and checks it's attribute flags locally through the getters methods.
-  * When a change in the outputs attribute flags values is detected, it manages the
-  *  loads and resources that the switch turns On and Off, in this example case are
-  *  the output of some GPIO pins.
+  * When a change in the object's outputs attribute flags values is detected, it manages the
+  * loads and resources that the switch turns On and Off, in this example case are
+  * the output of some GPIO pins.
   *
   * 	@author	: Gabriel D. Goldman
   *
   * 	@date	: 	01/01/2024 First release
-  * 				21/04/2024 Last update
+  * 				07/07/2024 Last update
   *
   ******************************************************************************
-  * @attention	This file is part of the Examples folder for the MPBttnAsSwitch_ESP32
+  * @attention	This file is part of the Examples folder for the ButtonToSwitch for STM32
   * library. All files needed are provided as part of the source code for the library.
-  *
   ******************************************************************************
   */
 //----------------------- BEGIN Specific to use STM32F4xxyy testing platform
@@ -43,8 +44,8 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0010 0000
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
+gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
 
 TaskHandle_t mainCtrlTskHndl {NULL};
 BaseType_t xReturned;
