@@ -1,21 +1,23 @@
 <map id="C:/Users/Gabriel D. Goldman/Documents/My Projects/Training Projects/MomentaryPushButtonTesterSTM32/mpbAsSwitch_STM32/src/mpbAsSwitch_STM32.cpp" name="C:/Users/Gabriel D. Goldman/Documents/My Projects/Training Projects/MomentaryPushButtonTesterSTM32/mpbAsSwitch_STM32/src/mpbAsSwitch_STM32.cpp">
-<area shape="rect" id="Node000001" title=": Source file for mpbAsSwitch_STM32 library classes methods" alt="" coords="261,5,521,112"/>
-<area shape="rect" id="Node000002" href="$mpb_as_switch___s_t_m32_8h.html" title=": Header file for the MpbAsSwitch_STM32 library classes" alt="" coords="311,160,471,187"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="394,112,394,144,388,144,388,112"/>
+<area shape="rect" id="Node000001" title=": Source file for mpbAsSwitch_STM32 library classes methods" alt="" coords="340,5,599,112"/>
+<area shape="rect" id="Node000002" href="$mpb_as_switch___s_t_m32_8h.html" title=": Header file for the MpbAsSwitch_STM32 library classes" alt="" coords="389,160,550,187"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="472,112,472,144,467,144,467,112"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="5,235,70,261"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="318,190,85,237,84,232,317,185"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="389,187,251,207,85,237,84,232,250,202,388,182"/>
 <area shape="rect" id="Node000004" title=" " alt="" coords="94,235,147,261"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="340,190,162,237,161,231,338,185"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="392,190,287,209,162,237,161,232,286,204,391,185"/>
 <area shape="rect" id="Node000005" title=" " alt="" coords="171,235,232,261"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="359,190,247,232,246,227,357,185"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="421,190,248,236,246,231,420,185"/>
 <area shape="rect" id="Node000006" title=" " alt="" coords="255,235,372,261"/>
-<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="379,189,340,226,336,222,376,185"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="443,190,356,230,353,225,441,185"/>
 <area shape="rect" id="Node000007" title=" " alt="" coords="396,235,543,261"/>
-<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="406,185,447,222,443,226,403,189"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="472,187,472,219,467,219,467,187"/>
 <area shape="rect" id="Node000008" title=" " alt="" coords="567,235,660,261"/>
-<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="430,185,561,227,559,232,429,190"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="496,185,576,225,573,230,493,190"/>
 <area shape="rect" id="Node000009" title=" " alt="" coords="685,235,742,261"/>
-<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="457,185,670,232,669,237,456,190"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="513,185,671,231,669,236,511,190"/>
 <area shape="rect" id="Node000010" title=" " alt="" coords="766,235,834,261"/>
-<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="472,183,600,203,752,231,751,237,599,208,471,188"/>
+<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="535,185,751,231,750,236,534,190"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="859,235,934,261"/>
+<area shape="poly" id="edge10_Node000002_Node000011" title=" " alt="" coords="550,183,684,203,844,232,843,237,683,208,550,188"/>
 </map>

@@ -7,6 +7,7 @@ var class_dbl_actn_ltch_m_p_bttn =
     [ "clrStatus", "class_dbl_actn_ltch_m_p_bttn.html#a7454fc41a95d7bb028831a66781dffb3", null ],
     [ "getFnWhnTrnOffScndry", "class_dbl_actn_ltch_m_p_bttn.html#ad95d66ab25ff94f25c1924c3ca00fb8c", null ],
     [ "getFnWhnTrnOnScndry", "class_dbl_actn_ltch_m_p_bttn.html#a5de9cbf2ec48cb449018d2d589b5907f", null ],
+    [ "getIsOnScndry", "class_dbl_actn_ltch_m_p_bttn.html#a81e71cf75a491346186e9f5beed1d5fa", null ],
     [ "getScndModActvDly", "class_dbl_actn_ltch_m_p_bttn.html#aa4cc7c3c653fcd60fc333ac5ac4e2fdb", null ],
     [ "getTaskWhileOnScndry", "class_dbl_actn_ltch_m_p_bttn.html#a24e6da3390c38ce66cb111d63d31a67f", null ],
     [ "setFnWhnTrnOffScndryPtr", "class_dbl_actn_ltch_m_p_bttn.html#acb63e31095814fc7bd8e53246bcc71d0", null ],

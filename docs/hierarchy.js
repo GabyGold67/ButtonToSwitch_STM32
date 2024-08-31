@@ -14,9 +14,11 @@ var hierarchy =
           [ "XtrnUnltchMPBttn", "class_xtrn_unltch_m_p_bttn.html", null ]
         ] ],
         [ "VdblMPBttn", "class_vdbl_m_p_bttn.html", [
+          [ "SnglSrvcVdblMPBttn", "class_sngl_srvc_vdbl_m_p_bttn.html", null ],
           [ "TmVdblMPBttn", "class_tm_vdbl_m_p_bttn.html", null ]
         ] ]
       ] ]
     ] ],
-    [ "gpioPinId_t", "structgpio_pin_id__t.html", null ]
+    [ "gpioPinId_t", "structgpio_pin_id__t.html", null ],
+    [ "MpbOtpts_t", "struct_mpb_otpts__t.html", null ]
 ];

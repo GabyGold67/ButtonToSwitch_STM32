@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['push_20buttons_20as_20switches_20library_20em_20strong_20mpbasswitch_20strong_20em_0',['Momentary Push Buttons as Switches Library (&lt;em&gt;&lt;strong&gt;mpbAsSwitch&lt;/strong&gt;&lt;/em&gt;)',['../index.html',1,'']]]
+  ['to_20switches_20library_20for_20stm32_20em_20strong_20buttontoswitch_5fstm32_20strong_20em_0',['Buttons to Switches Library for STM32 (&lt;em&gt;&lt;strong&gt;ButtonToSwitch_STM32&lt;/strong&gt;&lt;/em&gt;)',['../index.html',1,'']]]
 ];

@@ -1,19 +1,21 @@
 <map id="C:/Users/Gabriel D. Goldman/Documents/My Projects/Training Projects/MomentaryPushButtonTesterSTM32/mpbAsSwitch_STM32/src/mpbAsSwitch_STM32.h" name="C:/Users/Gabriel D. Goldman/Documents/My Projects/Training Projects/MomentaryPushButtonTesterSTM32/mpbAsSwitch_STM32/src/mpbAsSwitch_STM32.h">
-<area shape="rect" id="Node000001" title=": Header file for the MpbAsSwitch_STM32 library classes" alt="" coords="232,5,550,96"/>
+<area shape="rect" id="Node000001" title=": Header file for the MpbAsSwitch_STM32 library classes" alt="" coords="310,5,629,96"/>
 <area shape="rect" id="Node000002" title=" " alt="" coords="5,144,70,171"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="240,99,85,145,84,140,239,94"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="310,91,85,146,84,141,309,86"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="94,144,147,171"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="276,99,162,143,160,138,274,94"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="318,99,163,146,161,141,317,94"/>
 <area shape="rect" id="Node000004" title=" " alt="" coords="171,144,232,171"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="311,99,239,139,236,134,309,94"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="356,99,247,141,245,136,354,94"/>
 <area shape="rect" id="Node000005" title=" " alt="" coords="255,144,372,171"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="360,98,334,133,330,130,356,95"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="404,99,346,137,343,133,401,94"/>
 <area shape="rect" id="Node000006" title=" " alt="" coords="396,144,543,171"/>
-<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="426,94,453,130,449,133,422,98"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="472,96,472,128,467,128,467,96"/>
 <area shape="rect" id="Node000007" title=" " alt="" coords="567,144,660,171"/>
-<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="487,94,574,135,572,139,485,99"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="533,94,586,133,583,137,529,99"/>
 <area shape="rect" id="Node000008" title=" " alt="" coords="685,144,742,171"/>
-<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="530,94,671,140,669,145,528,99"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="575,94,671,135,669,140,573,99"/>
 <area shape="rect" id="Node000009" title=" " alt="" coords="766,144,834,171"/>
-<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="551,89,752,140,750,146,550,95"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="612,94,752,138,750,143,610,99"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="859,144,934,171"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="630,88,844,141,843,146,628,93"/>
 </map>
