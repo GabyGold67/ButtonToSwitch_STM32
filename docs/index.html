@@ -27,7 +27,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
-  <td id="projectlogo"><img alt="Logo" src="Complex_Switch_Sq_XSm.jpg"/></td>
+  <td id="projectlogo"><img alt="Logo" src="Complex_Switch_Sq_Sm_Color_In.jpg"/></td>
   <td id="projectalign">
    <div id="projectname">ButtonToSwitch Library for STM32<span id="projectnumber">&#160;v4.0.0</span>
    </div>
@@ -127,16 +127,18 @@ The embedded behavior also includes logical replacements for temporary or extrao
 </li>
 <li><b>Task Resume/Suspend</b>: A mechanism is provided to run a developer defined task while the object is in <b>On State</b>. The designated task will be set to "Suspended State" while the object is in <b>Off State</b> and will be set to "Resume" while it is in <b>On State</b>, providing means to execute far more complex tasks than just "turning On &amp; turning Off" devices. <br  />
 </li>
-<li><b>Functions execution</b>: A developer defined function might be set to be executed every time the instantiated object enters the <b>On State</b>, and a function might be set to be executed every time the instantiated object enters the <b>Off State</b>. The functions are to be independently defined, so one, the other or both might be defined, and even the same function might be used for both events. Other functions might be asigned to be executed every time a significant attribute flag's value changes:<ul>
-<li>For the <b><a class="el" href="class_hntd_tm_ltch_m_p_bttn.html" title="Models a Hinted Timer Latch DD-MPB, a.k.a. Staircase Switch (HTiLDD-MPB).">HntdTmLtchMPBttn</a></b> class: Warning and Pilot attribute flags</li>
-<li>For the <b><a class="el" href="class_d_dlyd_d_a_ltch_m_p_bttn.html" title="Models a Debounced Delayed Double Action Latched MPB combo switch (Debounced Delayed DALDD-MPB - DD-D...">DDlydDALtchMPBttn</a></b> class: Secondary On attribute flag.</li>
-<li>For other classes associated outputs functions read the classes documentation. <br  />
-</li>
-</ul>
+<li><b>Functions execution</b>: A developer defined function might be set to be executed every time the instantiated object enters the <b>On State</b>, and a function might be set to be executed every time the instantiated object enters the <b>Off State</b>. The functions are to be independently defined, so one, the other or both might be defined, and even the same function might be used for both events. <br  />
 </li>
 </ul>
 <p>Those listed mechanisms are <b>independent</b>, so one or more might be simultaneously used depending on implementation needs and convenience. <br  />
 </p>
+<p>The <b>Functions execution</b> mechanism is also available, so that other functions might be asigned to be executed every time a significant attribute flag's value changes, one for setting, one for resetting:</p><ul>
+<li>For the <b><a class="el" href="class_hntd_tm_ltch_m_p_bttn.html" title="Models a Hinted Timer Latch DD-MPB, a.k.a. Staircase Switch (HTiLDD-MPB).">HntdTmLtchMPBttn</a></b> class: Warning and Pilot attribute flags</li>
+<li>For the <b><a class="el" href="class_d_dlyd_d_a_ltch_m_p_bttn.html" title="Models a Debounced Delayed Double Action Latched MPB combo switch (Debounced Delayed DALDD-MPB - DD-D...">DDlydDALtchMPBttn</a></b> class: Secondary On attribute flag.</li>
+<li>For the <b><a class="el" href="class_tm_vdbl_m_p_bttn.html" title="Models a Time Voidable DD-MPB, a.k.a. Anti-tampering switch (TVDD-MPB)">TmVdblMPBttn</a></b> and the <b>SnglSrvcVDBLMPBttn</b>: isVoided attribute flag.</li>
+<li>For other classes associated outputs functions read the classes documentation. <br  />
+</li>
+</ul>
 <h2><a class="anchor" id="the-library-implements-the-following-switches-behaviors"></a>
 The library implements the following switches behaviors:</h2>
 <ul>

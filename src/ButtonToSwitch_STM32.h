@@ -806,10 +806,10 @@ public:
 class HntdTmLtchMPBttn: public TmLtchMPBttn{
 
 protected:
-	void (*_fnWhnTrnPilotOff)() {nullptr};
-	void (*_fnWhnTrnPilotOn)() {nullptr};
-	void (*_fnWhnTrnWrnngOff)() {nullptr};
-	void (*_fnWhnTrnWrnngOn)() {nullptr};
+	void (*_fnWhnTrnOffPilot)() {nullptr};
+	void (*_fnWhnTrnOffWrnng)() {nullptr};
+	void (*_fnWhnTrnOnPilot)() {nullptr};
+	void (*_fnWhnTrnOnWrnng)() {nullptr};
 	bool _keepPilot{false};
 	volatile bool _pilotOn{false};
 	unsigned long int _wrnngMs{0};
@@ -829,10 +829,10 @@ protected:
 
    static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
 	uint32_t _otptsSttsPkg(uint32_t prevVal = 0);
-	void _turnPilotOff();
-	void _turnPilotOn();
-	void _turnWrnngOff();
-	void _turnWrnngOn();
+	void _turnOffPilot();
+	void _turnOffWrnng();
+	void _turnOnPilot();
+	void _turnOnWrnng();
 	bool updPilotOn();
 	bool updWrnngOn();
 public:
@@ -870,7 +870,7 @@ public:
 	 *
 	 * @warning The function code execution will become part of the list of procedures the object executes when it enters the **Pilot Off State**, including the modification of affected attribute flags. Making the function code too time-demanding must be handled with care, using alternative execution schemes, for example the function might resume a independent task that suspends itself at the end of its code, to let a new function calling event resume it once again.
 	 */
-	fncPtrType  getFnWhnTrnPilotOff();
+	fncPtrType  getFnWhnTrnOffPilot();
 	/**
 	 * @brief Returns the function that is set to execute every time the object's **Pilot** attribute flag **enters** the **On State**.
 	 *
@@ -881,7 +881,7 @@ public:
 	 *
 	 * @warning The function code execution will become part of the list of procedures the object executes when it enters the **Pilot On State**, including the modification of affected attribute flags. Making the function code too time-demanding must be handled with care, using alternative execution schemes, for example the function might resume a independent task that suspends itself at the end of its code, to let a new function calling event resume it once again.
 	 */
-	fncPtrType  getFnWhnTrnPilotOn();
+	fncPtrType  getFnWhnTrnOnPilot();
 	/**
 	 * @brief Returns the function that is set to execute every time the object's **Warning** attribute flag **enters** the **Off State**.
 	 *
@@ -892,7 +892,7 @@ public:
 	 *
 	 * @warning The function code execution will become part of the list of procedures the object executes when it enters the **Warning Off State**, including the modification of affected attribute flags. Making the function code too time-demanding must be handled with care, using alternative execution schemes, for example the function might resume a independent task that suspends itself at the end of its code, to let a new function calling event resume it once again.
 	 */
-	fncPtrType  getFnWhnTrnWrnngOff();
+	fncPtrType  getFnWhnTrnOffWrnng();
 	/**
 	 * @brief Returns the function that is set to execute every time the object's **Warning** attribute flag **enters** the **On State**.
 	 *
@@ -903,7 +903,7 @@ public:
 	 *
 	 * @warning The function code execution will become part of the list of procedures the object executes when it enters the **Warning On State**, including the modification of affected attribute flags. Making the function code too time-demanding must be handled with care, using alternative execution schemes, for example the function might resume a independent task that suspends itself at the end of its code, to let a new function calling event resume it once again.
 	 */
-	fncPtrType  getFnWhnTrnWrnngOn();
+	fncPtrType  getFnWhnTrnOnWrnng();
 	/**
 	 * @brief Gets the current value of the pilotOn attribute flag.
 	 *
@@ -926,10 +926,38 @@ public:
 	 * - 100: Will keep the warningOn flag always true (i.e. will turn to true for the 100% of the Service Time).
 	 */
 	const bool getWrnngOn() const;
-	void setFnWhnTrnPilotOffPtr(void(*newFnWhnTrnOff)());
-	void setFnWhnTrnPilotOnPtr(void(*newFnWhnTrnOff)());
-	void setFnWhnTrnWrnngOffPtr(void(*newFnWhnTrnOff)());
-	void setFnWhnTrnWrnngOnPtr(void(*newFnWhnTrnOff)());
+	/**
+	 * @brief Sets the function that will be called to execute every time the object's **Pilot is reset**.
+	 *
+	 * The function to be executed must be of the form **void (*newFnWhnTrnOff)()**, meaning it must take no arguments and must return no value, it will be executed only once by the object (recursion must be handled with the usual precautions). When instantiated the attribute value is set to **nullptr**.
+	 *
+	 * @param newFnWhnTrnOff Function pointer to the function intended to be called when the object's **Pilot** is **reset**. Passing **nullptr** as parameter deactivates the function execution mechanism.
+	 */
+	void setFnWhnTrnOffPilotPtr(void(*newFnWhnTrnOff)());
+	/**
+	 * @brief Sets the function that will be called to execute every time the object's **Pilot** is **set**.
+	 *
+	 * The function to be executed must be of the form **void (*newFnWhnTrnOn)()**, meaning it must take no arguments and must return no value, it will be executed only once by the object (recursion must be handled with the usual precautions). When instantiated the attribute value is set to **nullptr**.
+	 *
+	 * @param newFnWhnTrnOn: function pointer to the function intended to be called when the object's **Pilot is set**. Passing **nullptr** as parameter deactivates the function execution mechanism.
+	 */
+	void setFnWhnTrnOnPilotPtr(void(*newFnWhnTrnOn)());
+	/**
+	 * @brief Sets the function that will be called to execute every time the object's **Wrnng** is **reset**.
+	 *
+	 * The function to be executed must be of the form **void (*newFnWhnTrnOff)()**, meaning it must take no arguments and must return no value, it will be executed only once by the object (recursion must be handled with the usual precautions). When instantiated the attribute value is set to **nullptr**.
+	 *
+	 * @param newFnWhnTrnOff Function pointer to the function intended to be called when the object's **Wrnng** is **reset**. Passing **nullptr** as parameter deactivates the function execution mechanism.
+	 */
+	void setFnWhnTrnOffWrnngPtr(void(*newFnWhnTrnOff)());
+	/**
+	 * @brief Sets the function that will be called to execute every time the object's **Wrnng** is **set**.
+	 *
+	 * The function to be executed must be of the form **void (*newFnWhnTrnOn)()**, meaning it must take no arguments and must return no value, it will be executed only once by the object (recursion must be handled with the usual precautions). When instantiated the attribute value is set to **nullptr**.
+	 *
+	 * @param newFnWhnTrnOn: function pointer to the function intended to be called when the object's **Wrnng** is **set**. Passing **nullptr** as parameter deactivates the function execution mechanism.
+	 */
+	void setFnWhnTrnOnWrnngPtr(void(*newFnWhnTrnOn)());
 	/**
 	 * @brief Sets the configuration of the keepPilot service attribute.
 	 *
@@ -1565,22 +1593,26 @@ protected:
  	};
  	fdaVmpbStts _mpbFdaState {stOffNotVPP};
 
- 	 bool _frcOtptLvlWhnVdd {true};
- 	 bool _isVoided{false};
-    bool _stOnWhnOtptFrcd{false};
-    bool _validVoidPend{false};
-    bool _validUnvoidPend{false};
+	void (*_fnWhnTrnOffVdd)() {nullptr};
+	void (*_fnWhnTrnOnVdd)() {nullptr};
+	bool _frcOtptLvlWhnVdd {true};
+	bool _isVoided{false};
+   bool _stOnWhnOtptFrcd{false};
+   bool _validVoidPend{false};
+   bool _validUnvoidPend{false};
 
-    static void mpbPollCallback(TimerHandle_t mpbTmrCb);
-    uint32_t _otptsSttsPkg(uint32_t prevVal = 0);
-    bool setVoided(const bool &newVoidValue);
-    virtual void stDisabled_In();
-    virtual void stDisabled_Out();
-    virtual void stOffNotVPP_In(){};
-    virtual void stOffVPP_Do(){};	// This provides a setting point for the voiding mechanism to be started
-    virtual void stOffVddNVUP_Do(){};	//This provides a setting point for calculating the _validUnvoidPend
-    virtual void updFdaState();
-    virtual bool updVoidStatus() = 0;
+   static void mpbPollCallback(TimerHandle_t mpbTmrCb);
+   uint32_t _otptsSttsPkg(uint32_t prevVal = 0);
+   bool setVoided(const bool &newVoidValue);
+   virtual void stDisabled_In();
+   virtual void stDisabled_Out();
+   virtual void stOffNotVPP_In(){};
+   virtual void stOffVPP_Do(){};	// This provides a setting point for the voiding mechanism to be started
+   virtual void stOffVddNVUP_Do(){};	//This provides a setting point for calculating the _validUnvoidPend
+	void _turnOffVdd();
+	void _turnOnVdd();
+   virtual void updFdaState();
+   virtual bool updVoidStatus() = 0;
 public:
     /**
      * @brief Class constructor
@@ -1607,6 +1639,24 @@ public:
      * @brief See DbncdMPBttn::clrStatus(bool)
      */
     void clrStatus(bool clrIsOn = true);
+ 	/**
+ 	 * @brief Gets the function that is set to execute every time the object **enters** the **Voided State**.
+ 	 *
+ 	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnOffVddPtr()** method.
+ 	 *
+ 	 * @return A function pointer to the function set to execute every time the object enters the **Unvoided or "Voieded Off" State**.
+ 	 * @retval nullptr if there is no function set to execute when the object enters the **Unvoided (or "Voided Off") State**.
+ 	 */
+ 	fncPtrType getFnWhnTrnOffVdd();
+ 	/**
+ 	 * @brief Gets the function that is set to execute every time the object **enters** the **Voided or "Voided On" State**.
+ 	 *
+ 	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnOnVddPtr()** method.
+ 	 *
+ 	 * @return A function pointer to the function set to execute every time the object enters the **Voided (or "Voided On") State**.
+ 	 * @retval nullptr if there is no function set to execute when the object enters the **Voided State**.
+ 	 */
+ 	fncPtrType getFnWhnTrnOnVdd();
     /**
      * @brief Gets the current value of the isVoided attribute flag
      *
@@ -1615,25 +1665,6 @@ public:
      * @retval false The object is in **not voided state**
      */
     const bool getIsVoided() const;
-    /**
-     * @brief Sets the value of the isVoided attribute flag to false
-     *
-     * @warning The value of the isVoided attribute flag is computed as a result of the current state of the instantiated object, considering the inputs and embedded simulated behavior.
-     * - Arbitrarily setting a value to the isVoided attribute flag might affect the normal behavior path for the object.
-     * - The attribute flag value might return to it's natural value when the behavior imposes the change.
-     * - The use of this method must be limited to certain states and conditions of the object, being the most suitable situation while the object is in **Disabled state**: If the application development requires the isVoided attribute flag to be in a specific value, this method and the setIsVoided() method are the required tools.
-     *
-     * @retval true
-     */
-    bool setIsNotVoided();
-    /**
-     * @brief Sets the value of the isVoided attribute flag to true.
-     *
-     * @warning See the Warnings for setIsNotVoided()
-     *
-     * @retval true
-     */
-    bool setIsVoided();
     /**
      * @brief Gets the value of the frcOtptLvlWhnVdd attribute.
      *
@@ -1654,7 +1685,42 @@ public:
      * @note Until v2.0.0 no VdblMPBttn class or subclasses **make use of the stOnWhnOtptFrcd attribute**, their inclusion is "New Features Requests" reception related.
      */
     bool getStOnWhnOtpFrcd();
-};
+
+ 	/**
+ 	 * @brief Sets the function that will be called to execute every time the object's **isVoided attribute flag is reset**.
+ 	 *
+ 	 * The function to be executed must be of the form **void (*newFnWhnTrnOff)()**, meaning it must take no arguments and must return no value, it will be executed only once by the object (recursion must be handled with the usual precautions). When instantiated the attribute value is set to **nullptr**.
+ 	 *
+ 	 * @param newFnWhnTrnOff Function pointer to the function intended to be called when the object's **isVoided attribute flag** is **reset**. Passing **nullptr** as parameter deactivates the function execution mechanism.
+ 	 */
+ 	void setFnWhnTrnOffVddPtr(void(*newFnWhnTrnOff)());
+ 	/**
+ 	 * @brief Sets the function that will be called to execute every time the object's **isVoided attribute flag** is **set**.
+ 	 *
+ 	 * The function to be executed must be of the form **void (*newFnWhnTrnOn)()**, meaning it must take no arguments and must return no value, it will be executed only once by the object (recursion must be handled with the usual precautions). When instantiated the attribute value is set to **nullptr**.
+ 	 *
+ 	 * @param newFnWhnTrnOn: function pointer to the function intended to be called when the object's **isVoided is set**. Passing **nullptr** as parameter deactivates the function execution mechanism.
+ 	 */
+ 	void setFnWhnTrnOnVddtPtr(void(*newFnWhnTrnOn)());
+    /**
+     * @brief Sets the value of the isVoided attribute flag to false
+     *
+     * @warning The value of the isVoided attribute flag is computed as a result of the current state of the instantiated object, considering the inputs and embedded simulated behavior.
+     * - Arbitrarily setting a value to the isVoided attribute flag might affect the normal behavior path for the object.
+     * - The attribute flag value might return to it's natural value when the behavior imposes the change.
+     * - The use of this method must be limited to certain states and conditions of the object, being the most suitable situation while the object is in **Disabled state**: If the application development requires the isVoided attribute flag to be in a specific value, this method and the setIsVoided() method are the required tools.
+     *
+     * @retval true
+     */
+    bool setIsNotVoided();
+    /**
+     * @brief Sets the value of the isVoided attribute flag to true.
+     *
+     * @warning See the Warnings for setIsNotVoided()
+     *
+     * @retval true
+     */
+    bool setIsVoided();};
 
 //==========================================================>>
 

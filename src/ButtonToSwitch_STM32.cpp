@@ -1412,24 +1412,24 @@ void HntdTmLtchMPBttn::clrStatus(bool clrIsOn){
 	return;
 }
 
-fncPtrType HntdTmLtchMPBttn::getFnWhnTrnPilotOff(){
+fncPtrType HntdTmLtchMPBttn::getFnWhnTrnOffPilot(){
 
-	return _fnWhnTrnPilotOff;
+	return _fnWhnTrnOffPilot;
 }
 
-fncPtrType HntdTmLtchMPBttn::getFnWhnTrnPilotOn(){
+fncPtrType HntdTmLtchMPBttn::getFnWhnTrnOnPilot(){
 
-	return _fnWhnTrnPilotOn;
+	return _fnWhnTrnOnPilot;
 }
 
-fncPtrType HntdTmLtchMPBttn::getFnWhnTrnWrnngOff(){
+fncPtrType HntdTmLtchMPBttn::getFnWhnTrnOffWrnng(){
 
-	return _fnWhnTrnWrnngOff;
+	return _fnWhnTrnOffWrnng;
 }
 
-fncPtrType HntdTmLtchMPBttn::getFnWhnTrnWrnngOn(){
+fncPtrType HntdTmLtchMPBttn::getFnWhnTrnOnWrnng(){
 
-	return _fnWhnTrnWrnngOn;
+	return _fnWhnTrnOnWrnng;
 }
 
 const bool HntdTmLtchMPBttn::getPilotOn() const{
@@ -1473,40 +1473,40 @@ void HntdTmLtchMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
 	return;
 }
 
-void HntdTmLtchMPBttn::setFnWhnTrnPilotOffPtr(void(*newFnWhnTrnOff)()){
+void HntdTmLtchMPBttn::setFnWhnTrnOffPilotPtr(void(*newFnWhnTrnOff)()){
 	taskENTER_CRITICAL();
-	if (_fnWhnTrnPilotOff != newFnWhnTrnOff){
-		_fnWhnTrnPilotOff = newFnWhnTrnOff;
+	if (_fnWhnTrnOffPilot != newFnWhnTrnOff){
+		_fnWhnTrnOffPilot = newFnWhnTrnOff;
 	}
 	taskEXIT_CRITICAL();
 
 	return;
 }
 
-void HntdTmLtchMPBttn::setFnWhnTrnPilotOnPtr(void(*newFnWhnTrnOn)()){
+void HntdTmLtchMPBttn::setFnWhnTrnOnPilotPtr(void(*newFnWhnTrnOn)()){
 	taskENTER_CRITICAL();
-	if (_fnWhnTrnPilotOn != newFnWhnTrnOn){
-		_fnWhnTrnPilotOn = newFnWhnTrnOn;
+	if (_fnWhnTrnOnPilot != newFnWhnTrnOn){
+		_fnWhnTrnOnPilot = newFnWhnTrnOn;
 	}
 	taskEXIT_CRITICAL();
 
 	return;
 }
 
-void HntdTmLtchMPBttn::setFnWhnTrnWrnngOffPtr(void(*newFnWhnTrnOff)()){
+void HntdTmLtchMPBttn::setFnWhnTrnOffWrnngPtr(void(*newFnWhnTrnOff)()){
 	taskENTER_CRITICAL();
-	if (_fnWhnTrnWrnngOff != newFnWhnTrnOff){
-		_fnWhnTrnWrnngOff = newFnWhnTrnOff;
+	if (_fnWhnTrnOffWrnng != newFnWhnTrnOff){
+		_fnWhnTrnOffWrnng = newFnWhnTrnOff;
 	}
 	taskEXIT_CRITICAL();
 
 	return;
 }
 
-void HntdTmLtchMPBttn::setFnWhnTrnWrnngOnPtr(void(*newFnWhnTrnOn)()){
+void HntdTmLtchMPBttn::setFnWhnTrnOnWrnngPtr(void(*newFnWhnTrnOn)()){
 	taskENTER_CRITICAL();
-	if (_fnWhnTrnWrnngOn != newFnWhnTrnOn){
-		_fnWhnTrnWrnngOn = newFnWhnTrnOn;
+	if (_fnWhnTrnOnWrnng != newFnWhnTrnOn){
+		_fnWhnTrnOnWrnng = newFnWhnTrnOn;
 	}
 	taskEXIT_CRITICAL();
 
@@ -1556,12 +1556,12 @@ void HntdTmLtchMPBttn::stOffNotVPP_In(){
 	//This method is invoked exclusively from the updFdaState, no need to declare it critical section
 	if(_keepPilot){
 		if(!_pilotOn){
-			_turnPilotOn();	// _pilotOn = true;
+			_turnOnPilot();	// _pilotOn = true;
 			_outputsChange = true;
 		}
 	}
 	if(_wrnngOn){
-		_turnWrnngOff();	// _wrnngOn = false;
+		_turnOffWrnng();	// _wrnngOn = false;
 		_outputsChange = true;
 	}
 
@@ -1572,7 +1572,7 @@ void HntdTmLtchMPBttn::stOffVPP_Out(){
 	//This method is invoked exclusively from the updFdaState, no need to declare it critical section
 	TmLtchMPBttn::stOffVPP_Out();
 	if(_pilotOn){
-		_turnPilotOff();	// _pilotOn = false;
+		_turnOffPilot();	// _pilotOn = false;
 		_outputsChange = true;
 	}
 
@@ -1582,12 +1582,12 @@ void HntdTmLtchMPBttn::stOffVPP_Out(){
 void HntdTmLtchMPBttn::stOnNVRP_Do(){
 	//This method is invoked exclusively from the updFdaState, no need to declare it critical section
 	if(_validWrnngSetPend){
-		_turnWrnngOn();	// _wrnngOn = true;
+		_turnOnWrnng();	// _wrnngOn = true;
 		_validWrnngSetPend = false;
 		_outputsChange = true;
 	}
 	if(_validWrnngResetPend){
-		_turnWrnngOff();	// _wrnngOn = false;
+		_turnOffWrnng();	// _wrnngOn = false;
 		_validWrnngResetPend = false;
 		_outputsChange = true;
 	}
@@ -1598,12 +1598,12 @@ void HntdTmLtchMPBttn::stOnNVRP_Do(){
 void HntdTmLtchMPBttn::stLtchNVUP_Do(){
 	//This method is invoked exclusively from the updFdaState, no need to declare it critical section
 	if(_validWrnngSetPend){
-		_turnWrnngOn();	// _wrnngOn = true;
+		_turnOnWrnng();	// _wrnngOn = true;
 		_validWrnngSetPend = false;
 		_outputsChange = true;
 	}
 	if(_validWrnngResetPend){
-		_turnWrnngOff();	// _wrnngOn = false;
+		_turnOffWrnng();	// _wrnngOn = false;
 		_validWrnngResetPend = false;
 		_outputsChange = true;
 	}
@@ -1618,7 +1618,7 @@ void HntdTmLtchMPBttn::stDisabled_In(){
 	if(_validWrnngResetPend)
 		_validWrnngResetPend = false;
 	if(_wrnngOn){
-		_turnWrnngOff();	// _wrnngOn = false;
+		_turnOffWrnng();	// _wrnngOn = false;
 		_outputsChange = true;
 	}
 
@@ -1627,16 +1627,16 @@ void HntdTmLtchMPBttn::stDisabled_In(){
 	if(_validPilotResetPend)
 		_validPilotResetPend = false;
 	if(_keepPilot && !_isOnDisabled && !_pilotOn){
-		_turnPilotOn();	// _pilotOn = true;
+		_turnOnPilot();	// _pilotOn = true;
 		_outputsChange = true;
 	}
 	else if(_pilotOn == true)
-		_turnPilotOff();	// _pilotOn = false;
+		_turnOffPilot();	// _pilotOn = false;
 
 	return;
 }
 
-void HntdTmLtchMPBttn::_turnPilotOff(){
+void HntdTmLtchMPBttn::_turnOffPilot(){
 	if(_pilotOn){
 		//---------------->> Tasks related actions
 		/*
@@ -1650,8 +1650,8 @@ void HntdTmLtchMPBttn::_turnPilotOff(){
 		}
 		*/
 		//---------------->> Functions related actions
-		if(_fnWhnTrnPilotOff != nullptr){
-			_fnWhnTrnPilotOff();
+		if(_fnWhnTrnOffPilot != nullptr){
+			_fnWhnTrnOffPilot();
 		}
 	}
 	taskENTER_CRITICAL();
@@ -1665,7 +1665,7 @@ void HntdTmLtchMPBttn::_turnPilotOff(){
 	return;
 }
 
-void HntdTmLtchMPBttn::_turnPilotOn(){
+void HntdTmLtchMPBttn::_turnOnPilot(){
 	if(!_pilotOn){
 		//---------------->> Tasks related actions
 		/*
@@ -1679,8 +1679,8 @@ void HntdTmLtchMPBttn::_turnPilotOn(){
 		}
 		*/
 		//---------------->> Functions related actions
-		if(_fnWhnTrnPilotOn != nullptr){
-			_fnWhnTrnPilotOn();
+		if(_fnWhnTrnOnPilot != nullptr){
+			_fnWhnTrnOnPilot();
 		}
 	}
 	taskENTER_CRITICAL();
@@ -1694,7 +1694,7 @@ void HntdTmLtchMPBttn::_turnPilotOn(){
 	return;
 }
 
-void HntdTmLtchMPBttn::_turnWrnngOff(){
+void HntdTmLtchMPBttn::_turnOffWrnng(){
 	if(_wrnngOn){
 		//---------------->> Tasks related actions
 		/*
@@ -1708,8 +1708,8 @@ void HntdTmLtchMPBttn::_turnWrnngOff(){
 		}
 		*/
 		//---------------->> Functions related actions
-		if(_fnWhnTrnWrnngOff != nullptr){
-			_fnWhnTrnWrnngOff();
+		if(_fnWhnTrnOffWrnng != nullptr){
+			_fnWhnTrnOffWrnng();
 		}
 	}
 	taskENTER_CRITICAL();
@@ -1723,7 +1723,7 @@ void HntdTmLtchMPBttn::_turnWrnngOff(){
 	return;
 }
 
-void HntdTmLtchMPBttn::_turnWrnngOn(){
+void HntdTmLtchMPBttn::_turnOnWrnng(){
 	if(!_wrnngOn){
 		//---------------->> Tasks related actions
 		/*
@@ -1737,8 +1737,8 @@ void HntdTmLtchMPBttn::_turnWrnngOn(){
 		}
 		*/
 		//---------------->> Functions related actions
-		if(_fnWhnTrnWrnngOn != nullptr){
-			_fnWhnTrnWrnngOn();
+		if(_fnWhnTrnOnWrnng != nullptr){
+			_fnWhnTrnOnWrnng();
 		}
 	}
 	taskENTER_CRITICAL();
@@ -2739,6 +2739,16 @@ void VdblMPBttn::clrStatus(bool clrIsOn){
 	return;
 }
 
+fncPtrType VdblMPBttn::getFnWhnTrnOffVdd(){
+
+	return _fnWhnTrnOffVdd;
+}
+
+fncPtrType VdblMPBttn::getFnWhnTrnOnVdd(){
+
+	return _fnWhnTrnOnVdd;
+}
+
 const bool VdblMPBttn::getIsVoided() const{
 
     return _isVoided;
@@ -2797,7 +2807,10 @@ bool VdblMPBttn::setIsVoided(){
 bool VdblMPBttn::setVoided(const bool &newVoidValue){
 	taskENTER_CRITICAL();
 	if(_isVoided != newVoidValue){
-		_isVoided = newVoidValue;
+		if(newVoidValue)
+			_turnOnVdd();
+		else
+			_turnOffVdd();
       _outputsChange = true;
 	}
 	taskEXIT_CRITICAL();
@@ -2825,13 +2838,53 @@ void VdblMPBttn::stDisabled_Out(){
 	return;
 }
 
+void VdblMPBttn::_turnOffVdd(){
+	if(_isVoided){
+		//---------------->> Tasks related actions
+
+		//---------------->> Functions related actions
+		if(_fnWhnTrnOffVdd != nullptr){
+			_fnWhnTrnOffVdd();
+		}
+	}
+	taskENTER_CRITICAL();
+	if(_isVoided){
+		//---------------->> Flags related actions
+		_isVoided = false;
+		_outputsChange = true;
+	}
+	taskEXIT_CRITICAL();
+
+	return;
+}
+
+void VdblMPBttn::_turnOnVdd(){
+	if(!_isVoided){
+		//---------------->> Tasks related actions
+
+		//---------------->> Functions related actions
+		if(_fnWhnTrnOnVdd != nullptr){
+			_fnWhnTrnOnVdd();
+		}
+	}
+	taskENTER_CRITICAL();
+	if(!_isVoided){
+		//---------------->> Flags related actions
+		_isVoided = true;
+		_outputsChange = true;
+	}
+	taskEXIT_CRITICAL();
+
+	return;
+}
+
 void VdblMPBttn::updFdaState(){
 	taskENTER_CRITICAL();
 	switch(_mpbFdaState){
 		case stOffNotVPP:
 			//In: >>---------------------------------->>
 			if(_sttChng){
-				_isVoided = false;
+				_turnOffVdd();	// _isVoided = false;
 				stOffNotVPP_In();
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
@@ -2885,7 +2938,7 @@ void VdblMPBttn::updFdaState(){
 
 		case stOnVVP:
 			if(_sttChng){
-				_isVoided = true;
+				_turnOnVdd();	// _isVoided = true;
 				_validVoidPend = false;
 				_outputsChange = true;
 				clrSttChng();}	// Execute this code only ONCE, when entering this state
@@ -2928,7 +2981,7 @@ void VdblMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
-			_isVoided = false;
+			_turnOffVdd(); //_isVoided = false;
 			_validUnvoidPend = false;
 			_outputsChange = true;
 			_mpbFdaState = stOffUnVdd;
@@ -3021,6 +3074,28 @@ bool VdblMPBttn::getFrcOtptLvldWhnVdd(){
 bool VdblMPBttn::getStOnWhnOtpFrcd(){
 
 	return _stOnWhnOtptFrcd;
+}
+
+void VdblMPBttn::setFnWhnTrnOffVddPtr(void(*newFnWhnTrnOff)()){
+	taskENTER_CRITICAL();
+	if (_fnWhnTrnOffVdd != newFnWhnTrnOff){
+		_fnWhnTrnOffVdd = newFnWhnTrnOff;
+	}
+	taskEXIT_CRITICAL();
+
+	return;
+
+}
+
+void VdblMPBttn::setFnWhnTrnOnVddtPtr(void(*newFnWhnTrnOn)()){
+	taskENTER_CRITICAL();
+	if (_fnWhnTrnOnVdd != newFnWhnTrnOn){
+		_fnWhnTrnOnVdd = newFnWhnTrnOn;
+	}
+	taskEXIT_CRITICAL();
+
+	return;
+
 }
 
 void VdblMPBttn::setFrcdOtptWhnVdd(const bool &newVal){

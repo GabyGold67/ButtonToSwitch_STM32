@@ -17,12 +17,16 @@ Those mechanisms include:
 	- **General flags value change getter**: Returns a value indicating if **any** of the significant output flags' values has changed.  
 	- **Lightweight Binary Semaphore**: Implementation of a **xTaskNotify()** FreeRTOS macro to unblock a developer defined task -every time **any** of the output flags' values changes- including a notification value indicating the state of the MPB.  
 	- **Task Resume/Suspend**: A mechanism is provided to run a developer defined task while the object is in **On State**. The designated task will be set to "Suspended State" while the object is in **Off State** and will be set to "Resume" while it is in **On State**, providing means to execute far more complex tasks than just "turning On & turning Off" devices.  
-	- **Functions execution**: A developer defined function might be set to be executed every time the instantiated object enters the **On State**, and a function might be set to be executed every time the instantiated object enters the **Off State**. The functions are to be independently defined, so one, the other or both might be defined, and even the same function might be used for both events. Other functions might be asigned to be executed every time a significant attribute flag's value changes:
-		- For the **HntdTmLtchMPBttn** class: Warning and Pilot attribute flags
-		- For the **DDlydDALtchMPBttn** class: Secondary On attribute flag.
-		- For other classes associated outputs functions read the classes documentation.   
+	- **Functions execution**: A developer defined function might be set to be executed every time the instantiated object enters the **On State**, and a function might be set to be executed every time the instantiated object enters the **Off State**. The functions are to be independently defined, so one, the other or both might be defined, and even the same function might be used for both events.  
 		 
 Those listed mechanisms are **independent**, so one or more might be simultaneously used depending on implementation needs and convenience.    
+
+The **Functions execution** mechanism is also available, so that other functions might be asigned to be executed every time a significant attribute flag's value changes, one for setting, one for resetting:
+		- For the **HntdTmLtchMPBttn** class: Warning and Pilot attribute flags
+		- For the **DDlydDALtchMPBttn** class: Secondary On attribute flag.
+		- For the **TmVdblMPBttn** and the **SnglSrvcVDBLMPBttn**: isVoided attribute flag.
+		- For other classes associated outputs functions read the classes documentation.   
+
 
 ### The library implements the following switches behaviors: ###  
 * **Debounced Momentary Push Button** (a.k.a. Momentary switch, a.k.a. **Pushbutton**)  
