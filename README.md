@@ -21,14 +21,13 @@ Those mechanisms include:
 		 
 Those listed mechanisms are **independent**, so one or more might be simultaneously used depending on implementation needs and convenience.    
 
-The **Functions execution** mechanism is also available, so that other functions might be asigned to be executed every time a significant attribute flag's value changes, one for setting, one for resetting:
-		- For the **HntdTmLtchMPBttn** class: Warning and Pilot attribute flags
-		- For the **DDlydDALtchMPBttn** class: Secondary On attribute flag.
-		- For the **TmVdblMPBttn** and the **SnglSrvcVDBLMPBttn**: isVoided attribute flag.
+The **Functions execution** mechanism is also available, so that other functions might be asigned to be executed every time a significant attribute flag's value changes, one for setting, one for resetting:  
+		- For the **HntdTmLtchMPBttn** class: Warning and Pilot attribute flags.  
+		- For the **DDlydDALtchMPBttn** class: Secondary On attribute flag.  
+		- For the **TmVdblMPBttn** and the **SnglSrvcVDBLMPBttn**: isVoided attribute flag.  
 		- For other classes associated outputs functions read the classes documentation.   
 
-
-### The library implements the following switches behaviors: ###  
+### The library implements the following switches behaviors:    
 * **Debounced Momentary Push Button** (a.k.a. Momentary switch, a.k.a. **Pushbutton**)  
 * **Debounced Delayed Momentary Push Button** (a.k.a. **Delayed Pushbutton**)  
 * **Toggle Switch Momentary Push Button** (a.k.a. Alternate Pushbutton, a.k.a. **Latched Switch**)  
