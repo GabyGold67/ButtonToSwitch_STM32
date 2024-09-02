@@ -31,7 +31,7 @@
   <td id="projectalign">
    <div id="projectname">ButtonToSwitch Library for STM32<span id="projectnumber">&#160;v4.0.0</span>
    </div>
-   <div id="projectbrief">A library that provides elaborated switch mechanism simulation for digital signals inputs</div>
+   <div id="projectbrief">A library that provides elaborated switch mechanism behavior simulation for digital signals inputs</div>
   </td>
  </tr>
  </tbody>
@@ -132,10 +132,14 @@ The embedded behavior also includes logical replacements for temporary or extrao
 </ul>
 <p>Those listed mechanisms are <b>independent</b>, so one or more might be simultaneously used depending on implementation needs and convenience. <br  />
 </p>
-<p>The <b>Functions execution</b> mechanism is also available, so that other functions might be asigned to be executed every time a significant attribute flag's value changes, one for setting, one for resetting:</p><ul>
-<li>For the <b><a class="el" href="class_hntd_tm_ltch_m_p_bttn.html" title="Models a Hinted Timer Latch DD-MPB, a.k.a. Staircase Switch (HTiLDD-MPB).">HntdTmLtchMPBttn</a></b> class: Warning and Pilot attribute flags</li>
-<li>For the <b><a class="el" href="class_d_dlyd_d_a_ltch_m_p_bttn.html" title="Models a Debounced Delayed Double Action Latched MPB combo switch (Debounced Delayed DALDD-MPB - DD-D...">DDlydDALtchMPBttn</a></b> class: Secondary On attribute flag.</li>
-<li>For the <b><a class="el" href="class_tm_vdbl_m_p_bttn.html" title="Models a Time Voidable DD-MPB, a.k.a. Anti-tampering switch (TVDD-MPB)">TmVdblMPBttn</a></b> and the <b>SnglSrvcVDBLMPBttn</b>: isVoided attribute flag.</li>
+<p>The <b>Functions execution</b> mechanism is also available, so that other functions might be asigned to be executed every time a significant attribute flag's value changes, one for setting, one for resetting: <br  />
+</p><ul>
+<li>For the <b><a class="el" href="class_hntd_tm_ltch_m_p_bttn.html" title="Models a Hinted Timer Latch DD-MPB, a.k.a. Staircase Switch (HTiLDD-MPB).">HntdTmLtchMPBttn</a></b> class: Warning and Pilot attribute flags. <br  />
+</li>
+<li>For the <b><a class="el" href="class_d_dlyd_d_a_ltch_m_p_bttn.html" title="Models a Debounced Delayed Double Action Latched MPB combo switch (Debounced Delayed DALDD-MPB - DD-D...">DDlydDALtchMPBttn</a></b> class: Secondary On attribute flag. <br  />
+</li>
+<li>For the <b><a class="el" href="class_tm_vdbl_m_p_bttn.html" title="Models a Time Voidable DD-MPB, a.k.a. Anti-tampering switch (TVDD-MPB)">TmVdblMPBttn</a></b> and the <b>SnglSrvcVDBLMPBttn</b>: isVoided attribute flag. <br  />
+</li>
 <li>For other classes associated outputs functions read the classes documentation. <br  />
 </li>
 </ul>

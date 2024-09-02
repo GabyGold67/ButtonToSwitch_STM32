@@ -3,12 +3,13 @@
   * @file	: ButtonToSwitch_STM32.h
   * @brief	: Header file for the ButtonToSwitch_STM32 library classes
   *
-  * @details The library builds several switch mechanisms replacements out of simple push buttons
-  * or similar equivalent digital signal inputs.
-  * By using just a push button (a.k.a. momentary switches or momentary buttons, _**MPB**_
-  * for short from here on) the classes implemented in this library will manage,
-  * calculate and update different parameters to **generate the embedded behavior of standard
-  * electromechanical switches**.
+  * @details The library builds several switch mechanisms replacements out of simple
+  * push buttons or **similar equivalent digital signal inputs**.
+  * By using just a push button (a.k.a. momentary switches or momentary buttons,
+  * **Momentary Push Buttons** or _**MPB**_ for short from here on) the classes
+  * implemented in this library will manage, calculate and update different
+  * parameters to **generate the embedded behavior of standard electromechanical
+  * switches**.
   *
   * @author	: Gabriel D. Goldman
   * @version v4.0.0
@@ -16,10 +17,17 @@
   * 			: Last modification:	28/08/2024
   * @copyright GPL-3.0 license
   *
-  * @note FreeRTOS Kernel V10.3.1, some implementations have been limited to comply to the services provided by the version.
   ******************************************************************************
-  * @attention	This library was developed as part of the refactoring process for an industrial machines security enforcement and control (hardware & firmware update). As such every class included complies **AT LEAST** with the provision of the attributes and methods to make the hardware & firmware replacement transparent to the controlled machines. Generic use attribute and methods were added to extend the usability to other projects and application environments, but no fitness nor completeness of those are given but for the intended refactoring project.
-  * **Use of this library is under your own responsibility**
+  * @attention	This library was developed as part of the refactoring process for
+  * an industrial machines security enforcement and control (hardware & firmware
+  * update). As such every class included complies **AT LEAST** with the
+  * provision of the attributes and methods to make the hardware & firmware
+  * replacement transparent to the controlled machines. Generic use attribute
+  * and methods were added to extend the usability to other projects and
+  * application environments, but no fitness nor completeness of those are given
+  * but for the intended refactoring project.
+  *
+  * **Use this library under your own responsibility**
   *
   ******************************************************************************
   */
@@ -258,7 +266,7 @@ public:
 	 */
 	bool end();
 	/**
-	 * @brief Gets the current debounce time set for the object.
+	 * @brief Returns the current debounce time set for the object.
 	 *
 	 * The original value for the debouncing process used at instantiation time might be changed with the **setDbncTime(const unsigned long int)** or with the **resetDbncTime()** methods. This method gets the current value of the attribute in use.
 	 *
@@ -277,7 +285,7 @@ public:
 	 */
 	fncPtrType  getFnWhnTrnOff();
 	/**
-	 * @brief Gets the function that is set to execute every time the object **enters** the **On State**.
+	 * @brief Returns the function that is set to execute every time the object **enters** the **On State**.
 	 *
 	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnOnPtr()** method.
 	 *
@@ -288,7 +296,7 @@ public:
 	 */
    fncPtrType getFnWhnTrnOn();
    /**
-	 * @brief Gets the value of the isEnabled attribute flag, indicating the **Enabled** or **Disabled** status of the object.
+	 * @brief Returns the value of the isEnabled attribute flag, indicating the **Enabled** or **Disabled** status of the object.
 	 *
 	 * The isEnabled flag might be modified by the enable() and the disable() methods.
 	 *
@@ -297,7 +305,7 @@ public:
     */
    const bool getIsEnabled() const;
    /**
-	 * @brief Gets the value of the **isOn** attribute flag.
+	 * @brief Returns the value of the **isOn** attribute flag.
 	 *
 	 * The **isOn** attribute flag is the fundamental attribute of the object, it might be considered the "Raison d'etre" of all this classes design: the isOn signal is not just the detection of an expected voltage value at a mcu pin, but the combination of that voltage level, filtered and verified, for a determined period of time and until a new event modifies that situation.  While other mechanism are provided to execute code when the status of the object changes, all but the **isOn** flag value update are optionally executed.
 	 *
@@ -306,7 +314,7 @@ public:
     */
    const bool getIsOn () const;
    /**
-	 * @brief Gets the value of the **isOnDisabled** attribute flag.
+	 * @brief Returns the value of the **isOnDisabled** attribute flag.
 	 *
 	 * When instantiated the class, the object is created in **Enabled state**. That might be changed when needed.
 	 * In the **Disabled state** the input signals for the MPB are not processed, and the output will be set to the **On state** or the **Off state** depending on this flag's value.
@@ -318,7 +326,7 @@ public:
     */
    const bool getIsOnDisabled() const;
    /**
-	 * @brief Gets the relevant attribute flags values for the object state encoded as a 32 bits value, required to pass current state of the object to another thread/task managing the outputs
+	 * @brief Returns the relevant attribute flags values for the object state encoded as a 32 bits value, required to pass current state of the object to another thread/task managing the outputs
     *
     * The inter-tasks communication mechanisms implemented on the class includes a xTaskNotify() that works as a light-weigh mailbox, unblocking the receiving tasks and sending to it a 32_bit value notification. This function returns the relevant attribute flags values encoded in a 32 bit value, according the provided encoding described.
     *
@@ -326,7 +334,7 @@ public:
     */
    const uint32_t getOtptsSttsPkgd();
    /**
-	 * @brief Gets the value of the **outputsChange** attribute flag.
+	 * @brief Returns the value of the **outputsChange** attribute flag.
 	 *
 	 * The instantiated objects include attributes linked to their computed state, which represent the behavior expected from their respective electromechanical simulated counterparts.
 	 * When any of those attributes values change, the **outputsChange** flag is set. The flag only signals changes have happened -not which flags, nor how many times changes have taken place- since the last **outputsChange** flag reset.
@@ -337,7 +345,7 @@ public:
 	 */
    const bool getOutputsChange() const;
    /**
-    * @brief Gets the current value of strtDelay attribute.
+    * @brief Returns the current value of strtDelay attribute.
     *
     * Returns the current value of time used by the object to rise the isOn flag, after the debouncing process ends, in milliseconds. If the MPB is released before completing the debounce **and** the strtDelay time, no press will be detected by the object, and the isOn flag will not be affected. The original value for the delay process used at instantiation time might be changed with the setStrtDelay() method, so this method is provided to get the current value in use.
     *
@@ -347,7 +355,7 @@ public:
     */
    unsigned long int getStrtDelay();
    /**
-	 * @brief Gets the task to be notified by the object when its output flags changes.
+	 * @brief Returns the task to be notified by the object when its output flags changes.
 	 *
 	 * The task handle of the task to be notified by the object when its **outputsChange** attribute flag is set (see getOutputsChange()) holds a **NULL** when the object is created. A valid task's TaskHandle_t value might be set by using the setTaskToNotify() method, and even set back to **NULL** to disable the task notification mechanism.
 	 *
@@ -358,9 +366,9 @@ public:
     */
 	const TaskHandle_t getTaskToNotify() const;
 	/**
-	 * @brief Gets the task to be run (resumed) while the object is in the **On state**.
+	 * @brief Returns the task to be run (resumed) while the object is in the **On state**.
 	 *
-	 * Gets the task handle of the task to be **resumed** every time the object enters the **On state**, and will be **paused** when the  object enters the **Off state**. This task execution mechanism dependent of the **On state** extends the concept of the **Switch object** far away of the simple turning On/Off a single hardware signal, attaching to it all the task execution capabilities of the MCU.
+	 * Returns the task handle of the task to be **resumed** every time the object enters the **On state**, and will be **paused** when the  object enters the **Off state**. This task execution mechanism dependent of the **On state** extends the concept of the **Switch object** far away of the simple turning On/Off a single hardware signal, attaching to it all the task execution capabilities of the MCU.
 	 *
 	 * @return The TaskHandle_t value of the task to be resumed while the object is in **On state**.
     * @retval NULL if there is no task configured to be resumed while the object is in **On state**.
@@ -620,7 +628,7 @@ public:
 	 */
 	void clrStatus(bool clrIsOn = true);
    /**
-	 * @brief Gets the value of the isLatched attribute flag, indicating the **Latched** or **Unlatched** condition of the object.
+	 * @brief Returns the value of the isLatched attribute flag, indicating the **Latched** or **Unlatched** condition of the object.
 	 *
 	 * The isLatched flag is automatically updated periodically by the timer that calculates the object state.
 	 *
@@ -629,7 +637,7 @@ public:
     */
 	const bool getIsLatched() const;
 	/**
-	 * @brief Gets the value of the trnOffASfAP class attribute flag.
+	 * @brief Returns the value of the trnOffASfAP class attribute flag.
 	 *
 	 * As described in the class characteristics the unlatching process comprises two stages, Validated Unlatch Signal and Validates unlatch Release Signal, that might be generated simultaneously or separated in time. The **trnOffASAP** attribute flag sets the behavior of the MPB in the second case.
 	 * - If the **trnOffASAP** attribute flag is set (true) the **isOn** flag will be reseted as soon as the **Validated Unlatch Signal** is detected
@@ -639,7 +647,7 @@ public:
 	 */
 	bool getTrnOffASAP();
 	/**
-	 * @brief Gets the value of the validUnlatchPending attribute
+	 * @brief Returns the value of the validUnlatchPending attribute
 	 *
 	 * The validUnlatchPending holds the existence of a still to be processed confirmed unlatch signal. Getting it's current value makes possible taking actions before the unlatch process is started or even discard it completely by using the setUnlatchPend(const bool) method.
 	 *
@@ -647,7 +655,7 @@ public:
 	 */
 	const bool getUnlatchPend() const;
 	/**
-	 * @brief Gets the value of the validUnlatchReleasePending attribute
+	 * @brief Returns the value of the validUnlatchReleasePending attribute
 	 *
 	 * The validUnlatchReleasePending holds the existence of a still to be processed confirmed unlatch released signal. Getting it's current value makes possible taking actions before the unlatch process ends or even discard it completely by using the setUnlatchRlsPend(const bool) method.
 	 *
@@ -765,7 +773,7 @@ public:
      */
     void clrStatus(bool clrIsOn = true);
     /**
-     * @brief Gets the configured Service Time.
+     * @brief Returns the configured Service Time.
      *
      * @return The current Service Time setting in milliseconds
      */
@@ -821,14 +829,13 @@ protected:
 	bool _validPilotSetPend{false};
 	bool _validPilotResetPend{false};
 
+   static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
+	uint32_t _otptsSttsPkg(uint32_t prevVal = 0);
+	virtual void stDisabled_In();
+	virtual void stLtchNVUP_Do();
 	virtual void stOffNotVPP_In();
 	virtual void stOffVPP_Out();
    virtual void stOnNVRP_Do();
-	virtual void stLtchNVUP_Do();
-	virtual void stDisabled_In();
-
-   static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
-	uint32_t _otptsSttsPkg(uint32_t prevVal = 0);
 	void _turnOffPilot();
 	void _turnOffWrnng();
 	void _turnOnPilot();
@@ -863,7 +870,7 @@ public:
 	/**
 	 * @brief Returns the function that is set to execute every time the object's **Pilot** attribute flag **enters** the **Off State**.
 	 *
-	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnPilotOffPtr()** method.
+	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnOffPilotPtr()** method.
 	 *
 	 * @return A function pointer to the function set to execute every time the object's Pilot is set to the **Off State**.
 	 * @retval nullptr if there is no function set to execute when the object's Pilot enters the **Off State**.
@@ -872,20 +879,9 @@ public:
 	 */
 	fncPtrType  getFnWhnTrnOffPilot();
 	/**
-	 * @brief Returns the function that is set to execute every time the object's **Pilot** attribute flag **enters** the **On State**.
-	 *
-	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnPilotOnPtr()** method.
-	 *
-	 * @return A function pointer to the function set to execute every time the object's Pilot is set to the **On State**.
-	 * @retval nullptr if there is no function set to execute when the object's Pilot enters the **On State**.
-	 *
-	 * @warning The function code execution will become part of the list of procedures the object executes when it enters the **Pilot On State**, including the modification of affected attribute flags. Making the function code too time-demanding must be handled with care, using alternative execution schemes, for example the function might resume a independent task that suspends itself at the end of its code, to let a new function calling event resume it once again.
-	 */
-	fncPtrType  getFnWhnTrnOnPilot();
-	/**
 	 * @brief Returns the function that is set to execute every time the object's **Warning** attribute flag **enters** the **Off State**.
 	 *
-	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnWrnngOffPtr()** method.
+	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnOffWrnngPtr()** method.
 	 *
 	 * @return A function pointer to the function set to execute every time the object's Warning is set to the **Off State**.
 	 * @retval nullptr if there is no function set to execute when the object's Warning enters the **Off State**.
@@ -894,9 +890,20 @@ public:
 	 */
 	fncPtrType  getFnWhnTrnOffWrnng();
 	/**
+	 * @brief Returns the function that is set to execute every time the object's **Pilot** attribute flag **enters** the **On State**.
+	 *
+	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnOnPilotPtr()** method.
+	 *
+	 * @return A function pointer to the function set to execute every time the object's Pilot is set to the **On State**.
+	 * @retval nullptr if there is no function set to execute when the object's Pilot enters the **On State**.
+	 *
+	 * @warning The function code execution will become part of the list of procedures the object executes when it enters the **Pilot On State**, including the modification of affected attribute flags. Making the function code too time-demanding must be handled with care, using alternative execution schemes, for example the function might resume a independent task that suspends itself at the end of its code, to let a new function calling event resume it once again.
+	 */
+	fncPtrType  getFnWhnTrnOnPilot();
+	/**
 	 * @brief Returns the function that is set to execute every time the object's **Warning** attribute flag **enters** the **On State**.
 	 *
-	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnWarnngOnPtr()** method.
+	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnOnWarnngPtr()** method.
 	 *
 	 * @return A function pointer to the function set to execute every time the object's Warning is set to the **On State**.
 	 * @retval nullptr if there is no function set to execute when the object's Warning enters the **On State**.
@@ -905,7 +912,7 @@ public:
 	 */
 	fncPtrType  getFnWhnTrnOnWrnng();
 	/**
-	 * @brief Gets the current value of the pilotOn attribute flag.
+	 * @brief Returns the current value of the pilotOn attribute flag.
 	 *
 	 * The pilotOn flag will be set when the isOn attribute flag is reset (~isOn), while the keepPilot attribute is set. If the keepPilot attribute is false the pilotOn will keep reset independently of the isOn flag value.
 	 *
@@ -915,7 +922,7 @@ public:
 	 */
 	const bool getPilotOn() const;
 	/**
-	 * @brief Gets the current value of the warningOn attribute flag.
+	 * @brief Returns the current value of the warningOn attribute flag.
 	 *
 	 * The warningOn flag will be set when the configured service time (to keep the ON signal set) is close to expiration, based on a configurable percentage of the total Service time.
 	 *
@@ -927,13 +934,21 @@ public:
 	 */
 	const bool getWrnngOn() const;
 	/**
-	 * @brief Sets the function that will be called to execute every time the object's **Pilot is reset**.
+	 * @brief Sets the function that will be called to execute every time the object's **Pilot** is **reset**.
 	 *
 	 * The function to be executed must be of the form **void (*newFnWhnTrnOff)()**, meaning it must take no arguments and must return no value, it will be executed only once by the object (recursion must be handled with the usual precautions). When instantiated the attribute value is set to **nullptr**.
 	 *
 	 * @param newFnWhnTrnOff Function pointer to the function intended to be called when the object's **Pilot** is **reset**. Passing **nullptr** as parameter deactivates the function execution mechanism.
 	 */
 	void setFnWhnTrnOffPilotPtr(void(*newFnWhnTrnOff)());
+	/**
+	 * @brief Sets the function that will be called to execute every time the object's **Warning** is **reset**.
+	 *
+	 * The function to be executed must be of the form **void (*newFnWhnTrnOff)()**, meaning it must take no arguments and must return no value, it will be executed only once by the object (recursion must be handled with the usual precautions). When instantiated the attribute value is set to **nullptr**.
+	 *
+	 * @param newFnWhnTrnOff Function pointer to the function intended to be called when the object's **Warning** is **reset**. Passing **nullptr** as parameter deactivates the function execution mechanism.
+	 */
+	void setFnWhnTrnOffWrnngPtr(void(*newFnWhnTrnOff)());
 	/**
 	 * @brief Sets the function that will be called to execute every time the object's **Pilot** is **set**.
 	 *
@@ -942,14 +957,6 @@ public:
 	 * @param newFnWhnTrnOn: function pointer to the function intended to be called when the object's **Pilot is set**. Passing **nullptr** as parameter deactivates the function execution mechanism.
 	 */
 	void setFnWhnTrnOnPilotPtr(void(*newFnWhnTrnOn)());
-	/**
-	 * @brief Sets the function that will be called to execute every time the object's **Wrnng** is **reset**.
-	 *
-	 * The function to be executed must be of the form **void (*newFnWhnTrnOff)()**, meaning it must take no arguments and must return no value, it will be executed only once by the object (recursion must be handled with the usual precautions). When instantiated the attribute value is set to **nullptr**.
-	 *
-	 * @param newFnWhnTrnOff Function pointer to the function intended to be called when the object's **Wrnng** is **reset**. Passing **nullptr** as parameter deactivates the function execution mechanism.
-	 */
-	void setFnWhnTrnOffWrnngPtr(void(*newFnWhnTrnOff)());
 	/**
 	 * @brief Sets the function that will be called to execute every time the object's **Wrnng** is **set**.
 	 *
@@ -1154,7 +1161,7 @@ public:
 	 */
    void clrStatus(bool clrIsOn = true);
 	/**
-	 * @brief Gets the function that is set to execute every time the object **enters** the **Secondary Off State**.
+	 * @brief Returns the function that is set to execute every time the object **enters** the **Secondary Off State**.
 	 *
 	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnOffScndryPtr()** method.
 	 *
@@ -1163,7 +1170,7 @@ public:
 	 */
 	fncPtrType getFnWhnTrnOffScndry();
 	/**
-	 * @brief Gets the function that is set to execute every time the object **enters** the **Secondary On State**.
+	 * @brief Returns the function that is set to execute every time the object **enters** the **Secondary On State**.
 	 *
 	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnOnScndryPtr()** method.
 	 *
@@ -1172,7 +1179,7 @@ public:
 	 */
 	fncPtrType getFnWhnTrnOnScndry();
    /**
-	 * @brief Gets the current value of the isOnScndry attribute flag
+	 * @brief Returns the current value of the isOnScndry attribute flag
 	 *
 	 * The isOnScndry attribute flag holds the **secondary On state**, when the MPB is pressed for the seted **long press** time from the Off-Off or the On-Off state as described in the DblActnLtchMPBttn class.
     *
@@ -1180,7 +1187,7 @@ public:
     */
    bool getIsOnScndry();
 	/**
-	 * @brief Gets the current value of the scndModActvDly class attribute.
+	 * @brief Returns the current value of the scndModActvDly class attribute.
 	 *
 	 * The scndModActvDly attribute defines the time length a MPB must remain pressed to consider it a **long press**, needed to activate the **secondary mode**.
 	 *
@@ -1188,9 +1195,9 @@ public:
 	 */
    unsigned long getScndModActvDly();
 	/**
-	 * @brief Gets the task to be run while the object is in the **Secondary On state**.
+	 * @brief Returns the task to be run while the object is in the **Secondary On state**.
 	 *
-	 * Gets the task handle of the task to be **resumed** every time the object enters the **Secondary On state**, and will be **paused** when the  object enters the **Secondary Off state**. This task execution mechanism dependent of the **Secondary On state** extends the concept of the **Switch object** far away of the simple turning On/Off a single hardware signal, attaching to it all the task execution capabilities of the MCU.
+	 * Returns the task handle of the task to be **resumed** every time the object enters the **Secondary On state**, and will be **paused** when the  object enters the **Secondary Off state**. This task execution mechanism dependent of the **Secondary On state** extends the concept of the **Switch object** far away of the simple turning On/Off a single hardware signal, attaching to it all the task execution capabilities of the MCU.
 	 *
 	 * @return The TaskHandle_t value of the task to be resumed while the object is in **Secondary On state**.
     * @retval NULL if there is no task configured to be resumed while the object is in **Secondary On state**.
@@ -1243,7 +1250,6 @@ public:
     * @warning Take special consideration about the implications of the execution **priority** of the task to be executed while the MPB is in **On state** and its relation to the priority of the calling task, as it might affect the normal execution of the application.
 	 */
 	void setTaskWhileOnScndry(const TaskHandle_t &newTaskHandle);
-
 };
 
 //==========================================================>>
@@ -1355,13 +1361,13 @@ public:
 	 */
    void clrStatus(bool clrIsOn = true);
 	/**
-	 * @brief Gets the **Output Current Value (otpCurVal)** attribute
+	 * @brief Returns the **Output Current Value (otpCurVal)** attribute
 	 *
 	 * @return The otpCurVal register value.
 	 */
    uint16_t getOtptCurVal();
    /**
-	 * @brief Gets the result of comparing the **Output Current Value** to the **Maximum value setting**
+	 * @brief Returns the result of comparing the **Output Current Value** to the **Maximum value setting**
     *
     * @return The logical result of the comparison
     * @retval true: The **Output Current Value** is equal to the **Maximum value setting**, i.e. the otpCurVal has reached the "top" of the configured range of accepted values.
@@ -1369,7 +1375,7 @@ public:
     */
    bool getOtptCurValIsMax();
    /**
-	 * @brief Gets the result of comparing the **Output Current Value** to the **Minimum value setting**
+	 * @brief Returns the result of comparing the **Output Current Value** to the **Minimum value setting**
     *
     * @return The logical result of the comparison
     * @retval true: The **Output Current Value** is equal to the **Minimum value setting**, i.e. the otpCurVal has reached the "bottom" of the configured range of accepted values.
@@ -1377,19 +1383,19 @@ public:
     */
    bool getOtptCurValIsMin();
 	/**
-	 * @brief Gets the top **output current value** register setting
+	 * @brief Returns the top **output current value** register setting
 	 *
 	 * @return The maximum **output current value** set.
 	 */
    uint16_t getOtptValMax();
 	/**
-	 * @brief Gets the bottom **output current value** register setting
+	 * @brief Returns the bottom **output current value** register setting
 	 *
 	 * @return The minimum **output current value** set.
 	 */
 	uint16_t getOtptValMin();
 	/**
-	 * @brief Gets the current setting for the **Output Slider Speed** value.
+	 * @brief Returns the current setting for the **Output Slider Speed** value.
 	 *
 	 * The **outputSliderSpeed** attribute is the configurable factor used to convert the time passed since the MPB entered it's secondary mode in milliseconds into **Steps** -Slider mode steps- in a pre-scaler fashion.
 	 *
@@ -1399,7 +1405,7 @@ public:
 	 */
 	unsigned long getOtptSldrSpd();
 	/**
-	 * @brief Gets the current setting for the **Output Slider Step Size** value.
+	 * @brief Returns the current setting for the **Output Slider Step Size** value.
 	 *
 	 * The **outputSliderStepSize** is the factor by which the change in steps is multiplied to calculate the total modification of the **otpCurVal** register. As the steps modification is calculated each time the timer callback function is called the variation is done in successive steps while the MPB is kept pressed, and not just when it is finally released.
 	 *
@@ -1409,7 +1415,7 @@ public:
 	 */
 	uint16_t getOtptSldrStpSize();
 	/**
-	 * @brief Gets the value of the curSldrDirUp attribute
+	 * @brief Returns the value of the curSldrDirUp attribute
 	 *
 	 * The curSldrDirUp attribute indicates the direction at which the outputCurrentValue register is being modified. If the current slider direction is up, means the change of value must be treated as an increment, while having the current slider direction down means it's value must be treated as a decrement.
 	 *
@@ -1640,7 +1646,7 @@ public:
      */
     void clrStatus(bool clrIsOn = true);
  	/**
- 	 * @brief Gets the function that is set to execute every time the object **enters** the **Voided State**.
+ 	 * @brief Returns the function that is set to execute every time the object **enters** the **Voided State**.
  	 *
  	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnOffVddPtr()** method.
  	 *
@@ -1649,7 +1655,7 @@ public:
  	 */
  	fncPtrType getFnWhnTrnOffVdd();
  	/**
- 	 * @brief Gets the function that is set to execute every time the object **enters** the **Voided or "Voided On" State**.
+ 	 * @brief Returns the function that is set to execute every time the object **enters** the **Voided or "Voided On" State**.
  	 *
  	 * The function to be executed is an attribute that might be modified by the **setFnWhnTrnOnVddPtr()** method.
  	 *
@@ -1658,7 +1664,7 @@ public:
  	 */
  	fncPtrType getFnWhnTrnOnVdd();
     /**
-     * @brief Gets the current value of the isVoided attribute flag
+     * @brief Returns the current value of the isVoided attribute flag
      *
      * @return The value of the flag.
      * @retval true The object is in **voided state**
@@ -1666,7 +1672,7 @@ public:
      */
     const bool getIsVoided() const;
     /**
-     * @brief Gets the value of the frcOtptLvlWhnVdd attribute.
+     * @brief Returns the value of the frcOtptLvlWhnVdd attribute.
      *
      * The frcOtptLvlWhnVdd (Force Output Level When Voided) attribute configures the object to either keep it's isOn attribute flag current value when entering the **voided state** (false) or to force it to a specific isOn value (true).
      *
@@ -1676,7 +1682,7 @@ public:
      */
     bool getFrcOtptLvldWhnVdd();
     /**
-     * @brief Gets the value of the stOnWhnOtptFrcd attribute.
+     * @brief Returns the value of the stOnWhnOtptFrcd attribute.
      *
      * If the frcOtptLvlWhnVdd attribute flag is set to true, the instantiated object will force the isOn flag attribute value when entering the **voided state**, in which case the enforced value will be defined by the stOnWhnOtptFrcd (Set On When Output Forced) attribute. If this attribute value is true, the isOn attribute flag will be forced to true, if it is false the isOn  attribute flag will be forced to false. In both cases, if the isOn value is forced to change, the respective **turning on** or **turning off** actions will be executed.
      *
@@ -1685,13 +1691,12 @@ public:
      * @note Until v2.0.0 no VdblMPBttn class or subclasses **make use of the stOnWhnOtptFrcd attribute**, their inclusion is "New Features Requests" reception related.
      */
     bool getStOnWhnOtpFrcd();
-
  	/**
- 	 * @brief Sets the function that will be called to execute every time the object's **isVoided attribute flag is reset**.
+ 	 * @brief Sets the function that will be called to execute every time the object's **isVoided** attribute flag is **reset**.
  	 *
  	 * The function to be executed must be of the form **void (*newFnWhnTrnOff)()**, meaning it must take no arguments and must return no value, it will be executed only once by the object (recursion must be handled with the usual precautions). When instantiated the attribute value is set to **nullptr**.
  	 *
- 	 * @param newFnWhnTrnOff Function pointer to the function intended to be called when the object's **isVoided attribute flag** is **reset**. Passing **nullptr** as parameter deactivates the function execution mechanism.
+ 	 * @param newFnWhnTrnOff Function pointer to the function intended to be called when the object's **isVoided** attribute flag is **reset**. Passing **nullptr** as parameter deactivates the function execution mechanism.
  	 */
  	void setFnWhnTrnOffVddPtr(void(*newFnWhnTrnOff)());
  	/**
@@ -1768,7 +1773,7 @@ public:
      */
     void clrStatus();
     /**
-     * @brief Gets the voidTime attribute current value.
+     * @brief Returns the voidTime attribute current value.
      *
      * The voidTime attribute holds the time -in milliseconds- the MPB must be pressed to enter the **voided state**.
      *

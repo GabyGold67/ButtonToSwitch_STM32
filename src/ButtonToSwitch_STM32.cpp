@@ -3,12 +3,13 @@
   * @file	: ButtonToSwitch_STM32.cpp
   * @brief	: Source file for ButtonToSwitch_STM32 library classes methods
   *
-  * @details The library builds several switch mechanisms replacements out of simple push buttons
-  * or similar equivalent digital signal inputs.
-  * By using just a push button (a.k.a. momentary switches or momentary buttons, _**MPB**_
-  * for short from here on) the classes implemented in this library will manage,
-  * calculate and update different parameters to **generate the embedded behavior of standard
-  * electromechanical switches**.
+  * @details The library builds several switch mechanisms replacements out of simple
+  * push buttons or **similar equivalent digital signal inputs**.
+  * By using just a push button (a.k.a. momentary switches or momentary buttons,
+  * **Momentary Push Buttons** or _**MPB**_ for short from here on) the classes
+  * implemented in this library will manage, calculate and update different
+  * parameters to **generate the embedded behavior of standard electromechanical
+  * switches**.
   *
   * @author	: Gabriel D. Goldman
   * @version v4.0.0
@@ -17,8 +18,16 @@
   * @copyright GPL-3.0 license
   *
   ******************************************************************************
-  * @attention	This library was developed as part of the refactoring process for an industrial machines security enforcement and control (hardware & firmware update). As such every class included complies **AT LEAST** with the provision of the attributes and methods to make the hardware & firmware replacement transparent to the controlled machines. Generic use attribute and methods were added to extend the usability to other projects and application  environments, but no fitness nor completeness of those are given but for the intended refactoring project.
-  * **Use of this library is under your own responsibility**
+  * @attention	This library was developed as part of the refactoring process for
+  * an industrial machines security enforcement and control (hardware & firmware
+  * update). As such every class included complies **AT LEAST** with the
+  * provision of the attributes and methods to make the hardware & firmware
+  * replacement transparent to the controlled machines. Generic use attribute
+  * and methods were added to extend the usability to other projects and
+  * application environments, but no fitness nor completeness of those are given
+  * but for the intended refactoring project.
+  *
+  * **Use this library under your own responsibility**
   *
   ******************************************************************************
   */
@@ -28,6 +37,8 @@
 //===========================>> BEGIN General use Global variables
 static BaseType_t errorFlag {pdFALSE};
 //===========================>> END General use Global variables
+
+//=========================================================================> Class methods delimiter
 
 DbncdMPBttn::DbncdMPBttn()
 :_mpbttnPort{NULL}, _mpbttnPin{0}, _pulledUp{true}, _typeNO{true}, _dbncTimeOrigSett{0}
@@ -1417,14 +1428,14 @@ fncPtrType HntdTmLtchMPBttn::getFnWhnTrnOffPilot(){
 	return _fnWhnTrnOffPilot;
 }
 
-fncPtrType HntdTmLtchMPBttn::getFnWhnTrnOnPilot(){
-
-	return _fnWhnTrnOnPilot;
-}
-
 fncPtrType HntdTmLtchMPBttn::getFnWhnTrnOffWrnng(){
 
 	return _fnWhnTrnOffWrnng;
+}
+
+fncPtrType HntdTmLtchMPBttn::getFnWhnTrnOnPilot(){
+
+	return _fnWhnTrnOnPilot;
 }
 
 fncPtrType HntdTmLtchMPBttn::getFnWhnTrnOnWrnng(){
@@ -1483,20 +1494,20 @@ void HntdTmLtchMPBttn::setFnWhnTrnOffPilotPtr(void(*newFnWhnTrnOff)()){
 	return;
 }
 
-void HntdTmLtchMPBttn::setFnWhnTrnOnPilotPtr(void(*newFnWhnTrnOn)()){
+void HntdTmLtchMPBttn::setFnWhnTrnOffWrnngPtr(void(*newFnWhnTrnOff)()){
 	taskENTER_CRITICAL();
-	if (_fnWhnTrnOnPilot != newFnWhnTrnOn){
-		_fnWhnTrnOnPilot = newFnWhnTrnOn;
+	if (_fnWhnTrnOffWrnng != newFnWhnTrnOff){
+		_fnWhnTrnOffWrnng = newFnWhnTrnOff;
 	}
 	taskEXIT_CRITICAL();
 
 	return;
 }
 
-void HntdTmLtchMPBttn::setFnWhnTrnOffWrnngPtr(void(*newFnWhnTrnOff)()){
+void HntdTmLtchMPBttn::setFnWhnTrnOnPilotPtr(void(*newFnWhnTrnOn)()){
 	taskENTER_CRITICAL();
-	if (_fnWhnTrnOffWrnng != newFnWhnTrnOff){
-		_fnWhnTrnOffWrnng = newFnWhnTrnOff;
+	if (_fnWhnTrnOnPilot != newFnWhnTrnOn){
+		_fnWhnTrnOnPilot = newFnWhnTrnOn;
 	}
 	taskEXIT_CRITICAL();
 
@@ -1640,14 +1651,7 @@ void HntdTmLtchMPBttn::_turnOffPilot(){
 	if(_pilotOn){
 		//---------------->> Tasks related actions
 		/*
-		if(_taskWhileOnHndl != NULL){
-			eTaskState taskWhileOnStts{eTaskGetState(_taskWhileOnHndl)};
-			if (taskWhileOnStts != eSuspended){
-				if(taskWhileOnStts != eDeleted){
-					vTaskSuspend(_taskWhileOnHndl);
-				}
-			}
-		}
+		* The Task Resume/Task Suspend while an On/Off state is kept has many shortcomings. Implement it here if needed.
 		*/
 		//---------------->> Functions related actions
 		if(_fnWhnTrnOffPilot != nullptr){
@@ -1665,47 +1669,11 @@ void HntdTmLtchMPBttn::_turnOffPilot(){
 	return;
 }
 
-void HntdTmLtchMPBttn::_turnOnPilot(){
-	if(!_pilotOn){
-		//---------------->> Tasks related actions
-		/*
-		if(_taskWhileOnHndl != NULL){
-			eTaskState taskWhileOnStts{eTaskGetState(_taskWhileOnHndl)};
-			if (taskWhileOnStts != eSuspended){
-				if(taskWhileOnStts != eDeleted){
-					vTaskSuspend(_taskWhileOnHndl);
-				}
-			}
-		}
-		*/
-		//---------------->> Functions related actions
-		if(_fnWhnTrnOnPilot != nullptr){
-			_fnWhnTrnOnPilot();
-		}
-	}
-	taskENTER_CRITICAL();
-	if(!_pilotOn){
-		//---------------->> Flags related actions
-		_pilotOn = true;
-		_outputsChange = true;
-	}
-	taskEXIT_CRITICAL();
-
-	return;
-}
-
 void HntdTmLtchMPBttn::_turnOffWrnng(){
 	if(_wrnngOn){
 		//---------------->> Tasks related actions
 		/*
-		if(_taskWhileOnHndl != NULL){
-			eTaskState taskWhileOnStts{eTaskGetState(_taskWhileOnHndl)};
-			if (taskWhileOnStts != eSuspended){
-				if(taskWhileOnStts != eDeleted){
-					vTaskSuspend(_taskWhileOnHndl);
-				}
-			}
-		}
+		* The Task Resume/Task Suspend while an On/Off state is kept has many shortcomings. Implement it here if needed.
 		*/
 		//---------------->> Functions related actions
 		if(_fnWhnTrnOffWrnng != nullptr){
@@ -1723,18 +1691,33 @@ void HntdTmLtchMPBttn::_turnOffWrnng(){
 	return;
 }
 
+void HntdTmLtchMPBttn::_turnOnPilot(){
+	if(!_pilotOn){
+		//---------------->> Tasks related actions
+		/*
+		 * The Task Resume/Task Suspend while an On/Off state is kept has many shortcomings. Implement it here if needed.
+		*/
+		//---------------->> Functions related actions
+		if(_fnWhnTrnOnPilot != nullptr){
+			_fnWhnTrnOnPilot();
+		}
+	}
+	taskENTER_CRITICAL();
+	if(!_pilotOn){
+		//---------------->> Flags related actions
+		_pilotOn = true;
+		_outputsChange = true;
+	}
+	taskEXIT_CRITICAL();
+
+	return;
+}
+
 void HntdTmLtchMPBttn::_turnOnWrnng(){
 	if(!_wrnngOn){
 		//---------------->> Tasks related actions
 		/*
-		if(_taskWhileOnHndl != NULL){
-			eTaskState taskWhileOnStts{eTaskGetState(_taskWhileOnHndl)};
-			if (taskWhileOnStts != eSuspended){
-				if(taskWhileOnStts != eDeleted){
-					vTaskSuspend(_taskWhileOnHndl);
-				}
-			}
-		}
+		 * The Task Resume/Task Suspend while an On/Off state is kept has many shortcomings. Implement it here if needed.
 		*/
 		//---------------->> Functions related actions
 		if(_fnWhnTrnOnWrnng != nullptr){
@@ -2749,9 +2732,19 @@ fncPtrType VdblMPBttn::getFnWhnTrnOnVdd(){
 	return _fnWhnTrnOnVdd;
 }
 
+bool VdblMPBttn::getFrcOtptLvldWhnVdd(){
+
+	return _frcOtptLvlWhnVdd;
+}
+
 const bool VdblMPBttn::getIsVoided() const{
 
     return _isVoided;
+}
+
+bool VdblMPBttn::getStOnWhnOtpFrcd(){
+
+	return _stOnWhnOtptFrcd;
 }
 
 void VdblMPBttn::mpbPollCallback(TimerHandle_t mpbTmrCbArg){
@@ -2873,6 +2866,46 @@ void VdblMPBttn::_turnOnVdd(){
 		_isVoided = true;
 		_outputsChange = true;
 	}
+	taskEXIT_CRITICAL();
+
+	return;
+}
+
+void VdblMPBttn::setFnWhnTrnOffVddPtr(void(*newFnWhnTrnOff)()){
+	taskENTER_CRITICAL();
+	if (_fnWhnTrnOffVdd != newFnWhnTrnOff){
+		_fnWhnTrnOffVdd = newFnWhnTrnOff;
+	}
+	taskEXIT_CRITICAL();
+
+	return;
+
+}
+
+void VdblMPBttn::setFnWhnTrnOnVddtPtr(void(*newFnWhnTrnOn)()){
+	taskENTER_CRITICAL();
+	if (_fnWhnTrnOnVdd != newFnWhnTrnOn){
+		_fnWhnTrnOnVdd = newFnWhnTrnOn;
+	}
+	taskEXIT_CRITICAL();
+
+	return;
+
+}
+
+void VdblMPBttn::setFrcdOtptWhnVdd(const bool &newVal){
+	taskENTER_CRITICAL();
+	if(_frcOtptLvlWhnVdd != newVal)
+		_frcOtptLvlWhnVdd = newVal;
+	taskEXIT_CRITICAL();
+
+	return;
+}
+
+void VdblMPBttn::setStOnWhnOtpFrcd(const bool &newVal){
+	taskENTER_CRITICAL();
+	if(_stOnWhnOtptFrcd != newVal)
+		_stOnWhnOtptFrcd = newVal;
 	taskEXIT_CRITICAL();
 
 	return;
@@ -3061,56 +3094,6 @@ void VdblMPBttn::updFdaState(){
 	default:
 		break;
 	}
-	taskEXIT_CRITICAL();
-
-	return;
-}
-
-bool VdblMPBttn::getFrcOtptLvldWhnVdd(){
-
-	return _frcOtptLvlWhnVdd;
-}
-
-bool VdblMPBttn::getStOnWhnOtpFrcd(){
-
-	return _stOnWhnOtptFrcd;
-}
-
-void VdblMPBttn::setFnWhnTrnOffVddPtr(void(*newFnWhnTrnOff)()){
-	taskENTER_CRITICAL();
-	if (_fnWhnTrnOffVdd != newFnWhnTrnOff){
-		_fnWhnTrnOffVdd = newFnWhnTrnOff;
-	}
-	taskEXIT_CRITICAL();
-
-	return;
-
-}
-
-void VdblMPBttn::setFnWhnTrnOnVddtPtr(void(*newFnWhnTrnOn)()){
-	taskENTER_CRITICAL();
-	if (_fnWhnTrnOnVdd != newFnWhnTrnOn){
-		_fnWhnTrnOnVdd = newFnWhnTrnOn;
-	}
-	taskEXIT_CRITICAL();
-
-	return;
-
-}
-
-void VdblMPBttn::setFrcdOtptWhnVdd(const bool &newVal){
-	taskENTER_CRITICAL();
-	if(_frcOtptLvlWhnVdd != newVal)
-		_frcOtptLvlWhnVdd = newVal;
-	taskEXIT_CRITICAL();
-
-	return;
-}
-
-void VdblMPBttn::setStOnWhnOtpFrcd(const bool &newVal){
-	taskENTER_CRITICAL();
-	if(_stOnWhnOtptFrcd != newVal)
-		_stOnWhnOtptFrcd = newVal;
 	taskEXIT_CRITICAL();
 
 	return;
