@@ -39,7 +39,8 @@ The **Functions execution** mechanism is also available, so that other functions
 * **Short press/Long Press Double action On/Off + Slider combo switch**  (a.k.a. off/on/dimmer, a.k.a. **Off/On/Volume radio switch**)
 * **Short press/Long Press Double action On/Off + Secondary output MPB combo switch**
 
-ButtonToSwitch Library Documentation available **[HERE](https://gabygold67.github.io/ButtonToSwitch_STM32/)**
+
+# [ButtonToSwitch Library Complete Documentation Here!](https://gabygold67.github.io/ButtonToSwitch_STM32/)
 
 
 ![ButtonToSwitch Library Classes Hierarchy](./Extras/MomentaryPushButtonUMLClassesOnly.jpg)
