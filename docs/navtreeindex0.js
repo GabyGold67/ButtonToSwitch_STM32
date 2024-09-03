@@ -179,6 +179,7 @@ var NAVTREEINDEX0 =
 "index.html":[],
 "index.html":[0],
 "index.html#an-stm32-rtos-library-that-builds-switch-mechanisms-replacements-out-of-simple-push-buttons":[0],
+"index.html#buttontoswitch-library-complete-documentation-herehttpsgabygold67githubiobuttontoswitch_stm32":[0,1],
 "index.html#the-embedded-behavior-also-includes-logical-replacements-for-temporary-or-extraordinay-responses-that-usually-need-external-hardware-modifications-in-electromechanical-switches":[0,0],
 "index.html#the-library-implements-the-following-switches-behaviors":[0,0,2],
 "index.html#the-main-output-flag-generated-for-each-and-every-class-is-the-ison-flag-which-defines-the-_off-state_-isonfalse-and-the-_on-state_-isontrue-of-the-instantiated-objects":[1],

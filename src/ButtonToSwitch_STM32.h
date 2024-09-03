@@ -32,8 +32,8 @@
   ******************************************************************************
   */
 
-#ifndef MPBASSWITCH_STM32_H_
-#define MPBASSWITCH_STM32_H_
+#ifndef _BUTTONTOSWITCH_STM32_H_
+#define _BUTTONTOSWITCH_STM32_H_
 
 #include <stdint.h>
 #include <string>
@@ -1844,4 +1844,4 @@ public:
 
 //==========================================================>>
 
-#endif /* MPBASSWITCH_STM32_H_ */
+#endif /* _BUTTONTOSWITCH_STM32_H_ */

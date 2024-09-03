@@ -6,7 +6,9 @@ var searchData=
   ['builds_20switch_20mechanisms_20replacements_20out_20of_20simple_20push_20buttons_3',['An STM32-RTOS library that builds switch mechanisms replacements out of simple push buttons.',['../index.html#an-stm32-rtos-library-that-builds-switch-mechanisms-replacements-out-of-simple-push-buttons',1,'']]],
   ['buttons_4',['An STM32-RTOS library that builds switch mechanisms replacements out of simple push buttons.',['../index.html#an-stm32-rtos-library-that-builds-switch-mechanisms-replacements-out-of-simple-push-buttons',1,'']]],
   ['buttons_20to_20switches_20library_20for_20stm32_20em_20strong_20buttontoswitch_5fstm32_20strong_20em_5',['Buttons to Switches Library for STM32 (&lt;em&gt;&lt;strong&gt;ButtonToSwitch_STM32&lt;/strong&gt;&lt;/em&gt;)',['../index.html',1,'']]],
-  ['buttontoswitch_5fstm32_20strong_20em_6',['Buttons to Switches Library for STM32 (&lt;em&gt;&lt;strong&gt;ButtonToSwitch_STM32&lt;/strong&gt;&lt;/em&gt;)',['../index.html',1,'']]],
-  ['buttontoswitch_5fstm32_2ecpp_7',['ButtonToSwitch_STM32.cpp',['../_button_to_switch___s_t_m32_8cpp.html',1,'']]],
-  ['buttontoswitch_5fstm32_2eh_8',['ButtonToSwitch_STM32.h',['../_button_to_switch___s_t_m32_8h.html',1,'']]]
+  ['buttontoswitch_20library_20complete_20documentation_20here_20a_6',['&lt;a href=&quot;https://gabygold67.github.io/ButtonToSwitch_STM32/&quot; &gt;ButtonToSwitch Library Complete Documentation Here!&lt;/a&gt;',['../index.html#buttontoswitch-library-complete-documentation-herehttpsgabygold67githubiobuttontoswitch_stm32',1,'']]],
+  ['buttontoswitch_5fstm32_20buttontoswitch_20library_20complete_20documentation_20here_20a_7',['&lt;a href=&quot;https://gabygold67.github.io/ButtonToSwitch_STM32/&quot; &gt;ButtonToSwitch Library Complete Documentation Here!&lt;/a&gt;',['../index.html#buttontoswitch-library-complete-documentation-herehttpsgabygold67githubiobuttontoswitch_stm32',1,'']]],
+  ['buttontoswitch_5fstm32_20strong_20em_8',['Buttons to Switches Library for STM32 (&lt;em&gt;&lt;strong&gt;ButtonToSwitch_STM32&lt;/strong&gt;&lt;/em&gt;)',['../index.html',1,'']]],
+  ['buttontoswitch_5fstm32_2ecpp_9',['ButtonToSwitch_STM32.cpp',['../_button_to_switch___s_t_m32_8cpp.html',1,'']]],
+  ['buttontoswitch_5fstm32_2eh_10',['ButtonToSwitch_STM32.h',['../_button_to_switch___s_t_m32_8h.html',1,'']]]
 ];
