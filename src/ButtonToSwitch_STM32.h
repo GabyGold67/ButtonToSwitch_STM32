@@ -132,11 +132,12 @@ MpbOtpts_t otptsSttsUnpkg(uint32_t pkgOtpts);
  */
 class DbncdMPBttn {
 protected:
-	enum fdaDmpbStts {stOffNotVPP,
-							stOffVPP,
-							stOn,
-							stOnVRP,
-							stDisabled
+	enum fdaDmpbStts {
+		stOffNotVPP,
+		stOffVPP,
+		stOn,
+		stOnVRP,
+		stDisabled
 	};
 	const unsigned long int _stdMinDbncTime {_HwMinDbncTime};
 
@@ -173,8 +174,8 @@ protected:
 	void clrSttChng();
 	const bool getIsPressed() const;
 	static void mpbPollCallback(TimerHandle_t mpbTmrCb);
-   void _setIsEnabled(const bool &newEnabledValue);
 	virtual uint32_t _otptsSttsPkg(uint32_t prevVal = 0);
+   void _setIsEnabled(const bool &newEnabledValue);
    void setSttChng();
 	void _turnOff();
 	void _turnOn();
@@ -574,7 +575,8 @@ public:
  */
 class LtchMPBttn: public DbncdDlydMPBttn{
 protected:
-	enum fdaLmpbStts {stOffNotVPP,
+	enum fdaLmpbStts {
+		stOffNotVPP,
 		stOffVPP,
 		stOnNVRP,
 		stOnVRP,
@@ -592,18 +594,17 @@ protected:
 	volatile bool _validUnlatchRlsPend{false};
 
 	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
-	virtual void updFdaState();
-	virtual void updValidUnlatchStatus() = 0;
-
+	virtual void stDisabled_In(){};
+   virtual void stDisabled_Out(){};
+	virtual void stLtchNVUP_Do(){};
 	virtual void stOffNotVPP_In(){};
 	virtual void stOffNotVPP_Out(){};
 	virtual void stOffNVURP_Do(){};
 	virtual void stOffVPP_Out(){};
 	virtual void stOffVURP_Out(){};
    virtual void stOnNVRP_Do(){};
-	virtual void stLtchNVUP_Do(){};
-	virtual void stDisabled_In(){};
-   virtual void stDisabled_Out(){};
+	virtual void updFdaState();
+	virtual void updValidUnlatchStatus() = 0;
 public:
    /**
     * @brief Class constructor
@@ -712,8 +713,8 @@ public:
  */
 class TgglLtchMPBttn: public LtchMPBttn{
 protected:
-	virtual void updValidUnlatchStatus();
 	virtual void stOffNVURP_Do();
+	virtual void updValidUnlatchStatus();
 public:
 	/**
 	 * @brief Class constructor
@@ -1125,9 +1126,9 @@ protected:
 
 	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
    virtual void stDisabled_In(){};
-	virtual void stOnStrtScndMod_In(){};
-   virtual void stOnScndMod_Do() = 0;
    virtual void stOnEndScndMod_Out(){};
+   virtual void stOnScndMod_Do() = 0;
+	virtual void stOnStrtScndMod_In(){};
 	virtual void _turnOffScndry();
 	virtual void _turnOnScndry();
 	virtual void updFdaState();
@@ -1270,9 +1271,9 @@ class DDlydDALtchMPBttn: public DblActnLtchMPBttn{
 protected:
 	uint32_t _otptsSttsPkg(uint32_t prevVal = 0);
    virtual void stDisabled_In();
-   virtual void stOnStrtScndMod_In();
-   virtual void stOnScndMod_Do();
    virtual void stOnEndScndMod_Out();
+   virtual void stOnScndMod_Do();
+   virtual void stOnStrtScndMod_In();
 public:
    /**
 	 * @brief Class constructor
@@ -1326,14 +1327,14 @@ protected:
 	unsigned long _otptSldrSpd{1};
 	uint16_t _otptSldrStpSize{0x01};
 	uint16_t _otptValMax{0xFFFF};
-	uint16_t _otptValMin{0x00};
+	uint16_t _otptValMin{0x0000};
 
 	uint32_t _otptsSttsPkg(uint32_t prevVal = 0);
-	virtual void stOnStrtScndMod_In();
-   virtual void stOnScndMod_Do();
-   void stOnEndScndMod_Out();
-   virtual void stDisabled_In();
 	bool _setSldrDir(const bool &newVal);
+   virtual void stDisabled_In();
+   void stOnEndScndMod_Out();
+   virtual void stOnScndMod_Do();
+	virtual void stOnStrtScndMod_In();
 public:
    /**
 	 * @brief Class constructor
@@ -1383,18 +1384,6 @@ public:
     */
    bool getOtptCurValIsMin();
 	/**
-	 * @brief Returns the top **output current value** register setting
-	 *
-	 * @return The maximum **output current value** set.
-	 */
-   uint16_t getOtptValMax();
-	/**
-	 * @brief Returns the bottom **output current value** register setting
-	 *
-	 * @return The minimum **output current value** set.
-	 */
-	uint16_t getOtptValMin();
-	/**
 	 * @brief Returns the current setting for the **Output Slider Speed** value.
 	 *
 	 * The **outputSliderSpeed** attribute is the configurable factor used to convert the time passed since the MPB entered it's secondary mode in milliseconds into **Steps** -Slider mode steps- in a pre-scaler fashion.
@@ -1414,6 +1403,18 @@ public:
 	 * @note At instantiation the **outputSliderStepSize** is configured to 1 (counts/step).
 	 */
 	uint16_t getOtptSldrStpSize();
+	/**
+	 * @brief Returns the top **output current value** register setting
+	 *
+	 * @return The maximum **output current value** set.
+	 */
+   uint16_t getOtptValMax();
+	/**
+	 * @brief Returns the bottom **output current value** register setting
+	 *
+	 * @return The minimum **output current value** set.
+	 */
+	uint16_t getOtptValMin();
 	/**
 	 * @brief Returns the value of the curSldrDirUp attribute
 	 *
@@ -1613,8 +1614,8 @@ protected:
    virtual void stDisabled_In();
    virtual void stDisabled_Out();
    virtual void stOffNotVPP_In(){};
-   virtual void stOffVPP_Do(){};	// This provides a setting point for the voiding mechanism to be started
    virtual void stOffVddNVUP_Do(){};	//This provides a setting point for calculating the _validUnvoidPend
+   virtual void stOffVPP_Do(){};	// This provides a setting point for the voiding mechanism to be started
 	void _turnOffVdd();
 	void _turnOnVdd();
    virtual void updFdaState();
@@ -1663,6 +1664,16 @@ public:
  	 * @retval nullptr if there is no function set to execute when the object enters the **Voided State**.
  	 */
  	fncPtrType getFnWhnTrnOnVdd();
+   /**
+    * @brief Returns the value of the frcOtptLvlWhnVdd attribute.
+    *
+    * The frcOtptLvlWhnVdd (Force Output Level When Voided) attribute configures the object to either keep it's isOn attribute flag current value when entering the **voided state** (false) or to force it to a specific isOn value (true).
+    *
+    * @return the current value of the frcOtptLvlWhnVdd attribute.
+    *
+    * @note Until v2.0.0 no VdblMPBttn class or subclasses **make use of the frcOtptLvlWhnVdd attribute**, their inclusion is "New Features Requests" reception related.
+    */
+   bool getFrcOtptLvldWhnVdd();
     /**
      * @brief Returns the current value of the isVoided attribute flag
      *
@@ -1671,16 +1682,6 @@ public:
      * @retval false The object is in **not voided state**
      */
     const bool getIsVoided() const;
-    /**
-     * @brief Returns the value of the frcOtptLvlWhnVdd attribute.
-     *
-     * The frcOtptLvlWhnVdd (Force Output Level When Voided) attribute configures the object to either keep it's isOn attribute flag current value when entering the **voided state** (false) or to force it to a specific isOn value (true).
-     *
-     * @return the current value of the frcOtptLvlWhnVdd attribute.
-     *
-     * @note Until v2.0.0 no VdblMPBttn class or subclasses **make use of the frcOtptLvlWhnVdd attribute**, their inclusion is "New Features Requests" reception related.
-     */
-    bool getFrcOtptLvldWhnVdd();
     /**
      * @brief Returns the value of the stOnWhnOtptFrcd attribute.
      *
@@ -1769,6 +1770,10 @@ public:
      */
     virtual ~TmVdblMPBttn();
     /**
+     * @brief See DbncdMPBttn::begin(const unsigned long int)
+     */
+    virtual bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
+    /**
      * @brief See DbncdMPBttn::clrStatus(bool)
      */
     void clrStatus();
@@ -1791,10 +1796,6 @@ public:
      * @retval: false otherwise. The attribute value is not changed.
      */
     bool setVoidTime(const unsigned long int &newVoidTime);
-    /**
-     * @brief See DbncdMPBttn::begin(const unsigned long int)
-     */
-    virtual bool begin(const unsigned long int &pollDelayMs = _StdPollDelay);
 };
 
 //==========================================================>>
