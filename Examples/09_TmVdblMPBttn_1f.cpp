@@ -203,7 +203,7 @@ void mainCtrlTsk(void *pvParameters)
 	tstBttn.setIsOnDisabled(false);
 	vTaskResume(dmpsOutputTskHdl);	//Resumes the task to start now in proper order
 	tstBttn.setTaskToNotify(dmpsOutputTskHdl);
-	tstBttn.setTaskWhileOn(dmpsActWhlOnTskHndl);
+	//tstBttn.setTaskWhileOn(dmpsActWhlOnTskHndl);	//This method is excluded from this subclass, uncomment to see error flagged
 	tstBttn.setFnWhnTrnOnPtr(&fnExecTrnOn);
 	tstBttn.setFnWhnTrnOffPtr(&fnExecTrnOff);
 	tstBttn.setFnWhnTrnOnVddtPtr(fnExecTrnOnVdd);

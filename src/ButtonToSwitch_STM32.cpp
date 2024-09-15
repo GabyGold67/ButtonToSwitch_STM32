@@ -12,9 +12,9 @@
   * switches**.
   *
   * @author	: Gabriel D. Goldman
-  * @version v4.0.0
+  * @version v4.0.2
   * @date	: Created on: 06/11/2023
-  * 			: Last modification:	28/08/2024
+  * 			: Last modification:	15/09/2024
   * @copyright GPL-3.0 license
   *
   ******************************************************************************
@@ -748,8 +748,7 @@ void DbncdMPBttn::updFdaState(){
 				}
 				clrStatus(false);	//Clears all flags and timers, _isOn value will not be affected
 				_isEnabled = false;
-				if(!_outputsChange)
-					_outputsChange = true;
+				setOutputsChange(true);
 				_validDisablePend = false;
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
@@ -760,8 +759,7 @@ void DbncdMPBttn::updFdaState(){
 				}
 				_isEnabled = true;
 				_validEnablePend = false;
-				if(!_outputsChange)
-					_outputsChange = true;
+				setOutputsChange(true);
 			}
 			if(_isEnabled && !updIsPressed()){	//The stDisabled status will be kept until the MPB is released for security reasons
 				_mpbFdaState = stOffNotVPP;
@@ -1200,7 +1198,7 @@ void LtchMPBttn::updFdaState(){
 				stDisabled_In();
 				_validDisablePend = false;
 				_isEnabled = false;
-				_outputsChange = true;
+				setOutputsChange(true);
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
@@ -1210,7 +1208,7 @@ void LtchMPBttn::updFdaState(){
 				}
 				_isEnabled = true;
 				_validEnablePend = false;
-				_outputsChange = true;
+				setOutputsChange(true);
 			}
 			if(_isEnabled && !updIsPressed()){	//The stDisabled status will be kept until the MPB is released for security reasons
 				_mpbFdaState = stOffNotVPP;
@@ -1570,8 +1568,7 @@ void HntdTmLtchMPBttn::stDisabled_In(){
 	if(_validWrnngResetPend)
 		_validWrnngResetPend = false;
 	if(_wrnngOn){
-		_turnOffWrnng();	// _wrnngOn = false;
-		_outputsChange = true;
+		_turnOffWrnng();
 	}
 
 	if(_validPilotSetPend)
@@ -1579,11 +1576,10 @@ void HntdTmLtchMPBttn::stDisabled_In(){
 	if(_validPilotResetPend)
 		_validPilotResetPend = false;
 	if(_keepPilot && !_isOnDisabled && !_pilotOn){
-		_turnOnPilot();	// _pilotOn = true;
-		_outputsChange = true;
+		_turnOnPilot();
 	}
 	else if(_pilotOn == true)
-		_turnOffPilot();	// _pilotOn = false;
+		_turnOffPilot();
 
 	return;
 }
@@ -1591,14 +1587,12 @@ void HntdTmLtchMPBttn::stDisabled_In(){
 void HntdTmLtchMPBttn::stLtchNVUP_Do(){
 	//This method is invoked exclusively from the updFdaState, no need to declare it critical section
 	if(_validWrnngSetPend){
-		_turnOnWrnng();	// _wrnngOn = true;
+		_turnOnWrnng();
 		_validWrnngSetPend = false;
-		_outputsChange = true;
 	}
 	if(_validWrnngResetPend){
-		_turnOffWrnng();	// _wrnngOn = false;
+		_turnOffWrnng();
 		_validWrnngResetPend = false;
-		_outputsChange = true;
 	}
 
 	return;
@@ -1608,13 +1602,11 @@ void HntdTmLtchMPBttn::stOffNotVPP_In(){
 	//This method is invoked exclusively from the updFdaState, no need to declare it critical section
 	if(_keepPilot){
 		if(!_pilotOn){
-			_turnOnPilot();	// _pilotOn = true;
-			_outputsChange = true;
+			_turnOnPilot();
 		}
 	}
 	if(_wrnngOn){
-		_turnOffWrnng();	// _wrnngOn = false;
-		_outputsChange = true;
+		_turnOffWrnng();
 	}
 
 	return;
@@ -1624,8 +1616,7 @@ void HntdTmLtchMPBttn::stOffVPP_Out(){
 	//This method is invoked exclusively from the updFdaState, no need to declare it critical section
 	TmLtchMPBttn::stOffVPP_Out();
 	if(_pilotOn){
-		_turnOffPilot();	// _pilotOn = false;
-		_outputsChange = true;
+		_turnOffPilot();
 	}
 
 	return;
@@ -1634,14 +1625,12 @@ void HntdTmLtchMPBttn::stOffVPP_Out(){
 void HntdTmLtchMPBttn::stOnNVRP_Do(){
 	//This method is invoked exclusively from the updFdaState, no need to declare it critical section
 	if(_validWrnngSetPend){
-		_turnOnWrnng();	// _wrnngOn = true;
+		_turnOnWrnng();
 		_validWrnngSetPend = false;
-		_outputsChange = true;
 	}
 	if(_validWrnngResetPend){
-		_turnOffWrnng();	// _wrnngOn = false;
+		_turnOffWrnng();
 		_validWrnngResetPend = false;
-		_outputsChange = true;
 	}
 
 	return;
@@ -1650,9 +1639,7 @@ void HntdTmLtchMPBttn::stOnNVRP_Do(){
 void HntdTmLtchMPBttn::_turnOffPilot(){
 	if(_pilotOn){
 		//---------------->> Tasks related actions
-		/*
-		* The Task Resume/Task Suspend while an On/Off state is kept has many shortcomings. Implement it here if needed.
-		*/
+		// None
 		//---------------->> Functions related actions
 		if(_fnWhnTrnOffPilot != nullptr){
 			_fnWhnTrnOffPilot();
@@ -1672,9 +1659,7 @@ void HntdTmLtchMPBttn::_turnOffPilot(){
 void HntdTmLtchMPBttn::_turnOffWrnng(){
 	if(_wrnngOn){
 		//---------------->> Tasks related actions
-		/*
-		* The Task Resume/Task Suspend while an On/Off state is kept has many shortcomings. Implement it here if needed.
-		*/
+		// None
 		//---------------->> Functions related actions
 		if(_fnWhnTrnOffWrnng != nullptr){
 			_fnWhnTrnOffWrnng();
@@ -1694,9 +1679,7 @@ void HntdTmLtchMPBttn::_turnOffWrnng(){
 void HntdTmLtchMPBttn::_turnOnPilot(){
 	if(!_pilotOn){
 		//---------------->> Tasks related actions
-		/*
-		 * The Task Resume/Task Suspend while an On/Off state is kept has many shortcomings. Implement it here if needed.
-		*/
+		// None
 		//---------------->> Functions related actions
 		if(_fnWhnTrnOnPilot != nullptr){
 			_fnWhnTrnOnPilot();
@@ -1716,9 +1699,7 @@ void HntdTmLtchMPBttn::_turnOnPilot(){
 void HntdTmLtchMPBttn::_turnOnWrnng(){
 	if(!_wrnngOn){
 		//---------------->> Tasks related actions
-		/*
-		 * The Task Resume/Task Suspend while an On/Off state is kept has many shortcomings. Implement it here if needed.
-		*/
+		// None
 		//---------------->> Functions related actions
 		if(_fnWhnTrnOnWrnng != nullptr){
 			_fnWhnTrnOnWrnng();
@@ -2324,7 +2305,6 @@ void DDlydDALtchMPBttn::clrStatus(bool clrIsOn){
 	taskENTER_CRITICAL();
 	if(clrIsOn && _isOnScndry){
 		_turnOffScndry();
-		_outputsChange = true;
 	}
 	DblActnLtchMPBttn::clrStatus(clrIsOn);
 	taskEXIT_CRITICAL();
@@ -2348,7 +2328,6 @@ void DDlydDALtchMPBttn::stDisabled_In(){
 			_turnOnScndry();
 		else
 			_turnOffScndry();
-		_outputsChange = true;
 	}
 
 	return;
@@ -2357,7 +2336,6 @@ void DDlydDALtchMPBttn::stDisabled_In(){
 void DDlydDALtchMPBttn::stOnEndScndMod_Out(){
 	if(_isOnScndry){
 		_turnOffScndry();
-		_outputsChange = true;
 	}
 
 	return;
@@ -2371,7 +2349,6 @@ void DDlydDALtchMPBttn::stOnScndMod_Do(){
 void DDlydDALtchMPBttn::stOnStrtScndMod_In(){
 	if(!_isOnScndry){
 		_turnOnScndry();
-		_outputsChange = true;
 	}
 
 	return;
@@ -2402,7 +2379,6 @@ void SldrDALtchMPBttn::clrStatus(bool clrIsOn){
 	// Might the option to return the _otpCurVal to the initVal? To one the extreme values?
 	if(clrIsOn && _isOnScndry){
 		_turnOffScndry();
-		_outputsChange = true;
 	}
 	DblActnLtchMPBttn::clrStatus(clrIsOn);
 	taskEXIT_CRITICAL();
@@ -2517,7 +2493,7 @@ bool SldrDALtchMPBttn::setOtptValMax(const uint16_t &newVal){
 			_otptValMax = newVal;
 			if(_otptCurVal > _otptValMax){
 				_otptCurVal = _otptValMax;
-				_outputsChange = true;
+				setOutputsChange(true);
 			}
 		}
 		else{
@@ -2538,7 +2514,7 @@ bool SldrDALtchMPBttn::setOtptValMin(const uint16_t &newVal){
 			_otptValMin = newVal;
 			if(_otptCurVal < _otptValMin){
 				_otptCurVal = _otptValMin;
-				_outputsChange = true;
+				setOutputsChange(true);
 			}
 		}
 		else{
@@ -2603,7 +2579,6 @@ void SldrDALtchMPBttn::stDisabled_In(){
 			_turnOnScndry();
 		else
 			_turnOffScndry();
-		_outputsChange = true;
 	}
 
 	return;
@@ -2612,7 +2587,6 @@ void SldrDALtchMPBttn::stDisabled_In(){
 void SldrDALtchMPBttn::stOnEndScndMod_Out(){
 	if(_isOnScndry){
 		_turnOffScndry();
-		_outputsChange = true;
 	}
 
 	return;
@@ -2642,7 +2616,7 @@ void SldrDALtchMPBttn::stOnScndMod_Do(){
 				//The value change goes out of range
 				_otptCurVal = _otptValMax;
 			}
-			_outputsChange = true;
+			setOutputsChange(true);
 		}
 		if(_outputsChange){
 			if(_otptCurVal == _otptValMax){
@@ -2663,7 +2637,7 @@ void SldrDALtchMPBttn::stOnScndMod_Do(){
 				//The value change goes out of range
 				_otptCurVal = _otptValMin;
 			}
-			_outputsChange = true;
+			setOutputsChange(true);
 		}
 		if(_outputsChange){
 			if(_otptCurVal == _otptValMin){
@@ -2680,7 +2654,6 @@ void SldrDALtchMPBttn::stOnScndMod_Do(){
 void SldrDALtchMPBttn::stOnStrtScndMod_In(){
 	if(!_isOnScndry){
 		_turnOnScndry();
-		_outputsChange = true;
 	}
 	if(_autoSwpDirOnPrss)
 		swapSldrDir();
@@ -2714,7 +2687,6 @@ void VdblMPBttn::clrStatus(bool clrIsOn){
 	taskENTER_CRITICAL();
 	if(_isVoided){
 		setIsNotVoided();
-		_outputsChange = true;
 	}
 	DbncdMPBttn::clrStatus(clrIsOn);
 	taskEXIT_CRITICAL();
@@ -2844,7 +2816,6 @@ bool VdblMPBttn::setVoided(const bool &newVoidValue){
 			_turnOnVdd();
 		else
 			_turnOffVdd();
-      _outputsChange = true;
 	}
 	taskEXIT_CRITICAL();
 
@@ -2874,7 +2845,7 @@ void VdblMPBttn::stDisabled_Out(){
 void VdblMPBttn::_turnOffVdd(){
 	if(_isVoided){
 		//---------------->> Tasks related actions
-
+		// None
 		//---------------->> Functions related actions
 		if(_fnWhnTrnOffVdd != nullptr){
 			_fnWhnTrnOffVdd();
@@ -2894,7 +2865,7 @@ void VdblMPBttn::_turnOffVdd(){
 void VdblMPBttn::_turnOnVdd(){
 	if(!_isVoided){
 		//---------------->> Tasks related actions
-
+		// None
 		//---------------->> Functions related actions
 		if(_fnWhnTrnOnVdd != nullptr){
 			_fnWhnTrnOnVdd();
@@ -2917,7 +2888,7 @@ void VdblMPBttn::updFdaState(){
 		case stOffNotVPP:
 			//In: >>---------------------------------->>
 			if(_sttChng){
-				_turnOffVdd();	// _isVoided = false;
+				_turnOffVdd();
 				stOffNotVPP_In();
 				clrSttChng();
 			}	// Execute this code only ONCE, when entering this state
@@ -2971,9 +2942,8 @@ void VdblMPBttn::updFdaState(){
 
 		case stOnVVP:
 			if(_sttChng){
-				_turnOnVdd();	// _isVoided = true;
+				_turnOnVdd();
 				_validVoidPend = false;
-				_outputsChange = true;
 				clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
 			_mpbFdaState = stOnVddNVUP;
@@ -3014,9 +2984,8 @@ void VdblMPBttn::updFdaState(){
 			//In: >>---------------------------------->>
 			if(_sttChng){clrSttChng();}	// Execute this code only ONCE, when entering this state
 			//Do: >>---------------------------------->>
-			_turnOffVdd(); //_isVoided = false;
+			_turnOffVdd();
 			_validUnvoidPend = false;
-			_outputsChange = true;
 			_mpbFdaState = stOffUnVdd;
 			setSttChng();
 			//Out: >>---------------------------------->>
@@ -3079,7 +3048,7 @@ void VdblMPBttn::updFdaState(){
 				_turnOff();
 				_isEnabled = true;
 				_validEnablePend = false;
-				_outputsChange = true;
+				setOutputsChange(true);
 			}
 			if(_isEnabled && !updIsPressed()){	//The stDisabled status will be kept until the MPB is released for security reasons
 				_mpbFdaState = stOffNotVPP;
