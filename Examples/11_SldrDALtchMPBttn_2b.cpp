@@ -6,7 +6,7 @@
   * The test instantiates a SldrDALtchMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
   * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
-  * 	- A digital output to GPIO_PC01 to show the second level action.
+  * 	- A digital output to GPIO_PC01 to show the isOnScndry attribute flag status.
   * 	- A digital output to GPIO_PC00 to visualize the _isEnabled attribute flag status
   *
   * ### This example creates one Task and a timer:

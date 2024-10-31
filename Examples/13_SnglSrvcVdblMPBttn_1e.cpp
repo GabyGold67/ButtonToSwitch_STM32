@@ -287,14 +287,12 @@ void swpEnableCb(TimerHandle_t  pvParam){
 
 /* USER CODE FUNCTIONS BEGIN */
 void fnExecTrnOn(){
-//	HAL_GPIO_WritePin(ledFnTrnOnOff.portId, ledFnTrnOnOff.pinNum, GPIO_PIN_SET);
 	HAL_GPIO_TogglePin(ledFnTrnOnOff.portId, ledFnTrnOnOff.pinNum);
 
 	return;
 }
 
 void fnExecTrnOff(){
-//	HAL_GPIO_WritePin(ledFnTrnOnOff.portId, ledFnTrnOnOff.pinNum, GPIO_PIN_RESET);
 
 	return;
 }

@@ -29,7 +29,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="Complex_Switch_Sq_Sm_Color_In.jpg"/></td>
   <td id="projectalign">
-   <div id="projectname">ButtonToSwitch Library for STM32<span id="projectnumber">&#160;v4.0.0</span>
+   <div id="projectname">ButtonToSwitch Library for STM32<span id="projectnumber">&#160;v4.1.0</span>
    </div>
    <div id="projectbrief">A library that provides elaborated switch mechanism behavior simulation for digital signals inputs</div>
   </td>
@@ -175,7 +175,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memdesc:a58c55f2713734a81ef7ac01249973731"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detaches the object from the timer that monitors the input pins, compute and updates the object's status. The timer daemon entry is deleted for the object.  <br /></td></tr>
 <tr class="separator:a58c55f2713734a81ef7ac01249973731"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30e73bf45b359a26065ba4ceab6841ab" id="r_a30e73bf45b359a26065ba4ceab6841ab"><td class="memItemLeft" align="right" valign="top">const unsigned long int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a30e73bf45b359a26065ba4ceab6841ab">getCurDbncTime</a> () const</td></tr>
-<tr class="memdesc:a30e73bf45b359a26065ba4ceab6841ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current debounce time set for the object.  <br /></td></tr>
+<tr class="memdesc:a30e73bf45b359a26065ba4ceab6841ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current debounce period time set for the object.  <br /></td></tr>
 <tr class="separator:a30e73bf45b359a26065ba4ceab6841ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae90de3a636c2e9b4ae0939bdb06cc5b0" id="r_ae90de3a636c2e9b4ae0939bdb06cc5b0"><td class="memItemLeft" align="right" valign="top">fncPtrType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae90de3a636c2e9b4ae0939bdb06cc5b0">getFnWhnTrnOff</a> ()</td></tr>
 <tr class="memdesc:ae90de3a636c2e9b4ae0939bdb06cc5b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the function that is set to execute every time the object <b>enters</b> the <b>Off State</b>.  <br /></td></tr>
@@ -226,7 +226,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memdesc:a9540a12554008a6705056b02fbafed38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restarts the software timer updating the calculation of the object internal flags.  <br /></td></tr>
 <tr class="separator:a9540a12554008a6705056b02fbafed38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa8a94396ee3fe8f9cc41c8ea9d8b8d3" id="r_afa8a94396ee3fe8f9cc41c8ea9d8b8d3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afa8a94396ee3fe8f9cc41c8ea9d8b8d3">setDbncTime</a> (const unsigned long int &amp;newDbncTime)</td></tr>
-<tr class="memdesc:afa8a94396ee3fe8f9cc41c8ea9d8b8d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the debounce time.  <br /></td></tr>
+<tr class="memdesc:afa8a94396ee3fe8f9cc41c8ea9d8b8d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the debounce process time.  <br /></td></tr>
 <tr class="separator:afa8a94396ee3fe8f9cc41c8ea9d8b8d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abbd65b9ad37a2de7d8108789178e73e5" id="r_abbd65b9ad37a2de7d8108789178e73e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abbd65b9ad37a2de7d8108789178e73e5">setFnWhnTrnOffPtr</a> (void(*newFnWhnTrnOff)())</td></tr>
 <tr class="memdesc:abbd65b9ad37a2de7d8108789178e73e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the function that will be called to execute every time the object <b>enters</b> the <b>Off State</b>.  <br /></td></tr>
@@ -235,7 +235,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memdesc:ad1e5decc11a29c7ac2417cde9b43fc4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the function that will be called to execute every time the object <b>enters</b> the <b>On State</b>.  <br /></td></tr>
 <tr class="separator:ad1e5decc11a29c7ac2417cde9b43fc4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55644500cc3b52282c439ca4541a2351" id="r_a55644500cc3b52282c439ca4541a2351"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a55644500cc3b52282c439ca4541a2351">setIsOnDisabled</a> (const bool &amp;newIsOnDisabled)</td></tr>
-<tr class="memdesc:a55644500cc3b52282c439ca4541a2351"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the <b>isOnDisabled</b> flag.  <br /></td></tr>
+<tr class="memdesc:a55644500cc3b52282c439ca4541a2351"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the <b>isOnDisabled</b> attribute.  <br /></td></tr>
 <tr class="separator:a55644500cc3b52282c439ca4541a2351"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1a23ebaf89ccfa36df1cd9c995c9ab5" id="r_ac1a23ebaf89ccfa36df1cd9c995c9ab5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac1a23ebaf89ccfa36df1cd9c995c9ab5">setOutputsChange</a> (bool newOutputChange)</td></tr>
 <tr class="memdesc:ac1a23ebaf89ccfa36df1cd9c995c9ab5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the attribute flag indicating if a change took place in any of the output attribute flags (IsOn included).  <br /></td></tr>
@@ -244,7 +244,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memdesc:ab5d3ecd472c90f91c36eed3ce11cce7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the pointer to the task to be notified by the object when its output attribute flags changes.  <br /></td></tr>
 <tr class="separator:ab5d3ecd472c90f91c36eed3ce11cce7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a539d25d84a2e6c772000cff0bd0d279f" id="r_a539d25d84a2e6c772000cff0bd0d279f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a539d25d84a2e6c772000cff0bd0d279f">setTaskWhileOn</a> (const TaskHandle_t &amp;newTaskHandle)</td></tr>
-<tr class="memdesc:a539d25d84a2e6c772000cff0bd0d279f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the task to be run while the object is in the <b>On state</b>.  <br /></td></tr>
+<tr class="memdesc:a539d25d84a2e6c772000cff0bd0d279f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the handle to the task to be run while the object is in the <b>On state</b>.  <br /></td></tr>
 <tr class="separator:a539d25d84a2e6c772000cff0bd0d279f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -297,6 +297,16 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
   </table>
   </dd>
 </dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dbncd_m_p_bttn_a46810d945e96b2b579f6fb8b59e99252_cgraph.png" border="0" usemap="#aclass_dbncd_m_p_bttn_a46810d945e96b2b579f6fb8b59e99252_cgraph" alt=""/></div>
+<map name="aclass_dbncd_m_p_bttn_a46810d945e96b2b579f6fb8b59e99252_cgraph" id="aclass_dbncd_m_p_bttn_a46810d945e96b2b579f6fb8b59e99252_cgraph">
+<area shape="rect" title="Class constructor." alt="" coords="5,5,197,32"/>
+<area shape="rect" href="_button_to_switch___s_t_m32_8cpp.html#a2d4786dedee4fde298afb23bf2ba11ac" title="Returns the position of the single set bit on an unsigned 16 bits integer value." alt="" coords="245,5,366,32"/>
+<area shape="poly" title=" " alt="" coords="197,16,229,16,229,21,197,21"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -382,6 +392,16 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </dl>
 
 <p>Reimplemented in <a class="el" href="class_dbl_actn_ltch_m_p_bttn.html#abbe944688e0b7402905d2c88d5d670de">DblActnLtchMPBttn</a>, <a class="el" href="class_hntd_tm_ltch_m_p_bttn.html#aef2d66789885135fd35547a535b6e344">HntdTmLtchMPBttn</a>, <a class="el" href="class_ltch_m_p_bttn.html#aa15f59d4fa5b3d57d6884914399bfa4d">LtchMPBttn</a>, <a class="el" href="class_sngl_srvc_vdbl_m_p_bttn.html#a0962f2abece8fef8a1584914c0de187a">SnglSrvcVdblMPBttn</a>, <a class="el" href="class_tm_vdbl_m_p_bttn.html#a7221cdab31148a94a938702af54b3e50">TmVdblMPBttn</a>, and <a class="el" href="class_xtrn_unltch_m_p_bttn.html#abbaefe6ef9be66f2d45cc29a339a9b11">XtrnUnltchMPBttn</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dbncd_m_p_bttn_a5b4061687a017d5db4a62298b7278cb8_icgraph.png" border="0" usemap="#aclass_dbncd_m_p_bttn_a5b4061687a017d5db4a62298b7278cb8_icgraph" alt=""/></div>
+<map name="aclass_dbncd_m_p_bttn_a5b4061687a017d5db4a62298b7278cb8_icgraph" id="aclass_dbncd_m_p_bttn_a5b4061687a017d5db4a62298b7278cb8_icgraph">
+<area shape="rect" title="Attaches the instantiated object to a timer that monitors the input pins and updates the object statu..." alt="" coords="217,5,358,32"/>
+<area shape="rect" href="class_xtrn_unltch_m_p_bttn.html#abbaefe6ef9be66f2d45cc29a339a9b11" title="See DbncdMPBttn::begin(const unsigned long int)" alt="" coords="5,5,169,32"/>
+<area shape="poly" title=" " alt="" coords="201,21,169,21,169,16,201,16"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -412,6 +432,36 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <li>true (default value) includes the isOn flag.</li>
 <li>false excludes the isOn flag. </li>
 </ul>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dbncd_m_p_bttn_a3009725646aeb160884b8109d180b530_icgraph.png" border="0" usemap="#aclass_dbncd_m_p_bttn_a3009725646aeb160884b8109d180b530_icgraph" alt=""/></div>
+<map name="aclass_dbncd_m_p_bttn_a3009725646aeb160884b8109d180b530_icgraph" id="aclass_dbncd_m_p_bttn_a3009725646aeb160884b8109d180b530_icgraph">
+<area shape="rect" title="Clears and resets flags, timers and counters modified through the object&#39;s signals processing." alt="" coords="690,228,853,255"/>
+<area shape="rect" href="class_ltch_m_p_bttn.html#aa52047bd930afc19d8c1f9026f7605ef" title="See DbncdMPBttn::clrStatus(bool)" alt="" coords="487,152,637,179"/>
+<area shape="poly" title=" " alt="" coords="717,225,600,182,602,177,719,220"/>
+<area shape="rect" href="class_vdbl_m_p_bttn.html#a7ea82534da6a8f39d9715a3126387d30" title="See DbncdMPBttn::clrStatus(bool)" alt="" coords="486,228,637,255"/>
+<area shape="poly" title=" " alt="" coords="675,244,638,244,638,239,675,239"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html#a2df98cfb822df05bc232143f883e5c32" title="Resets the MPB behavior automaton to it&#39;s Initial or Start State" alt="" coords="481,279,642,305"/>
+<area shape="poly" title=" " alt="" coords="699,261,621,281,619,275,698,256"/>
+<area shape="rect" href="class_dbl_actn_ltch_m_p_bttn.html#a7454fc41a95d7bb028831a66781dffb3" title="See DbncddMPBttn::clrStatus(bool)" alt="" coords="269,60,413,103"/>
+<area shape="poly" title=" " alt="" coords="511,148,432,117,401,106,403,101,434,112,513,143"/>
+<area shape="rect" href="class_tm_ltch_m_p_bttn.html#a8c27b3a6f642a4c7bb4d27b56cc3abaf" title="see DbncdMPBttn::clrStatus(bool)" alt="" coords="257,127,425,153"/>
+<area shape="poly" title=" " alt="" coords="471,158,425,152,426,147,471,152"/>
+<area shape="rect" href="class_xtrn_unltch_m_p_bttn.html#a9f9876219729a8d821c298d8f2402681" title="See DbncdMPBttn::clrStatus(bool)" alt="" coords="249,177,433,204"/>
+<area shape="poly" title=" " alt="" coords="471,178,434,183,433,177,471,173"/>
+<area shape="rect" href="class_d_dlyd_d_a_ltch_m_p_bttn.html#a718400e48b49ebeba26f39ac311ce178" title="See DbncddMPBttn::clrStatus(bool)" alt="" coords="27,5,179,48"/>
+<area shape="poly" title=" " alt="" coords="253,64,178,47,180,41,254,59"/>
+<area shape="rect" href="class_sldr_d_a_ltch_m_p_bttn.html#a161080d6983f7f79f3947921fdb361ef" title=" " alt="" coords="7,72,199,99"/>
+<area shape="poly" title=" " alt="" coords="253,85,199,86,199,81,253,80"/>
+<area shape="rect" href="class_hntd_tm_ltch_m_p_bttn.html#aa87d5a52555a45bc3c2f1276cfe8a446" title="see DbncdMPBttn::clrStatus(bool)" alt="" coords="5,127,201,153"/>
+<area shape="poly" title=" " alt="" coords="242,143,201,143,201,137,242,137"/>
+<area shape="rect" href="class_tm_vdbl_m_p_bttn.html#a33bb7f6a78ea9c912a6d2c906ef756e5" title="See DbncdMPBttn::clrStatus(bool)" alt="" coords="256,228,426,255"/>
+<area shape="poly" title=" " alt="" coords="471,244,426,244,426,239,471,239"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html#a9540a12554008a6705056b02fbafed38" title="Restarts the software timer updating the calculation of the object internal flags." alt="" coords="264,279,418,305"/>
+<area shape="poly" title=" " alt="" coords="465,295,418,295,418,289,465,289"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -481,7 +531,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Detaches the object from the timer that monitors the input pins, compute and updates the object's status. The timer daemon entry is deleted for the object. </p>
-<p>The immediate detachment of the object from the timer that keeps it's state updated implies that the object's state will be kept, whatever that state is it. If a certain status is preferred some of the provided methods should be used for that including <a class="el" href="#a3009725646aeb160884b8109d180b530" title="Clears and resets flags, timers and counters modified through the object&#39;s signals processing.">clrStatus()</a>, <a class="el" href="#a2df98cfb822df05bc232143f883e5c32" title="Resets the MPB behavior automaton to it&#39;s Initial or Start State">resetFda()</a>, <a class="el" href="#a881f9e15d1bf8da14edc77e2bcc63953" title="Disables the input signal processing, ignoring the changes of its values.">disable()</a>, <a class="el" href="#a55644500cc3b52282c439ca4541a2351" title="Sets the value of the isOnDisabled flag.">setIsOnDisabled()</a>, etc. Also consider that if a task is set to be executed while the object is in <b>On state</b>, the <b><a class="el" href="#a58c55f2713734a81ef7ac01249973731" title="Detaches the object from the timer that monitors the input pins, compute and updates the object&#39;s sta...">end()</a></b> invocation wouldn't affect that task execution state.</p>
+<p>The immediate detachment of the object from the timer that keeps it's state updated implies that the object's state will be kept, whatever that state is it. If a certain status is preferred some of the provided methods should be used for that including <a class="el" href="#a3009725646aeb160884b8109d180b530" title="Clears and resets flags, timers and counters modified through the object&#39;s signals processing.">clrStatus()</a>, <a class="el" href="#a2df98cfb822df05bc232143f883e5c32" title="Resets the MPB behavior automaton to it&#39;s Initial or Start State">resetFda()</a>, <a class="el" href="#a881f9e15d1bf8da14edc77e2bcc63953" title="Disables the input signal processing, ignoring the changes of its values.">disable()</a>, <a class="el" href="#a55644500cc3b52282c439ca4541a2351" title="Sets the value of the isOnDisabled attribute.">setIsOnDisabled()</a>, etc. Also consider that if a task is set to be executed while the object is in <b>On state</b>, the <b><a class="el" href="#a58c55f2713734a81ef7ac01249973731" title="Detaches the object from the timer that monitors the input pins, compute and updates the object&#39;s sta...">end()</a></b> invocation wouldn't affect that task execution state.</p>
 <dl class="section return"><dt>Returns</dt><dd>Boolean indicating the success of the operation </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
@@ -490,6 +540,26 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
   </table>
   </dd>
 </dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dbncd_m_p_bttn_a58c55f2713734a81ef7ac01249973731_cgraph.png" border="0" usemap="#aclass_dbncd_m_p_bttn_a58c55f2713734a81ef7ac01249973731_cgraph" alt=""/></div>
+<map name="aclass_dbncd_m_p_bttn_a58c55f2713734a81ef7ac01249973731_cgraph" id="aclass_dbncd_m_p_bttn_a58c55f2713734a81ef7ac01249973731_cgraph">
+<area shape="rect" title="Detaches the object from the timer that monitors the input pins, compute and updates the object&#39;s sta..." alt="" coords="5,5,137,32"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html#a3cf51be801e6024cc3ca6b984deb52c6" title="Pauses the software timer updating the computation of the object&#39;s internal flags value." alt="" coords="185,5,330,32"/>
+<area shape="poly" title=" " alt="" coords="137,16,169,16,169,21,137,21"/>
+</map>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dbncd_m_p_bttn_a58c55f2713734a81ef7ac01249973731_icgraph.png" border="0" usemap="#aclass_dbncd_m_p_bttn_a58c55f2713734a81ef7ac01249973731_icgraph" alt=""/></div>
+<map name="aclass_dbncd_m_p_bttn_a58c55f2713734a81ef7ac01249973731_icgraph" id="aclass_dbncd_m_p_bttn_a58c55f2713734a81ef7ac01249973731_icgraph">
+<area shape="rect" title="Detaches the object from the timer that monitors the input pins, compute and updates the object&#39;s sta..." alt="" coords="253,5,384,32"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html#a3f0f4c1a3b122541031fecaf9bb93101" title="Default virtual destructor." alt="" coords="5,5,205,32"/>
+<area shape="poly" title=" " alt="" coords="237,21,205,21,205,16,237,16"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -508,7 +578,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
       </table>
 </div><div class="memdoc">
 
-<p>Returns the current debounce time set for the object. </p>
+<p>Returns the current debounce period time set for the object. </p>
 <p>The original value for the debouncing process used at instantiation time might be changed with the <b>setDbncTime(const unsigned long int)</b> or with the <b><a class="el" href="#a5b8cd9ec64370e6aafb62ecd94a82aef" title="Resets the debounce process time of the object to the value used at instantiation.">resetDbncTime()</a></b> methods. This method gets the current value of the attribute in use.</p>
 <dl class="section return"><dt>Returns</dt><dd>The current debounce time in milliseconds </dd></dl>
 
@@ -640,7 +710,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Returns the value of the <b>isOnDisabled</b> attribute flag. </p>
-<p>When instantiated the class, the object is created in <b>Enabled state</b>. That might be changed when needed. In the <b>Disabled state</b> the input signals for the MPB are not processed, and the output will be set to the <b>On state</b> or the <b>Off state</b> depending on this flag's value. The reasons to disable the ability to change the output, and keep it on either state until re-enabled are design and use dependent. The flag value might be changed by the use of the <a class="el" href="#a55644500cc3b52282c439ca4541a2351" title="Sets the value of the isOnDisabled flag.">setIsOnDisabled()</a> method.</p>
+<p>When instantiated the class, the object is created in <b>Enabled state</b>. That might be changed when needed. In the <b>Disabled state</b> the input signals for the MPB are not processed, and the output will be set to the <b>On state</b> or the <b>Off state</b> depending on this flag's value. The reasons to disable the ability to change the output, and keep it on either state until re-enabled are design and use dependent. The flag value might be changed by the use of the <b><a class="el" href="#a55644500cc3b52282c439ca4541a2351" title="Sets the value of the isOnDisabled attribute.">setIsOnDisabled()</a></b> method.</p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">true</td><td>the object is configured to be set to the <b>On state</b> while it is in <b>Disabled state</b>. </td></tr>
@@ -813,6 +883,30 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 
 <p>Initializes an object instantiated by the default constructor. </p>
 <p>All the parameters correspond to the non-default constructor of the class, <a class="el" href="class_dbncd_m_p_bttn.html" title="Base class, models a Debounced Momentary Push Button (D-MPB).">DbncdMPBttn(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int)</a> </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dbncd_m_p_bttn_a748f95239413d4c9c0a5b5d0d6396e60_cgraph.png" border="0" usemap="#aclass_dbncd_m_p_bttn_a748f95239413d4c9c0a5b5d0d6396e60_cgraph" alt=""/></div>
+<map name="aclass_dbncd_m_p_bttn_a748f95239413d4c9c0a5b5d0d6396e60_cgraph" id="aclass_dbncd_m_p_bttn_a748f95239413d4c9c0a5b5d0d6396e60_cgraph">
+<area shape="rect" title="Initializes an object instantiated by the default constructor." alt="" coords="5,5,133,32"/>
+<area shape="rect" href="_button_to_switch___s_t_m32_8cpp.html#a2d4786dedee4fde298afb23bf2ba11ac" title="Returns the position of the single set bit on an unsigned 16 bits integer value." alt="" coords="181,5,302,32"/>
+<area shape="poly" title=" " alt="" coords="133,16,165,16,165,21,133,21"/>
+</map>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dbncd_m_p_bttn_a748f95239413d4c9c0a5b5d0d6396e60_icgraph.png" border="0" usemap="#aclass_dbncd_m_p_bttn_a748f95239413d4c9c0a5b5d0d6396e60_icgraph" alt=""/></div>
+<map name="aclass_dbncd_m_p_bttn_a748f95239413d4c9c0a5b5d0d6396e60_icgraph" id="aclass_dbncd_m_p_bttn_a748f95239413d4c9c0a5b5d0d6396e60_icgraph">
+<area shape="rect" title="Initializes an object instantiated by the default constructor." alt="" coords="408,31,535,57"/>
+<area shape="rect" href="class_dbncd_dlyd_m_p_bttn.html#ad131facd8f159575f6441fa39b072557" title="see DbncdMPBttn::init(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int)" alt="" coords="207,5,360,32"/>
+<area shape="poly" title=" " alt="" coords="392,36,360,32,361,26,393,31"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html#af2df06a9433c30b95611494e43709883" title="Initializes an object instantiated by the default constructor." alt="" coords="220,56,347,83"/>
+<area shape="poly" title=" " alt="" coords="393,57,348,63,347,58,392,52"/>
+<area shape="rect" href="class_dbncd_dlyd_m_p_bttn.html#aea025f48a5a6281ba24e84aaf385212b" title="see DbncdMPBttn::init(gpioPinId_t, const bool, const bool, const unsigned long int)" alt="" coords="5,5,159,32"/>
+<area shape="poly" title=" " alt="" coords="191,21,159,21,159,16,191,16"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -847,6 +941,18 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 
 <p>Initializes an object instantiated by the default constructor. </p>
 <p>All the parameters correspond to the non-default constructor of the class, <a class="el" href="class_dbncd_m_p_bttn.html" title="Base class, models a Debounced Momentary Push Button (D-MPB).">DbncdMPBttn(gpioPinId_t, const bool, const bool, const unsigned long int)</a> </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dbncd_m_p_bttn_af2df06a9433c30b95611494e43709883_cgraph.png" border="0" usemap="#aclass_dbncd_m_p_bttn_af2df06a9433c30b95611494e43709883_cgraph" alt=""/></div>
+<map name="aclass_dbncd_m_p_bttn_af2df06a9433c30b95611494e43709883_cgraph" id="aclass_dbncd_m_p_bttn_af2df06a9433c30b95611494e43709883_cgraph">
+<area shape="rect" title="Initializes an object instantiated by the default constructor." alt="" coords="5,5,133,32"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html#a748f95239413d4c9c0a5b5d0d6396e60" title="Initializes an object instantiated by the default constructor." alt="" coords="181,5,308,32"/>
+<area shape="poly" title=" " alt="" coords="133,16,165,16,165,21,133,21"/>
+<area shape="rect" href="_button_to_switch___s_t_m32_8cpp.html#a2d4786dedee4fde298afb23bf2ba11ac" title="Returns the position of the single set bit on an unsigned 16 bits integer value." alt="" coords="356,5,477,32"/>
+<area shape="poly" title=" " alt="" coords="308,16,341,16,341,21,308,21"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -874,6 +980,18 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
   </table>
   </dd>
 </dl>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dbncd_m_p_bttn_a3cf51be801e6024cc3ca6b984deb52c6_icgraph.png" border="0" usemap="#aclass_dbncd_m_p_bttn_a3cf51be801e6024cc3ca6b984deb52c6_icgraph" alt=""/></div>
+<map name="aclass_dbncd_m_p_bttn_a3cf51be801e6024cc3ca6b984deb52c6_icgraph" id="aclass_dbncd_m_p_bttn_a3cf51be801e6024cc3ca6b984deb52c6_icgraph">
+<area shape="rect" title="Pauses the software timer updating the computation of the object&#39;s internal flags value." alt="" coords="432,5,577,32"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html#a58c55f2713734a81ef7ac01249973731" title="Detaches the object from the timer that monitors the input pins, compute and updates the object&#39;s sta..." alt="" coords="253,5,384,32"/>
+<area shape="poly" title=" " alt="" coords="417,21,384,21,384,16,417,16"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html#a3f0f4c1a3b122541031fecaf9bb93101" title="Default virtual destructor." alt="" coords="5,5,205,32"/>
+<area shape="poly" title=" " alt="" coords="237,21,205,21,205,16,237,16"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -893,7 +1011,17 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </div><div class="memdoc">
 
 <p>Resets the debounce process time of the object to the value used at instantiation. </p>
-<p>The debounce process time used at instantiation might be changed with the <a class="el" href="#afa8a94396ee3fe8f9cc41c8ea9d8b8d3" title="Sets the debounce time.">setDbncTime()</a> as needed, as many times as needed. This method reverts the value to the instantiation time value. In case the value was not specified at instantiation time the default debounce time value will be used. </p>
+<p>The debounce process time used at instantiation might be changed with the <a class="el" href="#afa8a94396ee3fe8f9cc41c8ea9d8b8d3" title="Sets the debounce process time.">setDbncTime()</a> as needed, as many times as needed. This method reverts the value to the instantiation time value. In case the value was not specified at instantiation time the default debounce time value will be used. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dbncd_m_p_bttn_a5b8cd9ec64370e6aafb62ecd94a82aef_cgraph.png" border="0" usemap="#aclass_dbncd_m_p_bttn_a5b8cd9ec64370e6aafb62ecd94a82aef_cgraph" alt=""/></div>
+<map name="aclass_dbncd_m_p_bttn_a5b8cd9ec64370e6aafb62ecd94a82aef_cgraph" id="aclass_dbncd_m_p_bttn_a5b8cd9ec64370e6aafb62ecd94a82aef_cgraph">
+<area shape="rect" title="Resets the debounce process time of the object to the value used at instantiation." alt="" coords="5,5,203,32"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html#afa8a94396ee3fe8f9cc41c8ea9d8b8d3" title="Sets the debounce process time." alt="" coords="251,5,437,32"/>
+<area shape="poly" title=" " alt="" coords="203,16,235,16,235,21,203,21"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -914,6 +1042,26 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 
 <p>Resets the MPB behavior automaton to it's <b>Initial</b> or <b>Start State</b> </p>
 <p>This method is provided for security and for error handling purposes, so that in case of unexpected situations detected, the driving <b>Deterministic Finite Automaton</b> used to compute the MPB objects states might be reset to it's initial state to safely restart it, usually as part of an <b>Error Handling</b> procedure. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dbncd_m_p_bttn_a2df98cfb822df05bc232143f883e5c32_cgraph.png" border="0" usemap="#aclass_dbncd_m_p_bttn_a2df98cfb822df05bc232143f883e5c32_cgraph" alt=""/></div>
+<map name="aclass_dbncd_m_p_bttn_a2df98cfb822df05bc232143f883e5c32_cgraph" id="aclass_dbncd_m_p_bttn_a2df98cfb822df05bc232143f883e5c32_cgraph">
+<area shape="rect" title="Resets the MPB behavior automaton to it&#39;s Initial or Start State" alt="" coords="5,5,167,32"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html#a3009725646aeb160884b8109d180b530" title="Clears and resets flags, timers and counters modified through the object&#39;s signals processing." alt="" coords="215,5,377,32"/>
+<area shape="poly" title=" " alt="" coords="167,16,199,16,199,21,167,21"/>
+</map>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dbncd_m_p_bttn_a2df98cfb822df05bc232143f883e5c32_icgraph.png" border="0" usemap="#aclass_dbncd_m_p_bttn_a2df98cfb822df05bc232143f883e5c32_icgraph" alt=""/></div>
+<map name="aclass_dbncd_m_p_bttn_a2df98cfb822df05bc232143f883e5c32_icgraph" id="aclass_dbncd_m_p_bttn_a2df98cfb822df05bc232143f883e5c32_icgraph">
+<area shape="rect" title="Resets the MPB behavior automaton to it&#39;s Initial or Start State" alt="" coords="207,5,368,32"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html#a9540a12554008a6705056b02fbafed38" title="Restarts the software timer updating the calculation of the object internal flags." alt="" coords="5,5,159,32"/>
+<area shape="poly" title=" " alt="" coords="191,21,159,21,159,16,191,16"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -942,6 +1090,18 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
   </dd>
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>This method will restart the inactive timer after a <b><a class="el" href="#a3cf51be801e6024cc3ca6b984deb52c6" title="Pauses the software timer updating the computation of the object&#39;s internal flags value.">pause()</a></b> method. If the object's timer was modified by an <b><a class="el" href="#a58c55f2713734a81ef7ac01249973731" title="Detaches the object from the timer that monitors the input pins, compute and updates the object&#39;s sta...">end()</a>* method then a **begin()</b> method will be needed to restart it's timer. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dbncd_m_p_bttn_a9540a12554008a6705056b02fbafed38_cgraph.png" border="0" usemap="#aclass_dbncd_m_p_bttn_a9540a12554008a6705056b02fbafed38_cgraph" alt=""/></div>
+<map name="aclass_dbncd_m_p_bttn_a9540a12554008a6705056b02fbafed38_cgraph" id="aclass_dbncd_m_p_bttn_a9540a12554008a6705056b02fbafed38_cgraph">
+<area shape="rect" title="Restarts the software timer updating the calculation of the object internal flags." alt="" coords="5,5,159,32"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html#a2df98cfb822df05bc232143f883e5c32" title="Resets the MPB behavior automaton to it&#39;s Initial or Start State" alt="" coords="207,5,368,32"/>
+<area shape="poly" title=" " alt="" coords="159,16,191,16,191,21,159,21"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html#a3009725646aeb160884b8109d180b530" title="Clears and resets flags, timers and counters modified through the object&#39;s signals processing." alt="" coords="416,5,578,32"/>
+<area shape="poly" title=" " alt="" coords="368,16,400,16,400,21,368,21"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -960,7 +1120,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
       </table>
 </div><div class="memdoc">
 
-<p>Sets the debounce time. </p>
+<p>Sets the debounce process time. </p>
 <p>Sets a new time for the debouncing period. The value must be equal or greater than the minimum empirical value set as a property for all the classes, 20 milliseconds, that value is defined in the _HwMinDbncTime constant. A long debounce time will produce a delay in the press event generation, making it less "responsive".</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -976,6 +1136,16 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
   </table>
   </dd>
 </dl>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dbncd_m_p_bttn_afa8a94396ee3fe8f9cc41c8ea9d8b8d3_icgraph.png" border="0" usemap="#aclass_dbncd_m_p_bttn_afa8a94396ee3fe8f9cc41c8ea9d8b8d3_icgraph" alt=""/></div>
+<map name="aclass_dbncd_m_p_bttn_afa8a94396ee3fe8f9cc41c8ea9d8b8d3_icgraph" id="aclass_dbncd_m_p_bttn_afa8a94396ee3fe8f9cc41c8ea9d8b8d3_icgraph">
+<area shape="rect" title="Sets the debounce process time." alt="" coords="251,5,437,32"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html#a5b8cd9ec64370e6aafb62ecd94a82aef" title="Resets the debounce process time of the object to the value used at instantiation." alt="" coords="5,5,203,32"/>
+<area shape="poly" title=" " alt="" coords="235,21,203,21,203,16,235,16"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -1046,7 +1216,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
       </table>
 </div><div class="memdoc">
 
-<p>Sets the value of the <b>isOnDisabled</b> flag. </p>
+<p>Sets the value of the <b>isOnDisabled</b> attribute. </p>
 <p>When instantiated the class, the object is created in <b>Enabled state</b>. That might be changed as needed. While in the <b>Disabled state</b> the input signals for the MPB are not processed, and the output will be set to the <b>On state</b> or the <b>Off state</b> depending on this flag value.</p>
 <dl class="section note"><dt>Note</dt><dd>The reasons to disable the ability to change the output, and keep it on either state until re-enabled are design and use dependent, being an obvious one security reasons, disabling the ability of the users to manipulate the switch while keeping the desired <b>On/Off state</b>. A simple example would be to keep a light on in a place where a meeting is taking place, disabling the lights switches and keeping the <b>On State</b>. Another obvious one would be to keep a machine off while servicing it's internal mechanisms, disabling the possibility of turning it on.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>If the method is invoked while the object is disabled, and the <b>isOnDisabled</b> attribute flag is changed, then the <b>isOn</b> attribute flag will have to change accordingly. Changing the <b>isOn</b> flag value implies that <b>all</b> the implemented mechanisms related to the change of the <b>isOn</b> attribute flag value will be invoked. </dd></dl>
@@ -1076,6 +1246,18 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
   </table>
   </dd>
 </dl>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dbncd_m_p_bttn_ac1a23ebaf89ccfa36df1cd9c995c9ab5_icgraph.png" border="0" usemap="#aclass_dbncd_m_p_bttn_ac1a23ebaf89ccfa36df1cd9c995c9ab5_icgraph" alt=""/></div>
+<map name="aclass_dbncd_m_p_bttn_ac1a23ebaf89ccfa36df1cd9c995c9ab5_icgraph" id="aclass_dbncd_m_p_bttn_ac1a23ebaf89ccfa36df1cd9c995c9ab5_icgraph">
+<area shape="rect" title="Sets the value of the attribute flag indicating if a change took place in any of the output attribute..." alt="" coords="236,47,454,73"/>
+<area shape="rect" href="class_sldr_d_a_ltch_m_p_bttn.html#a5e486e8b043fd98a480ba01edf4a2a1d" title="Sets the output current value register maximum value attribute (otptValMax attribute)." alt="" coords="5,5,188,48"/>
+<area shape="poly" title=" " alt="" coords="225,47,188,42,189,36,226,41"/>
+<area shape="rect" href="class_sldr_d_a_ltch_m_p_bttn.html#ade0bb26e0b683aed9665aed6c68772b8" title="Sets the output current value register minimum value attribute (otptValMin attribute)." alt="" coords="5,72,188,115"/>
+<area shape="poly" title=" " alt="" coords="226,79,189,84,188,78,225,73"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -1129,7 +1311,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 </table>
 </div><div class="memdoc">
 
-<p>Sets the task to be run while the object is in the <b>On state</b>. </p>
+<p>Sets the handle to the task to be run while the object is in the <b>On state</b>. </p>
 <p>Sets the task handle of the task to be <b>resumed</b> when the object enters the <b>On state</b>, and will be <b>paused</b> when the object enters the <b>Off state</b>. This task execution mechanism dependent of the <b>On state</b> extends the concept of the <b>Switch object</b> far away of the simple turning On/Off a single hardware signal, attaching to it all the task execution capabilities of the MCU.</p>
 <p>If the existing value for the task handle was not NULL before the invocation, the method will verify the Task Handle was pointing to a deleted or suspended task, in which case will proceed to <b>suspend</b> that task before changing the Task Handle to the new provided value.</p>
 <p>Setting the value to NULL will disable the task execution mechanism.</p>

@@ -1,0 +1,13 @@
+<map id="singleBitPosNum" name="singleBitPosNum">
+<area shape="rect" id="Node000001" title="Returns the position of the single set bit on an unsigned 16 bits integer value." alt="" coords="647,31,769,57"/>
+<area shape="rect" id="Node000002" href="$class_dbncd_m_p_bttn.html#a46810d945e96b2b579f6fb8b59e99252" title="Class constructor." alt="" coords="408,5,599,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="631,37,600,33,600,28,632,32"/>
+<area shape="rect" id="Node000003" href="$class_dbncd_m_p_bttn.html#a748f95239413d4c9c0a5b5d0d6396e60" title="Initializes an object instantiated by the default constructor." alt="" coords="440,56,567,83"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="632,56,568,64,568,59,631,51"/>
+<area shape="rect" id="Node000004" href="$class_dbncd_dlyd_m_p_bttn.html#ad131facd8f159575f6441fa39b072557" title="see DbncdMPBttn::init(GPIO_TypeDef*, const uint16_t, const bool, const bool, const unsigned long int)" alt="" coords="207,31,360,57"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="424,63,360,55,361,50,425,58"/>
+<area shape="rect" id="Node000006" href="$class_dbncd_m_p_bttn.html#af2df06a9433c30b95611494e43709883" title="Initializes an object instantiated by the default constructor." alt="" coords="220,81,347,108"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="425,81,348,90,347,85,424,76"/>
+<area shape="rect" id="Node000005" href="$class_dbncd_dlyd_m_p_bttn.html#aea025f48a5a6281ba24e84aaf385212b" title="see DbncdMPBttn::init(gpioPinId_t, const bool, const bool, const unsigned long int)" alt="" coords="5,31,159,57"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="191,47,159,47,159,41,191,41"/>
+</map>

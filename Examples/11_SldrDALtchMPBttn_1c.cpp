@@ -6,6 +6,7 @@
   * The test instantiates a SldrDALtchMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
   * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
+  * 	- A digital output to GPIO_PC01 to show the isOnScndry attribute flag status.
   * 	- A digital output to GPIO_PC00 to visualize the _isEnabled attribute flag status
   *
   * ### This example creates two Tasks and a timer:
@@ -34,7 +35,7 @@
   * 	@author	: Gabriel D. Goldman
   *
   * 	@date	: 	01/01/2024 First release
-  * 				11/06/2024 Last update
+  * 				31/10/2024 Last update
   *
   ******************************************************************************
   * @attention	This file is part of the Examples folder for the ButtonToSwitch for STM32
@@ -63,6 +64,7 @@
 TIM_HandleTypeDef htim2;
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
 gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
+gpioPinId_t ledIsOnScndry{GPIOC, GPIO_PIN_1};	// Pin 0b 0000 0000 0000 0010
 gpioPinId_t ledIsEnabled{GPIOC, GPIO_PIN_0};		// Pin 0b 0000 0000 0000 0001
 
 TaskHandle_t mainCtrlTskHndl {NULL};
@@ -206,6 +208,11 @@ void dmpsOutputTsk(void *pvParameters){
 		else
 			__HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_1, 0);
 
+		if(mpbCurStateDcdd.isOnScndry)
+		  HAL_GPIO_WritePin(ledIsOnScndry.portId, ledIsOnScndry.pinNum, GPIO_PIN_SET);
+		else
+		  HAL_GPIO_WritePin(ledIsOnScndry.portId, ledIsOnScndry.pinNum, GPIO_PIN_RESET);
+
 		if(mpbCurStateDcdd.isEnabled)
 			HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_RESET);
 		else
@@ -347,6 +354,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(tstMpbOnBoard.portId, &GPIO_InitStruct);
+
+  /*Configure GPIO pin Output Level for ledIsOnScndry*/
+  HAL_GPIO_WritePin(ledIsOnScndry.portId, ledIsOnScndry.pinNum, GPIO_PIN_RESET);
+  /*Configure GPIO pin : ledIsOnScndry */
+  GPIO_InitStruct.Pin = ledIsOnScndry.pinNum;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(ledIsOnScndry.portId, &GPIO_InitStruct);
 
   /*Configure GPIO pin Output Level for ledIsEnabled))*/
   HAL_GPIO_WritePin(ledIsEnabled.portId, ledIsEnabled.pinNum, GPIO_PIN_RESET);

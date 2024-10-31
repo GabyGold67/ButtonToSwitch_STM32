@@ -1,0 +1,7 @@
+<map id="VdblMPBttn::setIsNotVoided" name="VdblMPBttn::setIsNotVoided">
+<area shape="rect" id="Node000001" title="Sets the value of the isVoided attribute flag to false." alt="" coords="422,5,609,32"/>
+<area shape="rect" id="Node000002" href="$class_vdbl_m_p_bttn.html#a7ea82534da6a8f39d9715a3126387d30" title="See DbncdMPBttn::clrStatus(bool)" alt="" coords="223,5,374,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="406,21,375,21,375,16,406,16"/>
+<area shape="rect" id="Node000003" href="$class_tm_vdbl_m_p_bttn.html#a33bb7f6a78ea9c912a6d2c906ef756e5" title="See DbncdMPBttn::clrStatus(bool)" alt="" coords="5,5,175,32"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="207,21,175,21,175,16,207,16"/>
+</map>

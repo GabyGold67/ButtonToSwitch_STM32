@@ -1,0 +1,5 @@
+<map id="TmLtchMPBttn::setSrvcTime" name="TmLtchMPBttn::setSrvcTime">
+<area shape="rect" id="Node000001" title="Sets a new value to the Service Time attribute." alt="" coords="268,5,455,32"/>
+<area shape="rect" id="Node000002" href="$class_hntd_tm_ltch_m_p_bttn.html#af14573c7889fc1a65129b1dc685ff840" title="See TmLtchMPBttn::setSrvcTime(const unsigned long int)" alt="" coords="5,5,220,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="252,21,220,21,220,16,252,16"/>
+</map>

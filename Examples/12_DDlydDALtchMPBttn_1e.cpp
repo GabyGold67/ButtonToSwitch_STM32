@@ -7,7 +7,7 @@
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
   * 	- The Nucleo board user LED attached to GPIO_PA05 to visualize the isOn attribute flag status
   * 	- A digital output to GPIO_C00 to visualize the isEnabled attribute flag status
-  * 	- A digital output to GPIO_PC01 to show the second level isOnScndry action.
+  * 	- A digital output to GPIO_PC01 to show the isOnScndry attribute flag status.
   * 	- A digital output to GPIO_PB13 to visualize the "Task While MPB is On" activity
   * 	- A digital output to GPIO_PA10 to visualize the "Task While MPB is On Secondary" activity
   *

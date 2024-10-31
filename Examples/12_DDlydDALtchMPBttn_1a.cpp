@@ -6,7 +6,7 @@
   * 	The Example instantiates a DDlydDALtchMPBttn object using:
   * 	- The Nucleo board user pushbutton attached to GPIO_B00
   * 	- The Nucleo board user LED attached to GPIO_A05 to visualize the isOn attribute flag status
-  * 	- A digital output to GPIO_PC01 to show the second level action.
+  * 	- A digital output to GPIO_PC01 to show the isOnScndry attribute flag status.
   *
   * ### This example creates one Task:
   *

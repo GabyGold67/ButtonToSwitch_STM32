@@ -51,7 +51,7 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
 gpioPinId_t tstMpbOnBoard{GPIOC, GPIO_PIN_13};	// Pin 0b 0010 0000 0000 0000
-gpioPinId_t mpbUnlatch{GPIOB, GPIO_PIN_0};	//Pin 0b 0000 0001
+gpioPinId_t mpbUnlatch{GPIOB, GPIO_PIN_0};		//Pin 0b 0000 0000 0000 0001
 gpioPinId_t tstLedOnBoard{GPIOA, GPIO_PIN_5};	// Pin 0b 0000 0000 0010 0000
 
 TaskHandle_t mainCtrlTskHndl {NULL};

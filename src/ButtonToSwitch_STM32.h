@@ -12,9 +12,9 @@
   * switches**.
   *
   * @author	: Gabriel D. Goldman
-  * @version v4.0.2
+  * @version v4.1.0
   * @date	: Created on: 06/11/2023
-  * 			: Last modification:	28/08/2024
+  * 			: Last modification:	28/10/2024
   * @copyright GPL-3.0 license
   *
   ******************************************************************************
@@ -267,7 +267,7 @@ public:
 	 */
 	bool end();
 	/**
-	 * @brief Returns the current debounce time set for the object.
+	 * @brief Returns the current debounce period time set for the object.
 	 *
 	 * The original value for the debouncing process used at instantiation time might be changed with the **setDbncTime(const unsigned long int)** or with the **resetDbncTime()** methods. This method gets the current value of the attribute in use.
 	 *
@@ -320,7 +320,7 @@ public:
 	 * When instantiated the class, the object is created in **Enabled state**. That might be changed when needed.
 	 * In the **Disabled state** the input signals for the MPB are not processed, and the output will be set to the **On state** or the **Off state** depending on this flag's value.
 	 * The reasons to disable the ability to change the output, and keep it on either state until re-enabled are design and use dependent.
-	 * The flag value might be changed by the use of the setIsOnDisabled() method.
+	 * The flag value might be changed by the use of the **setIsOnDisabled()** method.
     *
     * @retval true: the object is configured to be set to the **On state** while it is in **Disabled state**.
     * @retval false: the object is configured to be set to the **Off state** while it is in **Disabled state**.
@@ -422,7 +422,7 @@ public:
 	 */
 	bool resume();
 	/**
-	 * @brief Sets the debounce time.
+	 * @brief Sets the debounce process time.
 	 *
 	 *	Sets a new time for the debouncing period. The value must be equal or greater than the minimum empirical value set as a property for all the classes, 20 milliseconds, that value is defined in the _HwMinDbncTime constant. A long debounce time will produce a delay in the press event generation, making it less "responsive".
 	 *
@@ -450,7 +450,7 @@ public:
 	 */
 	void setFnWhnTrnOnPtr(void (*newFnWhnTrnOn)());
    /**
-	 * @brief Sets the value of the **isOnDisabled** flag.
+	 * @brief Sets the value of the **isOnDisabled** attribute.
 	 *
 	 * When instantiated the class, the object is created in **Enabled state**. That might be changed as needed.
 	 * While in the **Disabled state** the input signals for the MPB are not processed, and the output will be set to the **On state** or the **Off state** depending on this flag value.
@@ -479,7 +479,7 @@ public:
     */
 	void setTaskToNotify(const TaskHandle_t &newTaskHandle);
 	/**
-	 * @brief Sets the task to be run while the object is in the **On state**.
+	 * @brief Sets the handle to the task to be run while the object is in the **On state**.
 	 *
 	 * Sets the task handle of the task to be **resumed** when the object enters the **On state**, and will be **paused** when the  object enters the **Off state**. This task execution mechanism dependent of the **On state** extends the concept of the **Switch object** far away of the simple turning On/Off a single hardware signal, attaching to it all the task execution capabilities of the MCU.
 	 *
@@ -669,6 +669,12 @@ public:
 	bool resetFda();
 	/**
 	 * @brief Sets the value of the trnOffASAP attribute flag.
+	 *
+	 * As explained in the class description, to accommodate to different sources of the unlatch signal, the unlatching process has been splitted in two steps:
+	 * 1. Validated Unlatch signal (or Validated Unlatch signal start).
+	 * 2. Validated Unlatch Release signal (or Validated Unlatch signal end).
+	 * If trnOffASAP=true, the isOn attribute flag will be reset at the "Validated Unlatch Signal Start" stage.
+	 * If trnOffASAP=false, the isOn attribute flag will be reset at the "Validated Unlatch Signal End" stage.
 	 *
 	 * @param newVal New value for the trnOffASAP attribute
 	 */
@@ -1125,6 +1131,7 @@ protected:
 	TaskHandle_t _taskWhileOnScndryHndl{NULL};
 
 	static void mpbPollCallback(TimerHandle_t mpbTmrCbArg);
+	uint32_t _otptsSttsPkg(uint32_t prevVal = 0);
    virtual void stDisabled_In(){};
    virtual void stOnEndScndMod_Out(){};
    virtual void stOnScndMod_Do() = 0;
@@ -1269,7 +1276,6 @@ public:
  */
 class DDlydDALtchMPBttn: public DblActnLtchMPBttn{
 protected:
-	uint32_t _otptsSttsPkg(uint32_t prevVal = 0);
    virtual void stDisabled_In();
    virtual void stOnEndScndMod_Out();
    virtual void stOnScndMod_Do();
@@ -1671,7 +1677,7 @@ public:
     *
     * @return the current value of the frcOtptLvlWhnVdd attribute.
     *
-    * @note Until v2.0.0 no VdblMPBttn class or subclasses **make use of the frcOtptLvlWhnVdd attribute**, their inclusion is "New Features Requests" reception related.
+     * @note As of this version of the library no VdblMPBttn class or subclasses **make use of the frcOtptLvlWhnVdd attribute**, their inclusion is "New Features Under Development" related to the refactoring of **binary states** to **Non-binary states**.
     */
    bool getFrcOtptLvldWhnVdd();
     /**
@@ -1689,7 +1695,7 @@ public:
      *
      * @return the current value of the stOnWhnOtptFrcd attribute.
      *
-     * @note Until v2.0.0 no VdblMPBttn class or subclasses **make use of the stOnWhnOtptFrcd attribute**, their inclusion is "New Features Requests" reception related.
+     * @note As of this version of the library no VdblMPBttn class or subclasses **make use of the frcOtptLvlWhnVdd attribute**, their inclusion is "New Features Under Development" related to the refactoring of **binary states** to **Non-binary states**.
      */
     bool getStOnWhnOtpFrcd();
  	/**

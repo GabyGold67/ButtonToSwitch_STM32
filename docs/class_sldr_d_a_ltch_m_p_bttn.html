@@ -29,7 +29,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="Complex_Switch_Sq_Sm_Color_In.jpg"/></td>
   <td id="projectalign">
-   <div id="projectname">ButtonToSwitch Library for STM32<span id="projectnumber">&#160;v4.0.0</span>
+   <div id="projectname">ButtonToSwitch Library for STM32<span id="projectnumber">&#160;v4.1.0</span>
    </div>
    <div id="projectbrief">A library that provides elaborated switch mechanism behavior simulation for digital signals inputs</div>
   </td>
@@ -346,7 +346,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memdesc:a58c55f2713734a81ef7ac01249973731 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detaches the object from the timer that monitors the input pins, compute and updates the object's status. The timer daemon entry is deleted for the object.  <br /></td></tr>
 <tr class="separator:a58c55f2713734a81ef7ac01249973731 inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30e73bf45b359a26065ba4ceab6841ab inherit pub_methods_class_dbncd_m_p_bttn" id="r_a30e73bf45b359a26065ba4ceab6841ab"><td class="memItemLeft" align="right" valign="top">const unsigned long int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#a30e73bf45b359a26065ba4ceab6841ab">getCurDbncTime</a> () const</td></tr>
-<tr class="memdesc:a30e73bf45b359a26065ba4ceab6841ab inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current debounce time set for the object.  <br /></td></tr>
+<tr class="memdesc:a30e73bf45b359a26065ba4ceab6841ab inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current debounce period time set for the object.  <br /></td></tr>
 <tr class="separator:a30e73bf45b359a26065ba4ceab6841ab inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae90de3a636c2e9b4ae0939bdb06cc5b0 inherit pub_methods_class_dbncd_m_p_bttn" id="r_ae90de3a636c2e9b4ae0939bdb06cc5b0"><td class="memItemLeft" align="right" valign="top">fncPtrType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#ae90de3a636c2e9b4ae0939bdb06cc5b0">getFnWhnTrnOff</a> ()</td></tr>
 <tr class="memdesc:ae90de3a636c2e9b4ae0939bdb06cc5b0 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the function that is set to execute every time the object <b>enters</b> the <b>Off State</b>.  <br /></td></tr>
@@ -397,7 +397,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memdesc:a9540a12554008a6705056b02fbafed38 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restarts the software timer updating the calculation of the object internal flags.  <br /></td></tr>
 <tr class="separator:a9540a12554008a6705056b02fbafed38 inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa8a94396ee3fe8f9cc41c8ea9d8b8d3 inherit pub_methods_class_dbncd_m_p_bttn" id="r_afa8a94396ee3fe8f9cc41c8ea9d8b8d3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#afa8a94396ee3fe8f9cc41c8ea9d8b8d3">setDbncTime</a> (const unsigned long int &amp;newDbncTime)</td></tr>
-<tr class="memdesc:afa8a94396ee3fe8f9cc41c8ea9d8b8d3 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the debounce time.  <br /></td></tr>
+<tr class="memdesc:afa8a94396ee3fe8f9cc41c8ea9d8b8d3 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the debounce process time.  <br /></td></tr>
 <tr class="separator:afa8a94396ee3fe8f9cc41c8ea9d8b8d3 inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abbd65b9ad37a2de7d8108789178e73e5 inherit pub_methods_class_dbncd_m_p_bttn" id="r_abbd65b9ad37a2de7d8108789178e73e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#abbd65b9ad37a2de7d8108789178e73e5">setFnWhnTrnOffPtr</a> (void(*newFnWhnTrnOff)())</td></tr>
 <tr class="memdesc:abbd65b9ad37a2de7d8108789178e73e5 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the function that will be called to execute every time the object <b>enters</b> the <b>Off State</b>.  <br /></td></tr>
@@ -406,7 +406,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memdesc:ad1e5decc11a29c7ac2417cde9b43fc4e inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the function that will be called to execute every time the object <b>enters</b> the <b>On State</b>.  <br /></td></tr>
 <tr class="separator:ad1e5decc11a29c7ac2417cde9b43fc4e inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55644500cc3b52282c439ca4541a2351 inherit pub_methods_class_dbncd_m_p_bttn" id="r_a55644500cc3b52282c439ca4541a2351"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#a55644500cc3b52282c439ca4541a2351">setIsOnDisabled</a> (const bool &amp;newIsOnDisabled)</td></tr>
-<tr class="memdesc:a55644500cc3b52282c439ca4541a2351 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the <b>isOnDisabled</b> flag.  <br /></td></tr>
+<tr class="memdesc:a55644500cc3b52282c439ca4541a2351 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the <b>isOnDisabled</b> attribute.  <br /></td></tr>
 <tr class="separator:a55644500cc3b52282c439ca4541a2351 inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1a23ebaf89ccfa36df1cd9c995c9ab5 inherit pub_methods_class_dbncd_m_p_bttn" id="r_ac1a23ebaf89ccfa36df1cd9c995c9ab5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#ac1a23ebaf89ccfa36df1cd9c995c9ab5">setOutputsChange</a> (bool newOutputChange)</td></tr>
 <tr class="memdesc:ac1a23ebaf89ccfa36df1cd9c995c9ab5 inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the attribute flag indicating if a change took place in any of the output attribute flags (IsOn included).  <br /></td></tr>
@@ -415,7 +415,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
 <tr class="memdesc:ab5d3ecd472c90f91c36eed3ce11cce7e inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the pointer to the task to be notified by the object when its output attribute flags changes.  <br /></td></tr>
 <tr class="separator:ab5d3ecd472c90f91c36eed3ce11cce7e inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a539d25d84a2e6c772000cff0bd0d279f inherit pub_methods_class_dbncd_m_p_bttn" id="r_a539d25d84a2e6c772000cff0bd0d279f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dbncd_m_p_bttn.html#a539d25d84a2e6c772000cff0bd0d279f">setTaskWhileOn</a> (const TaskHandle_t &amp;newTaskHandle)</td></tr>
-<tr class="memdesc:a539d25d84a2e6c772000cff0bd0d279f inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the task to be run while the object is in the <b>On state</b>.  <br /></td></tr>
+<tr class="memdesc:a539d25d84a2e6c772000cff0bd0d279f inherit pub_methods_class_dbncd_m_p_bttn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the handle to the task to be run while the object is in the <b>On state</b>.  <br /></td></tr>
 <tr class="separator:a539d25d84a2e6c772000cff0bd0d279f inherit pub_methods_class_dbncd_m_p_bttn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -551,6 +551,20 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DbncdMPBttn</b> (
       </table>
 </div><div class="memdoc">
 <dl class="section note"><dt>Note</dt><dd>See <a class="el" href="class_dbncd_m_p_bttn.html#a3009725646aeb160884b8109d180b530" title="Clears and resets flags, timers and counters modified through the object&#39;s signals processing.">DbncdMPBttn::clrStatus(bool)</a> </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_sldr_d_a_ltch_m_p_bttn_a161080d6983f7f79f3947921fdb361ef_cgraph.png" border="0" usemap="#aclass_sldr_d_a_ltch_m_p_bttn_a161080d6983f7f79f3947921fdb361ef_cgraph" alt=""/></div>
+<map name="aclass_sldr_d_a_ltch_m_p_bttn_a161080d6983f7f79f3947921fdb361ef_cgraph" id="aclass_sldr_d_a_ltch_m_p_bttn_a161080d6983f7f79f3947921fdb361ef_cgraph">
+<area shape="rect" title=" " alt="" coords="5,13,197,40"/>
+<area shape="rect" href="class_dbl_actn_ltch_m_p_bttn.html#a7454fc41a95d7bb028831a66781dffb3" title="See DbncddMPBttn::clrStatus(bool)" alt="" coords="245,5,389,48"/>
+<area shape="poly" title=" " alt="" coords="197,24,229,24,229,29,197,29"/>
+<area shape="rect" href="class_ltch_m_p_bttn.html#aa52047bd930afc19d8c1f9026f7605ef" title="See DbncdMPBttn::clrStatus(bool)" alt="" coords="437,13,587,40"/>
+<area shape="poly" title=" " alt="" coords="389,24,422,24,422,29,389,29"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html#a3009725646aeb160884b8109d180b530" title="Clears and resets flags, timers and counters modified through the object&#39;s signals processing." alt="" coords="635,13,798,40"/>
+<area shape="poly" title=" " alt="" coords="587,24,620,24,620,29,587,29"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -882,6 +896,16 @@ For the secondary function to work like a toggle switch, the condition (newVal =
 </dl>
 <dl class="section note"><dt>Note</dt><dd>Due to type constrains, the failure in the value change must be consequence of the selected newVal &lt;= otptValMin</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>If the otpValMax attribute intended change is to a smaller value, the otpCurVal might be left outside the new valid range (newVal &lt; otpCurVal). In this case the otptCurVal will be changed to be equal to newVal, and so otptCurVal will become equal to otptValMax. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_sldr_d_a_ltch_m_p_bttn_a5e486e8b043fd98a480ba01edf4a2a1d_cgraph.png" border="0" usemap="#aclass_sldr_d_a_ltch_m_p_bttn_a5e486e8b043fd98a480ba01edf4a2a1d_cgraph" alt=""/></div>
+<map name="aclass_sldr_d_a_ltch_m_p_bttn_a5e486e8b043fd98a480ba01edf4a2a1d_cgraph" id="aclass_sldr_d_a_ltch_m_p_bttn_a5e486e8b043fd98a480ba01edf4a2a1d_cgraph">
+<area shape="rect" title="Sets the output current value register maximum value attribute (otptValMax attribute)." alt="" coords="5,5,188,48"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html#ac1a23ebaf89ccfa36df1cd9c995c9ab5" title="Sets the value of the attribute flag indicating if a change took place in any of the output attribute..." alt="" coords="236,13,454,40"/>
+<area shape="poly" title=" " alt="" coords="188,24,220,24,220,29,188,29"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -918,6 +942,16 @@ For the secondary function to work like a toggle switch, the condition (newVal =
 </dl>
 <dl class="section note"><dt>Note</dt><dd>Due to type constrains, the failure in the value change must be consequence of the selected newVal &gt;= otptValMax</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>If the otptValMin attribute intended change is to a greater value, the otptCurVal might be left outside the new valid range (newVal &gt; otptCurVal). In this case the otptCurVal will be changed to be equal to newVal, and so otptCurVal will become equal to otptValMin. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_sldr_d_a_ltch_m_p_bttn_ade0bb26e0b683aed9665aed6c68772b8_cgraph.png" border="0" usemap="#aclass_sldr_d_a_ltch_m_p_bttn_ade0bb26e0b683aed9665aed6c68772b8_cgraph" alt=""/></div>
+<map name="aclass_sldr_d_a_ltch_m_p_bttn_ade0bb26e0b683aed9665aed6c68772b8_cgraph" id="aclass_sldr_d_a_ltch_m_p_bttn_ade0bb26e0b683aed9665aed6c68772b8_cgraph">
+<area shape="rect" title="Sets the output current value register minimum value attribute (otptValMin attribute)." alt="" coords="5,5,188,48"/>
+<area shape="rect" href="class_dbncd_m_p_bttn.html#ac1a23ebaf89ccfa36df1cd9c995c9ab5" title="Sets the value of the attribute flag indicating if a change took place in any of the output attribute..." alt="" coords="236,13,454,40"/>
+<area shape="poly" title=" " alt="" coords="188,24,220,24,220,29,188,29"/>
+</map>
+</div>
 
 </div>
 </div>
